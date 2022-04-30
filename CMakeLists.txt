@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.23.1)
 
-project("XMLLib" VERSION 0.0.1 DESCRIPTION "XML C++ Static Library" LANGUAGES CXX)
+project("XMLLib" VERSION 0.0.1 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -45,7 +45,7 @@ set (XML_INCLUDES
 
 # XML library
 
-add_library(${XML_LIBRARY_NAME} STATIC ${XML_SOURCES})
+add_library(${XML_LIBRARY_NAME} ${XML_SOURCES})
 target_include_directories(${XML_LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR} )
 
 # Add tests
