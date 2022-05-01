@@ -16,7 +16,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -376,4 +376,4 @@ namespace H4
                        { return static_cast<char>(std::toupper(c)); });
     }
 
-} // namespace H4
+} // namespace XMLLib

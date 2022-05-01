@@ -15,7 +15,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ================
     // CLASS DEFINITION
@@ -69,4 +69,4 @@ namespace H4
         long m_lineNumber = 1;
         DTD &m_dtd;
     };
-} // namespace H4
+} // namespace XMLLib

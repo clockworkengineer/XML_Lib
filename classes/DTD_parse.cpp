@@ -18,7 +18,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -438,4 +438,4 @@ namespace H4
             m_entityMapper.recursive(entityName.first, entityName.first[0]);
         }
     }
-} // namespace H4
+} // namespace XMLLib

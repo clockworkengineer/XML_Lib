@@ -22,7 +22,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -422,4 +422,4 @@ namespace H4
     {
         checkAgainstDTD(prolog);
     }
-} // namespace H4
+} // namespace XMLLib

@@ -7,7 +7,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
        //
         // XML DTD attribute types. Note only one type bit and
@@ -56,4 +56,4 @@ namespace H4
             XMLValue content;
             std::vector<DTDAttribute> attributes;
         };
-} // namespace H4
+} // namespace XMLLib

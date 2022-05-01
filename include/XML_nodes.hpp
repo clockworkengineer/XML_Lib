@@ -9,7 +9,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     //
     // XML Node structure
@@ -292,4 +292,4 @@ namespace H4
         }
         return (result);
     }
-} // namespace H4
+} // namespace XMLLib

@@ -10,7 +10,7 @@
 // =======================
 // JSON class namespace
 // =======================
-using namespace H4;
+using namespace XMLLib;
 // ==========
 // Test cases
 // ==========

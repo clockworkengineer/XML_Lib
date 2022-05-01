@@ -11,7 +11,7 @@
 // =======================
 // XML class namespace
 // =======================
-using namespace H4;
+using namespace XMLLib;
 // ==========
 // Test cases
 // ==========
@@ -148,7 +148,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     }
     SECTION("Check that FileSource match works correctly when match found or not.", "[XML][Parse][FileSource]")
     {
-        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHH4 &</root>";
+        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         writeXMLToFileUTF8(prefixTestDataPath(kGeneratedXMLFile), xmlString);
         FileSource xmlSource { prefixTestDataPath(kGeneratedXMLFile) };
         REQUIRE_FALSE(xmlSource.match(U"<root> "));
@@ -165,7 +165,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
         REQUIRE_FALSE(!xmlSource.match(U"2hctam"));
         REQUIRE(xmlSource.current() == ' ');
         xmlSource.ignoreWS();
-        REQUIRE_FALSE(!xmlSource.match(U"MMAATTCCHHHH4"));
+        REQUIRE_FALSE(!xmlSource.match(U"MMAATTCCHHHXMLLib"));
         REQUIRE(xmlSource.current() == ' ');
         xmlSource.next();
         REQUIRE(xmlSource.current() == '&');
@@ -176,7 +176,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     }
     SECTION("Check that FileSource backup works and doesnt go negative.", "[XML][Parse][FileSource]")
     {
-        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHH4 &</root>";
+        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         writeXMLToFileUTF8(prefixTestDataPath(kGeneratedXMLFile), xmlString);
         FileSource xmlSource { prefixTestDataPath(kGeneratedXMLFile) };
         xmlSource.match(U"<root>Match1");
@@ -326,7 +326,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     }
     SECTION("Check that BufferSource match works correctly when match found or not.", "[XML][Parse][BufferSource]")
     {
-        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHH4 &</root>";
+        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         BufferSource xmlSource { xmlString };
         REQUIRE_FALSE(xmlSource.match(U"<root> "));
         REQUIRE_FALSE(!xmlSource.match(U"<root>"));
@@ -342,7 +342,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
         REQUIRE_FALSE(!xmlSource.match(U"2hctam"));
         REQUIRE(xmlSource.current() == ' ');
         xmlSource.ignoreWS();
-        REQUIRE_FALSE(!xmlSource.match(U"MMAATTCCHHHH4"));
+        REQUIRE_FALSE(!xmlSource.match(U"MMAATTCCHHHXMLLib"));
         REQUIRE(xmlSource.current() == ' ');
         xmlSource.next();
         REQUIRE(xmlSource.current() == '&');
@@ -353,7 +353,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     }
     SECTION("Check that BufferSource backup works and doesnt go negative.", "[XML][Parse][BufferSource]")
     {
-        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHH4 &</root>";
+        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         BufferSource xmlSource { xmlString };
         xmlSource.match(U"<root>Match1");
         REQUIRE(xmlSource.current() == ' ');
@@ -390,7 +390,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     }
     SECTION("Check that BufferSource position() and getRange works correctly.", "[XML][Parse][BufferSource]")
     {
-        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHH4 &</root>";
+        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         BufferSource xmlSource { xmlString };
         while (xmlSource.more() && !xmlSource.match(U"Match"))
         {
@@ -408,7 +408,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     }
     SECTION("Check that FileSource position() and getRange works correctly.", "[XML][Parse][FileSource]")
     {
-        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHH4 &</root>";
+        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         writeXMLToFileUTF8(prefixTestDataPath(kGeneratedXMLFile), xmlString);
         FileSource xmlSource { prefixTestDataPath(kGeneratedXMLFile) };
         while (xmlSource.more() && !xmlSource.match(U"Match"))
@@ -428,7 +428,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
 
     SECTION("Check that BufferSource reset() works correctly.", "[XML][Parse][BufferSource]")
     {
-        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHH4 &</root>";
+        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         BufferSource xmlSource { xmlString };
         while (xmlSource.more() && !xmlSource.match(U"Match"))
         {
@@ -445,7 +445,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     }
     SECTION("Check that FileSource reset() works correctly.", "[XML][Parse][FileSource]")
     {
-        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHH4 &</root>";
+        xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         writeXMLToFileUTF8(prefixTestDataPath(kGeneratedXMLFile), xmlString);
         FileSource xmlSource { prefixTestDataPath(kGeneratedXMLFile) };
         while (xmlSource.more() && !xmlSource.match(U"Match"))

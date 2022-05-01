@@ -22,7 +22,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ================
     // CLASS DEFINITION
@@ -89,4 +89,4 @@ namespace H4
         std::unique_ptr<IXMLValidator> m_validator;
         std::unique_ptr<IXMLEntityMapper> m_entityMapper;
     };
-} // namespace H4
+} // namespace XMLLib

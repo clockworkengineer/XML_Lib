@@ -7,7 +7,7 @@
 #include <locale>
 #include <cwctype>
 
-namespace H4
+namespace XMLLib
 {
     //
     // Interface for reading source stream during XML/DTD parsing.
@@ -99,4 +99,4 @@ namespace H4
         std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> m_UTF16;
         std::wstring_convert<std::codecvt_utf8_utf16<Char>, Char> m_UTF8;
     };
-} // namespace H4
+} // namespace XMLLib

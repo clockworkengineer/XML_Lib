@@ -20,7 +20,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -136,4 +136,4 @@ namespace H4
     {
         xmlDestination.add(m_unparsed);
     }
-} // namespace H4
+} // namespace XMLLib

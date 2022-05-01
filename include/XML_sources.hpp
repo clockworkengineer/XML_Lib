@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
-namespace H4
+namespace XMLLib
 {
     //
     // Source classes for parsers.
@@ -188,4 +188,4 @@ namespace H4
     private:
         mutable std::ifstream m_source;
     };
-} // namespace H4
+} // namespace XMLLib

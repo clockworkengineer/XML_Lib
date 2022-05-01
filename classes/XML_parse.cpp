@@ -21,7 +21,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -510,4 +510,4 @@ namespace H4
             throw XMLSyntaxError(m_xmlSource, "Missing root element.");
         }
     }
-} // namespace H4
+} // namespace XMLLib

@@ -21,7 +21,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -68,4 +68,4 @@ namespace H4
     {
         stringifyXML(xmlDestination);
     }
-} // namespace H4
+} // namespace XMLLib

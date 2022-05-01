@@ -5,7 +5,7 @@
 #include <string>
 #include <codecvt>
 #include <locale>
-namespace H4
+namespace XMLLib
 {
     //
     // Interface for writing destination stream during XML/DTD stringification.
@@ -22,4 +22,4 @@ namespace H4
     protected:
         std::wstring_convert<std::codecvt_utf8_utf16<ISource::String::value_type>, ISource::String::value_type> m_UTF8;
     };
-} // namespace H4
+} // namespace XMLLib

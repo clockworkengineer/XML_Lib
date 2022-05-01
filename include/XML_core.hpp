@@ -24,7 +24,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     //
     // XML syntax error
@@ -174,7 +174,7 @@ namespace H4
     std::vector<std::string> splitString(std::string stringToSplit, char delimeter);
     void trimmString(std::string &stringToTrimm);
     void toUpperString(std::string &stringToUpper);
-} // namespace H4
+} // namespace XMLLib
 //
 // XML XNodes
 //

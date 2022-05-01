@@ -20,7 +20,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -143,4 +143,4 @@ namespace H4
     {
         stringifyElements(&m_prolog, xmlDestination);
     }
-} // namespace H4
+} // namespace XMLLib

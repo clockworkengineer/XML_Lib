@@ -14,7 +14,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     // ================
     // CLASS DEFINITION
@@ -107,4 +107,4 @@ namespace H4
         IXMLEntityMapper &m_entityMapper;
         std::string m_unparsed;
     };
-} // namespace H4
+} // namespace XMLLib

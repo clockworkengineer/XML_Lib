@@ -5,7 +5,7 @@
 #include <string>
 #include <stdexcept>
 #include <fstream>
-namespace H4
+namespace XMLLib
 {
     //
     // Destination classes for stringification.
@@ -59,4 +59,4 @@ namespace H4
     private:
         std::ofstream m_destination;
     };
-} // namespace H4
+} // namespace XMLLib

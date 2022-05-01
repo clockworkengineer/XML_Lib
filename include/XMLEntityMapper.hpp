@@ -13,7 +13,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace H4
+namespace XMLLib
 {
     //
     // XML Entity mapper
@@ -137,4 +137,4 @@ namespace H4
     private:
         std::map<std::string, XMLEntityMapping> m_enityMappings;
     };
-} // namespace H4
+} // namespace XMLLib
