@@ -105,20 +105,20 @@ void writeXMLToFileUTF16(const std::string &xmlFileName, const std::u16string &x
   xmlFile.close();
 }
 /// <summary>
-/// Convert CRLF to LF for xmlSource and check number of CR/LF left after with
+/// Convert CRLF to LF for source and check number of CR/LF left after with
 /// REQUIRE.
 /// </summary>
 /// <param name="xmlFileName">XML source</param>
 /// <param name="crFinal">Final number of CR</param>
 /// <param name="lfFinal">FInal number of LF</param>
 /// <returns></returns>
-void verifyCRLFCount(ISource &xmlSource, long lfFinal, long crFinal)
+void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
 {
   long crCount = 0;
   long lfCount = 0;
-  while (xmlSource.more())
+  while (source.more())
   {
-    switch (xmlSource.current())
+    switch (source.current())
     {
     case kLineFeed:
       lfCount++;
@@ -127,7 +127,7 @@ void verifyCRLFCount(ISource &xmlSource, long lfFinal, long crFinal)
       crCount++;
       break;
     }
-    xmlSource.next();
+    source.next();
   }
   REQUIRE(lfCount == lfFinal);
   REQUIRE(crCount == crFinal);
@@ -141,10 +141,10 @@ void verifyCRLFCount(ISource &xmlSource, long lfFinal, long crFinal)
 /// <returns></returns>
 void checkStringify(const std::string &xmlString)
 {
-  BufferSource xmlSource { xmlString };
-  XML xml { xmlSource };
-  xml.parse();
-  BufferDestination xmlDestination;
-  xml.stringify(xmlDestination);
-  REQUIRE(xmlDestination.getBuffer() == xmlString);
+  BufferSource source { xmlString };
+  XML xml;
+  xml.parse(source);
+  BufferDestination destination;
+  xml.stringify(destination);
+  REQUIRE(destination.getBuffer() == xmlString);
 }

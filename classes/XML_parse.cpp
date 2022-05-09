@@ -118,29 +118,29 @@ namespace XMLLib
     /// <summary>
     /// Parse a element tag name and set its value in current XMLNodeElement.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseTagName(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseTagName(ISource &source, XMLNode *xmlNode)
     {
-        static_cast<XMLNodeElement*>(xmlNode)->elementName = parseName(xmlSource);
+        static_cast<XMLNodeElement*>(xmlNode)->elementName = parseName(source);
     }
     /// <summary>
     /// Parse a XML comment, create a XMLNodeComment for it and add to list
     /// of elements for the current XMLNodeElement.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseComment(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseComment(ISource &source, XMLNode *xmlNode)
     {
         XMLNodeComment xmlNodeComment;
-        while (xmlSource.more() && !xmlSource.match(U"--"))
+        while (source.more() && !source.match(U"--"))
         {
-            xmlNodeComment.comment += xmlSource.current_to_bytes();
-            xmlSource.next();
+            xmlNodeComment.comment += source.current_to_bytes();
+            source.next();
         }
-        if (!xmlSource.match(U">"))
+        if (!source.match(U">"))
         {
-            throw XMLSyntaxError(xmlSource, "Missing closing '>' for comment line.");
+            throw XMLSyntaxError(source, "Missing closing '>' for comment line.");
         }
         static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeComment>(std::move(xmlNodeComment)));
     }
@@ -148,16 +148,16 @@ namespace XMLLib
     /// Parse a XML process instruction, create an XMLNodePI for it and add it to
     /// the list of elements under the current XMLNodeElement.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parsePI(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parsePI(ISource &source, XMLNode *xmlNode)
     {
         XMLNodePI xmlNodePI;
-        xmlNodePI.name = parseName(xmlSource);
-        while (xmlSource.more() && !xmlSource.match(U"?>"))
+        xmlNodePI.name = parseName(source);
+        while (source.more() && !source.match(U"?>"))
         {
-            xmlNodePI.parameters += xmlSource.current_to_bytes();
-            xmlSource.next();
+            xmlNodePI.parameters += source.current_to_bytes();
+            source.next();
         }
         static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodePI>(std::move(xmlNodePI)));
     }
@@ -165,19 +165,19 @@ namespace XMLLib
     /// Parse an XML CDATA section, create an XNodeCDATA for it and add it to
     /// the list of elements under the current XMLNodeElement.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseCDATA(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseCDATA(ISource &source, XMLNode *xmlNode)
     {
         XMLNodeCDATA xmlNodeCDATA;
-        while (xmlSource.more() && !xmlSource.match(U"]]>"))
+        while (source.more() && !source.match(U"]]>"))
         {
-            if (xmlSource.match(U"<![CDATA["))
+            if (source.match(U"<![CDATA["))
             {
-                throw XMLSyntaxError(xmlSource, "Nesting of CDATA sections is not allowed.");
+                throw XMLSyntaxError(source, "Nesting of CDATA sections is not allowed.");
             }
-            xmlNodeCDATA.cdata += xmlSource.current_to_bytes();
-            xmlSource.next();
+            xmlNodeCDATA.cdata += source.current_to_bytes();
+            source.next();
         }
         if (!static_cast<XMLNodeElement*>(xmlNode)->children.empty())
         {
@@ -192,25 +192,25 @@ namespace XMLLib
     /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
     /// the list of attributes associated with the current XMLNodeElement.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseAttributes(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseAttributes(ISource &source, XMLNode *xmlNode)
     {
-        while (xmlSource.more() &&
-               xmlSource.current() != '?' &&
-               xmlSource.current() != '/' &&
-               xmlSource.current() != '>')
+        while (source.more() &&
+               source.current() != '?' &&
+               source.current() != '/' &&
+               source.current() != '>')
         {
-            std::string attributeName = parseName(xmlSource);
-            if (!xmlSource.match(U"="))
+            std::string attributeName = parseName(source);
+            if (!source.match(U"="))
             {
-                throw XMLSyntaxError(xmlSource, "Missing '=' between attribute name and value.");
+                throw XMLSyntaxError(source, "Missing '=' between attribute name and value.");
             }
-            xmlSource.ignoreWS();
-            XMLValue attributeValue = parseValue(xmlSource, *m_entityMapper);
+            source.ignoreWS();
+            XMLValue attributeValue = parseValue(source, *m_entityMapper);
             if (!validAttributeValue(attributeValue))
             {
-                throw XMLSyntaxError(xmlSource, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
+                throw XMLSyntaxError(source, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
             }
             if (!static_cast<XMLNodeElement*>(xmlNode)->isAttributePresent(attributeName))
             {
@@ -218,7 +218,7 @@ namespace XMLLib
             }
             else
             {
-                throw XMLSyntaxError(xmlSource, "Attribute defined more than once within start tag.");
+                throw XMLSyntaxError(source, "Attribute defined more than once within start tag.");
             }
         }
         for (auto attribute : static_cast<XMLNodeElement*>(xmlNode)->getAttributeList())
@@ -233,21 +233,21 @@ namespace XMLLib
     /// <summary>
     /// Recursively parse any child elements of the current XMLNodeElement.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseChildElement(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseChildElement(ISource &source, XMLNode *xmlNode)
     {
         XMLNodeElement xmlNodeChildElement;
         for (auto &ns : static_cast<XMLNodeElement*>(xmlNode)->getNameSpaceList())
         {
             xmlNodeChildElement.addNameSpace(ns.name, ns.value);
         }
-        parseElement(xmlSource, &xmlNodeChildElement);
+        parseElement(source, &xmlNodeChildElement);
         if (auto pos = xmlNodeChildElement.elementName.find(':'); pos != std::string::npos)
         {
             if (!xmlNodeChildElement.isNameSpacePresent(xmlNodeChildElement.elementName.substr(0, pos)))
             {
-                throw XMLSyntaxError(xmlSource, "Namespace used but not defined.");
+                throw XMLSyntaxError(source, "Namespace used but not defined.");
             }
         }
         static_cast<XMLNodeElement*>(xmlNode)->children.push_back(std::make_unique<XMLNodeElement>(std::move(xmlNodeChildElement)));
@@ -255,11 +255,11 @@ namespace XMLLib
     /// <summary>
     /// Parse any element content that is found.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseDefault(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseDefault(ISource &source, XMLNode *xmlNode)
     {
-        XMLValue entityReference = parseCharacter(xmlSource);
+        XMLValue entityReference = parseCharacter(source);
         if (entityReference.isEntityReference())
         {
             m_entityMapper->map(entityReference);
@@ -278,139 +278,139 @@ namespace XMLLib
     /// Parse element content area, generating any XNodes and adding them
     /// to the list of the current XMLNodeElement.
     /// </summary>
-    /// <param name="xmlSource">XMl source stream.</param>
+    /// <param name="source">XMl source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseElementContents(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseElementContents(ISource &source, XMLNode *xmlNode)
     {
-        if (xmlSource.match(U"<!--"))
+        if (source.match(U"<!--"))
         {
-            parseComment(xmlSource, xmlNode);
+            parseComment(source, xmlNode);
         }
-        else if (xmlSource.match(U"<?"))
+        else if (source.match(U"<?"))
         {
-            parsePI(xmlSource, xmlNode);
+            parsePI(source, xmlNode);
         }
-        else if (xmlSource.match(U"<![CDATA["))
+        else if (source.match(U"<![CDATA["))
         {
-            parseCDATA(xmlSource, xmlNode);
+            parseCDATA(source, xmlNode);
         }
-        else if (xmlSource.match(U"</"))
+        else if (source.match(U"</"))
         {
-            throw XMLSyntaxError(xmlSource, "Missing closing tag.");
+            throw XMLSyntaxError(source, "Missing closing tag.");
         }
-        else if (xmlSource.match(U"<"))
+        else if (source.match(U"<"))
         {
-            parseChildElement(xmlSource, xmlNode);
+            parseChildElement(source, xmlNode);
         }
-        else if (xmlSource.match(U"]]>"))
+        else if (source.match(U"]]>"))
         {
-            throw XMLSyntaxError(xmlSource, "']]>' invalid in element content area.");
+            throw XMLSyntaxError(source, "']]>' invalid in element content area.");
         }
         else
         {
-            parseDefault(xmlSource, xmlNode);
+            parseDefault(source, xmlNode);
         }
     }
     /// <summary>
     /// Parse current XML element found.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseElement(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseElement(ISource &source, XMLNode *xmlNode)
     {
-        parseTagName(xmlSource, xmlNode);
-        parseAttributes(xmlSource, xmlNode);
-        if (xmlSource.match(U">"))
+        parseTagName(source, xmlNode);
+        parseAttributes(source, xmlNode);
+        if (source.match(U">"))
         {
-            while (xmlSource.more() && !xmlSource.match(U"</"))
+            while (source.more() && !source.match(U"</"))
             {
-                parseElementContents(xmlSource, xmlNode);
+                parseElementContents(source, xmlNode);
             }
-            if (!xmlSource.match(xmlSource.from_bytes(static_cast<XMLNodeElement*>(xmlNode)->elementName) + U">"))
+            if (!source.match(source.from_bytes(static_cast<XMLNodeElement*>(xmlNode)->elementName) + U">"))
             {
-                throw XMLSyntaxError(xmlSource, "Missing closing tag.");
+                throw XMLSyntaxError(source, "Missing closing tag.");
             }
         }
-        else if (xmlSource.match(U"/>"))
+        else if (source.match(U"/>"))
         {
             // Self closing element tag
             static_cast<XMLNodeElement*>(xmlNode)->setNodeType(XMLNodeType::self);
         }
         else
         {
-            throw XMLSyntaxError(xmlSource, "Missing closing tag.");
+            throw XMLSyntaxError(source, "Missing closing tag.");
         }
     }
     /// <summary>
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Prolog element node.</param>
-    void XML::parseDeclaration(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseDeclaration(ISource &source, XMLNode *xmlNode)
     {
-        if (xmlSource.match(U"version"))
+        if (source.match(U"version"))
         {
-            xmlSource.ignoreWS();
-            if (!xmlSource.match(U"="))
+            source.ignoreWS();
+            if (!source.match(U"="))
             {
-                throw XMLSyntaxError(xmlSource, "Missing '=' after version.");
+                throw XMLSyntaxError(source, "Missing '=' after version.");
             }
-            xmlSource.ignoreWS();
-            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("version", parseValue(xmlSource));
+            source.ignoreWS();
+            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("version", parseValue(source));
             // Check valid declaration values
             std::set<std::string> validVersions{"1.0", "1.1"};
             if (validVersions.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("version").value.parsed) == validVersions.end())
             {
-                throw XMLSyntaxError(xmlSource, "Unsupported version " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("version").value.parsed + ".");
+                throw XMLSyntaxError(source, "Unsupported version " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("version").value.parsed + ".");
             }
         }
         else
         {
-            throw XMLSyntaxError(xmlSource, "Version missing from declaration.");
+            throw XMLSyntaxError(source, "Version missing from declaration.");
         }
-        if (xmlSource.match(U"encoding"))
+        if (source.match(U"encoding"))
         {
-            xmlSource.ignoreWS();
-            if (!xmlSource.match(U"="))
+            source.ignoreWS();
+            if (!source.match(U"="))
             {
-                throw XMLSyntaxError(xmlSource, "Missing '=' after encoding.");
+                throw XMLSyntaxError(source, "Missing '=' after encoding.");
             }
-            xmlSource.ignoreWS();
-            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("encoding", parseValue(xmlSource));
+            source.ignoreWS();
+            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("encoding", parseValue(source));
             // Check valid declaration values
             toUpperString(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed);
             std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
             if (validEncodings.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed) == validEncodings.end())
             {
-                throw XMLSyntaxError(xmlSource, "Unsupported encoding " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed + " specified.");
+                throw XMLSyntaxError(source, "Unsupported encoding " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed + " specified.");
             }
         }
         else
         {
             static_cast<XMLNodeElement*>(xmlNode)->addAttribute("encoding", {"UTF-8", "UTF-8"});
         }
-        if (xmlSource.match(U"standalone"))
+        if (source.match(U"standalone"))
         {
-            xmlSource.ignoreWS();
-            if (!xmlSource.match(U"="))
+            source.ignoreWS();
+            if (!source.match(U"="))
             {
-                throw XMLSyntaxError(xmlSource, "Missing '=' after standalone.");
+                throw XMLSyntaxError(source, "Missing '=' after standalone.");
             }
-            xmlSource.ignoreWS();
-            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("standalone", parseValue(xmlSource));
+            source.ignoreWS();
+            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("standalone", parseValue(source));
             // Check valid declaration values
             std::set<std::string> validStandalone{"yes", "no"};
             if (validStandalone.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("standalone").value.parsed) == validStandalone.end())
             {
-                throw XMLSyntaxError(xmlSource, "Invalid standalone value of '" + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("standalone").value.parsed + "'.");
+                throw XMLSyntaxError(source, "Invalid standalone value of '" + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("standalone").value.parsed + "'.");
             }
         }
         else
         {
             static_cast<XMLNodeElement*>(xmlNode)->addAttribute("standalone", {"no", "no"});
         }
-        if (xmlSource.match(U"encoding"))
+        if (source.match(U"encoding"))
         {
-            throw XMLSyntaxError(xmlSource, "Incorrect order for version, encoding and standalone attributes.");
+            throw XMLSyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
         }
     }
     /// <summary>
@@ -419,53 +419,53 @@ namespace XMLLib
     /// processing instructions, comments, whitespace content and XML
     /// Document Type Declaration (DTD).
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Prolog element node.</param>
-    void XML::parseProlog(ISource &xmlSource, XMLNode *xmlNode)
+    void XML::parseProlog(ISource &source, XMLNode *xmlNode)
     {
         static_cast<XMLNodeElement*>(xmlNode)->setNodeType(XMLNodeType::prolog);
-        xmlSource.ignoreWS();
-        if (xmlSource.match(U"<?xml"))
+        source.ignoreWS();
+        if (source.match(U"<?xml"))
         {
-            xmlSource.ignoreWS();
-            parseDeclaration(xmlSource, xmlNode);
-            if (!xmlSource.match(U"?>"))
+            source.ignoreWS();
+            parseDeclaration(source, xmlNode);
+            if (!source.match(U"?>"))
             {
-                throw XMLSyntaxError(xmlSource, "Declaration end tag not found.");
+                throw XMLSyntaxError(source, "Declaration end tag not found.");
             }
         }
-        while (xmlSource.more())
+        while (source.more())
         {
-            if (xmlSource.match(U"<!--"))
+            if (source.match(U"<!--"))
             {
-                parseComment(xmlSource, xmlNode);
+                parseComment(source, xmlNode);
             }
-            else if (xmlSource.match(U"<?"))
+            else if (source.match(U"<?"))
             {
-                parsePI(xmlSource, xmlNode);
+                parsePI(source, xmlNode);
             }
-            else if (xmlSource.isWS())
+            else if (source.isWS())
             {
-                parseAddElementContent(xmlNode, xmlSource.current_to_bytes());
-                xmlSource.next();
+                parseAddElementContent(xmlNode, source.current_to_bytes());
+                source.next();
             }
-            else if (xmlSource.match(U"<!DOCTYPE"))
+            else if (source.match(U"<!DOCTYPE"))
             {
                 if (m_dtd == nullptr)
                 {
                     m_dtd = std::make_unique<DTD>(*m_entityMapper);
-                    m_dtd->parse(xmlSource);
+                    m_dtd->parse(source);
                     m_validator = std::make_unique<XMLValidator>(*m_dtd);
                     static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeDTD>());
                 }
                 else
                 {
-                    throw XMLSyntaxError(xmlSource, "More than one DOCTYPE declaration.");
+                    throw XMLSyntaxError(source, "More than one DOCTYPE declaration.");
                 }
             }
-            else if (xmlSource.current() != '<')
+            else if (source.current() != '<')
             {
-                throw XMLSyntaxError(xmlSource, "Content detected before root element.");
+                throw XMLSyntaxError(source, "Content detected before root element.");
             }
             else
             {
@@ -477,37 +477,37 @@ namespace XMLLib
     /// <summary>
     /// Parse XML source stream.
     /// </summary>
-    void XML::parseXML()
+    void XML::parseXML(ISource &source)
     {
-        parseProlog(m_xmlSource, &m_prolog);
-        if (m_xmlSource.match(U"<"))
+        parseProlog(source, &m_prolog);
+        if (source.match(U"<"))
         {
             m_prolog.children.emplace_back(std::make_unique<XMLNodeElement>(XMLNodeElement(XMLNodeType::root)));
-            parseElement(m_xmlSource, static_cast<XMLNode *>(m_prolog.children.back().get()));
-            while (m_xmlSource.more())
+            parseElement(source, static_cast<XMLNode *>(m_prolog.children.back().get()));
+            while (source.more())
             {
-                if (m_xmlSource.match(U"<!--"))
+                if (source.match(U"<!--"))
                 {
-                    parseComment(m_xmlSource, &m_prolog);
+                    parseComment(source, &m_prolog);
                 }
-                else if (m_xmlSource.match(U"<?"))
+                else if (source.match(U"<?"))
                 {
-                    parsePI(m_xmlSource, &m_prolog);
+                    parsePI(source, &m_prolog);
                 }
-                else if (m_xmlSource.isWS())
+                else if (source.isWS())
                 {
-                    parseAddElementContent(&m_prolog, m_xmlSource.current_to_bytes());
-                    m_xmlSource.next();
+                    parseAddElementContent(&m_prolog, source.current_to_bytes());
+                    source.next();
                 }
                 else
                 {
-                    throw XMLSyntaxError(m_xmlSource, "Extra content at the end of document.");
+                    throw XMLSyntaxError(source, "Extra content at the end of document.");
                 }
             }
         }
         else
         {
-            throw XMLSyntaxError(m_xmlSource, "Missing root element.");
+            throw XMLSyntaxError(source, "Missing root element.");
         }
     }
 } // namespace XMLLib

@@ -23,9 +23,9 @@ TEST_CASE("Parse CDATA SECTION", "[XML][Parse][CDATA]")
                 " <root>\n"
                 "   <![CDATA[<message> Welcome to TutorialsPoint </message>   ]]>   "
                 "</root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Parse XML root containing CDDATA containing a XML tags and check contents", "[XML][Parse][CDATA]")
   {
@@ -33,9 +33,9 @@ TEST_CASE("Parse CDATA SECTION", "[XML][Parse][CDATA]")
                 " <root>\n"
                 "   <![CDATA[<message> Welcome to TutorialsPoint </message>]]>   "
                 "</root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog[0].getContents() == "\n   <message> Welcome to TutorialsPoint </message>   ");
     REQUIRE(XMLNodeRef<XMLNodeCDATA>(*xml.m_prolog[0].children[1]).cdata == "<message> Welcome to TutorialsPoint </message>");
   }
@@ -45,9 +45,9 @@ TEST_CASE("Parse CDATA SECTION", "[XML][Parse][CDATA]")
                 " <root>\n"
                 "   <![CDATA[< Test test <![CDATA[ Test text ]]> ]]>\n"
                 "   </root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error [Line: 3 Column: 40] Nesting of CDATA sections is not allowed.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 40] Nesting of CDATA sections is not allowed.");
   }
   SECTION("Parse XML root containing CDDATA containing ]]> ", "[XML][Parse][CDATA]")
   {
@@ -55,8 +55,8 @@ TEST_CASE("Parse CDATA SECTION", "[XML][Parse][CDATA]")
                 " <root>\n"
                 "   <![CDATA[< Test Test text ]]>  ]]>\n"
                 "   </root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error [Line: 4 Column: 1] ']]>' invalid in element content area.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 4 Column: 1] ']]>' invalid in element content area.");
   }
 }

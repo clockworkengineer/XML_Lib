@@ -36,10 +36,10 @@ namespace XMLLib
         {
             errorMessage = "XML Syntax Error: " + description;
         }
-        XMLSyntaxError(ISource &xmlSource, const std::string &description = "")
+        XMLSyntaxError(ISource &source, const std::string &description = "")
         {
-            errorMessage = "XML Syntax Error [Line: " + std::to_string(xmlSource.getLineNo()) +
-                           " Column: " + std::to_string(xmlSource.getColumnNo()) + "] " + description;
+            errorMessage = "XML Syntax Error [Line: " + std::to_string(source.getLineNo()) +
+                           " Column: " + std::to_string(source.getColumnNo()) + "] " + description;
         }
         virtual const char *what() const throw()
         {
@@ -161,13 +161,13 @@ namespace XMLLib
     //
     // XML parsing
     //
-    XMLValue parseEntityReference(ISource &xmlSource);
-    std::string parseName(ISource &xmlSource);
-    XMLValue parseCharacterReference(ISource &xmlSource);
-    XMLValue parseCharacter(ISource &xmlSource);
-    XMLValue parseValue(ISource &xmlSource);
-    XMLValue parseValue(ISource &xmlSource, IXMLEntityMapper &entityMapper);
-    std::string parseTagBody(ISource &xmlSource);
+    XMLValue parseEntityReference(ISource &source);
+    std::string parseName(ISource &source);
+    XMLValue parseCharacterReference(ISource &source);
+    XMLValue parseCharacter(ISource &source);
+    XMLValue parseValue(ISource &source);
+    XMLValue parseValue(ISource &source, IXMLEntityMapper &entityMapper);
+    std::string parseTagBody(ISource &source);
     //
     // XML utility
     //

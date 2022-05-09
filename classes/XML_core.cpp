@@ -89,7 +89,7 @@ namespace XMLLib
     /// <summary>
     /// Check name that starts with xml is a valid reserved name.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <returns>true then valid otherwise false.</returns>
     bool validReservedName(const ISource::String &name)
     {
@@ -98,7 +98,7 @@ namespace XMLLib
     /// <summary>
     /// Validate XML tag/attribute names.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <returns>true then valid otherwise false.</returns>
     bool validName(ISource::String name)
     {
@@ -158,61 +158,61 @@ namespace XMLLib
     /// <summary>
     /// Parse  and return XML name.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <returns>XML name.</returns>
-    std::string parseName(ISource &xmlSource)
+    std::string parseName(ISource &source)
     {
         ISource::String name;
-        while (xmlSource.more() && validNameChar(xmlSource.current()))
+        while (source.more() && validNameChar(source.current()))
         {
-            name += xmlSource.current();
-            xmlSource.next();
+            name += source.current();
+            source.next();
         }
-        xmlSource.ignoreWS();
+        source.ignoreWS();
         if (!validName(name))
         {
-            throw XMLSyntaxError(xmlSource, "Invalid name '" + xmlSource.to_bytes(name) + "' encountered.");
+            throw XMLSyntaxError(source, "Invalid name '" + source.to_bytes(name) + "' encountered.");
         }
-        return (xmlSource.to_bytes(name));
+        return (source.to_bytes(name));
     }
     /// <summary>
     /// Parse and return XML entity reference.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <returns>Parsed entity reference value.</returns>
-    XMLValue parseEntityReference(ISource &xmlSource)
+    XMLValue parseEntityReference(ISource &source)
     {
         XMLValue entityReference;
-        entityReference.unparsed = xmlSource.current_to_bytes();
-        xmlSource.next();
-        entityReference.unparsed += parseName(xmlSource);
-        if (xmlSource.current() != ';')
+        entityReference.unparsed = source.current_to_bytes();
+        source.next();
+        entityReference.unparsed += parseName(source);
+        if (source.current() != ';')
         {
-            throw XMLSyntaxError(xmlSource, "Invalidly formed entity reference.");
+            throw XMLSyntaxError(source, "Invalidly formed entity reference.");
         }
         entityReference.unparsed += ';';
-        xmlSource.next();
+        source.next();
         return (entityReference);
     }
     /// <summary>
     /// Parse a character reference value (hex/dec) returning its value.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <returns>Character reference value.</returns>
-    XMLValue parseCharacterReference(ISource &xmlSource)
+    XMLValue parseCharacterReference(ISource &source)
     {
         XMLValue characterRefence;
         characterRefence.unparsed = "&#";
-        while (xmlSource.more() && xmlSource.current() != ';')
+        while (source.more() && source.current() != ';')
         {
-            characterRefence.unparsed += xmlSource.current_to_bytes();
-            xmlSource.next();
+            characterRefence.unparsed += source.current_to_bytes();
+            source.next();
         }
-        if (xmlSource.current() != ';')
+        if (source.current() != ';')
         {
-            throw XMLSyntaxError(xmlSource, "Invalidly formed  character reference.");
+            throw XMLSyntaxError(source, "Invalidly formed  character reference.");
         }
-        xmlSource.next();
+        source.next();
         characterRefence.unparsed += ';';
         std::string reference = characterRefence.unparsed;
         char *end;
@@ -231,107 +231,107 @@ namespace XMLLib
         {
             if (!validChar(result))
             {
-                throw XMLSyntaxError(xmlSource, "Character reference invalid character.");
+                throw XMLSyntaxError(source, "Character reference invalid character.");
             }
-            characterRefence.parsed = xmlSource.to_bytes(result);
+            characterRefence.parsed = source.to_bytes(result);
             return (characterRefence);
         }
-        throw XMLSyntaxError(xmlSource, "Cannot convert character reference.");
+        throw XMLSyntaxError(source, "Cannot convert character reference.");
     }
     /// <summary>
     /// Parse character value which can be either be a plain character,
     /// character reference or entity reference that maps to a string of
     /// characters.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <returns>Character value.</returns>
-    XMLValue parseCharacter(ISource &xmlSource)
+    XMLValue parseCharacter(ISource &source)
     {
         XMLValue character;
-        if (xmlSource.match(U"&#"))
+        if (source.match(U"&#"))
         {
-            character = parseCharacterReference(xmlSource);
+            character = parseCharacterReference(source);
         }
-        else if (xmlSource.current() == '&')
+        else if (source.current() == '&')
         {
-            character = parseEntityReference(xmlSource);
+            character = parseEntityReference(source);
             character.parsed = character.unparsed;
         }
-        else if (validChar(xmlSource.current()))
+        else if (validChar(source.current()))
         {
-            character.parsed = xmlSource.current_to_bytes();
+            character.parsed = source.current_to_bytes();
             character.unparsed = character.parsed;
-            xmlSource.next();
+            source.next();
         }
         else
         {
-            throw XMLSyntaxError(xmlSource, "Invalid character value encountered.");
+            throw XMLSyntaxError(source, "Invalid character value encountered.");
         }
         return (character);
     }
     /// <summary>
     /// Parse literal string value and return it.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <param name="entityMapper">Entity mapper.</param>
     /// <returns>Literal string value.</returns>
-    XMLValue parseValue(ISource &xmlSource, IXMLEntityMapper &entityMapper)
+    XMLValue parseValue(ISource &source, IXMLEntityMapper &entityMapper)
     {
-        if ((xmlSource.current() == '\'') || ((xmlSource.current() == '"')))
+        if ((source.current() == '\'') || ((source.current() == '"')))
         {
             XMLValue value;
-            ISource::Char quote = xmlSource.current();
-            xmlSource.next();
-            while (xmlSource.more() && xmlSource.current() != quote)
+            ISource::Char quote = source.current();
+            source.next();
+            while (source.more() && source.current() != quote)
             {
-                XMLValue character = parseCharacter(xmlSource);
+                XMLValue character = parseCharacter(source);
                 if (character.isEntityReference())
                 {
                     entityMapper.map(character);
                 }
                 value += character;
             }
-            xmlSource.next();
-            xmlSource.ignoreWS();
+            source.next();
+            source.ignoreWS();
             return (value);
         }
-        throw XMLSyntaxError(xmlSource, "Invalid attribute value.");
+        throw XMLSyntaxError(source, "Invalid attribute value.");
     }
     /// <summary>
     /// Parse literal string value and return it.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <returns>Literal string value.</returns>
-    XMLValue parseValue(ISource &xmlSource)
+    XMLValue parseValue(ISource &source)
     {
-        if ((xmlSource.current() == '\'') || ((xmlSource.current() == '"')))
+        if ((source.current() == '\'') || ((source.current() == '"')))
         {
             XMLValue value;
-            ISource::Char quote = xmlSource.current();
-            xmlSource.next();
-            while (xmlSource.more() && xmlSource.current() != quote)
+            ISource::Char quote = source.current();
+            source.next();
+            while (source.more() && source.current() != quote)
             {
-                value += parseCharacter(xmlSource);
+                value += parseCharacter(source);
             }
-            xmlSource.next();
-            xmlSource.ignoreWS();
+            source.next();
+            source.ignoreWS();
             return (value);
         }
-        throw XMLSyntaxError(xmlSource, "Invalid attribute value.");
+        throw XMLSyntaxError(source, "Invalid attribute value.");
     }
     /// <summary>
     /// Extract body of tag up until '>'.
     /// </summary>
-    /// <param name="xmlSource">XML source stream.</param>
+    /// <param name="source">XML source stream.</param>
     /// <returns>Body of tag.</returns>
-    std::string parseTagBody(ISource &xmlSource)
+    std::string parseTagBody(ISource &source)
     {
-        xmlSource.ignoreWS();
+        source.ignoreWS();
         std::string body;
-        while (xmlSource.more() && xmlSource.current() != '>')
+        while (source.more() && source.current() != '>')
         {
-            body += xmlSource.current_to_bytes();
-            xmlSource.next();
+            body += source.current_to_bytes();
+            source.next();
         }
         return (body);
     }

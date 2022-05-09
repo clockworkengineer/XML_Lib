@@ -19,15 +19,15 @@ TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
   std::string xmlString;
   SECTION("Parse UTF16 encoded file LE ", "[XML][Parse][UTF16]")
   {
-    BufferSource xmlSource(readXMLFromFileUTF16("./testData/testfile008.xml"));
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source(readXMLFromFileUTF16("./testData/testfile008.xml"));
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Parse UTF16 encoded file BE ", "[XML][Parse][UTF16]")
   {
-    BufferSource xmlSource(readXMLFromFileUTF16("./testData/testfile009.xml"));
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source(readXMLFromFileUTF16("./testData/testfile009.xml"));
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
 }
 TEST_CASE("Use name for accessing elements", "[XML][Access][ByName]")
@@ -41,9 +41,9 @@ TEST_CASE("Use name for accessing elements", "[XML][Access][ByName]")
                 "Flat A, West Road, Wolverhampton, W1SSX9"
                 "</Address>"
                 "</AddressBook>";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.m_prolog["AddressBook"]).elementName == "AddressBook");
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.m_prolog["AddressBook"]["Address"]).elementName == "Address");
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.m_prolog["AddressBook"]["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
@@ -72,9 +72,9 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
                 "&amp;        "
                 "</Address>"
                 "</AddressBook>";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(XMLNodeRef<XMLNodeElement>(*xml.m_prolog["AddressBook"].children[0]).getNodeType() == XMLNodeType::content);
     REQUIRE(XMLNodeRef<XMLNodeContent>(*xml.m_prolog["AddressBook"].children[0]).isWhiteSpace == true);
     REQUIRE(XMLNodeRef<XMLNodeElement>((*xml.m_prolog["AddressBook"].children[1])[0]).getNodeType() == XMLNodeType::content);

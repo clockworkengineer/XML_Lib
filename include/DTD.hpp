@@ -54,7 +54,7 @@ namespace XMLLib
         XMLExternalReference &getNotation(const std::string &notationName);
         long getLineCount() const;
         void parse(ISource &dtdSource);
-        void stringify(IDestination &xmlDestination);
+        void stringify(IDestination &destination);
         void validate(XMLNodeElement &prolog);
         // ================
         // PUBLIC VARIABLES
@@ -74,7 +74,7 @@ namespace XMLLib
         void parseValidateAttribute(const std::string &elementName, DTDAttribute xDTDAttribute);
         void parseParameterEntities(ISource &dtdSource);
         void parseExternalContent(ISource &dtdSource);
-        std::string parseAttributeEnumerationType(ISource &xmlSource);
+        std::string parseAttributeEnumerationType(ISource &source);
         bool parseIsChoiceOrSequence(ISource &contentSpecSource);
         void parseElementCP(ISource &contentSpecSource, IDestination &contentSpec);
         void parseElementChoice(ISource &contentSpecSource, IDestination &contentSpec);

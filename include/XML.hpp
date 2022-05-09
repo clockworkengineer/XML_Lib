@@ -36,7 +36,7 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        XML(ISource &xmlSource) : m_xmlSource(xmlSource)
+        XML()
         {
             m_entityMapper = std::make_unique<XMLEntityMapper>();
         }
@@ -47,8 +47,8 @@ namespace XMLLib
         // PUBLIC METHODS
         // ==============
         DTD &getDTD() { return (*m_dtd); }
-        void parse();
-        void stringify(IDestination &xmlDestination);
+        void parse(ISource &source);
+        void stringify(IDestination &destination);
         void validate();
         // ================
         // PUBLIC VARIABLES
@@ -67,24 +67,23 @@ namespace XMLLib
         // ===============
         void parseAddElementContent(XMLNode *xmlNode, const std::string &content);
         void parseEntityMappingContents(XMLNode *xmlNode, XMLValue &entityReference);
-        void parseDefault(ISource &xmlSource, XMLNode *xmlNode);
-        void parseTagName(ISource &xmlSource, XMLNode *xmlNode);
-        void parseChildElement(ISource &xmlSource, XMLNode *xmlNode);
-        void parseAttributes(ISource &xmlSource, XMLNode *xmlNode);
-        void parseComment(ISource &xmlSource, XMLNode *xmlNode);
-        void parseCDATA(ISource &xmlSource, XMLNode *xmlNode);
-        void parsePI(ISource &xmlSource, XMLNode *xmlNode);
-        void parseElementContents(ISource &xmlSource, XMLNode *XmlNode);
-        void parseElement(ISource &xmlSource, XMLNode *XmlNode);
-        void parseDeclaration(ISource &xmlSource, XMLNode *xmlNode);
-        void parseProlog(ISource &xmlSource, XMLNode *xmlNode);
-        void parseXML();
-        void stringifyElements(XMLNode *xmlNode, IDestination &xmlDestination);
-        void stringifyXML(IDestination &xmlDestination);
+        void parseDefault(ISource &source, XMLNode *xmlNode);
+        void parseTagName(ISource &source, XMLNode *xmlNode);
+        void parseChildElement(ISource &source, XMLNode *xmlNode);
+        void parseAttributes(ISource &source, XMLNode *xmlNode);
+        void parseComment(ISource &source, XMLNode *xmlNode);
+        void parseCDATA(ISource &source, XMLNode *xmlNode);
+        void parsePI(ISource &source, XMLNode *xmlNode);
+        void parseElementContents(ISource &source, XMLNode *XmlNode);
+        void parseElement(ISource &source, XMLNode *XmlNode);
+        void parseDeclaration(ISource &source, XMLNode *xmlNode);
+        void parseProlog(ISource &source, XMLNode *xmlNode);
+        void parseXML(ISource &source);
+        void stringifyElements(XMLNode *xmlNode, IDestination &destination);
+        void stringifyXML(IDestination &destination);
         // =================
         // PRIVATE VARIABLES
         // =================
-        ISource &m_xmlSource;
         std::unique_ptr<DTD> m_dtd;
         std::unique_ptr<IXMLValidator> m_validator;
         std::unique_ptr<IXMLEntityMapper> m_entityMapper;

@@ -22,9 +22,9 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                 "<!-- A single line comment -->\n"
                 "<root></root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Multiple single line comments beifre root tag", "[XML][Parse][Comments]")
   {
@@ -33,9 +33,9 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
                 " <!-- A single line comment -->\n"
                 " <!-- A single line comment -->\n"
                 " <root></root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Multiple comments inside root element and between its children ", "[XML][Parse][Comments]")
   {
@@ -48,9 +48,9 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
                 "<!--Address three -->\n"
                 "<Address>    This is some contents 3   </Address>\n"
                 "</AddressBook>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
     REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
     REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "no");
@@ -71,9 +71,9 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                 "<root></root>\n"
                 "<!-- A single line comment --> ";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("A simple multi line comment", "[XML][Parse][Comments]")
   {
@@ -83,18 +83,18 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
                 " another line\n"
                 " and another line\n"
                 "--> <root></root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("A simple comment within element content", "[XML][Parse][Comments]")
   {
     xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                 "<root>Test<!-- a simple comment -->Test"
                 "</root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog[0].getContents() == "TestTest");
   }
   SECTION("A simple comment within element contents and content remains intact", "[XML][Parse][Comments]")
@@ -102,9 +102,9 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                 "<root>Test  <!-- a simple comment -->  Test"
                 "</root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog[0].getContents() == "Test    Test");
   }
   SECTION("A simple single line comment containing -- is illegal", "[XML][Parse][Comments]")
@@ -112,17 +112,17 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                 "<!-- A single line comment-- --> "
                 "<root></root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error [Line: 2 Column: 30] Missing closing '>' for comment line.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 30] Missing closing '>' for comment line.");
   }
   SECTION("A simple single line comment ending with -- is illegal", "[XML][Parse][Comments]")
   {
     xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                 "<!-- A single line comment ---> "
                 "<root></root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error [Line: 2 Column: 31] Missing closing '>' for comment line.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 31] Missing closing '>' for comment line.");
   }
 }

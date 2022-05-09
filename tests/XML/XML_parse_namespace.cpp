@@ -32,9 +32,9 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
                 "<f:length>120</f:length>\n"
                 "</f:table>\n"
                 "</root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog[0][0].elementName == "h:table");
     REQUIRE(xml.m_prolog[0][0].getNameSpaceList().size() == 1);
     REQUIRE(xml.m_prolog[0][0].getNameSpace("h").value.parsed == "http://www.w3.org/TR/html4/");
@@ -57,9 +57,9 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
                 "<f:length>120</f:length>\n"
                 "</f:table>\n"
                 "</root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog[0][0].elementName == "h:table");
     REQUIRE(xml.m_prolog[0][0].getNameSpaceList().size() == 2);
     REQUIRE(xml.m_prolog[0][0].getNameSpace("h").value.parsed == "http://www.w3.org/TR/html4/");
@@ -75,16 +75,16 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
                 "<h:table><h:tr><h:td>Apples</h:td><h:td>Bananas</h:td></h:tr></h:table><g:table>\n"
                 "<g:name>African Coffee Table</g:name><g:width>80</g:width>\n"
                 "<g:length>120</g:length></g:table></root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error [Line: 3 Column: 44] Namespace used but not defined.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 44] Namespace used but not defined.");
   }
   SECTION("A root documement with a default namespace", "[XML][Parse][Namespace]")
   {
     xmlString = "<table xmlns=\"http://www.w3.org/TR/html4/\"><tr><td>Apples</td><td>Bananas</td></tr></table>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog[0][0].elementName == "tr");
     REQUIRE(xml.m_prolog[0][0].getNameSpaceList().size() == 1);
     REQUIRE(xml.m_prolog[0][0].getNameSpace(":").value.parsed == "http://www.w3.org/TR/html4/");
@@ -95,9 +95,9 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
                 "<f:table><f:tr><f:td>Apples</f:td><f:td>Bananas</f:td></f:tr></f:table><f:table>\n"
                 "<f:name>African Coffee Table</f:name><f:width>80</f:width>\n"
                 "<f:length>120</f:length></f:table></root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error [Line: 1 Column: 94] Attribute defined more than once within start tag.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 1 Column: 94] Attribute defined more than once within start tag.");
   }
   SECTION("A root document defining one namespae tha is overridden by a child", "[XML][Parse][Namespace]")
   {
@@ -106,8 +106,8 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
                 "<f:table xmlns:f=\"https://www.w3schools.com/furniture\">\n"
                 "<f:name>African Coffee Table</f:name><f:width>80</f:width>\n"
                 "<f:length>120</f:length></f:table></root>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
 }

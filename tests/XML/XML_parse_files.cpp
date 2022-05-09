@@ -25,14 +25,14 @@ TEST_CASE("Sample XML files to read and parse.", "[XML][Parse]")
                                                 "./testData/testfile011.xml"}));
   SECTION("Load file into buffer and parse.", "[XML][Parse]")
   {
-    BufferSource xmlSource { readXMLFromFileUTF8(testFile) };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { readXMLFromFileUTF8(testFile) };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Parse XML from file.", "[XML][Parse]")
   {
-    FileSource xmlSource { testFile };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    FileSource source { testFile };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
 }

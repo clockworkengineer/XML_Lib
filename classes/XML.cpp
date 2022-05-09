@@ -45,9 +45,9 @@ namespace XMLLib
     /// Parse XML read from source stream into internal object generating an exception 
     /// if a syntax error in the XML is found (not well formed).
     /// </summary>
-    void XML::parse()
+    void XML::parse(ISource &source)
     {
-        parseXML();
+        parseXML(source);
     }
     /// <summary>
     /// Validate XML against any DTD provided to see whether it is valid. If an
@@ -63,9 +63,9 @@ namespace XMLLib
     /// <summary>
     /// Create XML text from an XML object.
     /// </summary>
-    /// <param name="xmlDestination">XML destination stream.</param>
-    void XML::stringify(IDestination &xmlDestination)
+    /// <param name="destination">XML destination stream.</param>
+    void XML::stringify(IDestination &destination)
     {
-        stringifyXML(xmlDestination);
+        stringifyXML(destination);
     }
 } // namespace XMLLib

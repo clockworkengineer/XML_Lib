@@ -28,9 +28,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
                 "<body>Don't forget me this weekend!</body><footer>&writer;&nbsp;&copyright;</footer>\n"
                 "</note>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("XML DTD with entity internal definitions and uses. Check translation of entity values", "[XML][DTD][Parse][Entity]")
   {
@@ -43,9 +43,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
                 "<body>Don't forget me this weekend!</body><footer>&writer;&nbsp;&copyright;</footer>\n"
                 "</note>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
@@ -59,9 +59,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<!DOCTYPE note [\n"
                 "<!ENTITY example \"<p>An ampersand (&#38;#38;) may be escaped numerically (&#38;#38;#38;) or with a general entity (&amp;amp;).</p>\">]>\n"
                 "<note>&example;</note>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
@@ -79,9 +79,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "%xx;\n"
                 "]>\n"
                 "<test>This sample shows a &tricky; method.</test>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
@@ -97,9 +97,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<!ENTITY x \"&lt;\">\n"
                 "]>\n"
                 "<foo attr=\"&x;\"/>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
@@ -118,9 +118,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<!ENTITY x \"&#60;\">\n"
                 "]>\n"
                 "<foo attr=\"&x;\"/>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error [Line: 5 Column: 21] Attribute value contains invalid character '<', '\"', ''' or '&'.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 5 Column: 21] Attribute value contains invalid character '<', '\"', ''' or '&'.");
   }
   SECTION("XML DTD with entity used within an entity.", "[XML][DTD][Parse][Entity]")
   {
@@ -133,9 +133,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<!ENTITY js \"Jo Smith &email;\">\n"
                 "]>\n"
                 "<author>&js;</author>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
@@ -157,9 +157,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<!ENTITY js \"Jo Smith &email;\">\n"
                 "]>\n"
                 "<author>&js;</author>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error: Entity '&email;' contains recursive definition which is not allowed.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Entity '&email;' contains recursive definition which is not allowed.");
   }
   SECTION("XML DTD with entity that contains a character reference that is parsed straight away.", "[XML][DTD][Parse][Entity]")
   {
@@ -170,9 +170,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<!ENTITY js \"Jo Smith &email;\">\n"
                 "]>\n"
                 "<author>&js;</author>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
@@ -186,9 +186,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<!ENTITY name SYSTEM \"./testData/name.txt\">\n"
                 "]>\n"
                 "<foo>Hello &name;</foo>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
@@ -204,9 +204,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<!ENTITY name SYSTEM \"./testData/unknown.txt\">\n"
                 "]>\n"
                 "<foo>Hello &name;</foo>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_THROWS_WITH(xml.parse(), "XML Syntax Error: Entity '&name;' source file './testData/unknown.txt' does not exist.");
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Entity '&name;' source file './testData/unknown.txt' does not exist.");
   }
   SECTION("XML with internal DTD with parameter entities to parse  (internal cannot appear within tags).", "[XML][DTD][Parse][Entity]")
   {
@@ -215,9 +215,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "%empty_report;\n"
                 "]>\n"
                 "<REPORT></REPORT>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("XML with internal DTD with parameter entities to parse and check values (internal cannot appear within tags).", "[XML][DTD][Parse][Entity]")
   {
@@ -226,9 +226,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "%empty_report;\n"
                 "]>\n"
                 "<REPORT></REPORT>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[0]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
@@ -242,9 +242,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
   {
     xmlString = "<!DOCTYPE REPORT SYSTEM \"./testData/report01.dtd\">\n"
                 "<REPORT></REPORT>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    REQUIRE_NOTHROW(xml.parse());
+    BufferSource source { xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
     DTD &dtd = xml.getDTD();
     REQUIRE(dtd.getType() == DTD::DTDType::external);
   }
@@ -253,9 +253,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
   {
     xmlString = "<!DOCTYPE REPORT SYSTEM \"./testData/report01.dtd\">"
                 "<REPORT></REPORT>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[0]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::external);
@@ -281,9 +281,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
                 "<note>"
                 "&signature;"
                 "</note>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     DTD &dtd = xml.getDTD();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::external);

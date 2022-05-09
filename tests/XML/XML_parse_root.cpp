@@ -21,9 +21,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
   {
     xmlString = "<?xml version=\"1.0\"?>\n"
                 "<contact-info></contact-info>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
     REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
     REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "no");
@@ -34,9 +34,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
   {
     xmlString = "<?xml version=\"1.0\"?>\n"
                 "<AddressBook> </AddressBook>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
     REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
     REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "no");
@@ -49,9 +49,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
                 "<AddressBook>\n"
                 "<Address>    This is some contents    </Address>\n"
                 "</AddressBook>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
     REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
     REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "no");
@@ -74,9 +74,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
                 "    This is some contents 3   "
                 "</Address>\n"
                 "</AddressBook>\n";
-    BufferSource xmlSource { xmlString };
-    XML xml { xmlSource };
-    xml.parse();
+    BufferSource source { xmlString };
+    XML xml;
+    xml.parse(source);
     REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
     REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
     REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "no");

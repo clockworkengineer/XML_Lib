@@ -40,12 +40,12 @@ TEST_CASE("Use XML to stringify previously parsed XML.", "[XML][Stringify")
     {
         std::string xmlString = "<?xml version=\"1.0\"?>"
                                 "<AddressBook/>";
-        BufferSource xmlSource { xmlString };
-        XML xml { xmlSource };
-        xml.parse();
-        BufferDestination xmlDestination;
-        xml.stringify(xmlDestination);
-        REQUIRE(xmlDestination.getBuffer() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AddressBook/>");
+        BufferSource source { xmlString };
+        XML xml;
+        xml.parse(source);
+        BufferDestination destination;
+        xml.stringify(destination);
+        REQUIRE(destination.getBuffer() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AddressBook/>");
     }
     SECTION("Stringify XML with self closing root tag  with attributes.", "[XML][Stringify]")
     {
@@ -253,11 +253,11 @@ TEST_CASE("Stringify ENTITY that contains XML parsable into new structure.", "[X
                                "<!DOCTYPE note [\n"
                                "<!ENTITY example \"<p>An ampersand (&#38;#38;) may be escaped numerically (&#38;#38;#38;) or with a general entity (&amp;amp;).</p>\">]>\n"
                                "<note><p>An ampersand (&#38;) may be escaped numerically (&#38;#38;) or with a general entity (&amp;amp;).</p></note>\n";
-        BufferSource xmlSource { xmlString };
-        XML xml { xmlSource };
-        xml.parse();
-        BufferDestination xmlDestination;
-        xml.stringify(xmlDestination);
-        REQUIRE(xmlDestination.getBuffer() == expanded);
+        BufferSource source { xmlString };
+        XML xml;
+        xml.parse(source);
+        BufferDestination destination;
+        xml.stringify(destination);
+        REQUIRE(destination.getBuffer() == expanded);
     }
 }

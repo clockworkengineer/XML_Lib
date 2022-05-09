@@ -131,9 +131,9 @@ namespace XMLLib
     /// <summary>
     /// Create DTD text from an DTD object.
     /// </summary>
-    /// <param name="xmlDestination">DTD destination stream.</param>
-    void DTD::stringify(IDestination &xmlDestination)
+    /// <param name="destination">DTD destination stream.</param>
+    void DTD::stringify(IDestination &destination)
     {
-        xmlDestination.add(m_unparsed);
+        destination.add(m_unparsed);
     }
 } // namespace XMLLib
