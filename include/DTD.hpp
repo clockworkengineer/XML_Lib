@@ -8,7 +8,7 @@
 //
 #include "XML_core.hpp"
 //
-// DTD element/attrribute
+// DTD element/attribute
 //
 #include "DTDElement.hpp"
 // =========
@@ -16,6 +16,24 @@
 // =========
 namespace XMLLib
 {
+    //
+    // XML validation error
+    //
+    struct ValidationError : public std::exception
+    {
+    public:
+        ValidationError(long m_lineNumber, const std::string &description = "")
+        {
+            errorMessage = "XML Validation Error [Line: " + std::to_string(m_lineNumber) + "] " + description;
+        }
+        virtual const char *what() const throw()
+        {
+            return (errorMessage.c_str());
+        }
+
+    private:
+        std::string errorMessage;
+    };
     // ================
     // CLASS DEFINITION
     // ================
@@ -47,9 +65,9 @@ namespace XMLLib
         std::string &getRootName();
         XMLExternalReference &getExternalReference();
         bool isElementPresent(const std::string &elementName) const;
-        long getElementCount() const { return (static_cast<long> (m_elements.size())); }
+        long getElementCount() const { return (static_cast<long>(m_elements.size())); }
         DTDElement &getElement(const std::string &elementName);
-        bool isEntityPresent(const std::string &entityName) const ;
+        bool isEntityPresent(const std::string &entityName) const;
         XMLEntityMapping &getEntity(const std::string &entityName);
         XMLExternalReference &getNotation(const std::string &notationName);
         long getLineCount() const;

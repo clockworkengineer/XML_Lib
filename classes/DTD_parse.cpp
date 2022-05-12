@@ -46,7 +46,7 @@ namespace XMLLib
         {
             if (m_notations.count(notation) == 0)
             {
-                throw XMLSyntaxError("NOTATION " + notation + " is not defined.");
+                throw SyntaxError("NOTATION " + notation + " is not defined.");
             }
         }
     }
@@ -60,14 +60,14 @@ namespace XMLLib
         // Attribute cannot be ID and fixed
         if (dtdAttribute.type == (DTDAttributeType::id | DTDAttributeType::fixed))
         {
-            throw XMLSyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
+            throw SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
         }
         // Only one ID attribute allowed per element
         else if ((dtdAttribute.type & DTDAttributeType::id) != 0)
         {
             if (m_elements[elementName].idAttributePresent)
             {
-                throw XMLSyntaxError("Element <" + elementName + "> has more than one ID attribute.");
+                throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
             }
             m_elements[elementName].idAttributePresent = true;
         }
@@ -83,12 +83,12 @@ namespace XMLLib
                 }
                 else
                 {
-                    throw XMLSyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name + "' occurs more than once in its definition.");
+                    throw SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name + "' occurs more than once in its definition.");
                 }
             }
             if (options.find(dtdAttribute.value.parsed) == options.end())
             {
-                throw XMLSyntaxError("Default value '" + dtdAttribute.value.parsed + "' for enumeration attribute '" + dtdAttribute.name + "' is invalid.");
+                throw SyntaxError("Default value '" + dtdAttribute.value.parsed + "' for enumeration attribute '" + dtdAttribute.name + "' is invalid.");
             }
         }
     }
@@ -112,7 +112,7 @@ namespace XMLLib
         }
         if (dtdSource.current() != ')')
         {
-            throw XMLSyntaxError(dtdSource, "Missing closing ')' on enumeration attribute type.");
+            throw SyntaxError(dtdSource, "Missing closing ')' on enumeration attribute type.");
         }
         enumerationType += dtdSource.current_to_bytes();
         dtdSource.next();
@@ -194,7 +194,7 @@ namespace XMLLib
             }
             return;
         }
-        throw XMLSyntaxError(dtdSource, "Invalid attribute type specified.");
+        throw SyntaxError(dtdSource, "Invalid attribute type specified.");
     }
     /// <summary>
     /// Parse DTD attribute value.
@@ -376,11 +376,11 @@ namespace XMLLib
             }
             else
             {
-                throw XMLSyntaxError(dtdSource, "Invalid DTD tag.");
+                throw SyntaxError(dtdSource, "Invalid DTD tag.");
             }
             if (dtdSource.current() != '>')
             {
-                throw XMLSyntaxError(dtdSource, "Missing '>' terminator.");
+                throw SyntaxError(dtdSource, "Missing '>' terminator.");
             }
             dtdSource.next();
             dtdSource.ignoreWS();
@@ -416,7 +416,7 @@ namespace XMLLib
         // Missing '>' after external DTD reference
         else if (dtdSource.current() != '>')
         {
-            throw XMLSyntaxError(dtdSource, "Missing '>' terminator.");
+            throw SyntaxError(dtdSource, "Missing '>' terminator.");
         }
         // Move to the next component in XML prolog
         else

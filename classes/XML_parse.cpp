@@ -139,7 +139,7 @@ namespace XMLLib
         }
         if (!source.match(U">"))
         {
-            throw XMLSyntaxError(source, "Missing closing '>' for comment line.");
+            throw SyntaxError(source, "Missing closing '>' for comment line.");
         }
         static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeComment>(std::move(xmlNodeComment)));
     }
@@ -173,7 +173,7 @@ namespace XMLLib
         {
             if (source.match(U"<![CDATA["))
             {
-                throw XMLSyntaxError(source, "Nesting of CDATA sections is not allowed.");
+                throw SyntaxError(source, "Nesting of CDATA sections is not allowed.");
             }
             xmlNodeCDATA.cdata += source.current_to_bytes();
             source.next();
@@ -203,13 +203,13 @@ namespace XMLLib
             std::string attributeName = parseName(source);
             if (!source.match(U"="))
             {
-                throw XMLSyntaxError(source, "Missing '=' between attribute name and value.");
+                throw SyntaxError(source, "Missing '=' between attribute name and value.");
             }
             source.ignoreWS();
             XMLValue attributeValue = parseValue(source, *m_entityMapper);
             if (!validAttributeValue(attributeValue))
             {
-                throw XMLSyntaxError(source, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
+                throw SyntaxError(source, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
             }
             if (!static_cast<XMLNodeElement*>(xmlNode)->isAttributePresent(attributeName))
             {
@@ -217,7 +217,7 @@ namespace XMLLib
             }
             else
             {
-                throw XMLSyntaxError(source, "Attribute defined more than once within start tag.");
+                throw SyntaxError(source, "Attribute defined more than once within start tag.");
             }
         }
         for (auto attribute : static_cast<XMLNodeElement*>(xmlNode)->getAttributeList())
@@ -246,7 +246,7 @@ namespace XMLLib
         {
             if (!xmlNodeChildElement.isNameSpacePresent(xmlNodeChildElement.elementName.substr(0, pos)))
             {
-                throw XMLSyntaxError(source, "Namespace used but not defined.");
+                throw SyntaxError(source, "Namespace used but not defined.");
             }
         }
         static_cast<XMLNodeElement*>(xmlNode)->children.push_back(std::make_unique<XMLNodeElement>(std::move(xmlNodeChildElement)));
@@ -295,7 +295,7 @@ namespace XMLLib
         }
         else if (source.match(U"</"))
         {
-            throw XMLSyntaxError(source, "Missing closing tag.");
+            throw SyntaxError(source, "Missing closing tag.");
         }
         else if (source.match(U"<"))
         {
@@ -303,7 +303,7 @@ namespace XMLLib
         }
         else if (source.match(U"]]>"))
         {
-            throw XMLSyntaxError(source, "']]>' invalid in element content area.");
+            throw SyntaxError(source, "']]>' invalid in element content area.");
         }
         else
         {
@@ -327,7 +327,7 @@ namespace XMLLib
             }
             if (!source.match(source.from_bytes(static_cast<XMLNodeElement*>(xmlNode)->elementName) + U">"))
             {
-                throw XMLSyntaxError(source, "Missing closing tag.");
+                throw SyntaxError(source, "Missing closing tag.");
             }
         }
         else if (source.match(U"/>"))
@@ -337,7 +337,7 @@ namespace XMLLib
         }
         else
         {
-            throw XMLSyntaxError(source, "Missing closing tag.");
+            throw SyntaxError(source, "Missing closing tag.");
         }
     }
     /// <summary>
@@ -351,7 +351,7 @@ namespace XMLLib
             source.ignoreWS();
             if (!source.match(U"="))
             {
-                throw XMLSyntaxError(source, "Missing '=' after version.");
+                throw SyntaxError(source, "Missing '=' after version.");
             }
             source.ignoreWS();
             static_cast<XMLNodeElement*>(xmlNode)->addAttribute("version", parseValue(source));
@@ -359,19 +359,19 @@ namespace XMLLib
             std::set<std::string> validVersions{"1.0", "1.1"};
             if (validVersions.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("version").value.parsed) == validVersions.end())
             {
-                throw XMLSyntaxError(source, "Unsupported version " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("version").value.parsed + ".");
+                throw SyntaxError(source, "Unsupported version " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("version").value.parsed + ".");
             }
         }
         else
         {
-            throw XMLSyntaxError(source, "Version missing from declaration.");
+            throw SyntaxError(source, "Version missing from declaration.");
         }
         if (source.match(U"encoding"))
         {
             source.ignoreWS();
             if (!source.match(U"="))
             {
-                throw XMLSyntaxError(source, "Missing '=' after encoding.");
+                throw SyntaxError(source, "Missing '=' after encoding.");
             }
             source.ignoreWS();
             static_cast<XMLNodeElement*>(xmlNode)->addAttribute("encoding", parseValue(source));
@@ -380,7 +380,7 @@ namespace XMLLib
             std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
             if (validEncodings.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed) == validEncodings.end())
             {
-                throw XMLSyntaxError(source, "Unsupported encoding " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed + " specified.");
+                throw SyntaxError(source, "Unsupported encoding " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed + " specified.");
             }
         }
         else
@@ -392,7 +392,7 @@ namespace XMLLib
             source.ignoreWS();
             if (!source.match(U"="))
             {
-                throw XMLSyntaxError(source, "Missing '=' after standalone.");
+                throw SyntaxError(source, "Missing '=' after standalone.");
             }
             source.ignoreWS();
             static_cast<XMLNodeElement*>(xmlNode)->addAttribute("standalone", parseValue(source));
@@ -400,7 +400,7 @@ namespace XMLLib
             std::set<std::string> validStandalone{"yes", "no"};
             if (validStandalone.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("standalone").value.parsed) == validStandalone.end())
             {
-                throw XMLSyntaxError(source, "Invalid standalone value of '" + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("standalone").value.parsed + "'.");
+                throw SyntaxError(source, "Invalid standalone value of '" + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("standalone").value.parsed + "'.");
             }
         }
         else
@@ -409,7 +409,7 @@ namespace XMLLib
         }
         if (source.match(U"encoding"))
         {
-            throw XMLSyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
+            throw SyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
         }
     }
     /// <summary>
@@ -430,7 +430,7 @@ namespace XMLLib
             parseDeclaration(source, xmlNode);
             if (!source.match(U"?>"))
             {
-                throw XMLSyntaxError(source, "Declaration end tag not found.");
+                throw SyntaxError(source, "Declaration end tag not found.");
             }
         }
         while (source.more())
@@ -459,12 +459,12 @@ namespace XMLLib
                 }
                 else
                 {
-                    throw XMLSyntaxError(source, "More than one DOCTYPE declaration.");
+                    throw SyntaxError(source, "More than one DOCTYPE declaration.");
                 }
             }
             else if (source.current() != '<')
             {
-                throw XMLSyntaxError(source, "Content detected before root element.");
+                throw SyntaxError(source, "Content detected before root element.");
             }
             else
             {
@@ -500,13 +500,13 @@ namespace XMLLib
                 }
                 else
                 {
-                    throw XMLSyntaxError(source, "Extra content at the end of document.");
+                    throw SyntaxError(source, "Extra content at the end of document.");
                 }
             }
         }
         else
         {
-            throw XMLSyntaxError(source, "Missing root element.");
+            throw SyntaxError(source, "Missing root element.");
         }
     }
 } // namespace XMLLib

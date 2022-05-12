@@ -71,7 +71,7 @@ namespace XMLLib
             dtdSource.ignoreWS();
             if (dtdSource.current() != '[')
             {
-                throw XMLSyntaxError(dtdSource, "Missing opening '[' from conditional.");
+                throw SyntaxError(dtdSource, "Missing opening '[' from conditional.");
             }
             dtdSource.next();
             dtdSource.ignoreWS();
@@ -107,11 +107,11 @@ namespace XMLLib
         }
         else
         {
-            throw XMLSyntaxError(dtdSource, "Conditional value not INCLUDE or IGNORE.");
+            throw SyntaxError(dtdSource, "Conditional value not INCLUDE or IGNORE.");
         }
         if (dtdSource.current() != '>')
         {
-            throw XMLSyntaxError(dtdSource, "Missing '>' terminator.");
+            throw SyntaxError(dtdSource, "Missing '>' terminator.");
         }
         dtdSource.next();
         dtdSource.ignoreWS();
@@ -160,11 +160,11 @@ namespace XMLLib
             }
             else
             {
-                throw XMLSyntaxError(dtdSource, "Invalid DTD tag.");
+                throw SyntaxError(dtdSource, "Invalid DTD tag.");
             }
             if (dtdSource.current() != '>')
             {
-                throw XMLSyntaxError(dtdSource, "Missing '>' terminator.");
+                throw SyntaxError(dtdSource, "Missing '>' terminator.");
             }
             dtdSource.next();
             dtdSource.ignoreWS();
@@ -208,7 +208,7 @@ namespace XMLLib
         }
         else
         {
-            throw XMLSyntaxError(dtdSource, "Invalid external DTD specifier.");
+            throw SyntaxError(dtdSource, "Invalid external DTD specifier.");
         }
         return (result);
     }

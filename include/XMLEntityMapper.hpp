@@ -6,10 +6,7 @@
 #include <map>
 #include <filesystem>
 #include <set>
-//
-// XML Sources
-//
-#include "XML_sources.hpp"
+
 // =========
 // NAMESPACE
 // =========
@@ -71,7 +68,7 @@ namespace XMLLib
                     }
                     else
                     {
-                        throw XMLSyntaxError("Entity '" + entityReference.unparsed + "' source file '" + get(entityReference.unparsed).external.systemID + "' does not exist.");
+                        throw SyntaxError("Entity '" + entityReference.unparsed + "' source file '" + get(entityReference.unparsed).external.systemID + "' does not exist.");
                     }
                 }
             }
@@ -121,7 +118,7 @@ namespace XMLLib
                     mappedEntityName += entitySource.current_to_bytes();
                     if (currentEntities.find(mappedEntityName) != currentEntities.end())
                     {
-                        throw XMLSyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
+                        throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
                     }
                     if (!get(mappedEntityName).internal.empty())
                     {

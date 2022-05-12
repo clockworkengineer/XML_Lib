@@ -96,7 +96,7 @@ namespace XMLLib
     {
         if (contentSpecSource.current() != '(')
         {
-            throw XMLSyntaxError("Invalid element content specification.");
+            throw SyntaxError("Invalid element content specification.");
         }
         contentSpecDestination.add("(");
         parseElementCP(contentSpecSource, contentSpecDestination);
@@ -107,7 +107,7 @@ namespace XMLLib
         }
         if (contentSpecSource.current() != ')')
         {
-            throw XMLSyntaxError("Invalid element content specification.");
+            throw SyntaxError("Invalid element content specification.");
         }
         contentSpecDestination.add(")");
         contentSpecSource.next();
@@ -122,7 +122,7 @@ namespace XMLLib
     {
         if (contentSpecSource.current() != '(')
         {
-            throw XMLSyntaxError("Invalid element content specification.");
+            throw SyntaxError("Invalid element content specification.");
         }
         contentSpecDestination.add("(");
         parseElementCP(contentSpecSource, contentSpecDestination);
@@ -132,7 +132,7 @@ namespace XMLLib
         }
         if (contentSpecSource.current() != ')')
         {
-            throw XMLSyntaxError("Invalid element content specification.");
+            throw SyntaxError("Invalid element content specification.");
         }
         contentSpecDestination.add(")");
         contentSpecSource.next();
@@ -184,7 +184,7 @@ namespace XMLLib
         }
         else
         {
-            throw XMLSyntaxError("Invalid element content specification.");
+            throw SyntaxError("Invalid element content specification.");
         }
     }
     /// <summary>
@@ -209,12 +209,12 @@ namespace XMLLib
                 }
                 else
                 {
-                    throw XMLSyntaxError("Invalid element content specification.");
+                    throw SyntaxError("Invalid element content specification.");
                 }
             }
             if (contentSpecSource.current() != ')')
             {
-                throw XMLSyntaxError("Invalid element content specification.");
+                throw SyntaxError("Invalid element content specification.");
             }
             contentSpecDestination.add(")");
             contentSpecSource.next();
@@ -226,7 +226,7 @@ namespace XMLLib
             }
             if (contentSpecSource.more() && !contentSpecSource.isWS())
             {
-                throw XMLSyntaxError("Invalid element content specification.");
+                throw SyntaxError("Invalid element content specification.");
             }
         }
         else if (contentSpecSource.current() == ')')
@@ -235,7 +235,7 @@ namespace XMLLib
         }
         else
         {
-            throw XMLSyntaxError("Invalid element content specification.");
+            throw SyntaxError("Invalid element content specification.");
         }
     }
     /// <summary>
@@ -266,15 +266,15 @@ namespace XMLLib
             }
             else
             {
-                throw XMLSyntaxError("Invalid element content specification.");
+                throw SyntaxError("Invalid element content specification.");
             }
             contentSpec.parsed = contentSpecDestination.getBuffer();
         }
-        catch (XMLSyntaxError &e)
+        catch (SyntaxError &e)
         {
             if (e.what() == std::string("XML Syntax Error: Invalid element content specification."))
             {
-                throw XMLSyntaxError("Invalid content specification for element <" + elementName + ">.");
+                throw SyntaxError("Invalid content specification for element <" + elementName + ">.");
             }
             else
             {

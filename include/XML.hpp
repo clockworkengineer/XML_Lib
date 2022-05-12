@@ -23,6 +23,29 @@
 // =========
 namespace XMLLib
 {
+    //
+    // XML syntax error
+    //
+    struct SyntaxError : public std::exception
+    {
+    public:
+        SyntaxError(const std::string &description = "")
+        {
+            errorMessage = "XML Syntax Error: " + description;
+        }
+        SyntaxError(ISource &source, const std::string &description = "")
+        {
+            errorMessage = "XML Syntax Error [Line: " + std::to_string(source.getLineNo()) +
+                           " Column: " + std::to_string(source.getColumnNo()) + "] " + description;
+        }
+        virtual const char *what() const throw()
+        {
+            return (errorMessage.c_str());
+        }
+
+    private:
+        std::string errorMessage;
+    };
     // ===================================================
     // Forward declarations for interfaces/classes/structs
     // ===================================================
@@ -44,7 +67,7 @@ namespace XMLLib
         // ==========
         // DESTRUCTOR
         // ==========
-         ~XML();
+        ~XML();
         // ==============
         // PUBLIC METHODS
         // ==============
@@ -56,6 +79,7 @@ namespace XMLLib
         // PUBLIC VARIABLES
         // ================
         XMLNodeElement m_prolog;
+
     private:
         // ===========================
         // PRIVATE TYPES AND CONSTANTS
