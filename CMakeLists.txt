@@ -33,8 +33,8 @@ set (XML_SOURCES
 set (XML_INCLUDES
     XMLConfig.hpp
     ./include/XML.hpp
-    ./include/ISource.hpp
-    ./inclide/IDestination.hpp
+    ./include/interface/ISource.hpp
+    ./inclide/inteface/IDestination.hpp
     ./include/XML_sources.hpp
     ./include/XML_destinations.hpp
     ./include/XML_nodes.hpp
@@ -46,7 +46,7 @@ set (XML_INCLUDES
 # XML library
 
 add_library(${XML_LIBRARY_NAME} ${XML_SOURCES})
-target_include_directories(${XML_LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_BINARY_DIR} )
+target_include_directories(${XML_LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/include/interface ${PROJECT_BINARY_DIR} )
 
 # Add tests
 
