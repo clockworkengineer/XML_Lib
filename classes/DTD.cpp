@@ -5,13 +5,13 @@
 // that the XML maybe be validated against it and flagged as well-formed if it passes.
 // For more information on the XML standard check out https://www.w3.org/TR/REC-xml/.
 //
-// Dependencies:   C17++ - Language standard features used.
+// Dependencies:   C20++ - Language standard features used.
 //
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XMLConfig.hpp"
 #include "XML.hpp"
+#include "DTD.hpp"
 #include "XML_sources.hpp"
 #include "XML_destinations.hpp"
 // ====================

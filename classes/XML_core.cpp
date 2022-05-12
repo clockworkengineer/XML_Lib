@@ -3,16 +3,14 @@
 //
 // Description: XML Parser core functionality.
 //
-// Dependencies:   C17++ - Language standard features used.
+// Dependencies:   C20++ - Language standard features used.
 //
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XMLConfig.hpp"
 #include "XML.hpp"
 #include "XML_sources.hpp"
 #include "XML_destinations.hpp"
-
 // =========
 // NAMESPACE
 // =========
@@ -375,5 +373,4 @@ namespace XMLLib
                        stringToUpper.begin(), [](unsigned int c)
                        { return static_cast<char>(std::toupper(c)); });
     }
-
 } // namespace XMLLib

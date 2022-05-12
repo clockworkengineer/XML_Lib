@@ -3,13 +3,13 @@
 //
 // Description: Parse XML DTD.
 //
-// Dependencies:   C17++ - Language standard features used.
+// Dependencies:   C20++ - Language standard features used.
 //
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XMLConfig.hpp"
 #include "XML.hpp"
+#include "DTD.hpp"
 #include "XML_sources.hpp"
 #include "XML_destinations.hpp"
 // ====================

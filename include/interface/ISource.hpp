@@ -6,7 +6,6 @@
 #include <codecvt>
 #include <locale>
 #include <cwctype>
-
 namespace XMLLib
 {
     //
@@ -92,7 +91,6 @@ namespace XMLLib
         {
             return (m_UTF8.from_bytes(from));
         }
-
     protected:
         long m_lineNo = 1;
         long m_column = 1;

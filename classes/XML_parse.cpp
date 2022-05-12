@@ -5,12 +5,11 @@
 // converted the characters to UTF-32 to make the process easier (any data once
 // parsed is stored in UTF-8 strings).
 //
-// Dependencies:   C17++ - Language standard features used.
+// Dependencies:   C20++ - Language standard features used.
 //
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XMLConfig.hpp"
 #include "XML.hpp"
 #include "XML_validator.hpp"
 #include "XML_sources.hpp"

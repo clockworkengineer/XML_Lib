@@ -11,19 +11,23 @@
 #include <cwctype>
 #include <sstream>
 //
+// XML version
+//
+#include "XMLConfig.hpp"
+//
 // XML Core
 //
 #include "XML_core.hpp"
-#include "XMLEntityMapper.hpp"
-//
-// XML DTD
-//
-#include "DTD.hpp"
 // =========
 // NAMESPACE
 // =========
 namespace XMLLib
 {
+    // ===================================================
+    // Forward declarations for interfaces/classes/structs
+    // ===================================================
+    class IXMLEntityMapper;
+    class DTD;
     // ================
     // CLASS DEFINITION
     // ================
@@ -36,13 +40,11 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        XML()
-        {
-            m_entityMapper = std::make_unique<XMLEntityMapper>();
-        }
+        XML();
         // ==========
         // DESTRUCTOR
         // ==========
+         ~XML();
         // ==============
         // PUBLIC METHODS
         // ==============
@@ -54,7 +56,6 @@ namespace XMLLib
         // PUBLIC VARIABLES
         // ================
         XMLNodeElement m_prolog;
-
     private:
         // ===========================
         // PRIVATE TYPES AND CONSTANTS

@@ -1,14 +1,13 @@
 //
 // Class: XMLValidator
 //
-// Description: XML validation code that utilises any parsed DTD.
+// Description: XML validation code that utilizes any parsed DTD.
 //
-// Dependencies:   C17++ - Language standard features used.
+// Dependencies:   C20++ - Language standard features used.
 //
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XMLConfig.hpp"
 #include "XML.hpp"
 #include "XML_validator.hpp"
 #include "XML_sources.hpp"

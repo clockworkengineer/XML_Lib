@@ -2,17 +2,18 @@
 // Class: XML
 //
 // Description: Parse XML into an internal XML Object (generating an exception
-// if it is found not to be syntactically correct "well formed") so that it can 
+// if it is found not to be syntactically correct "well formed") so that it can
 // be manipulated, interrogated and saved back to a text form (stringify). For more
 // information on the XML standard check out https://www.w3.org/TR/REC-xml/.
 //
-// Dependencies:   C17++ - Language standard features used.
+// Dependencies:   C20++ - Language standard features used.
 //
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XMLConfig.hpp"
 #include "XML.hpp"
+#include "DTD.hpp"
+#include "XMLEntityMapper.hpp"
 #include "XML_sources.hpp"
 #include "XML_destinations.hpp"
 // ====================
@@ -42,7 +43,20 @@ namespace XMLLib
     // PUBLIC METHODS
     // ==============
     /// <summary>
-    /// Parse XML read from source stream into internal object generating an exception 
+    /// XML constructor.
+    /// </summary>
+    XML::XML()
+    {
+        m_entityMapper = std::make_unique<XMLEntityMapper>();
+    }
+    /// <summary>
+    /// XML destructor.
+    /// </summary>
+    XML::~XML()
+    {
+    }
+    /// <summary>
+    /// Parse XML read from source stream into internal object generating an exception
     /// if a syntax error in the XML is found (not well formed).
     /// </summary>
     void XML::parse(ISource &source)
