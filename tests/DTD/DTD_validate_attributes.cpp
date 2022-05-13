@@ -119,11 +119,11 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     XML xml;
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(xml.m_prolog[0].getNodeType() == XMLNodeType::root);
-    REQUIRE(xml.m_prolog[0][1].getAttributeList().size() == 1);
-    REQUIRE(xml.m_prolog[0][1].getAttribute("number").value.parsed == "2001");
-    REQUIRE(xml.m_prolog[0][2].getAttributeList().size() == 1);
-    REQUIRE(xml.m_prolog[0][2].getAttribute("number").value.parsed == "2001");
+    REQUIRE(xml.prolog()[0].getNodeType() == XMLNodeType::root);
+    REQUIRE(xml.prolog()[0][1].getAttributeList().size() == 1);
+    REQUIRE(xml.prolog()[0][1].getAttribute("number").value.parsed == "2001");
+    REQUIRE(xml.prolog()[0][2].getAttributeList().size() == 1);
+    REQUIRE(xml.prolog()[0][2].getAttribute("number").value.parsed == "2001");
   }
   SECTION("XML with a DTD that specifies an element attribute that has a default value if it is not defined. ", "[XML][DTD][Validate][Attributes]")
   {
@@ -145,11 +145,11 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     XML xml;
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(xml.m_prolog[0].getNodeType() == XMLNodeType::root);
-    REQUIRE(xml.m_prolog[0][1].getAttributeList().size() == 1);
-    REQUIRE(xml.m_prolog[0][1].getAttribute("number").value.parsed == "2002");
-    REQUIRE(xml.m_prolog[0][2].getAttributeList().size() == 1);
-    REQUIRE(xml.m_prolog[0][2].getAttribute("number").value.parsed == "2001");
+    REQUIRE(xml.prolog()[0].getNodeType() == XMLNodeType::root);
+    REQUIRE(xml.prolog()[0][1].getAttributeList().size() == 1);
+    REQUIRE(xml.prolog()[0][1].getAttribute("number").value.parsed == "2002");
+    REQUIRE(xml.prolog()[0][2].getAttributeList().size() == 1);
+    REQUIRE(xml.prolog()[0][2].getAttribute("number").value.parsed == "2001");
   }
   SECTION("Validate XML with DTD that cotains a enumeration attribute gender with a default value if 'F'.", "[XML][DTD][Validate][Attributes]")
   {
@@ -169,9 +169,9 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
+    DTD &dtd = xml.dtd();
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.isElementPresent("person") == true);
     REQUIRE(dtd.getElement("person").attributes.size() == 1);
     REQUIRE(dtd.getElement("person").attributes[0].name == "gender");
@@ -179,13 +179,13 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE(dtd.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(dtd.getElement("person").attributes[0].value.parsed == "F");
     REQUIRE(dtd.getRootName() == "queue");
-    REQUIRE(dtd.getRootName() == XMLNodeRef<XMLNodeElement>(xml.m_prolog[0]).elementName);
-    REQUIRE(xml.m_prolog[0][0].elementName == "person");
-    REQUIRE(xml.m_prolog[0][0].getAttributeList().size() == 1);
-    REQUIRE(xml.m_prolog[0][0].getAttribute("gender").value.parsed == "M");
-    REQUIRE(xml.m_prolog[0][1].elementName == "person");
-    REQUIRE(xml.m_prolog[0][1].getAttributeList().size() == 1);
-    REQUIRE(xml.m_prolog[0][1].getAttribute("gender").value.parsed == "F");
+    REQUIRE(dtd.getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
+    REQUIRE(xml.prolog()[0][0].elementName == "person");
+    REQUIRE(xml.prolog()[0][0].getAttributeList().size() == 1);
+    REQUIRE(xml.prolog()[0][0].getAttribute("gender").value.parsed == "M");
+    REQUIRE(xml.prolog()[0][1].elementName == "person");
+    REQUIRE(xml.prolog()[0][1].getAttributeList().size() == 1);
+    REQUIRE(xml.prolog()[0][1].getAttribute("gender").value.parsed == "F");
   }
   SECTION("Validate XML with DTD that cotains a enumeration attribute gender that is not valid.", "[XML][DTD][Validate][Attributes]")
   {

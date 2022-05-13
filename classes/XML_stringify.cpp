@@ -125,7 +125,7 @@ namespace XMLLib
         // XML DTD
         case XMLNodeType::dtd:
         {
-            getDTD().stringify(destination);
+            dtd().stringify(destination);
             break;
         }
         default:
@@ -139,6 +139,6 @@ namespace XMLLib
     /// <param name="destination">XML destination stream.</param>
     void XML::stringifyXML(IDestination &destination)
     {
-        stringifyElements(&m_prolog, destination);
+        stringifyElements(m_prolog.get(), destination);
     }
 } // namespace XMLLib

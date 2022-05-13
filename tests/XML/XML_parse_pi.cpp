@@ -62,9 +62,9 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::pi);
-    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.m_prolog.children[1]).name == "xml-stylesheet");
-    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.m_prolog.children[1]).parameters == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::pi);
+    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.prolog().children[1]).name == "xml-stylesheet");
+    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.prolog().children[1]).parameters == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
   }
   SECTION("Parse XML containing PI in root section and check values", "[XML][Parse][PI]")
   {
@@ -74,8 +74,8 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog[0].children[0]).getNodeType() == XMLNodeType::pi);
-    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.m_prolog[0].children[0]).name == "xml-stylesheet");
-    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.m_prolog[0].children[0]).parameters == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog()[0].children[0]).getNodeType() == XMLNodeType::pi);
+    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.prolog()[0].children[0]).name == "xml-stylesheet");
+    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.prolog()[0].children[0]).parameters == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
   }
 }

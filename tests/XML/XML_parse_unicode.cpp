@@ -31,9 +31,9 @@ TEST_CASE("Parse XML with Unicode characters. ", "[XML][Parse][Unicode]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.m_prolog[0].elementName == "俄语");
-    REQUIRE(xml.m_prolog[0].getAttributeList().size() == 1);
-    REQUIRE(xml.m_prolog[0].getAttribute("լեզու").value.parsed == "ռուսերեն");
-    REQUIRE(xml.m_prolog[0].getContents() == "данные");
+    REQUIRE(xml.prolog()[0].elementName == "俄语");
+    REQUIRE(xml.prolog()[0].getAttributeList().size() == 1);
+    REQUIRE(xml.prolog()[0].getAttribute("լեզու").value.parsed == "ռուսերեն");
+    REQUIRE(xml.prolog()[0].getContents() == "данные");
   }
 }

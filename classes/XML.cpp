@@ -45,6 +45,7 @@ namespace XMLLib
     /// </summary>
     XML::XML()
     {
+        m_prolog = std::make_unique<XMLNodeElement>();
         m_entityMapper = std::make_unique<XMLEntityMapper>();
     }
     /// <summary>
@@ -69,7 +70,7 @@ namespace XMLLib
     {
         if (m_validator.get() != nullptr)
         {
-            m_validator->validate(m_prolog);
+            m_validator->validate(prolog());
         }
     }
     /// <summary>

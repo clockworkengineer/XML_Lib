@@ -25,13 +25,13 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "no");
-    REQUIRE(xml.m_prolog.children.size() == 3);
-    REQUIRE(xml.m_prolog[0].elementName == "AddressBook");
-    REQUIRE(xml.m_prolog[0].getAttributeList().size() == 1);
-    REQUIRE(xml.m_prolog[0].getAttribute("number").value.parsed == "15");
+    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
+    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
+    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
+    REQUIRE(xml.prolog().children.size() == 3);
+    REQUIRE(xml.prolog()[0].elementName == "AddressBook");
+    REQUIRE(xml.prolog()[0].getAttributeList().size() == 1);
+    REQUIRE(xml.prolog()[0].getAttribute("number").value.parsed == "15");
   }
   SECTION("Root attribute with 3 attached attributes number, away, flat", "[XML][Parse][[Attributes]")
   {
@@ -41,15 +41,15 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "no");
-    REQUIRE(xml.m_prolog.children.size() == 3);
-    REQUIRE(xml.m_prolog[0].elementName == "AddressBook");
-    REQUIRE(xml.m_prolog[0].getAttributeList().size() == 3);
-    REQUIRE(xml.m_prolog[0].getAttribute("number").value.parsed == "15");
-    REQUIRE(xml.m_prolog[0].getAttribute("away").value.parsed == "yes");
-    REQUIRE(xml.m_prolog[0].getAttribute("flat").value.parsed == "no");
+    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
+    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
+    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
+    REQUIRE(xml.prolog().children.size() == 3);
+    REQUIRE(xml.prolog()[0].elementName == "AddressBook");
+    REQUIRE(xml.prolog()[0].getAttributeList().size() == 3);
+    REQUIRE(xml.prolog()[0].getAttribute("number").value.parsed == "15");
+    REQUIRE(xml.prolog()[0].getAttribute("away").value.parsed == "yes");
+    REQUIRE(xml.prolog()[0].getAttribute("flat").value.parsed == "no");
   }
   SECTION("Empty elements with attributes are allowed.", "[XML][Parse][[Attributes]")
   {

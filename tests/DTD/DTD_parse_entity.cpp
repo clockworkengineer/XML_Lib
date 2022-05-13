@@ -46,12 +46,12 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
-    REQUIRE(XMLNodeRef<XMLNode>(xml.m_prolog[0]).getNodeType() == XMLNodeType::root);
-    REQUIRE(xml.m_prolog[0][4].elementName == "footer");
-    REQUIRE(xml.m_prolog[0][4].getContents() == u8"Writer: Donald Duck.\u00A0Copyright: W3Schools.");
+    REQUIRE(XMLNodeRef<XMLNode>(xml.prolog()[0]).getNodeType() == XMLNodeType::root);
+    REQUIRE(xml.prolog()[0][4].elementName == "footer");
+    REQUIRE(xml.prolog()[0][4].getContents() == u8"Writer: Donald Duck.\u00A0Copyright: W3Schools.");
   }
   SECTION("XML DTD with entity and how it deals with entity character expansion case 1)", "[XML][DTD][Parse][Entity]")
   {
@@ -62,12 +62,12 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
     REQUIRE(dtd.getEntity("&example;").internal == "<p>An ampersand (&#38;) may be escaped numerically (&#38;#38;) or with a general entity (&amp;amp;).</p>");
-    REQUIRE(xml.m_prolog[0][0].elementName == "p");
-    REQUIRE(xml.m_prolog[0][0].getContents() == "An ampersand (&) may be escaped numerically (&#38;) or with a general entity (&amp;).");
+    REQUIRE(xml.prolog()[0][0].elementName == "p");
+    REQUIRE(xml.prolog()[0][0].getContents() == "An ampersand (&) may be escaped numerically (&#38;) or with a general entity (&amp;).");
   }
   SECTION("XML DTD with entity and how it deals with entity character expansion case 2)", "[XML][DTD][Parse][Entity]")
   {
@@ -82,13 +82,13 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
     REQUIRE(dtd.getEntity("%xx;").internal == "%zz;");
     REQUIRE(dtd.getEntity("%zz;").internal == "<!ENTITY tricky \"error-prone\" >");
-    REQUIRE(xml.m_prolog[0].elementName == "test");
-    REQUIRE(xml.m_prolog[0].getContents() == "This sample shows a error-prone method.");
+    REQUIRE(xml.prolog()[0].elementName == "test");
+    REQUIRE(xml.prolog()[0].getContents() == "This sample shows a error-prone method.");
   }
   SECTION("XML DTD with entity and how it deals with entity character expansion case 3)", "[XML][DTD][Parse][Entity]")
   {
@@ -100,12 +100,12 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
     REQUIRE(dtd.getEntity("&x;").internal == "&lt;");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.m_prolog[0]).getAttributeList().size() == 1);
-    XMLAttribute attribute = xml.m_prolog[0].getAttribute("attr");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).getAttributeList().size() == 1);
+    XMLAttribute attribute = xml.prolog()[0].getAttribute("attr");
     REQUIRE(attribute.name == "attr");
     REQUIRE(attribute.value.unparsed == "&x;");
     REQUIRE(attribute.value.parsed == "&lt;");
@@ -136,14 +136,14 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
     REQUIRE(dtd.getEntity("&js;").internal == "Jo Smith &email;");
-    REQUIRE(xml.m_prolog[0].elementName == "author");
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog[0].children[0]).getNodeType() == XMLNodeType::entity);
-    REQUIRE(XMLNodeRef<XMLNodeEntityReference>(*xml.m_prolog[0].children[0]).getContents() == "Jo Smith josmith@theworldaccordingtojosmith.com");
-    REQUIRE(xml.m_prolog[0].getContents() == "Jo Smith josmith@theworldaccordingtojosmith.com");
+    REQUIRE(xml.prolog()[0].elementName == "author");
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog()[0].children[0]).getNodeType() == XMLNodeType::entity);
+    REQUIRE(XMLNodeRef<XMLNodeEntityReference>(*xml.prolog()[0].children[0]).getContents() == "Jo Smith josmith@theworldaccordingtojosmith.com");
+    REQUIRE(xml.prolog()[0].getContents() == "Jo Smith josmith@theworldaccordingtojosmith.com");
   }
   SECTION("XML DTD with entity used within an entity with recursion.", "[XML][DTD][Parse]")
   {
@@ -173,8 +173,8 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
     REQUIRE(dtd.getEntity("&email;").internal == "josmith@theworldaccordingtojosmith.com");
   }
@@ -189,12 +189,12 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
-    REQUIRE(dtd.getRootName() == XMLNodeRef<XMLNodeElement>(xml.m_prolog[0]).elementName);
-    REQUIRE(xml.m_prolog[0].elementName == "foo");
-    REQUIRE(xml.m_prolog[0].getContents() == "Hello John Joe Doe");
+    REQUIRE(dtd.getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
+    REQUIRE(xml.prolog()[0].elementName == "foo");
+    REQUIRE(xml.prolog()[0].getContents() == "Hello John Joe Doe");
   }
   SECTION("XML DTD with entity that is defined externally (file that does not exist).", "[XML][DTD][Parse][Entity]")
   {
@@ -229,10 +229,10 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[0]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[0]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
-    REQUIRE(dtd.getRootName() == XMLNodeRef<XMLNodeElement>(xml.m_prolog[0]).elementName);
+    REQUIRE(dtd.getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
     REQUIRE(dtd.getRootName() == "REPORT");
     REQUIRE(dtd.getEntity("%empty_report;").internal == "<!ELEMENT REPORT EMPTY>");
     REQUIRE(dtd.getElement("REPORT").name == "REPORT");
@@ -245,7 +245,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.getDTD();
+    DTD &dtd = xml.dtd();
     REQUIRE(dtd.getType() == DTD::DTDType::external);
   }
 
@@ -256,10 +256,10 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[0]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[0]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::external);
-    REQUIRE(dtd.getRootName() == XMLNodeRef<XMLNodeElement>(xml.m_prolog[0]).elementName);
+    REQUIRE(dtd.getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
     REQUIRE(dtd.getRootName() == "REPORT");
     REQUIRE(dtd.getEntity("%contact;").internal == "phone");
     REQUIRE(dtd.getEntity("%area;").internal == "name, street, pincode, city");
@@ -284,11 +284,11 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.getDTD();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.m_prolog.children[1]).getNodeType() == XMLNodeType::dtd);
+    DTD &dtd = xml.dtd();
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.getType() == DTD::DTDType::external);
-    REQUIRE(XMLNodeRef<XMLNode>(xml.m_prolog[0]).getNodeType() == XMLNodeType::root);
+    REQUIRE(XMLNodeRef<XMLNode>(xml.prolog()[0]).getNodeType() == XMLNodeType::root);
     REQUIRE(dtd.getEntity("&signature;").internal == "© 1999 Yoyodyne, Inc. &legal;");
-    REQUIRE(xml.m_prolog[0].getContents() == "© 1999 Yoyodyne, Inc. All Rights Reserved.");
+    REQUIRE(xml.prolog()[0].getContents() == "© 1999 Yoyodyne, Inc. All Rights Reserved.");
   }
 }

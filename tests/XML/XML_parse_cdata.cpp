@@ -36,8 +36,8 @@ TEST_CASE("Parse CDATA SECTION", "[XML][Parse][CDATA]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.m_prolog[0].getContents() == "\n   <message> Welcome to TutorialsPoint </message>   ");
-    REQUIRE(XMLNodeRef<XMLNodeCDATA>(*xml.m_prolog[0].children[1]).cdata == "<message> Welcome to TutorialsPoint </message>");
+    REQUIRE(xml.prolog()[0].getContents() == "\n   <message> Welcome to TutorialsPoint </message>   ");
+    REQUIRE(XMLNodeRef<XMLNodeCDATA>(*xml.prolog()[0].children[1]).cdata == "<message> Welcome to TutorialsPoint </message>");
   }
   SECTION("Parse XML root containing CDDATA containing nested CDATA ", "[XML][Parse][CDATA]")
   {

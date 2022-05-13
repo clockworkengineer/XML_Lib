@@ -412,7 +412,7 @@ namespace XMLLib
     }
     /// <summary>
     /// Parse XML prolog and create the necessary XMLNodeElements for it. Valid
-    /// parts of the prolog include delaration (first line if present),
+    /// parts of the prolog include declaration (first line if present),
     /// processing instructions, comments, whitespace content and XML
     /// Document Type Declaration (DTD).
     /// </summary>
@@ -476,24 +476,24 @@ namespace XMLLib
     /// </summary>
     void XML::parseXML(ISource &source)
     {
-        parseProlog(source, &m_prolog);
+        parseProlog(source, m_prolog.get());
         if (source.match(U"<"))
         {
-            m_prolog.children.emplace_back(std::make_unique<XMLNodeElement>(XMLNodeElement(XMLNodeType::root)));
-            parseElement(source, static_cast<XMLNode *>(m_prolog.children.back().get()));
+            prolog().children.emplace_back(std::make_unique<XMLNodeElement>(XMLNodeElement(XMLNodeType::root)));
+            parseElement(source, static_cast<XMLNode *>(prolog().children.back().get()));
             while (source.more())
             {
                 if (source.match(U"<!--"))
                 {
-                    parseComment(source, &m_prolog);
+                    parseComment(source, m_prolog.get());
                 }
                 else if (source.match(U"<?"))
                 {
-                    parsePI(source, &m_prolog);
+                    parsePI(source, m_prolog.get());
                 }
                 else if (source.isWS())
                 {
-                    parseAddElementContent(&m_prolog, source.current_to_bytes());
+                    parseAddElementContent(m_prolog.get(), source.current_to_bytes());
                     source.next();
                 }
                 else

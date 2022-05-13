@@ -24,9 +24,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "no");
+    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
+    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
+    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
   }
   SECTION("Parse XML declaration with unsupported version. ", "[XML][Parse][Declaration]")
   {
@@ -67,9 +67,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-16");
-    REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "yes");
+    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
+    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-16");
+    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "yes");
   }
   SECTION("Parse version 1.0, standalone == yes XML declaration. ", "[XML][Parse][Declaration]")
   {
@@ -78,9 +78,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.m_prolog.getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.m_prolog.getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.m_prolog.getAttribute("standalone").value.parsed == "yes");
+    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
+    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
+    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "yes");
   }
   SECTION("Check declaration contains at least version attribute.", "[XML][Parse][Declaration]")
   {
