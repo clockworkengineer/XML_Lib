@@ -10,8 +10,6 @@
 // =================
 #include "XML.hpp"
 #include "XML_validator.hpp"
-#include "XML_sources.hpp"
-#include "XML_destinations.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================
