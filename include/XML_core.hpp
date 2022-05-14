@@ -8,11 +8,6 @@
 #include <set>
 #include <sstream>
 //
-// XML character constants
-//
-#define kCarriageReturn 0x0D
-#define kLineFeed 0x0A
-//
 // Source/Destination interfaces
 //
 #include "ISource.hpp"

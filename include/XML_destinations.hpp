@@ -5,6 +5,13 @@
 #include <string>
 #include <stdexcept>
 #include <fstream>
+//
+// IDestination interface
+//
+#include "IDestination.hpp"
+// =========
+// NAMESPACE
+// =========
 namespace XMLLib
 {
     //

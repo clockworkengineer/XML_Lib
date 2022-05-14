@@ -9,6 +9,11 @@
 // XML version
 //
 #include "XMLConfig.hpp"
+//
+// XML character constants
+//
+#define kCarriageReturn 0x0D
+#define kLineFeed 0x0A
 // =========
 // NAMESPACE
 // =========

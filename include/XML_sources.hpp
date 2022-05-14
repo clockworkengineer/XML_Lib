@@ -5,6 +5,13 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
+//
+// ISource interface
+//
+#include "ISource.hpp"
+// =========
+// NAMESPACE
+// =========
 namespace XMLLib
 {
     //
