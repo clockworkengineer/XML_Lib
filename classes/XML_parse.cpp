@@ -11,7 +11,7 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
-#include "XML_validator.hpp"
+#include "XMLValidator.hpp"
 #include "XML_errors.hpp"
 #include "XML_sources.hpp"
 #include "XML_destinations.hpp"

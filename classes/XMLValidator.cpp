@@ -1,7 +1,7 @@
 //
 // Class: XMLValidator
 //
-// Description: XML validation code that utilizes any parsed DTD.
+// Description: XML DTD validator.
 //
 // Dependencies:   C20++ - Language standard features used.
 //
@@ -9,7 +9,7 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
-#include "XML_validator.hpp"
+#include "XMLValidator.hpp"
 #include "XML_errors.hpp"
 #include "XML_sources.hpp"
 #include "XML_destinations.hpp"
@@ -81,7 +81,7 @@ namespace XMLLib
     /// Check whether element contains characters.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    /// <returns>true if element contaisn characters otherwise false.</returns>
+    /// <returns>true if element contains characters otherwise false.</returns>
     bool XMLValidator::checkIsPCDATA(XMLNode *xmlNode)
     {
         for (auto &element : static_cast<XMLNodeElement *>(xmlNode)->children)
@@ -98,7 +98,7 @@ namespace XMLLib
     /// Check whether an element does not contain any content (is empty).
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    /// <returns>true if element empty otherwidse false.</returns>
+    /// <returns>true if element empty otherwise false.</returns>
     bool XMLValidator::checkIsEMPTY(XMLNode *xmlNode)
     {
         return (static_cast<XMLNodeElement *>(xmlNode)->children.empty() || static_cast<XMLNodeElement *>(xmlNode)->getNodeType() == XMLNodeType::self);

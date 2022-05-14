@@ -32,7 +32,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        void validate(XMLNodeElement &prolog) override;
+        virtual void validate(XMLNodeElement &prolog) override;
         // ================
         // PUBLIC VARIABLES
         // ================
