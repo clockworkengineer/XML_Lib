@@ -86,7 +86,7 @@ namespace XMLLib
     /// <param name="content">Content to add to new content node (XMLNodeCotent).</param>
     void XML::parseAddElementContent(XMLNode *xmlNode, const std::string &content)
     {
-        // Make sure there is a content node to recieve characters
+        // Make sure there is a content node to receive characters
         if (static_cast<XMLNodeElement *>(xmlNode)->children.empty() ||
             static_cast<XMLNodeElement *>(xmlNode)->children.back()->getNodeType() != XMLNodeType::content)
         {

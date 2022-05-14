@@ -393,7 +393,7 @@ namespace XMLLib
     /// <param name="dtdSource">DTD source stream.</param>
     void DTD::parseDTD(ISource &dtdSource)
     {
-        // We take the easy option for allowing a DTD to be stringifyed
+        // We take the easy option for allowing a DTD to be stringified
         // and keeping the correct order for its components by storing it
         // in its raw unparsed form.
         long start = dtdSource.position();

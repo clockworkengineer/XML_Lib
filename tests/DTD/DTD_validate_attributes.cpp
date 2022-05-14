@@ -151,7 +151,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE(xml.prolog()[0][2].getAttributeList().size() == 1);
     REQUIRE(xml.prolog()[0][2].getAttribute("number").value.parsed == "2001");
   }
-  SECTION("Validate XML with DTD that cotains a enumeration attribute gender with a default value if 'F'.", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML with DTD that contains a enumeration attribute gender with a default value if 'F'.", "[XML][DTD][Validate][Attributes]")
   {
     xmlString = "<?xml version=\"1.0\"?>\n"
                 "<!DOCTYPE queue ["
@@ -187,7 +187,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE(xml.prolog()[0][1].getAttributeList().size() == 1);
     REQUIRE(xml.prolog()[0][1].getAttribute("gender").value.parsed == "F");
   }
-  SECTION("Validate XML with DTD that cotains a enumeration attribute gender that is not valid.", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML with DTD that contains a enumeration attribute gender that is not valid.", "[XML][DTD][Validate][Attributes]")
   {
     xmlString = "<?xml version=\"1.0\"?>\n"
                 "<!DOCTYPE queue ["

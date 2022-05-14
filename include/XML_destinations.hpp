@@ -45,9 +45,9 @@ namespace XMLLib
     class FileDestination : public IDestination
     {
     public:
-        FileDestination(const std::string &desinationFileName)
+        FileDestination(const std::string &destinationFileName)
         {
-            m_destination.open(desinationFileName.c_str(), std::ios_base::binary);
+            m_destination.open(destinationFileName.c_str(), std::ios_base::binary);
             if (!m_destination.is_open())
             {
                 throw std::runtime_error("XML file output stream failed to open or could not be created.");

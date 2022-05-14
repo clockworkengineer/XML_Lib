@@ -33,7 +33,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 8] Element <child1> does not contain just any parsable data.");
   }
-  SECTION("XML with an unedfined element <date> which voilates the DTD.", "[XML][DTD][Validate][Elements]")
+  SECTION("XML with an undefined element <date> which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
     xmlString = "<?xml version=\"1.0\"?>\n"
                 "<!DOCTYPE note [\n"
@@ -53,7 +53,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] <note> element does not conform to the content specification (to,from,heading,body).");
   }
-  SECTION("XML with an missing <to> tag which voilates the DTD.", "[XML][DTD][Validate][Elements]")
+  SECTION("XML with an missing <to> tag which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
     xmlString = "<?xml version=\"1.0\"?>\n"
                 "<!DOCTYPE note [\n"
@@ -72,7 +72,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] <note> element does not conform to the content specification (to,from,heading,body).");
   }
-  SECTION("XML with an empty notes tag which voilates the DTD.", "[XML][DTD][Validate][Elements]")
+  SECTION("XML with an empty notes tag which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
     xmlString = "<?xml version=\"1.0\"?>\n"
                 "<!DOCTYPE notes [\n"
@@ -216,7 +216,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD that uses '?' (zero or one time) operator and has XML conatins occupied and empty seats.", "[XML][DTD][Validate][Elements]")
+  SECTION("XML with a DTD that uses '?' (zero or one time) operator and has XML contains occupied and empty seats.", "[XML][DTD][Validate][Elements]")
   {
     xmlString = "<?xml version=\"1.0\"?>\n"
                 "<!DOCTYPE plane [\n"

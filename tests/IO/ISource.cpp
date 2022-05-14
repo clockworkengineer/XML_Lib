@@ -1,7 +1,7 @@
 //
 // Unit Tests: XML
 //
-// Description: Unit tests for BufferSource, FileSouce structures that implement
+// Description: Unit tests for BufferSource, FileSource structures that implement
 // the ISource and IDestination interfaces used in XML parsing.
 //
 // ================
@@ -118,7 +118,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
         FileSource source { prefixTestDataPath(kGeneratedXMLFile) };
         verifyCRLFCount(source, 28, 3);
     }
-    SECTION("Check that FileSource is ignoring whitespace corectly.", "[XML][Parse][FileSource]")
+    SECTION("Check that FileSource is ignoring whitespace correctly.", "[XML][Parse][FileSource]")
     {
         xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
         writeXMLToFileUTF8(prefixTestDataPath(kGeneratedXMLFile), xmlString);
@@ -174,7 +174,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
         REQUIRE(source.current() == static_cast<ISource::Char>(EOF));
         REQUIRE_THROWS_WITH(source.next(), "Parse buffer empty before parse complete.");
     }
-    SECTION("Check that FileSource backup works and doesnt go negative.", "[XML][Parse][FileSource]")
+    SECTION("Check that FileSource backup works and doesn't go negative.", "[XML][Parse][FileSource]")
     {
         xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         writeXMLToFileUTF8(prefixTestDataPath(kGeneratedXMLFile), xmlString);
@@ -298,7 +298,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
         BufferSource source { xmlString };
         verifyCRLFCount(source, 28, 3);
     }
-    SECTION("Check that BufferSource is ignoring whitespace corectly.", "[XML][Parse][BufferSource]")
+    SECTION("Check that BufferSource is ignoring whitespace correctly.", "[XML][Parse][BufferSource]")
     {
         xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
         BufferSource source { xmlString };
@@ -351,7 +351,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
         REQUIRE(source.current() == static_cast<ISource::Char>(EOF));
         REQUIRE_THROWS_WITH(source.next(), "Parse buffer empty before parse complete.");
     }
-    SECTION("Check that BufferSource backup works and doesnt go negative.", "[XML][Parse][BufferSource]")
+    SECTION("Check that BufferSource backup works and doesn't go negative.", "[XML][Parse][BufferSource]")
     {
         xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXMLLib &</root>";
         BufferSource source { xmlString };

@@ -17,7 +17,7 @@ using namespace XMLLib;
 // ==========
 TEST_CASE("Creation and use of IDestination (Buffer) interface.", "[XML][Parse][BufferDestination]")
 {
-    SECTION("Create BufferDesination.", "[XML][Stringify][IDesination]")
+    SECTION("Create BufferDestination.", "[XML][Stringify][IDestination]")
     {
         REQUIRE_NOTHROW(BufferDestination());
     }

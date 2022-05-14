@@ -37,7 +37,7 @@ namespace XMLLib
     // PRIVATE METHODS
     // ===============
     /// <summary>
-    /// Parse conditional DTD (recusively if necessary).
+    /// Parse conditional DTD (recursively if necessary).
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
     /// <param name="includeOn">If set to false then enclosing conditionals treated as ignored.</param>
@@ -49,10 +49,10 @@ namespace XMLLib
         {
             if (dtdSource.current() == '%')
             {
-                XMLValue entityRerence = parseEntityReference(dtdSource);
+                XMLValue entityReference = parseEntityReference(dtdSource);
                 dtdSource.ignoreWS();
-                m_entityMapper.map(entityRerence);
-                conditionalValue = entityRerence.parsed;
+                m_entityMapper.map(entityReference);
+                conditionalValue = entityReference.parsed;
             }
             else if (dtdSource.match(U"INCLUDE"))
             {
