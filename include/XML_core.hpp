@@ -12,11 +12,6 @@
 //
 #include "ISource.hpp"
 #include "IDestination.hpp"
-//
-// XML Sources
-//
-#include "XML_sources.hpp"
-#include "XML_destinations.hpp"
 // =========
 // NAMESPACE
 // =========

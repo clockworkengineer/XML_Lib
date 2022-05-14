@@ -6,6 +6,10 @@
 #include <map>
 #include <filesystem>
 #include <set>
+//
+// XML sources
+//
+#include "XML_sources.hpp"
 // =========
 // NAMESPACE
 // =========

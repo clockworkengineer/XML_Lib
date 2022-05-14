@@ -10,6 +10,8 @@
 // =================
 #include "XML.hpp"
 #include "XML_core.hpp"
+#include "XML_sources.hpp"
+#include "XML_destinations.hpp"
 // =========
 // NAMESPACE
 // =========
