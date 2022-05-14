@@ -33,14 +33,14 @@ set (XML_SOURCES
  
 set (XML_INCLUDES
     XMLConfig.hpp
-    ./include/XML.hpp
     ./include/interface/ISource.hpp
-    ./inclide/inteface/IDestination.hpp
+    ./include/interface/IDestination.hpp
+    ./include/XML.hpp
     ./include/XML_sources.hpp
     ./include/XML_destinations.hpp
     ./include/XML_nodes.hpp
-    ./incldue/XML_core.hpp
-    ./incldue/XML_errors.hpp
+    ./include/XML_core.hpp
+    ./include/XML_errors.hpp
     ./include/DTD.hpp
     ./include/XMLValidator.hpp
     ./include/XMLEntityMapper.hpp

@@ -136,7 +136,7 @@ void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
 /// Convert XML to an XMLObject, stringify the XMLObject and
 /// compare the result with the passed in XML with REQUIRE.
 /// </summary>
-/// <param name="xml">XML pasrer object.</param>
+/// <param name="xml">XML parser object.</param>
 /// <param name="xmlString">XML to parse and stringify.</param>
 /// <returns></returns>
 void checkStringify(const std::string &xmlString)

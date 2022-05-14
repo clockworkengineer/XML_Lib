@@ -26,7 +26,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
   }
-  SECTION("Multiple single line comments beifre root tag", "[XML][Parse][Comments]")
+  SECTION("Multiple single line comments before root tag", "[XML][Parse][Comments]")
   {
     xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                 "<!-- A single line comment -->\n"

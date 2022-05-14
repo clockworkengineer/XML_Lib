@@ -79,7 +79,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     XML xml;
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 44] Namespace used but not defined.");
   }
-  SECTION("A root documement with a default namespace", "[XML][Parse][Namespace]")
+  SECTION("A root document with a default namespace", "[XML][Parse][Namespace]")
   {
     xmlString = "<table xmlns=\"http://www.w3.org/TR/html4/\"><tr><td>Apples</td><td>Bananas</td></tr></table>\n";
     BufferSource source { xmlString };
