@@ -39,6 +39,7 @@ set (XML_INCLUDES
     ./include/XML_destinations.hpp
     ./include/XML_nodes.hpp
     ./incldue/XML_core.hpp
+    ./incldue/XML_errors.hpp
     ./include/DTD.hpp
     ./include/XML_validator.hpp
 )

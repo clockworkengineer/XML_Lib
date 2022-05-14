@@ -17,24 +17,6 @@
 // =========
 namespace XMLLib
 {
-    //
-    // XML validation error
-    //
-    struct ValidationError : public std::exception
-    {
-    public:
-        ValidationError(long m_lineNumber, const std::string &description = "")
-        {
-            errorMessage = "XML Validation Error [Line: " + std::to_string(m_lineNumber) + "] " + description;
-        }
-        virtual const char *what() const throw()
-        {
-            return (errorMessage.c_str());
-        }
-
-    private:
-        std::string errorMessage;
-    };
     // ================
     // CLASS DEFINITION
     // ================
