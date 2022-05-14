@@ -41,6 +41,7 @@ set (XML_INCLUDES
     ./include/XML_nodes.hpp
     ./include/XML_core.hpp
     ./include/XML_errors.hpp
+    ./include/XML_types.hpp
     ./include/DTD.hpp
     ./include/XMLValidator.hpp
     ./include/XMLEntityMapper.hpp
