@@ -1,8 +1,8 @@
 //
 // Class: XML
 //
-// Description:  Code to take an XML internal object description and produce 
-// the XML text for it; currently as UTF-8 encoded text but this may change in 
+// Description:  Code to take an XML internal object description and produce
+// the XML text for it; currently as UTF-8 encoded text but this may change in
 // future.
 //
 // Dependencies:   C20++ - Language standard features used.
@@ -12,6 +12,8 @@
 // =================
 #include "XML.hpp"
 #include "DTD.hpp"
+#include "XML_sources.hpp"
+#include "XML_destinations.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================
@@ -49,8 +51,8 @@ namespace XMLLib
         case XMLNodeType::prolog:
         {
             destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeElement>((*xmlNode)).getAttribute("version").value.unparsed + "\"" +
-                               " encoding=\"" + XMLNodeRef<XMLNodeElement>((*xmlNode)).getAttribute("encoding").value.unparsed + "\"" +
-                               " standalone=\"" + XMLNodeRef<XMLNodeElement>((*xmlNode)).getAttribute("standalone").value.unparsed + "\"?>");
+                            " encoding=\"" + XMLNodeRef<XMLNodeElement>((*xmlNode)).getAttribute("encoding").value.unparsed + "\"" +
+                            " standalone=\"" + XMLNodeRef<XMLNodeElement>((*xmlNode)).getAttribute("standalone").value.unparsed + "\"?>");
             for (auto &element : XMLNodeRef<XMLNodeElement>((*xmlNode)).children)
             {
                 stringifyElements(element.get(), destination);

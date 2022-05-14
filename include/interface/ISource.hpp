@@ -6,6 +6,9 @@
 #include <codecvt>
 #include <locale>
 #include <cwctype>
+// =========
+// NAMESPACE
+// =========
 namespace XMLLib
 {
     //
@@ -72,7 +75,7 @@ namespace XMLLib
             return (m_column);
         }
         // Read bytes representing the current character
-        std::string current_to_bytes() 
+        std::string current_to_bytes()
         {
             return (m_UTF8.to_bytes(current()));
         }
@@ -91,6 +94,7 @@ namespace XMLLib
         {
             return (m_UTF8.from_bytes(from));
         }
+
     protected:
         long m_lineNo = 1;
         long m_column = 1;

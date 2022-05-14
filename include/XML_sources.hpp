@@ -28,9 +28,8 @@ namespace XMLLib
                 throw std::invalid_argument("Empty source buffer passed to be parsed.");
             }
             std::u16string utf16xml{sourceBuffer};
-            if (utf16xml.find(u"<?xml")!=0)
-            {  
-                
+            if (utf16xml.find(u"<?xml") != 0)
+            {
                 for (char16_t &ch : utf16xml)
                 {
                     ch = (static_cast<uint16_t>(ch) >> 8) | (static_cast<uint16_t>(ch) << 8);
@@ -54,7 +53,7 @@ namespace XMLLib
             {
                 return (m_parseBuffer[m_bufferPosition]);
             }
-           return (static_cast<ISource::Char>(EOF));
+            return (static_cast<ISource::Char>(EOF));
         }
         void next() override
         {
@@ -161,7 +160,7 @@ namespace XMLLib
         }
         void backup(long length) override
         {
-            if ((static_cast<long> (m_source.tellg()) - length >= 0) || (current() == (ISource::Char)EOF))
+            if ((static_cast<long>(m_source.tellg()) - length >= 0) || (current() == (ISource::Char)EOF))
             {
                 m_source.clear();
                 m_source.seekg(-length, std::ios_base::cur);

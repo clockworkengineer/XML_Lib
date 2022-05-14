@@ -141,7 +141,7 @@ namespace XMLLib
             }
             else if (dtdSource.match(U"<!NOTATION"))
             {
-                    BufferSource dtdTranslatedSource(m_entityMapper.translate(parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_entityMapper.translate(parseTagBody(dtdSource)));
                 parseNotation(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!--"))

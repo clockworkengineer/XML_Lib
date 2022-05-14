@@ -49,6 +49,7 @@ namespace XMLLib
         XMLNode &operator[](int index);
         XMLNode &operator[](const std::string &name);
         std::vector<std::unique_ptr<XMLNode>> children;
+
     private:
         XMLNodeType xmlNodeType;
     };
@@ -150,6 +151,7 @@ namespace XMLLib
         XMLNodeElement &operator[](int index);
         XMLNodeElement &operator[](const std::string &name);
         std::string elementName;
+
     private:
         std::vector<XMLAttribute> namespaces;
         std::vector<XMLAttribute> attributes;

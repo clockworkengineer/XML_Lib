@@ -8,10 +8,9 @@
 #include <set>
 #include <sstream>
 //
-// Source/Destination interfaces
+// Source interface
 //
 #include "ISource.hpp"
-#include "IDestination.hpp"
 // =========
 // NAMESPACE
 // =========

@@ -58,11 +58,11 @@ namespace XMLLib
                     parseElementContents(entitySource, &entityElement);
                 }
                 xNodeEntityReference.children = std::move(entityElement.children);
-                if (!static_cast<XMLNodeElement*>(xmlNode)->children.empty())
+                if (!static_cast<XMLNodeElement *>(xmlNode)->children.empty())
                 {
-                    if (static_cast<XMLNodeElement*>(xmlNode)->children.back()->getNodeType() == XMLNodeType::content)
+                    if (static_cast<XMLNodeElement *>(xmlNode)->children.back()->getNodeType() == XMLNodeType::content)
                     {
-                        XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement*>(xmlNode)->children.back()).isWhiteSpace = false;
+                        XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement *>(xmlNode)->children.back()).isWhiteSpace = false;
                     }
                 }
             }
@@ -76,7 +76,7 @@ namespace XMLLib
                 return;
             }
         }
-        static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
+        static_cast<XMLNodeElement *>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
     }
     /// <summary>
     /// Add content node to current XMLNodeElement elements list.
@@ -86,33 +86,33 @@ namespace XMLLib
     void XML::parseAddElementContent(XMLNode *xmlNode, const std::string &content)
     {
         // Make sure there is a content node to recieve characters
-        if (static_cast<XMLNodeElement*>(xmlNode)->children.empty() ||
-            static_cast<XMLNodeElement*>(xmlNode)->children.back()->getNodeType() != XMLNodeType::content)
+        if (static_cast<XMLNodeElement *>(xmlNode)->children.empty() ||
+            static_cast<XMLNodeElement *>(xmlNode)->children.back()->getNodeType() != XMLNodeType::content)
         {
             bool isWWhitespace = true;
-            if (!static_cast<XMLNodeElement*>(xmlNode)->children.empty())
+            if (!static_cast<XMLNodeElement *>(xmlNode)->children.empty())
             {
-                if ((static_cast<XMLNodeElement*>(xmlNode)->children.back()->getNodeType() == XMLNodeType::cdata) ||
-                    (static_cast<XMLNodeElement*>(xmlNode)->children.back()->getNodeType() == XMLNodeType::entity))
+                if ((static_cast<XMLNodeElement *>(xmlNode)->children.back()->getNodeType() == XMLNodeType::cdata) ||
+                    (static_cast<XMLNodeElement *>(xmlNode)->children.back()->getNodeType() == XMLNodeType::entity))
                 {
                     isWWhitespace = false;
                 }
             }
-            static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeContent>());
-            XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement*>(xmlNode)->children.back()).isWhiteSpace = isWWhitespace;
+            static_cast<XMLNodeElement *>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeContent>());
+            XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement *>(xmlNode)->children.back()).isWhiteSpace = isWWhitespace;
         }
-        if (XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement*>(xmlNode)->children.back()).isWhiteSpace)
+        if (XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement *>(xmlNode)->children.back()).isWhiteSpace)
         {
             for (auto ch : content)
             {
                 if (!std::iswspace(ch))
                 {
-                    XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement*>(xmlNode)->children.back()).isWhiteSpace = false;
+                    XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement *>(xmlNode)->children.back()).isWhiteSpace = false;
                     break;
                 }
             }
         }
-        XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement*>(xmlNode)->children.back()).content += content;
+        XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement *>(xmlNode)->children.back()).content += content;
     }
     /// <summary>
     /// Parse a element tag name and set its value in current XMLNodeElement.
@@ -121,7 +121,7 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML::parseTagName(ISource &source, XMLNode *xmlNode)
     {
-        static_cast<XMLNodeElement*>(xmlNode)->elementName = parseName(source);
+        static_cast<XMLNodeElement *>(xmlNode)->elementName = parseName(source);
     }
     /// <summary>
     /// Parse a XML comment, create a XMLNodeComment for it and add to list
@@ -141,7 +141,7 @@ namespace XMLLib
         {
             throw SyntaxError(source, "Missing closing '>' for comment line.");
         }
-        static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeComment>(std::move(xmlNodeComment)));
+        static_cast<XMLNodeElement *>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeComment>(std::move(xmlNodeComment)));
     }
     /// <summary>
     /// Parse a XML process instruction, create an XMLNodePI for it and add it to
@@ -158,7 +158,7 @@ namespace XMLLib
             xmlNodePI.parameters += source.current_to_bytes();
             source.next();
         }
-        static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodePI>(std::move(xmlNodePI)));
+        static_cast<XMLNodeElement *>(xmlNode)->children.emplace_back(std::make_unique<XMLNodePI>(std::move(xmlNodePI)));
     }
     /// <summary>
     /// Parse an XML CDATA section, create an XNodeCDATA for it and add it to
@@ -178,14 +178,14 @@ namespace XMLLib
             xmlNodeCDATA.cdata += source.current_to_bytes();
             source.next();
         }
-        if (!static_cast<XMLNodeElement*>(xmlNode)->children.empty())
+        if (!static_cast<XMLNodeElement *>(xmlNode)->children.empty())
         {
-            if (static_cast<XMLNodeElement*>(xmlNode)->children.back()->getNodeType() == XMLNodeType::content)
+            if (static_cast<XMLNodeElement *>(xmlNode)->children.back()->getNodeType() == XMLNodeType::content)
             {
-                XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement*>(xmlNode)->children.back()).isWhiteSpace = false;
+                XMLNodeRef<XMLNodeContent>(*static_cast<XMLNodeElement *>(xmlNode)->children.back()).isWhiteSpace = false;
             }
         }
-        static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeCDATA>(std::move(xmlNodeCDATA)));
+        static_cast<XMLNodeElement *>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeCDATA>(std::move(xmlNodeCDATA)));
     }
     /// <summary>
     /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
@@ -211,21 +211,21 @@ namespace XMLLib
             {
                 throw SyntaxError(source, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
             }
-            if (!static_cast<XMLNodeElement*>(xmlNode)->isAttributePresent(attributeName))
+            if (!static_cast<XMLNodeElement *>(xmlNode)->isAttributePresent(attributeName))
             {
-                static_cast<XMLNodeElement*>(xmlNode)->addAttribute(attributeName, attributeValue);
+                static_cast<XMLNodeElement *>(xmlNode)->addAttribute(attributeName, attributeValue);
             }
             else
             {
                 throw SyntaxError(source, "Attribute defined more than once within start tag.");
             }
         }
-        for (auto attribute : static_cast<XMLNodeElement*>(xmlNode)->getAttributeList())
+        for (auto attribute : static_cast<XMLNodeElement *>(xmlNode)->getAttributeList())
         {
             if (attribute.name.find("xmlns") == 0)
             {
                 attribute.name = (attribute.name.size() > 5) ? attribute.name.substr(6) : ":";
-                static_cast<XMLNodeElement*>(xmlNode)->addNameSpace(attribute.name, attribute.value);
+                static_cast<XMLNodeElement *>(xmlNode)->addNameSpace(attribute.name, attribute.value);
             }
         }
     }
@@ -237,7 +237,7 @@ namespace XMLLib
     void XML::parseChildElement(ISource &source, XMLNode *xmlNode)
     {
         XMLNodeElement xmlNodeChildElement;
-        for (auto &ns : static_cast<XMLNodeElement*>(xmlNode)->getNameSpaceList())
+        for (auto &ns : static_cast<XMLNodeElement *>(xmlNode)->getNameSpaceList())
         {
             xmlNodeChildElement.addNameSpace(ns.name, ns.value);
         }
@@ -249,7 +249,7 @@ namespace XMLLib
                 throw SyntaxError(source, "Namespace used but not defined.");
             }
         }
-        static_cast<XMLNodeElement*>(xmlNode)->children.push_back(std::make_unique<XMLNodeElement>(std::move(xmlNodeChildElement)));
+        static_cast<XMLNodeElement *>(xmlNode)->children.push_back(std::make_unique<XMLNodeElement>(std::move(xmlNodeChildElement)));
     }
     /// <summary>
     /// Parse any element content that is found.
@@ -325,7 +325,7 @@ namespace XMLLib
             {
                 parseElementContents(source, xmlNode);
             }
-            if (!source.match(source.from_bytes(static_cast<XMLNodeElement*>(xmlNode)->elementName) + U">"))
+            if (!source.match(source.from_bytes(static_cast<XMLNodeElement *>(xmlNode)->elementName) + U">"))
             {
                 throw SyntaxError(source, "Missing closing tag.");
             }
@@ -333,7 +333,7 @@ namespace XMLLib
         else if (source.match(U"/>"))
         {
             // Self closing element tag
-            static_cast<XMLNodeElement*>(xmlNode)->setNodeType(XMLNodeType::self);
+            static_cast<XMLNodeElement *>(xmlNode)->setNodeType(XMLNodeType::self);
         }
         else
         {
@@ -354,12 +354,12 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after version.");
             }
             source.ignoreWS();
-            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("version", parseValue(source));
+            static_cast<XMLNodeElement *>(xmlNode)->addAttribute("version", parseValue(source));
             // Check valid declaration values
             std::set<std::string> validVersions{"1.0", "1.1"};
-            if (validVersions.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("version").value.parsed) == validVersions.end())
+            if (validVersions.find(static_cast<XMLNodeElement *>(xmlNode)->getAttribute("version").value.parsed) == validVersions.end())
             {
-                throw SyntaxError(source, "Unsupported version " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("version").value.parsed + ".");
+                throw SyntaxError(source, "Unsupported version " + static_cast<XMLNodeElement *>(xmlNode)->getAttribute("version").value.parsed + ".");
             }
         }
         else
@@ -374,18 +374,18 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after encoding.");
             }
             source.ignoreWS();
-            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("encoding", parseValue(source));
+            static_cast<XMLNodeElement *>(xmlNode)->addAttribute("encoding", parseValue(source));
             // Check valid declaration values
-            toUpperString(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed);
+            toUpperString(static_cast<XMLNodeElement *>(xmlNode)->getAttribute("encoding").value.parsed);
             std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
-            if (validEncodings.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed) == validEncodings.end())
+            if (validEncodings.find(static_cast<XMLNodeElement *>(xmlNode)->getAttribute("encoding").value.parsed) == validEncodings.end())
             {
-                throw SyntaxError(source, "Unsupported encoding " + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("encoding").value.parsed + " specified.");
+                throw SyntaxError(source, "Unsupported encoding " + static_cast<XMLNodeElement *>(xmlNode)->getAttribute("encoding").value.parsed + " specified.");
             }
         }
         else
         {
-            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("encoding", {"UTF-8", "UTF-8"});
+            static_cast<XMLNodeElement *>(xmlNode)->addAttribute("encoding", {"UTF-8", "UTF-8"});
         }
         if (source.match(U"standalone"))
         {
@@ -395,17 +395,17 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after standalone.");
             }
             source.ignoreWS();
-            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("standalone", parseValue(source));
+            static_cast<XMLNodeElement *>(xmlNode)->addAttribute("standalone", parseValue(source));
             // Check valid declaration values
             std::set<std::string> validStandalone{"yes", "no"};
-            if (validStandalone.find(static_cast<XMLNodeElement*>(xmlNode)->getAttribute("standalone").value.parsed) == validStandalone.end())
+            if (validStandalone.find(static_cast<XMLNodeElement *>(xmlNode)->getAttribute("standalone").value.parsed) == validStandalone.end())
             {
-                throw SyntaxError(source, "Invalid standalone value of '" + static_cast<XMLNodeElement*>(xmlNode)->getAttribute("standalone").value.parsed + "'.");
+                throw SyntaxError(source, "Invalid standalone value of '" + static_cast<XMLNodeElement *>(xmlNode)->getAttribute("standalone").value.parsed + "'.");
             }
         }
         else
         {
-            static_cast<XMLNodeElement*>(xmlNode)->addAttribute("standalone", {"no", "no"});
+            static_cast<XMLNodeElement *>(xmlNode)->addAttribute("standalone", {"no", "no"});
         }
         if (source.match(U"encoding"))
         {
@@ -422,7 +422,7 @@ namespace XMLLib
     /// <param name="xmlNode">Prolog element node.</param>
     void XML::parseProlog(ISource &source, XMLNode *xmlNode)
     {
-        static_cast<XMLNodeElement*>(xmlNode)->setNodeType(XMLNodeType::prolog);
+        static_cast<XMLNodeElement *>(xmlNode)->setNodeType(XMLNodeType::prolog);
         source.ignoreWS();
         if (source.match(U"<?xml"))
         {
@@ -455,7 +455,7 @@ namespace XMLLib
                     m_dtd = std::make_unique<DTD>(*m_entityMapper);
                     m_dtd->parse(source);
                     m_validator = std::make_unique<XMLValidator>(*m_dtd);
-                    static_cast<XMLNodeElement*>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeDTD>());
+                    static_cast<XMLNodeElement *>(xmlNode)->children.emplace_back(std::make_unique<XMLNodeDTD>());
                 }
                 else
                 {

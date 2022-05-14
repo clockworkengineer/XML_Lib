@@ -5,6 +5,9 @@
 #include <string>
 #include <codecvt>
 #include <locale>
+// =========
+// NAMESPACE
+// =========
 namespace XMLLib
 {
     //

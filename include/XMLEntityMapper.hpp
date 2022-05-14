@@ -133,6 +133,7 @@ namespace XMLLib
                 entitySource.next();
             }
         }
+
     private:
         std::map<std::string, XMLEntityMapping> m_enityMappings;
     };

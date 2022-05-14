@@ -127,7 +127,6 @@ namespace XMLLib
     /// <returns>Attribute type as string (UTF-8 encoded).</returns>
     void DTD::parseAttributeType(ISource &dtdSource, DTDAttribute &attribute)
     {
-
         if (dtdSource.match(U"CDATA"))
         {
             attribute.type = DTDAttributeType::cdata;
@@ -203,7 +202,6 @@ namespace XMLLib
     /// <param name="dtdattribute">Attribute description.</param>
     void DTD::parseAttributeValue(ISource &dtdSource, DTDAttribute &attribute)
     {
-
         if (dtdSource.match(U"#REQUIRED"))
         {
             attribute.type |= DTDAttributeType::required;
