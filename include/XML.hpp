@@ -5,52 +5,26 @@
 #include <string>
 #include <stdexcept>
 #include <memory>
-#include <unordered_map>
-#include <set>
-#include <vector>
-#include <cwctype>
-#include <sstream>
 //
 // XML version
 //
 #include "XMLConfig.hpp"
-//
-// XML Core
-//
-#include "XML_core.hpp"
 // =========
 // NAMESPACE
 // =========
 namespace XMLLib
 {
-    //
-    // XML syntax error
-    //
-    struct SyntaxError : public std::exception
-    {
-    public:
-        SyntaxError(const std::string &description = "")
-        {
-            errorMessage = "XML Syntax Error: " + description;
-        }
-        SyntaxError(ISource &source, const std::string &description = "")
-        {
-            errorMessage = "XML Syntax Error [Line: " + std::to_string(source.getLineNo()) +
-                           " Column: " + std::to_string(source.getColumnNo()) + "] " + description;
-        }
-        virtual const char *what() const throw()
-        {
-            return (errorMessage.c_str());
-        }
-
-    private:
-        std::string errorMessage;
-    };
     // ===================================================
     // Forward declarations for interfaces/classes/structs
     // ===================================================
+    class ISource;
+    class IDestination;
     class IXMLEntityMapper;
+    class IXMLValidator;
     class DTD;
+    struct XMLNode;
+    struct XMLNodeElement;
+    struct XMLValue;
     // ================
     // CLASS DEFINITION
     // ================
@@ -72,14 +46,13 @@ namespace XMLLib
         // PUBLIC METHODS
         // ==============
         DTD &dtd() { return (*m_dtd); }
+        XMLNodeElement &prolog() { return (*m_prolog); };
         void parse(ISource &source);
         void stringify(IDestination &destination);
         void validate();
-        XMLNodeElement &prolog() { return (*m_prolog); };
         // ================
         // PUBLIC VARIABLES
         // ================
-
     private:
         // ===========================
         // PRIVATE TYPES AND CONSTANTS

@@ -4,9 +4,10 @@
 //
 #include <stdexcept>
 #include <filesystem>
-#include <algorithm>
+// #include <algorithm>
 #include <map>
 #include <set>
+#include <sstream>
 //
 // XML character constants
 //
@@ -27,6 +28,29 @@
 // =========
 namespace XMLLib
 {
+    //
+    // XML syntax error
+    //
+    struct SyntaxError : public std::exception
+    {
+    public:
+        SyntaxError(const std::string &description = "")
+        {
+            errorMessage = "XML Syntax Error: " + description;
+        }
+        SyntaxError(ISource &source, const std::string &description = "")
+        {
+            errorMessage = "XML Syntax Error [Line: " + std::to_string(source.getLineNo()) +
+                           " Column: " + std::to_string(source.getColumnNo()) + "] " + description;
+        }
+        virtual const char *what() const throw()
+        {
+            return (errorMessage.c_str());
+        }
+
+    private:
+        std::string errorMessage;
+    };
     //
     // XML value
     //
@@ -96,7 +120,7 @@ namespace XMLLib
         virtual bool isPresent(const std::string &entityName) const = 0;
         virtual std::map<std::string, XMLEntityMapping> &getList() = 0;
         virtual void map(XMLValue &entityReference) = 0;
-        virtual std::string translate(const std::string &toTranslate, char type = '%') const  = 0;
+        virtual std::string translate(const std::string &toTranslate, char type = '%') const = 0;
         virtual void recursive(const std::string &entityName, ISource::Char type, std::set<std::string> names = {}) = 0;
     };
     //

@@ -9,6 +9,7 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
+#include "XML_core.hpp"
 // =========
 // NAMESPACE
 // =========
