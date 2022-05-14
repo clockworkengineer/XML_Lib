@@ -6,7 +6,6 @@
 #include <map>
 #include <filesystem>
 #include <set>
-
 // =========
 // NAMESPACE
 // =========
@@ -130,7 +129,6 @@ namespace XMLLib
                 entitySource.next();
             }
         }
-
     private:
         std::map<std::string, XMLEntityMapping> m_enityMappings;
     };

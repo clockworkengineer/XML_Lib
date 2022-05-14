@@ -11,7 +11,6 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
-#include "XML_core.hpp"
 #include "XML_validator.hpp"
 // ====================
 // CLASS IMPLEMENTATION

@@ -5,10 +5,6 @@
 #include <string>
 #include <set>
 //
-// XML Core
-//
-#include "XML_core.hpp"
-//
 // XML DTD
 //
 #include "DTD.hpp"
