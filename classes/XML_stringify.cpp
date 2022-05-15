@@ -43,19 +43,19 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">XMLNode to convert into XML.</param>
     /// <param name="destination">XML destination stream.</param>
-    void XML::stringifyElements(XMLNode *xmlNode, IDestination &destination)
+    void XML::stringifyElements(XMLNode &xmlNode, IDestination &destination)
     {
-        switch (xmlNode->getNodeType())
+        switch (xmlNode.getNodeType())
         {
         // XML prolog
         case XMLNodeType::prolog:
         {
-            destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeElement>((*xmlNode)).getAttribute("version").value.unparsed + "\"" +
-                            " encoding=\"" + XMLNodeRef<XMLNodeElement>((*xmlNode)).getAttribute("encoding").value.unparsed + "\"" +
-                            " standalone=\"" + XMLNodeRef<XMLNodeElement>((*xmlNode)).getAttribute("standalone").value.unparsed + "\"?>");
-            for (auto &element : XMLNodeRef<XMLNodeElement>((*xmlNode)).children)
+            destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("version").value.unparsed + "\"" +
+                            " encoding=\"" + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("encoding").value.unparsed + "\"" +
+                            " standalone=\"" + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("standalone").value.unparsed + "\"?>");
+            for (auto &element : XMLNodeRef<XMLNodeElement>((xmlNode)).children)
             {
-                stringifyElements(element.get(), destination);
+                stringifyElements(*element, destination);
             }
             break;
         }
@@ -63,26 +63,26 @@ namespace XMLLib
         case XMLNodeType::root:
         case XMLNodeType::element:
         {
-            XMLNodeElement *xmlNodeElement = static_cast<XMLNodeElement *>(xmlNode);
-            destination.add("<" + xmlNodeElement->elementName);
-            for (auto attr : xmlNodeElement->getAttributeList())
+            XMLNodeElement &xmlNodeElement = static_cast<XMLNodeElement &>(xmlNode);
+            destination.add("<" + xmlNodeElement.elementName);
+            for (auto attr : xmlNodeElement.getAttributeList())
             {
                 destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");
             }
             destination.add(">");
-            for (auto &element : XMLNodeRef<XMLNodeElement>((*xmlNode)).children)
+            for (auto &element : XMLNodeRef<XMLNodeElement>((xmlNode)).children)
             {
-                stringifyElements(element.get(), destination);
+                stringifyElements(*element, destination);
             }
-            destination.add("</" + xmlNodeElement->elementName + ">");
+            destination.add("</" + xmlNodeElement.elementName + ">");
             break;
         }
         // Self closing element
         case XMLNodeType::self:
         {
-            XMLNodeElement *xmlNodeElement = static_cast<XMLNodeElement *>(xmlNode);
-            destination.add("<" + xmlNodeElement->elementName);
-            for (auto attr : xmlNodeElement->getAttributeList())
+            XMLNodeElement &xmlNodeElement = static_cast<XMLNodeElement &>(xmlNode);
+            destination.add("<" + xmlNodeElement.elementName);
+            for (auto attr : xmlNodeElement.getAttributeList())
             {
                 destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");
             }
@@ -92,36 +92,36 @@ namespace XMLLib
         // XML comments
         case XMLNodeType::comment:
         {
-            XMLNodeComment *xmlNodeComment = static_cast<XMLNodeComment *>(xmlNode);
-            destination.add("<!--" + xmlNodeComment->comment + "-->");
+            XMLNodeComment &xmlNodeComment = static_cast<XMLNodeComment &>(xmlNode);
+            destination.add("<!--" + xmlNodeComment.comment + "-->");
             break;
         }
         // XML element content
         case XMLNodeType::content:
         {
-            XMLNodeContent *xmlNodeContent = static_cast<XMLNodeContent *>(xmlNode);
-            destination.add(xmlNodeContent->content);
+            XMLNodeContent &xmlNodeContent = static_cast<XMLNodeContent &>(xmlNode);
+            destination.add(xmlNodeContent.content);
             break;
         }
         // XML character entity
         case XMLNodeType::entity:
         {
-            XMLNodeEntityReference *xmlNodeEntity = static_cast<XMLNodeEntityReference *>(xmlNode);
-            destination.add(xmlNodeEntity->value.unparsed);
+            XMLNodeEntityReference &xmlNodeEntity = static_cast<XMLNodeEntityReference &>(xmlNode);
+            destination.add(xmlNodeEntity.value.unparsed);
             break;
         }
         // XML processing instruction
         case XMLNodeType::pi:
         {
-            XMLNodePI *xmlNodePI = static_cast<XMLNodePI *>(xmlNode);
-            destination.add("<?" + xmlNodePI->name + " " + xmlNodePI->parameters + "?>");
+            XMLNodePI &xmlNodePI = static_cast<XMLNodePI &>(xmlNode);
+            destination.add("<?" + xmlNodePI.name + " " + xmlNodePI.parameters + "?>");
             break;
         }
         // XML CDATA section
         case XMLNodeType::cdata:
         {
-            XMLNodeCDATA *xmlNodeCDATA = static_cast<XMLNodeCDATA *>(xmlNode);
-            destination.add("<![CDATA[" + xmlNodeCDATA->cdata + "]]>");
+            XMLNodeCDATA &xmlNodeCDATA = static_cast<XMLNodeCDATA &>(xmlNode);
+            destination.add("<![CDATA[" + xmlNodeCDATA.cdata + "]]>");
             break;
         }
         // XML DTD
@@ -141,6 +141,6 @@ namespace XMLLib
     /// <param name="destination">XML destination stream.</param>
     void XML::stringifyXML(IDestination &destination)
     {
-        stringifyElements(m_prolog.get(), destination);
+        stringifyElements(*m_prolog, destination);
     }
 } // namespace XMLLib
