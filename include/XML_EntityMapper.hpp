@@ -14,6 +14,10 @@
 // XML sources
 //
 #include "XML_Sources.hpp"
+//
+// XML Entity Mapper interface
+//
+#include "IXMLEntityMapper.hpp"
 // =========
 // NAMESPACE
 // =========

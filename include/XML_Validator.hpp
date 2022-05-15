@@ -8,6 +8,10 @@
 // XML DTD
 //
 #include "DTD.hpp"
+//
+// XML Validator interface
+//
+#include "IXMLValidator.hpp"
 // =========
 // NAMESPACE
 // =========

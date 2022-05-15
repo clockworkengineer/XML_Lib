@@ -14,6 +14,7 @@
 #include "DTD.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
+#include "IXMLEntityMapper.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================

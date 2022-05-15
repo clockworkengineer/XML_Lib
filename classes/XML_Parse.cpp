@@ -15,6 +15,7 @@
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
+#include "XML_EntityMapper.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================

@@ -35,6 +35,7 @@ set (XML_INCLUDES
     XML_Config.hpp
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp
+    ./include/interface/IXMLEntityMapper.hpp
     ./include/XML.hpp
     ./include/XML_Sources.hpp
     ./include/XML_Destinations.hpp
