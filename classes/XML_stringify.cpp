@@ -63,7 +63,7 @@ namespace XMLLib
         case XMLNodeType::root:
         case XMLNodeType::element:
         {
-            XMLNodeElement &xmlNodeElement = static_cast<XMLNodeElement &>(xmlNode);
+            XMLNodeElement &xmlNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
             destination.add("<" + xmlNodeElement.elementName);
             for (auto attr : xmlNodeElement.getAttributeList())
             {
@@ -80,7 +80,7 @@ namespace XMLLib
         // Self closing element
         case XMLNodeType::self:
         {
-            XMLNodeElement &xmlNodeElement = static_cast<XMLNodeElement &>(xmlNode);
+            XMLNodeElement &xmlNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
             destination.add("<" + xmlNodeElement.elementName);
             for (auto attr : xmlNodeElement.getAttributeList())
             {
@@ -92,35 +92,35 @@ namespace XMLLib
         // XML comments
         case XMLNodeType::comment:
         {
-            XMLNodeComment &xmlNodeComment = static_cast<XMLNodeComment &>(xmlNode);
+            XMLNodeComment &xmlNodeComment = XMLNodeRef<XMLNodeComment>(xmlNode);
             destination.add("<!--" + xmlNodeComment.comment + "-->");
             break;
         }
         // XML element content
         case XMLNodeType::content:
         {
-            XMLNodeContent &xmlNodeContent = static_cast<XMLNodeContent &>(xmlNode);
+            XMLNodeContent &xmlNodeContent = XMLNodeRef<XMLNodeContent>(xmlNode);
             destination.add(xmlNodeContent.content);
             break;
         }
         // XML character entity
         case XMLNodeType::entity:
         {
-            XMLNodeEntityReference &xmlNodeEntity = static_cast<XMLNodeEntityReference &>(xmlNode);
+            XMLNodeEntityReference &xmlNodeEntity = XMLNodeRef<XMLNodeEntityReference>(xmlNode);
             destination.add(xmlNodeEntity.value.unparsed);
             break;
         }
         // XML processing instruction
         case XMLNodeType::pi:
         {
-            XMLNodePI &xmlNodePI = static_cast<XMLNodePI &>(xmlNode);
+            XMLNodePI &xmlNodePI = XMLNodeRef<XMLNodePI>(xmlNode);
             destination.add("<?" + xmlNodePI.name + " " + xmlNodePI.parameters + "?>");
             break;
         }
         // XML CDATA section
         case XMLNodeType::cdata:
         {
-            XMLNodeCDATA &xmlNodeCDATA = static_cast<XMLNodeCDATA &>(xmlNode);
+            XMLNodeCDATA &xmlNodeCDATA = XMLNodeRef<XMLNodeCDATA>(xmlNode);
             destination.add("<![CDATA[" + xmlNodeCDATA.cdata + "]]>");
             break;
         }
