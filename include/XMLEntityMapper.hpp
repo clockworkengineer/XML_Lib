@@ -9,11 +9,11 @@
 //
 // XML errors
 //
-#include "XML_errors.hpp"
+#include "XML_Errors.hpp"
 //
 // XML sources
 //
-#include "XML_sources.hpp"
+#include "XML_Sources.hpp"
 // =========
 // NAMESPACE
 // =========

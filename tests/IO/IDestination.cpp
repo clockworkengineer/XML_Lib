@@ -7,7 +7,7 @@
 // ================
 // Test definitions
 // =================
-#include "XML_tests.hpp"
+#include "XML_Tests.hpp"
 // =======================
 // XML class namespace
 // =======================

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23.1)
+cmake_minimum_required(VERSION 3.16.3)
 
 project("XMLLib" VERSION 0.0.1 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
 
@@ -12,7 +12,7 @@ elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options(-Wall -Werror -pedantic)
 endif()
 
-configure_file(XMLConfig.h.in XMLConfig.hpp)
+configure_file(XML_Config.h.in XML_Config.hpp)
 
 set(XML_LIBRARY_NAME ${PROJECT_NAME})
 
@@ -20,28 +20,28 @@ set(XML_LIBRARY_NAME ${PROJECT_NAME})
 
 set (XML_SOURCES
     ./classes/XML.cpp
-    ./classes/XML_parse.cpp
-    ./classes/XML_stringify.cpp
-    ./classes/XML_core.cpp
+    ./classes/XML_Parse.cpp
+    ./classes/XML_Stringify.cpp
+    ./classes/XML_Core.cpp
     ./classes/DTD.cpp
-    ./classes/DTD_parse.cpp
-    ./classes/DTD_parse_content.cpp
-    ./classes/DTD_parse_external.cpp
+    ./classes/DTD_Parse.cpp
+    ./classes/DTD_Parse_Content.cpp
+    ./classes/DTD_Parse_External.cpp
     ./classes/XMLValidator.cpp
     ./classes/XMLEntityMapper.cpp
 )
  
 set (XML_INCLUDES
-    XMLConfig.hpp
+    XML_Config.hpp
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp
     ./include/XML.hpp
-    ./include/XML_sources.hpp
-    ./include/XML_destinations.hpp
-    ./include/XML_nodes.hpp
-    ./include/XML_core.hpp
-    ./include/XML_errors.hpp
-    ./include/XML_types.hpp
+    ./include/XML_Sources.hpp
+    ./include/XML_Destinations.hpp
+    ./include/XML_Nodes.hpp
+    ./include/XML_Core.hpp
+    ./include/XML_Errors.hpp
+    ./include/XML_Types.hpp
     ./include/DTD.hpp
     ./include/XMLValidator.hpp
     ./include/XMLEntityMapper.hpp

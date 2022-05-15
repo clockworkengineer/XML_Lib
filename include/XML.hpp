@@ -8,7 +8,7 @@
 //
 // XML version
 //
-#include "XMLConfig.hpp"
+#include "XML_Config.hpp"
 //
 // XML character constants
 //

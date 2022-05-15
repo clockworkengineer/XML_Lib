@@ -9,10 +9,10 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
-#include "XML_core.hpp"
-#include "XML_errors.hpp"
-#include "XML_sources.hpp"
-#include "XML_destinations.hpp"
+#include "XML_Core.hpp"
+#include "XML_Errors.hpp"
+#include "XML_Sources.hpp"
+#include "XML_Destinations.hpp"
 // =========
 // NAMESPACE
 // =========

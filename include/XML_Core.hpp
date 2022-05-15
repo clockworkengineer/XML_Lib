@@ -14,8 +14,8 @@
 //
 // XML types/nodes
 //
-#include "XML_types.hpp"
-#include "XML_nodes.hpp"
+#include "XML_Types.hpp"
+#include "XML_Nodes.hpp"
 // =========
 // NAMESPACE
 // =========

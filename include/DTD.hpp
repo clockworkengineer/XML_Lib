@@ -7,7 +7,7 @@
 //
 // XML Core
 //
-#include "XML_core.hpp"
+#include "XML_Core.hpp"
 //
 // DTD element/attribute
 //

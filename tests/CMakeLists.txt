@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.23.1)
+cmake_minimum_required(VERSION 3.16.3)
 
-project("XML Unit Tests" VERSION 0.0.1 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
+project("XMLLib Unit Tests" VERSION 0.0.1 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 
 include(FetchContent)
 
@@ -21,27 +21,27 @@ set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
 set(TEST_SOURCES
     ./IO/ISource.cpp
     ./IO/IDestination.cpp
-    ./XML/XML_parse_misc.cpp
-    ./XML/XML_parse_declaration.cpp
-    ./XML/XML_parse_tags.cpp
-    ./XML/XML_parse_root.cpp
-    ./XML/XML_parse_files.cpp
-    ./XML/XML_parse_attributes.cpp
-    ./XML/XML_parse_comments.cpp
-    ./XML/XML_parse_unicode.cpp
-    ./XML/XML_parse_entities.cpp
-    ./XML/XML_parse_pi.cpp
-    ./XML/XML_parse_cdata.cpp
-    ./XML/XML_parse_namespace.cpp
-    ./XML/XML_stringify.cpp
-    ./XML/XML_helper.cpp
-    ./DTD/DTD_parse_misc.cpp
-    ./DTD/DTD_parse_entity.cpp
-    ./DTD/DTD_parse_attributes.cpp
-    ./DTD/DTD_parse_tags.cpp
-    ./DTD/DTD_stringify.cpp
-    ./DTD/DTD_validate_elements.cpp
-    ./DTD/DTD_validate_attributes.cpp
+    ./XML/XML_Parse_Misc.cpp
+    ./XML/XML_Parse_Declaration.cpp
+    ./XML/XML_Parse_Tags.cpp
+    ./XML/XML_Parse_Root.cpp
+    ./XML/XML_Parse_Files.cpp
+    ./XML/XML_Parse_Attributes.cpp
+    ./XML/XML_Parse_Comments.cpp
+    ./XML/XML_Parse_Unicode.cpp
+    ./XML/XML_Parse_Entities.cpp
+    ./XML/XML_Parse_PI.cpp
+    ./XML/XML_Parse_CDATA.cpp
+    ./XML/XML_Parse_Namespace.cpp
+    ./XML/XML_Stringify.cpp
+    ./XML/XML_Helper.cpp
+    ./DTD/DTD_Parse_Misc.cpp
+    ./DTD/DTD_Parse_Entity.cpp
+    ./DTD/DTD_Parse_Attributes.cpp
+    ./DTD/DTD_Parse_Tags.cpp
+    ./DTD/DTD_Stringify.cpp
+    ./DTD/DTD_Validate_Elements.cpp
+    ./DTD/DTD_Validate_Attributes.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})
