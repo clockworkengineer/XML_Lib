@@ -51,7 +51,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     REQUIRE(dtd.getType() == DTD::DTDType::internal);
     REQUIRE(XMLNodeRef<XMLNode>(xml.prolog()[0]).getNodeType() == XMLNodeType::root);
     REQUIRE(xml.prolog()[0][4].elementName == "footer");
-    REQUIRE(xml.prolog()[0][4].getContents() == u8"Writer: Donald Duck.\u00A0Copyright: W3Schools.");
+    REQUIRE(xml.prolog()[0][4].getContents() == reinterpret_cast<const char *>(u8"Writer: Donald Duck.\u00A0Copyright: W3Schools."));
   }
   SECTION("XML DTD with entity and how it deals with entity character expansion case 1)", "[XML][DTD][Parse][Entity]")
   {
