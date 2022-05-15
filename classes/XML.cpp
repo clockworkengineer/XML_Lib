@@ -13,7 +13,7 @@
 // =================
 #include "XML.hpp"
 #include "DTD.hpp"
-#include "XMLEntityMapper.hpp"
+#include "XML_EntityMapper.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================
@@ -46,7 +46,7 @@ namespace XMLLib
     XML::XML()
     {
         m_prolog = std::make_unique<XMLNodeElement>();
-        m_entityMapper = std::make_unique<XMLEntityMapper>();
+        m_entityMapper = std::make_unique<XML_EntityMapper>();
     }
     /// <summary>
     /// XML destructor.

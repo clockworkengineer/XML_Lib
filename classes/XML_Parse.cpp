@@ -11,7 +11,7 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
-#include "XMLValidator.hpp"
+#include "XML_Validator.hpp"
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
@@ -455,7 +455,7 @@ namespace XMLLib
                 {
                     m_dtd = std::make_unique<DTD>(*m_entityMapper);
                     m_dtd->parse(source);
-                    m_validator = std::make_unique<XMLValidator>(*m_dtd);
+                    m_validator = std::make_unique<XML_Validator>(*m_dtd);
                     XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeDTD>());
                 }
                 else

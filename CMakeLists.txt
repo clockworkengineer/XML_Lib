@@ -27,8 +27,8 @@ set (XML_SOURCES
     ./classes/DTD_Parse.cpp
     ./classes/DTD_Parse_Content.cpp
     ./classes/DTD_Parse_External.cpp
-    ./classes/XMLValidator.cpp
-    ./classes/XMLEntityMapper.cpp
+    ./classes/XML_Validator.cpp
+    ./classes/XML_EntityMapper.cpp
 )
  
 set (XML_INCLUDES
@@ -43,8 +43,8 @@ set (XML_INCLUDES
     ./include/XML_Errors.hpp
     ./include/XML_Types.hpp
     ./include/DTD.hpp
-    ./include/XMLValidator.hpp
-    ./include/XMLEntityMapper.hpp
+    ./include/XML_Validator.hpp
+    ./include/XML_EntityMapper.hpp
 )
 
 # XML library

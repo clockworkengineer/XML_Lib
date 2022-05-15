@@ -1,5 +1,5 @@
 //
-// Class: XMLEntityMapper
+// Class: XML_EntityMapper
 //
 // Description: XML entity mapper.
 //
@@ -10,7 +10,7 @@
 // =================
 #include "XML.hpp"
 #include "DTD.hpp"
-#include "XMLEntityMapper.hpp"
+#include "XML_EntityMapper.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================
@@ -37,7 +37,7 @@ namespace XMLLib
     // ==============
     // PUBLIC METHODS
     // ==============
-    XMLEntityMapper::XMLEntityMapper()
+    XML_EntityMapper::XML_EntityMapper()
     {
         m_entityMappings["&amp;"].internal = "&#x26;";
         m_entityMappings["&quot;"].internal = "&#x22;";
@@ -45,30 +45,30 @@ namespace XMLLib
         m_entityMappings["&lt;"].internal = "&#x3C;";
         m_entityMappings["&gt;"].internal = "&#x3E;";
     }
-    XMLEntityMapper::~XMLEntityMapper()
+    XML_EntityMapper::~XML_EntityMapper()
     {
     }
-    void XMLEntityMapper::add(const std::string &entityName, XMLEntityMapping &entityMapping)
+    void XML_EntityMapper::add(const std::string &entityName, XMLEntityMapping &entityMapping)
     {
         m_entityMappings[entityName] = entityMapping;
     }
-    XMLEntityMapping &XMLEntityMapper::get(const std::string &entityName)
+    XMLEntityMapping &XML_EntityMapper::get(const std::string &entityName)
     {
         return (m_entityMappings[entityName]);
     }
-    void XMLEntityMapper::remove(const std::string &entityName)
+    void XML_EntityMapper::remove(const std::string &entityName)
     {
         m_entityMappings.erase(entityName);
     }
-    bool XMLEntityMapper::isPresent(const std::string &entityName) const
+    bool XML_EntityMapper::isPresent(const std::string &entityName) const
     {
         return (m_entityMappings.count(entityName) != 0);
     }
-    std::map<std::string, XMLEntityMapping> &XMLEntityMapper::getList()
+    std::map<std::string, XMLEntityMapping> &XML_EntityMapper::getList()
     {
         return (m_entityMappings);
     }
-    void XMLEntityMapper::map(XMLValue &entityReference)
+    void XML_EntityMapper::map(XMLValue &entityReference)
     {
         if (isPresent(entityReference.unparsed))
         {
@@ -95,7 +95,7 @@ namespace XMLLib
             }
         }
     }
-    std::string XMLEntityMapper::translate(const std::string &toTranslate, char type) const
+    std::string XML_EntityMapper::translate(const std::string &toTranslate, char type) const
     {
         std::string translated = toTranslate;
         bool matchFound;
@@ -123,7 +123,7 @@ namespace XMLLib
     /// found in a entity mapping and adding it to a current stack of used entities; throwing an
     /// exception if it is already being used (recursive).
     /// </summary>
-    void XMLEntityMapper::recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities)
+    void XML_EntityMapper::recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities)
     {
         BufferSource entitySource(entityReference);
         while (entitySource.more())

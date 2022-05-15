@@ -3,17 +3,11 @@
 // C++ STL
 //
 #include <string>
-#include <map>
-#include <filesystem>
 #include <set>
 //
-// XML errors
+// XML DTD
 //
-#include "XML_Errors.hpp"
-//
-// XML sources
-//
-#include "XML_Sources.hpp"
+#include "DTD.hpp"
 // =========
 // NAMESPACE
 // =========
@@ -22,7 +16,7 @@ namespace XMLLib
     // ================
     // CLASS DEFINITION
     // ================
-    class XMLEntityMapper : public IXMLEntityMapper
+    class XML_Validator : public IXMLValidator
     {
     public:
         // ==========================
@@ -31,22 +25,14 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        XMLEntityMapper();
+        XML_Validator(DTD &dtd) : m_dtd(dtd) {}
         // ==========
         // DESTRUCTOR
         // ==========
-        virtual ~XMLEntityMapper();
         // ==============
         // PUBLIC METHODS
         // ==============
-        virtual void add(const std::string &entityName, XMLEntityMapping &entityMapping) override;
-        virtual XMLEntityMapping &get(const std::string &entityName) override;
-        virtual void remove(const std::string &entityName) override;
-        virtual bool isPresent(const std::string &entityName) const override;
-        virtual std::map<std::string, XMLEntityMapping> &getList() override;
-        virtual void map(XMLValue &entityReference) override;
-        virtual std::string translate(const std::string &toTranslate, char type = '%') const override;
-        virtual void recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities) override;
+        virtual void validate(XMLNodeElement &prolog) override;
         // ================
         // PUBLIC VARIABLES
         // ================
@@ -60,9 +46,23 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
+        void checkAttributes(XMLNode &xmlNode);
+        void checkContentSpecification(XMLNode &xmlNode);
+        void checkElement(XMLNode &xmlNode);
+        void checkElements(XMLNode &xmlNode);
+        bool checkIsNMTOKENOK(std::string nmTokenValue);
+        bool checkIsIDOK(const std::string &idValue);
+        void checkAttributeValue(XMLNode &xmlNode, DTDAttribute &attribute);
+        void checkAttributeType(XMLNode &xmlNode, DTDAttribute &attribute);
+        bool checkIsPCDATA(XMLNode &xmlNode);
+        bool checkIsEMPTY(XMLNode &xmlNode);
+        void checkAgainstDTD(XMLNodeElement &prolog);
         // =================
         // PRIVATE VARIABLES
         // =================
-        std::map<std::string, XMLEntityMapping> m_entityMappings;
+        std::set<std::string> m_assignedIDValues;
+        std::set<std::string> m_assignedIDREFValues;
+        long m_lineNumber = 1;
+        DTD &m_dtd;
     };
 } // namespace XMLLib

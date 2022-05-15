@@ -1,5 +1,5 @@
 //
-// Class: XMLValidator
+// Class: XML_Validator
 //
 // Description: XML DTD validator.
 //
@@ -9,7 +9,7 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
-#include "XMLValidator.hpp"
+#include "XML_Validator.hpp"
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
@@ -45,7 +45,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="nmTokenValue">Token value</param>
     /// <returns>true then token is valid otherwise false.</returns>
-    bool XMLValidator::checkIsNMTOKENOK(std::string nmTokenValue)
+    bool XML_Validator::checkIsNMTOKENOK(std::string nmTokenValue)
     {
         trimmString(nmTokenValue);
         BufferSource nmTokenValueSource(nmTokenValue);
@@ -64,7 +64,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="idValue">ID string value.</param>
     /// <returns>true then ID is valid otherwise false.</returns>
-    bool XMLValidator::checkIsIDOK(const std::string &idValue)
+    bool XML_Validator::checkIsIDOK(const std::string &idValue)
     {
         try
         {
@@ -82,7 +82,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <returns>true if element contains characters otherwise false.</returns>
-    bool XMLValidator::checkIsPCDATA(XMLNode &xmlNode)
+    bool XML_Validator::checkIsPCDATA(XMLNode &xmlNode)
     {
         for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
         {
@@ -99,7 +99,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <returns>true if element empty otherwise false.</returns>
-    bool XMLValidator::checkIsEMPTY(XMLNode &xmlNode)
+    bool XML_Validator::checkIsEMPTY(XMLNode &xmlNode)
     {
         return (XMLNodeRef<XMLNodeElement>(xmlNode).children.empty() || XMLNodeRef<XMLNodeElement>(xmlNode).getNodeType() == XMLNodeType::self);
     }
@@ -114,7 +114,7 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XMLValidator::checkAttributeValue(XMLNode &xmlNode, DTDAttribute &attribute)
+    void XML_Validator::checkAttributeValue(XMLNode &xmlNode, DTDAttribute &attribute)
     {
         if ((attribute.type & DTDAttributeType::required) != 0)
         {
@@ -172,7 +172,7 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XMLValidator::checkAttributeType(XMLNode &xmlNode, DTDAttribute &attribute)
+    void XML_Validator::checkAttributeType(XMLNode &xmlNode, DTDAttribute &attribute)
     {
         XMLAttribute elementAttribute = XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute(attribute.name);
         if ((attribute.type & DTDAttributeType::cdata) != 0)
@@ -276,7 +276,7 @@ namespace XMLLib
     /// Check element has the correct attribute type(s) and value(s) associated with it.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XMLValidator::checkAttributes(XMLNode &xmlNode)
+    void XML_Validator::checkAttributes(XMLNode &xmlNode)
     {
         for (auto &attribute : m_dtd.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).attributes)
         {
@@ -291,7 +291,7 @@ namespace XMLLib
     /// Check elements structure.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XMLValidator::checkContentSpecification(XMLNode &xmlNode)
+    void XML_Validator::checkContentSpecification(XMLNode &xmlNode)
     {
         if (m_dtd.getElementCount() == 0)
         {
@@ -344,7 +344,7 @@ namespace XMLLib
     /// Check elements content and associated attributes.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XMLValidator::checkElement(XMLNode &xmlNode)
+    void XML_Validator::checkElement(XMLNode &xmlNode)
     {
         checkContentSpecification(xmlNode);
         checkAttributes(xmlNode);
@@ -353,7 +353,7 @@ namespace XMLLib
     /// Recursively check elements of XML document.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XMLValidator::checkElements(XMLNode &xmlNode)
+    void XML_Validator::checkElements(XMLNode &xmlNode)
     {
         switch (xmlNode.getNodeType())
         {
@@ -402,7 +402,7 @@ namespace XMLLib
     /// </summary>
     /// <param name=""></param>
     /// <param name="prolog">Prolog element containing root of XML to validate.</param>
-    void XMLValidator::checkAgainstDTD(XMLNodeElement &prolog)
+    void XML_Validator::checkAgainstDTD(XMLNodeElement &prolog)
     {
         m_lineNumber = m_dtd.getLineCount();
         checkElements(prolog);
@@ -419,7 +419,7 @@ namespace XMLLib
     /// issue with the XML that is being validated.
     /// </summary>
     /// <param name="prolog">Prolog element containing root of XML to validate.</param>
-    void XMLValidator::validate(XMLNodeElement &prolog)
+    void XML_Validator::validate(XMLNodeElement &prolog)
     {
         checkAgainstDTD(prolog);
     }
