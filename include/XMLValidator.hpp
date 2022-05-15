@@ -46,16 +46,16 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
-        void checkAttributes(XMLNode *xmlNode);
-        void checkContentSpecification(XMLNode *xmlNode);
-        void checkElement(XMLNode *xmlNode);
-        void checkElements(XMLNode *xmlNode);
+        void checkAttributes(XMLNode &xmlNode);
+        void checkContentSpecification(XMLNode &xmlNode);
+        void checkElement(XMLNode &xmlNode);
+        void checkElements(XMLNode &xmlNode);
         bool checkIsNMTOKENOK(std::string nmTokenValue);
         bool checkIsIDOK(const std::string &idValue);
-        void checkAttributeValue(XMLNode *xmlNode, DTDAttribute &attribute);
-        void checkAttributeType(XMLNode *xmlNode, DTDAttribute &attribute);
-        bool checkIsPCDATA(XMLNode *xmlNode);
-        bool checkIsEMPTY(XMLNode *xmlNode);
+        void checkAttributeValue(XMLNode &xmlNode, DTDAttribute &attribute);
+        void checkAttributeType(XMLNode &xmlNode, DTDAttribute &attribute);
+        bool checkIsPCDATA(XMLNode &xmlNode);
+        bool checkIsEMPTY(XMLNode &xmlNode);
         void checkAgainstDTD(XMLNodeElement &prolog);
         // =================
         // PRIVATE VARIABLES
