@@ -36,6 +36,7 @@ set (XML_INCLUDES
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp
     ./include/interface/IXMLEntityMapper.hpp
+    ./include/interface/IXMLValidator.hpp
     ./include/XML.hpp
     ./include/XML_Sources.hpp
     ./include/XML_Destinations.hpp
