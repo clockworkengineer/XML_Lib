@@ -6,9 +6,16 @@
 #include <stdexcept>
 #include <memory>
 //
-// XML version
+// XML definitions
 //
 #include "XML_Config.hpp"
+#include "XML_Types.hpp"
+#include "XML_Nodes.hpp"
+#include "XML_Validator.hpp"
+#include "XML_Errors.hpp"
+#include "XML_Sources.hpp"
+#include "XML_Destinations.hpp"
+#include "XML_EntityMapper.hpp"
 //
 // XML character constants
 //
@@ -19,17 +26,6 @@
 // =========
 namespace XMLLib
 {
-    // ===================================================
-    // Forward declarations for interfaces/classes/structs
-    // ===================================================
-    class ISource;
-    class IDestination;
-    class IXMLEntityMapper;
-    class IXMLValidator;
-    class DTD;
-    struct XMLNode;
-    struct XMLNodeElement;
-    struct XMLValue;
     // ================
     // CLASS DEFINITION
     // ================

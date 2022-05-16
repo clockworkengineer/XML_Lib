@@ -12,11 +12,6 @@
 // =================
 #include "XML.hpp"
 #include "XML_Impl.hpp"
-#include "XML_Validator.hpp"
-#include "XML_Errors.hpp"
-#include "XML_Sources.hpp"
-#include "XML_Destinations.hpp"
-#include "XML_EntityMapper.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================

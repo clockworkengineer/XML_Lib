@@ -13,9 +13,6 @@
 // =================
 #include "XML.hpp"
 #include "XML_Impl.hpp"
-#include "DTD.hpp"
-#include "XML_EntityMapper.hpp"
-#include "IXMLValidator.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================
