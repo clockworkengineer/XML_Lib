@@ -5,14 +5,6 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-//
-// XML Core
-//
-#include "XML_Core.hpp"
-//
-// DTD element/attribute
-//
-#include "DTD_Element.hpp"
 // =========
 // NAMESPACE
 // =========
@@ -24,8 +16,11 @@ namespace XMLLib
     class DTD_Impl;
     class ISource;
     class IDestination;
-    struct XMLNodeElement;
     class IXMLEntityMapper;
+    struct DTDElement;
+    struct XMLNodeElement;
+    struct XMLEntityMapping;
+    struct XMLExternalReference;
     // ================
     // CLASS DEFINITION
     // ================
