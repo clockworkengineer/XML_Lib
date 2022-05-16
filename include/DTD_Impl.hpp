@@ -5,9 +5,15 @@
 #include <string>
 #include <unordered_map>
 //
-// XML Core
+// XML Core/Sources/Destinations
 //
 #include "XML_Core.hpp"
+#include "XML_Sources.hpp"
+#include "XML_Destinations.hpp"
+//
+// XML Entity interface
+//
+#include "IXMLEntityMapper.hpp"
 //
 // DTD element/attribute
 //

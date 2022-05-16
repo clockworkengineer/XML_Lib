@@ -7,10 +7,6 @@
 #include <filesystem>
 #include <set>
 //
-// XML errors
-//
-#include "XML_Errors.hpp"
-//
 // XML sources
 //
 #include "XML_Sources.hpp"
