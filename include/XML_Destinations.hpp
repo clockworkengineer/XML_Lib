@@ -21,8 +21,7 @@ namespace XMLLib
     {
     public:
         BufferDestination()
-        {
-        }
+        = default;
         void add(const std::string &bytes) override
         {
             for (auto b : bytes)
@@ -34,7 +33,7 @@ namespace XMLLib
         {
             add(m_UTF8.to_bytes(ch));
         }
-        std::string getBuffer() const
+        [[nodiscard]] std::string getBuffer() const
         {
             return (m_stringifyBuffer);
         }
@@ -45,7 +44,7 @@ namespace XMLLib
     class FileDestination : public IDestination
     {
     public:
-        FileDestination(const std::string &destinationFileName)
+        explicit FileDestination(const std::string &destinationFileName)
         {
             m_destination.open(destinationFileName.c_str(), std::ios_base::binary);
             if (!m_destination.is_open())

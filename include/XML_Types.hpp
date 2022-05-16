@@ -3,6 +3,7 @@
 // C++ STL
 //
 #include <string>
+#include <utility>
 // =========
 // NAMESPACE
 // =========
@@ -22,11 +23,11 @@ namespace XMLLib
             unparsed += rhs.unparsed;
             return (*this);
         }
-        bool isEntityReference() const
+        [[nodiscard]] bool isEntityReference() const
         {
             return (unparsed[0] == '&' && unparsed[1] != '#' && unparsed.back() == ';');
         }
-        bool isCharacterReference() const
+        [[nodiscard]] bool isCharacterReference() const
         {
             return (unparsed[0] == '&' && unparsed[1] == '#' && unparsed.back() == ';');
         }
@@ -37,8 +38,8 @@ namespace XMLLib
     struct XMLAttribute
     {
     public:
-        XMLAttribute() {}
-        XMLAttribute(const std::string &name, const XMLValue &value) : name(name), value(value)
+        XMLAttribute() = default;
+        XMLAttribute(std::string name, XMLValue value) : name(std::move(name)), value(std::move(value))
         {
         }
         std::string name;

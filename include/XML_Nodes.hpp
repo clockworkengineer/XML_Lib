@@ -2,6 +2,7 @@
 //
 // C++ STL
 //
+#include <utility>
 #include <vector>
 #include <string>
 #include <memory>
@@ -34,10 +35,10 @@ namespace XMLLib
     struct XMLNode
     {
     public:
-        XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType)
+        explicit XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType)
         {
         }
-        XMLNodeType getNodeType() const
+        [[nodiscard]] XMLNodeType getNodeType() const
         {
             return (xmlNodeType);
         }
@@ -45,7 +46,7 @@ namespace XMLLib
         {
             xmlNodeType = nodeType;
         }
-        std::string getContents() const;
+        [[nodiscard]] std::string getContents() const;
         XMLNode &operator[](int index);
         XMLNode &operator[](const std::string &name);
         std::vector<std::unique_ptr<XMLNode>> children;
@@ -59,7 +60,7 @@ namespace XMLLib
     struct XMLNodeContent : XMLNode
     {
     public:
-        XMLNodeContent(XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType)
+        explicit XMLNodeContent(XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType)
         {
         }
         std::string content;
@@ -71,7 +72,7 @@ namespace XMLLib
     struct XMLNodeCDATA : XMLNode
     {
     public:
-        XMLNodeCDATA(XMLNodeType nodeType = XMLNodeType::cdata) : XMLNode(nodeType)
+        explicit XMLNodeCDATA(XMLNodeType nodeType = XMLNodeType::cdata) : XMLNode(nodeType)
         {
         }
         std::string cdata;
@@ -82,7 +83,7 @@ namespace XMLLib
     struct XMLNodeEntityReference : XMLNode
     {
     public:
-        XMLNodeEntityReference(const XMLValue &value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), value(value)
+        explicit XMLNodeEntityReference(XMLValue value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), value(std::move(value))
         {
         }
         XMLValue value;
@@ -93,14 +94,14 @@ namespace XMLLib
     struct XMLNodeElement : XMLNode
     {
     public:
-        XMLNodeElement(XMLNodeType nodeType = XMLNodeType::element) : XMLNode(nodeType)
+        explicit XMLNodeElement(XMLNodeType nodeType = XMLNodeType::element) : XMLNode(nodeType)
         {
         }
-        XMLNodeElement(const std::string &name) : XMLNodeElement()
+        explicit XMLNodeElement(const std::string &name) : XMLNodeElement()
         {
             this->elementName = name;
         }
-        bool isAttributePresent(const std::string &name) const
+        [[nodiscard]] bool isAttributePresent(const std::string &name) const
         {
             return (std::find_if(attributes.rbegin(), attributes.rend(),
                                  [&name](const XMLAttribute &attr)
@@ -124,7 +125,7 @@ namespace XMLLib
         {
             attributes.clear();
         }
-        bool isNameSpacePresent(const std::string &name) const
+        [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
         {
             return (std::find_if(namespaces.rbegin(), namespaces.rend(),
                                  [&name](const XMLAttribute &attr)
@@ -134,7 +135,7 @@ namespace XMLLib
         {
             namespaces.emplace_back(name, value);
         }
-        XMLAttribute getNameSpace(const std::string &name) const
+        [[nodiscard]] XMLAttribute getNameSpace(const std::string &name) const
         {
             return (*std::find_if(namespaces.rbegin(), namespaces.rend(),
                                   [&name](const XMLAttribute &ns)
@@ -162,7 +163,7 @@ namespace XMLLib
     struct XMLNodeComment : XMLNode
     {
     public:
-        XMLNodeComment(XMLNodeType nodeType = XMLNodeType::comment) : XMLNode(nodeType)
+        explicit XMLNodeComment(XMLNodeType nodeType = XMLNodeType::comment) : XMLNode(nodeType)
         {
         }
         std::string comment;
@@ -173,7 +174,7 @@ namespace XMLLib
     struct XMLNodePI : XMLNode
     {
     public:
-        XMLNodePI(XMLNodeType nodeType = XMLNodeType::pi) : XMLNode(nodeType)
+        explicit XMLNodePI(XMLNodeType nodeType = XMLNodeType::pi) : XMLNode(nodeType)
         {
         }
         std::string name;
@@ -185,7 +186,7 @@ namespace XMLLib
     struct XMLNodeDTD : XMLNode
     {
     public:
-        XMLNodeDTD(XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType)
+        explicit XMLNodeDTD(XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType)
         {
         }
     };
@@ -204,7 +205,7 @@ namespace XMLLib
     {
         if ((index >= 0) && (index < ((int)XMLNodeRef<XMLNode>(*this).children.size())))
         {
-            return (*((XMLNodeRef<XMLNode>(*this).children[index].get())));
+            return (*((XMLNodeRef<XMLNode>(*this).children[index])));
         }
         throw std::runtime_error("Invalid index used to access array.");
     }
@@ -270,7 +271,7 @@ namespace XMLLib
     inline std::string XMLNode::getContents() const
     {
         std::string result;
-        for (auto &node : children)
+        for (const auto &node : children)
         {
             if (node->getNodeType() == XMLNodeType::content)
             {

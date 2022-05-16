@@ -39,18 +39,18 @@ namespace XMLLib
         // ==========
         // DESTRUCTOR
         // ==========
-        virtual ~XML_EntityMapper();
+        ~XML_EntityMapper() override;
         // ==============
         // PUBLIC METHODS
         // ==============
-        virtual void add(const std::string &entityName, XMLEntityMapping &entityMapping) override;
-        virtual XMLEntityMapping &get(const std::string &entityName) override;
-        virtual void remove(const std::string &entityName) override;
-        virtual bool isPresent(const std::string &entityName) const override;
-        virtual std::map<std::string, XMLEntityMapping> &getList() override;
-        virtual void map(XMLValue &entityReference) override;
-        virtual std::string translate(const std::string &toTranslate, char type = '%') const override;
-        virtual void recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities) override;
+        void add(const std::string &entityName, XMLEntityMapping &entityMapping) override;
+        XMLEntityMapping &get(const std::string &entityName) override;
+        void remove(const std::string &entityName) override;
+        [[nodiscard]] bool isPresent(const std::string &entityName) const override;
+        std::map<std::string, XMLEntityMapping> &getList() override;
+        void map(XMLValue &entityReference) override;
+        [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
+        void recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities) override;
         // ================
         // PUBLIC VARIABLES
         // ================

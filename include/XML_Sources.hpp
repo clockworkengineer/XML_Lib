@@ -20,8 +20,8 @@ namespace XMLLib
     class BufferSource : public ISource
     {
     public:
-        BufferSource() {}
-        BufferSource(const std::u16string &sourceBuffer)
+        BufferSource() = default;
+        explicit BufferSource(const std::u16string &sourceBuffer)
         {
             if (sourceBuffer.empty())
             {
@@ -38,7 +38,7 @@ namespace XMLLib
             m_parseBuffer = m_UTF8.from_bytes(m_UTF16.to_bytes(utf16xml));
             convertCRLFToLF(m_parseBuffer);
         }
-        BufferSource(const std::string &sourceBuffer)
+        explicit BufferSource(const std::string &sourceBuffer)
         {
             if (sourceBuffer.empty())
             {
@@ -47,7 +47,7 @@ namespace XMLLib
             m_parseBuffer = m_UTF8.from_bytes(sourceBuffer);
             convertCRLFToLF(m_parseBuffer);
         }
-        ISource::Char current() const override
+        [[nodiscard]] ISource::Char current() const override
         {
             if (more())
             {
@@ -69,7 +69,7 @@ namespace XMLLib
                 m_column = 1;
             }
         }
-        bool more() const override
+        [[nodiscard]] bool more() const override
         {
             return (m_bufferPosition < static_cast<long>(m_parseBuffer.size()));
         }
@@ -81,7 +81,7 @@ namespace XMLLib
                 m_bufferPosition = 0;
             }
         }
-        long position() const override
+        [[nodiscard]] long position() const override
         {
             return (m_bufferPosition);
         }
@@ -112,7 +112,7 @@ namespace XMLLib
     class FileSource : public ISource
     {
     public:
-        FileSource(const std::string &sourceFileName)
+        explicit FileSource(const std::string &sourceFileName)
         {
             m_source.open(sourceFileName.c_str(), std::ios_base::binary);
             if (!m_source.is_open())

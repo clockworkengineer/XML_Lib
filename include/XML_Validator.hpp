@@ -29,14 +29,14 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        XML_Validator(DTD &dtd) : m_dtd(dtd) {}
+        explicit XML_Validator(DTD &dtd) : m_dtd(dtd) {}
         // ==========
         // DESTRUCTOR
         // ==========
         // ==============
         // PUBLIC METHODS
         // ==============
-        virtual void validate(XMLNodeElement &prolog) override;
+        void validate(XMLNodeElement &prolog) override;
         // ================
         // PUBLIC VARIABLES
         // ================

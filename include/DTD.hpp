@@ -37,23 +37,23 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        DTD(IXMLEntityMapper &entityMapper) : m_entityMapper(entityMapper) {}
+        explicit DTD(IXMLEntityMapper &entityMapper) : m_entityMapper(entityMapper) {}
         // ==========
         // DESTRUCTOR
         // ==========
         // ==============
         // PUBLIC METHODS
         // ==============
-        uint16_t getType() const;
+        [[nodiscard]] uint16_t getType() const;
         std::string &getRootName();
         XMLExternalReference &getExternalReference();
-        bool isElementPresent(const std::string &elementName) const;
-        long getElementCount() const { return (static_cast<long>(m_elements.size())); }
+        [[nodiscard]] bool isElementPresent(const std::string &elementName) const;
+        [[nodiscard]] long getElementCount() const { return (static_cast<long>(m_elements.size())); }
         DTDElement &getElement(const std::string &elementName);
-        bool isEntityPresent(const std::string &entityName) const;
+        [[nodiscard]] bool isEntityPresent(const std::string &entityName) const;
         XMLEntityMapping &getEntity(const std::string &entityName);
         XMLExternalReference &getNotation(const std::string &notationName);
-        long getLineCount() const;
+        [[nodiscard]] long getLineCount() const;
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         void validate(XMLNodeElement &prolog);

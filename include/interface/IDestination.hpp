@@ -17,10 +17,10 @@ namespace XMLLib
     {
     public:
         // Virtual destructor
-        virtual ~IDestination() {}
+        virtual ~IDestination() = default;
         // Add bytes to destination
         virtual void add(const std::string &bytes) = 0;
-        virtual void add(const ISource::Char) = 0;
+        virtual void add(ISource::Char) = 0;
 
     protected:
         std::wstring_convert<std::codecvt_utf8_utf16<ISource::String::value_type>, ISource::String::value_type> m_UTF8;

@@ -21,25 +21,25 @@ namespace XMLLib
         using String = std::u32string;
         using Char = String::value_type;
         // Virtual destructor
-        virtual ~ISource() {}
+        virtual ~ISource() = default;
         // Current character
-        virtual Char current() const = 0;
+        [[nodiscard]] virtual Char current() const = 0;
         // Move to next character
         virtual void next() = 0;
         // Are there still more characters to read ?
-        virtual bool more() const = 0;
+        [[nodiscard]] virtual bool more() const = 0;
         // Back length characters
         virtual void backup(long length) = 0;
         // Current character position within source stream
-        virtual long position() const = 0;
+        [[nodiscard]] virtual long position() const = 0;
         // Return range of characters as a string from source stream
         virtual std::string getRange(long start, long end) = 0;
         // Reset to beginning of source stream
         virtual void reset() = 0;
         // Is the current character whitespace
-        bool isWS() const
+        [[nodiscard]] bool isWS() const
         {
-            return (std::iswspace(static_cast<wint_t>(current())));
+            return (std::iswspace(static_cast<wint_t>(current()))) != 0;
         }
         // Ignore shitespace on source stream
         void ignoreWS()
@@ -65,12 +65,12 @@ namespace XMLLib
             return (false);
         }
         // Current line number in source stream
-        long getLineNo() const
+        [[nodiscard]] long getLineNo() const
         {
             return (m_lineNo);
         }
         // Current column number in source stream
-        long getColumnNo() const
+        [[nodiscard]] long getColumnNo() const
         {
             return (m_column);
         }
