@@ -85,7 +85,7 @@ namespace XMLLib
             return (m_UTF8.to_bytes(from));
         }
         // Convert to byte string (UTF-8)
-        std::string to_bytes(const Char &from)
+        std::string to_bytes(const Char from)
         {
             return (m_UTF8.to_bytes(from));
         }

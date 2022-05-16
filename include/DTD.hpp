@@ -11,7 +11,7 @@
 //
 // DTD element/attribute
 //
-#include "DTDElement.hpp"
+#include "DTD_Element.hpp"
 // =========
 // NAMESPACE
 // =========
