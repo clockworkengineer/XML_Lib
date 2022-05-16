@@ -6,10 +6,6 @@
 #include <string>
 #include <stdexcept>
 //
-// XML character constants
-//
-#include "XML_Characters.hpp"
-//
 // ISource interface
 //
 #include "ISource.hpp"
@@ -18,6 +14,11 @@
 // =========
 namespace XMLLib
 {
+    //
+    // XML character constants
+    //
+    constexpr char kCarriageReturn{0x0D};
+    constexpr char kLineFeed{0x0A};
     //
     // Source classes for parsers.
     //

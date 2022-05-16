@@ -41,7 +41,6 @@ set (XML_INCLUDES
     ./include/interface/IXMLValidator.hpp
     ./include/XML.hpp
     ./include/XML_Impl.hpp
-    ./include/XML_Characters.hpp
     ./include/XML_Sources.hpp
     ./include/XML_Destinations.hpp
     ./include/XML_Nodes.hpp

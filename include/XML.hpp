@@ -9,10 +9,6 @@
 // XML version
 //
 #include "XML_Config.hpp"
-//
-// XML character constants
-//
-#include "XML_Characters.hpp"
 // =========
 // NAMESPACE
 // =========

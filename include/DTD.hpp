@@ -5,10 +5,6 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-//
-// XML character constants
-//
-#include "XML_Characters.hpp"
 // =========
 // NAMESPACE
 // =========
