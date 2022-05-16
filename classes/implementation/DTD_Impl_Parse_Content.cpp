@@ -8,12 +8,8 @@
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XML.hpp"
 #include "DTD.hpp"
 #include "DTD_Impl.hpp"
-#include "XML_Errors.hpp"
-#include "XML_Sources.hpp"
-#include "XML_Destinations.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================

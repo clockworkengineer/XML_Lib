@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <set>
 //
-// XML sources
+// XML
 //
 #include "XML_Sources.hpp"
 //

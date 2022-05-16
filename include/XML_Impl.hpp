@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <memory>
 //
-// XML definitions
+// XML
 //
 #include "XML_Config.hpp"
 #include "XML_Types.hpp"
@@ -17,11 +17,6 @@
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
 #include "XML_EntityMapper.hpp"
-//
-// XML character constants
-//
-#define kCarriageReturn 0x0D
-#define kLineFeed 0x0A
 // =========
 // NAMESPACE
 // =========

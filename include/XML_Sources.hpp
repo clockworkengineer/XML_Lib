@@ -6,6 +6,10 @@
 #include <string>
 #include <stdexcept>
 //
+// XML character constants
+//
+#include "XML_Characters.hpp"
+//
 // ISource interface
 //
 #include "ISource.hpp"

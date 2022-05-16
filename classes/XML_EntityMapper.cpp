@@ -8,9 +8,8 @@
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XML.hpp"
-#include "XML_Errors.hpp"
 #include "XML_EntityMapper.hpp"
+#include "XML_Errors.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================
