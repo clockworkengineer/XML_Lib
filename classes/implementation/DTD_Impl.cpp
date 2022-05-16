@@ -1,9 +1,7 @@
 //
-// Class: DTD
+// Class: DTD_impl
 //
-// Description: Parse XML Data Type Declaration (DTD) portion of an XML file so
-// that the XML maybe be validated against it and flagged as well-formed if it passes.
-// For more information on the XML standard check out https://www.w3.org/TR/REC-xml/.
+// Description: DTD class implementation.
 //
 // Dependencies:   C20++ - Language standard features used.
 //
@@ -42,107 +40,106 @@ namespace XMLLib
     // ==============
     // PUBLIC METHODS
     // ==============
-    DTD::DTD(IXMLEntityMapper &entityMapper)
-    {
-        m_implementation = std::make_unique<DTD_Impl>(entityMapper);
-    }
-    DTD::~DTD()
+    DTD_Impl::DTD_Impl(IXMLEntityMapper &entityMapper)  : m_entityMapper(entityMapper)
     {
     }
-    /// <summary>
-    ///
-    /// </summary>
-    /// <param name=""></param>
-    long DTD::getLineCount() const
+    DTD_Impl::~DTD_Impl()
     {
-        return (m_implementation->getLineCount());
     }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    uint16_t DTD::getType() const
+    long DTD_Impl::getLineCount() const
     {
-        return (m_implementation->getType());
+        long lineNumber = 1;
+        for (auto ch : m_unparsed)
+        {
+            if (ch == kLineFeed)
+            {
+                lineNumber++;
+            }
+        }
+        return (lineNumber);
     }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    std::string &DTD::getRootName()
+    uint16_t DTD_Impl::getType() const
     {
-        return (m_implementation->getRootName());
+        return (m_type);
     }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    XMLExternalReference &DTD::getExternalReference()
+    std::string &DTD_Impl::getRootName()
     {
-        return (m_implementation->getExternalReference());
+        return (m_name);
     }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    bool DTD::isElementPresent(const std::string &elementName) const
+    XMLExternalReference &DTD_Impl::getExternalReference()
     {
-        return (m_implementation->isElementPresent(elementName));
-    }
-        /// <summary>
-    ///
-    /// </summary>
-    /// <param name=""></param>
-    long DTD::getElementCount() const
-    {
-        return (m_implementation->getElementCount());
+        return (m_external);
     }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    DTDElement &DTD::getElement(const std::string &elementName)
+    bool DTD_Impl::isElementPresent(const std::string &elementName) const
     {
-        return (m_implementation->getElement(elementName));
+        return (m_elements.find(elementName) != m_elements.end());
     }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    bool DTD::isEntityPresent(const std::string &entityName) const
+    DTDElement &DTD_Impl::getElement(const std::string &elementName)
     {
-        return (m_implementation->isEntityPresent(entityName));
+        return (m_elements[elementName]);
     }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    XMLEntityMapping &DTD::getEntity(const std::string &entityName)
+    bool DTD_Impl::isEntityPresent(const std::string &entityName) const
     {
-        return (m_implementation->getEntity(entityName));
+        return (m_entityMapper.isPresent(entityName));
     }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    XMLExternalReference &DTD::getNotation(const std::string &notationName)
+    XMLEntityMapping &DTD_Impl::getEntity(const std::string &entityName)
     {
-        return (m_implementation->getNotation(notationName));
+        return (m_entityMapper.get(entityName));
+    }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name=""></param>
+    XMLExternalReference &DTD_Impl::getNotation(const std::string &notationName)
+    {
+        return (m_notations[notationName]);
     }
     /// <summary>
     /// Parse DTD read from source stream.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parse(ISource &dtdSource)
+    void DTD_Impl::parse(ISource &dtdSource)
     {
-        m_implementation->parse(dtdSource);
+        parseDTD(dtdSource);
     }
     /// <summary>
     /// Create DTD text from an DTD object.
     /// </summary>
     /// <param name="destination">DTD destination stream.</param>
-    void DTD::stringify(IDestination &destination)
+    void DTD_Impl::stringify(IDestination &destination)
     {
-        m_implementation->stringify(destination);
+        destination.add(m_unparsed);
     }
 } // namespace XMLLib

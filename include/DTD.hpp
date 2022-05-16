@@ -4,6 +4,7 @@
 //
 #include <string>
 #include <unordered_map>
+#include <memory>
 //
 // XML Core
 //
@@ -17,6 +18,14 @@
 // =========
 namespace XMLLib
 {
+    // ===================================================
+    // Forward declarations for interfaces/classes/structs
+    // ===================================================
+    class DTD_Impl;
+    class ISource;
+    class IDestination;
+    struct XMLNodeElement;
+    class IXMLEntityMapper;
     // ================
     // CLASS DEFINITION
     // ================
@@ -37,10 +46,11 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        explicit DTD(IXMLEntityMapper &entityMapper) : m_entityMapper(entityMapper) {}
+        explicit DTD(IXMLEntityMapper &entityMapper);
         // ==========
         // DESTRUCTOR
         // ==========
+        ~DTD();
         // ==============
         // PUBLIC METHODS
         // ==============
@@ -48,7 +58,7 @@ namespace XMLLib
         std::string &getRootName();
         XMLExternalReference &getExternalReference();
         [[nodiscard]] bool isElementPresent(const std::string &elementName) const;
-        [[nodiscard]] long getElementCount() const { return (static_cast<long>(m_elements.size())); }
+        [[nodiscard]] long getElementCount() const;
         DTDElement &getElement(const std::string &elementName);
         [[nodiscard]] bool isEntityPresent(const std::string &entityName) const;
         XMLEntityMapping &getEntity(const std::string &entityName);
@@ -70,42 +80,9 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
-        void parseConditional(ISource &dtdSource, bool includeOff = true);
-        void parseValidNotations(const std::string &notations);
-        void parseValidateAttribute(const std::string &elementName, DTDAttribute xDTDAttribute);
-        void parseParameterEntities(ISource &dtdSource);
-        void parseExternalContent(ISource &dtdSource);
-        std::string parseAttributeEnumerationType(ISource &source);
-        bool parseIsChoiceOrSequence(ISource &contentSpecSource);
-        void parseElementCP(ISource &contentSpecSource, IDestination &contentSpec);
-        void parseElementChoice(ISource &contentSpecSource, IDestination &contentSpec);
-        void parseElementSequence(ISource &contentSpecSource, IDestination &contentSpec);
-        void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpec);
-        void parseElementName(ISource &contentSpecSource, IDestination &contentSpec);
-        void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpec);
-        void parseElementContentSpecification(const std::string &elementName, XMLValue &contentSpec);
-        void parseExternalRefenceContent();
-        void parseAttributeList(ISource &dtdSource);
-        void parseNotation(ISource &dtdSource);
-        void parseEntity(ISource &dtdSource);
-        void parseElement(ISource &dtdSource);
-        XMLExternalReference parseExternalReference(ISource &dtdSource);
-        void parseAttributeType(ISource &dtdSource, DTDAttribute &attribute);
-        void parseAttributeValue(ISource &dtdSource, DTDAttribute &attribute);
-        void parseComment(ISource &dtdSource);
-        void parseParameterEntityReference(ISource &dtdSource);
-        void parseExternal(ISource &dtdSource);
-        void parseInternal(ISource &dtdSource);
-        void parseDTD(ISource &dtdSource);
         // =================
         // PRIVATE VARIABLES
         // =================
-        uint16_t m_type{};
-        std::string m_name;
-        XMLExternalReference m_external;
-        std::unordered_map<std::string, DTDElement> m_elements;
-        std::unordered_map<std::string, XMLExternalReference> m_notations;
-        IXMLEntityMapper &m_entityMapper;
-        std::string m_unparsed;
+        std::unique_ptr<DTD_Impl> m_implementation;
     };
 } // namespace XMLLib

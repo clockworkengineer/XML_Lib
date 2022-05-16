@@ -1,5 +1,5 @@
 //
-// Class: DTD
+// Class: DTD_impl
 //
 // Description: Parse XML DTD.
 //
@@ -10,6 +10,7 @@
 // =================
 #include "XML.hpp"
 #include "DTD.hpp"
+#include "DTD_Impl.hpp"
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
@@ -42,7 +43,7 @@ namespace XMLLib
     /// </summary>
     /// <param name=""></param>
     /// <returns></returns>
-    void DTD::parseValidNotations(const std::string &notations)
+    void DTD_Impl::parseValidNotations(const std::string &notations)
     {
         for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|'))
         {
@@ -57,7 +58,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="elementName">Element associated with attribute.</param>
     /// <param name="dtdattribute">Attribute description to validate.</param>
-    void DTD::parseValidateAttribute(const std::string &elementName, DTDAttribute dtdAttribute)
+    void DTD_Impl::parseValidateAttribute(const std::string &elementName, DTDAttribute dtdAttribute)
     {
         // Attribute cannot be ID and fixed
         if (dtdAttribute.type == (DTDAttributeType::id | DTDAttributeType::fixed))
@@ -99,7 +100,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
     /// <returns>Enumeration string.</returns>
-    std::string DTD::parseAttributeEnumerationType(ISource &dtdSource)
+    std::string DTD_Impl::parseAttributeEnumerationType(ISource &dtdSource)
     {
         std::string enumerationType(dtdSource.current_to_bytes());
         dtdSource.next();
@@ -127,7 +128,7 @@ namespace XMLLib
     /// <param name="dtdSource">DTD source stream.</param>
     /// <param name="dtdattribute">Attribute description.</param>
     /// <returns>Attribute type as string (UTF-8 encoded).</returns>
-    void DTD::parseAttributeType(ISource &dtdSource, DTDAttribute &attribute)
+    void DTD_Impl::parseAttributeType(ISource &dtdSource, DTDAttribute &attribute)
     {
         if (dtdSource.match(U"CDATA"))
         {
@@ -202,7 +203,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
     /// <param name="dtdattribute">Attribute description.</param>
-    void DTD::parseAttributeValue(ISource &dtdSource, DTDAttribute &attribute)
+    void DTD_Impl::parseAttributeValue(ISource &dtdSource, DTDAttribute &attribute)
     {
         if (dtdSource.match(U"#REQUIRED"))
         {
@@ -229,7 +230,7 @@ namespace XMLLib
     /// Parse DTD attribute list.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseAttributeList(ISource &dtdSource)
+    void DTD_Impl::parseAttributeList(ISource &dtdSource)
     {
         dtdSource.ignoreWS();
         std::string elementName = parseName(dtdSource);
@@ -248,7 +249,7 @@ namespace XMLLib
     /// Parse DTD notation.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseNotation(ISource &dtdSource)
+    void DTD_Impl::parseNotation(ISource &dtdSource)
     {
         dtdSource.ignoreWS();
         XMLAttribute notation;
@@ -260,7 +261,7 @@ namespace XMLLib
     /// Parse DTD entity.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseEntity(ISource &dtdSource)
+    void DTD_Impl::parseEntity(ISource &dtdSource)
     {
         std::string entityName = "&";
         dtdSource.ignoreWS();
@@ -290,7 +291,7 @@ namespace XMLLib
     /// Parse an DTD element.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseElement(ISource &dtdSource)
+    void DTD_Impl::parseElement(ISource &dtdSource)
     {
         dtdSource.ignoreWS();
         std::string elementName = parseName(dtdSource);
@@ -323,7 +324,7 @@ namespace XMLLib
     /// Parse DTD comment.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseComment(ISource &dtdSource)
+    void DTD_Impl::parseComment(ISource &dtdSource)
     {
         while (dtdSource.more() && !dtdSource.match(U"--"))
         {
@@ -334,7 +335,7 @@ namespace XMLLib
     /// Parse DTD parameter entity reference.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseParameterEntityReference(ISource &dtdSource)
+    void DTD_Impl::parseParameterEntityReference(ISource &dtdSource)
     {
         XMLValue parameterEntity = parseEntityReference(dtdSource);
         BufferSource entitySource(m_entityMapper.translate(parameterEntity.unparsed));
@@ -345,7 +346,7 @@ namespace XMLLib
     /// Parse internally defined DTD.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseInternal(ISource &dtdSource)
+    void DTD_Impl::parseInternal(ISource &dtdSource)
     {
         while (dtdSource.more() && !dtdSource.match(U"]>"))
         {
@@ -392,7 +393,7 @@ namespace XMLLib
     /// after it.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseDTD(ISource &dtdSource)
+    void DTD_Impl::parseDTD(ISource &dtdSource)
     {
         // We take the easy option for allowing a DTD to be stringified
         // and keeping the correct order for its components by storing it
@@ -411,7 +412,7 @@ namespace XMLLib
             dtdSource.next();
             dtdSource.ignoreWS();
             parseInternal(dtdSource);
-            m_type = DTDType::internal;
+            m_type = DTD::DTDType::internal;
         }
         // Missing '>' after external DTD reference
         else if (dtdSource.current() != '>')
@@ -428,7 +429,7 @@ namespace XMLLib
         if (!m_external.type.empty())
         {
             parseExternal(dtdSource);
-            m_type |= DTDType::external;
+            m_type |= DTD::DTDType::external;
         }
         // Save away unparsed form of DTD
         m_unparsed = "<!DOCTYPE" + dtdSource.getRange(start, dtdSource.position());

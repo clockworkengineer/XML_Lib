@@ -1,5 +1,5 @@
 //
-// Class: XML
+// Class: XML_Impl
 //
 // Description: XML class implementation.
 //

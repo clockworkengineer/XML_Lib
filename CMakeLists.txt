@@ -25,9 +25,10 @@ set (XML_SOURCES
     ./classes/implementation/XML_Impl_Stringify.cpp
     ./classes/XML_Core.cpp
     ./classes/DTD.cpp
-    ./classes/DTD_Parse.cpp
-    ./classes/DTD_Parse_Content.cpp
-    ./classes/DTD_Parse_External.cpp
+    ./classes/implementation/DTD_Impl.cpp
+    ./classes/implementation/DTD_Impl_Parse.cpp
+    ./classes/implementation/DTD_Impl_Parse_Content.cpp
+    ./classes/implementation/DTD_Impl_Parse_External.cpp
     ./classes/XML_Validator.cpp
     ./classes/XML_EntityMapper.cpp
 )
@@ -47,6 +48,7 @@ set (XML_INCLUDES
     ./include/XML_Errors.hpp
     ./include/XML_Types.hpp
     ./include/DTD.hpp
+    ./include/DTD_Impl.hpp
     ./include/DTD_ELement.hpp
     ./include/XML_Validator.hpp
     ./include/XML_EntityMapper.hpp

@@ -10,6 +10,7 @@
 // =================
 #include "XML.hpp"
 #include "DTD.hpp"
+#include "DTD_Impl.hpp"
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
@@ -41,7 +42,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="contentSpecSource">Content specification source stream.</param>
     /// <returns>Returns true if it is choice.</returns>
-    bool DTD::parseIsChoiceOrSequence(ISource &contentSpecSource)
+    bool DTD_Impl::parseIsChoiceOrSequence(ISource &contentSpecSource)
     {
         bool choice = false;
         long start = contentSpecSource.position();
@@ -63,7 +64,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="contentSpecSource">Content specification source stream.</param>
     /// <param name="contentSpecDestination">Parsed content specification stream.</param>
-    void DTD::parseElementCP(ISource &contentSpecSource, IDestination &contentSpecDestination)
+    void DTD_Impl::parseElementCP(ISource &contentSpecSource, IDestination &contentSpecDestination)
     {
         contentSpecSource.next();
         contentSpecSource.ignoreWS();
@@ -93,7 +94,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="contentSpecSource">Content specification source stream.</param>
     /// <param name="contentSpecDestination">Parsed content specification stream.</param>
-    void DTD::parseElementChoice(ISource &contentSpecSource, IDestination &contentSpecDestination)
+    void DTD_Impl::parseElementChoice(ISource &contentSpecSource, IDestination &contentSpecDestination)
     {
         if (contentSpecSource.current() != '(')
         {
@@ -119,7 +120,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="contentSpecSource">Content specification source stream.</param>
     /// <param name="contentSpecDestination">Parsed content specification stream.</param>
-    void DTD::parseElementSequence(ISource &contentSpecSource, IDestination &contentSpecDestination)
+    void DTD_Impl::parseElementSequence(ISource &contentSpecSource, IDestination &contentSpecDestination)
     {
         if (contentSpecSource.current() != '(')
         {
@@ -144,7 +145,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="contentSpecSource">Content specification source stream.</param>
     /// <param name="contentSpecDestination">Parsed content specification stream.</param>
-    void DTD::parseElementName(ISource &contentSpecSource, IDestination &contentSpecDestination)
+    void DTD_Impl::parseElementName(ISource &contentSpecSource, IDestination &contentSpecDestination)
     {
         contentSpecDestination.add("(<");
         contentSpecDestination.add(contentSpecSource.current());
@@ -162,7 +163,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="contentSpecSource">Content specification source stream.</param>
     /// <param name="contentSpecDestination">Parsed content specification stream.</param>
-    void DTD::parseElementChildren(ISource &contentSpecSource, IDestination &contentSpecDestination)
+    void DTD_Impl::parseElementChildren(ISource &contentSpecSource, IDestination &contentSpecDestination)
     {
         if (contentSpecSource.current() == '(')
         {
@@ -193,7 +194,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="contentSpecSource">Content specification source stream.</param>
     /// <param name="contentSpecDestination">Parsed content specification stream.</param>
-    void DTD::parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpecDestination)
+    void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpecDestination)
     {
         contentSpecSource.ignoreWS();
         contentSpecDestination.add("((<#PCDATA>)");
@@ -244,7 +245,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="elementName">Elements name.</param>
     /// <param name="contentSpec">Elements content specification.</param>
-    void DTD::parseElementContentSpecification(const std::string &elementName, XMLValue &contentSpec)
+    void DTD_Impl::parseElementContentSpecification(const std::string &elementName, XMLValue &contentSpec)
     {
         try
         {

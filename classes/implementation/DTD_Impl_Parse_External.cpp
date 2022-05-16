@@ -1,5 +1,5 @@
 //
-// Class: DTD
+// Class: DTD_impl
 //
 // Description: Parse external XML DTD.
 //
@@ -10,6 +10,7 @@
 // =================
 #include "XML.hpp"
 #include "DTD.hpp"
+#include "DTD_Impl.hpp"
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
@@ -42,7 +43,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
     /// <param name="includeOn">If set to false then enclosing conditionals treated as ignored.</param>
-    void DTD::parseConditional(ISource &dtdSource, bool includeOn)
+    void DTD_Impl::parseConditional(ISource &dtdSource, bool includeOn)
     {
         dtdSource.ignoreWS();
         std::string conditionalValue = "";
@@ -122,7 +123,7 @@ namespace XMLLib
     /// Parse external DTD.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseExternalContent(ISource &dtdSource)
+    void DTD_Impl::parseExternalContent(ISource &dtdSource)
     {
         while (dtdSource.more())
         {
@@ -175,7 +176,7 @@ namespace XMLLib
     /// <summary>
     /// Parse externally defined DTD into XMLNodeDTD.
     /// </summary>
-    void DTD::parseExternalRefenceContent()
+    void DTD_Impl::parseExternalRefenceContent()
     {
         if (m_external.type == "SYSTEM")
         {
@@ -192,7 +193,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
     /// <returns>External reference.</returns>
-    XMLExternalReference DTD::parseExternalReference(ISource &dtdSource)
+    XMLExternalReference DTD_Impl::parseExternalReference(ISource &dtdSource)
     {
         XMLExternalReference result;
         if (dtdSource.match(U"SYSTEM"))
@@ -218,7 +219,7 @@ namespace XMLLib
     /// Parse externally defined DTD.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parseExternal(ISource & /*dtdSource*/)
+    void DTD_Impl::parseExternal(ISource & /*dtdSource*/)
     {
         parseExternalRefenceContent();
     }

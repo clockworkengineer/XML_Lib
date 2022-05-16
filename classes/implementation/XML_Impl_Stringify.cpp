@@ -1,5 +1,5 @@
 //
-// Class: XML
+// Class: XML_Impl
 //
 // Description:  Code to take an XML internal object description and produce
 // the XML text for it; currently as UTF-8 encoded text but this may change in
