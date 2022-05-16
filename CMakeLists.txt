@@ -20,9 +20,9 @@ set(XML_LIBRARY_NAME ${PROJECT_NAME})
 
 set (XML_SOURCES
     ./classes/XML.cpp
-    ./classes/XML_Impl.cpp
-    ./classes/XML_Impl_Parse.cpp
-    ./classes/XML_Impl_Stringify.cpp
+    ./classes/implementation/XML_Impl.cpp
+    ./classes/implementation/XML_Impl_Parse.cpp
+    ./classes/implementation/XML_Impl_Stringify.cpp
     ./classes/XML_Core.cpp
     ./classes/DTD.cpp
     ./classes/DTD_Parse.cpp
