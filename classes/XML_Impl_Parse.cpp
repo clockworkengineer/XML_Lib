@@ -11,6 +11,7 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
+#include "XML_Impl.hpp"
 #include "XML_Validator.hpp"
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
@@ -44,7 +45,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current XML Element.</param>
     /// <param name="entityReference">Entity reference to be parsed.</param>
-    void XML::parseEntityMappingContents(XMLNode &xmlNode, XMLValue &entityReference)
+    void XML_Impl::parseEntityMappingContents(XMLNode &xmlNode, XMLValue &entityReference)
     {
         XMLNodeEntityReference xNodeEntityReference(entityReference);
         if (entityReference.unparsed[1] != '#')
@@ -85,7 +86,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <param name="content">Content to add to new content node (XMLNodeCotent).</param>
-    void XML::parseAddElementContent(XMLNode &xmlNode, const std::string &content)
+    void XML_Impl::parseAddElementContent(XMLNode &xmlNode, const std::string &content)
     {
         // Make sure there is a content node to receive characters
         if (XMLNodeRef<XMLNodeElement>(xmlNode).children.empty() ||
@@ -121,7 +122,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseTagName(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseTagName(ISource &source, XMLNode &xmlNode)
     {
         XMLNodeRef<XMLNodeElement>(xmlNode).elementName = parseName(source);
     }
@@ -131,7 +132,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseComment(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseComment(ISource &source, XMLNode &xmlNode)
     {
         XMLNodeComment xmlNodeComment;
         while (source.more() && !source.match(U"--"))
@@ -151,7 +152,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parsePI(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parsePI(ISource &source, XMLNode &xmlNode)
     {
         XMLNodePI xmlNodePI;
         xmlNodePI.name = parseName(source);
@@ -168,7 +169,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseCDATA(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseCDATA(ISource &source, XMLNode &xmlNode)
     {
         XMLNodeCDATA xmlNodeCDATA;
         while (source.more() && !source.match(U"]]>"))
@@ -195,7 +196,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseAttributes(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseAttributes(ISource &source, XMLNode &xmlNode)
     {
         while (source.more() &&
                source.current() != '?' &&
@@ -236,7 +237,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseChildElement(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseChildElement(ISource &source, XMLNode &xmlNode)
     {
         XMLNodeElement xmlNodeChildElement;
         for (auto &ns : XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList())
@@ -258,7 +259,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseDefault(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseDefault(ISource &source, XMLNode &xmlNode)
     {
         XMLValue entityReference = parseCharacter(source);
         if (entityReference.isEntityReference())
@@ -281,7 +282,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XMl source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseElementContents(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseElementContents(ISource &source, XMLNode &xmlNode)
     {
         if (source.match(U"<!--"))
         {
@@ -317,7 +318,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML::parseElement(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseElement(ISource &source, XMLNode &xmlNode)
     {
         parseTagName(source, xmlNode);
         parseAttributes(source, xmlNode);
@@ -346,7 +347,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Prolog element node.</param>
-    void XML::parseDeclaration(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseDeclaration(ISource &source, XMLNode &xmlNode)
     {
         if (source.match(U"version"))
         {
@@ -422,7 +423,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Prolog element node.</param>
-    void XML::parseProlog(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseProlog(ISource &source, XMLNode &xmlNode)
     {
         XMLNodeRef<XMLNodeElement>(xmlNode).setNodeType(XMLNodeType::prolog);
         source.ignoreWS();
@@ -478,7 +479,7 @@ namespace XMLLib
     /// <summary>
     /// Parse XML source stream.
     /// </summary>
-    void XML::parseXML(ISource &source)
+    void XML_Impl::parseXML(ISource &source)
     {
         parseProlog(source, *m_prolog);
         if (source.match(U"<"))

@@ -100,7 +100,7 @@ namespace XMLLib
         // =================
         // PRIVATE VARIABLES
         // =================
-        uint16_t m_type {};
+        uint16_t m_type{};
         std::string m_name;
         XMLExternalReference m_external;
         std::unordered_map<std::string, DTDElement> m_elements;

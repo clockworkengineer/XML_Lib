@@ -11,6 +11,7 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML.hpp"
+#include "XML_Impl.hpp"
 #include "DTD.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
@@ -43,7 +44,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">XMLNode to convert into XML.</param>
     /// <param name="destination">XML destination stream.</param>
-    void XML::stringifyElements(XMLNode &xmlNode, IDestination &destination)
+    void XML_Impl::stringifyElements(XMLNode &xmlNode, IDestination &destination)
     {
         switch (xmlNode.getNodeType())
         {
@@ -139,7 +140,7 @@ namespace XMLLib
     /// destination stream in UTF-8 encoding.
     /// </summary>
     /// <param name="destination">XML destination stream.</param>
-    void XML::stringifyXML(IDestination &destination)
+    void XML_Impl::stringifyXML(IDestination &destination)
     {
         stringifyElements(*m_prolog, destination);
     }

@@ -45,46 +45,42 @@ namespace XMLLib
     /// <summary>
     /// XML constructor.
     /// </summary>
-    XML::XML()
+    XML_Impl::XML_Impl()
     {
-        m_implementaion = std::make_unique<XML_Impl>();
+        m_prolog = std::make_unique<XMLNodeElement>();
+        m_entityMapper = std::make_unique<XML_EntityMapper>();
     }
     /// <summary>
     /// XML destructor.
     /// </summary>
-    XML::~XML()
+    XML_Impl::~XML_Impl()
     {
     }
-    DTD &XML::dtd()
-    {
-        return (m_implementaion->dtd());
-    }
-    XMLNodeElement &XML::prolog()
-    {
-        return (m_implementaion->prolog());
-    };
     /// <summary>
     /// Parse XML read from source stream into internal object generating an exception
     /// if a syntax error in the XML is found (not well formed).
     /// </summary>
-    void XML::parse(ISource &source)
+    void XML_Impl::parse(ISource &source)
     {
-        m_implementaion->parse(source);
+        parseXML(source);
     }
     /// <summary>
     /// Validate XML against any DTD provided to see whether it is valid. If an
     /// exception is thrown then there is a validation issue and the XML is not valid.
     /// </summary>
-    void XML::validate()
+    void XML_Impl::validate()
     {
-        m_implementaion->validate();
+        if (m_validator.get() != nullptr)
+        {
+            m_validator->validate(prolog());
+        }
     }
     /// <summary>
     /// Create XML text from an XML object.
     /// </summary>
     /// <param name="destination">XML destination stream.</param>
-    void XML::stringify(IDestination &destination)
+    void XML_Impl::stringify(IDestination &destination)
     {
-        m_implementaion->stringify(destination);
+        stringifyXML(destination);
     }
 } // namespace XMLLib

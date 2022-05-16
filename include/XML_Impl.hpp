@@ -22,16 +22,18 @@ namespace XMLLib
     // ===================================================
     // Forward declarations for interfaces/classes/structs
     // ===================================================
-    class XML_Impl;
     class ISource;
     class IDestination;
-    class DTD;
-    struct XMLNodeElement;
     class IXMLEntityMapper;
+    class IXMLValidator;
+    class DTD;
+    struct XMLNode;
+    struct XMLNodeElement;
+    struct XMLValue;
     // ================
     // CLASS DEFINITION
     // ================
-    class XML
+    class XML_Impl
     {
     public:
         // ==========================
@@ -40,16 +42,16 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        XML();
+        XML_Impl();
         // ==========
         // DESTRUCTOR
         // ==========
-        ~XML();
+        ~XML_Impl();
         // ==============
         // PUBLIC METHODS
         // ==============
-        DTD &dtd();
-        XMLNodeElement &prolog();
+        DTD &dtd() { return (*m_dtd); }
+        XMLNodeElement &prolog() { return (*m_prolog); };
         void parse(ISource &source);
         void stringify(IDestination &destination);
         void validate();
@@ -66,9 +68,28 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
+        void parseAddElementContent(XMLNode &xmlNode, const std::string &content);
+        void parseEntityMappingContents(XMLNode &xmlNode, XMLValue &entityReference);
+        void parseDefault(ISource &source, XMLNode &xmlNode);
+        void parseTagName(ISource &source, XMLNode &xmlNode);
+        void parseChildElement(ISource &source, XMLNode &xmlNode);
+        void parseAttributes(ISource &source, XMLNode &xmlNode);
+        void parseComment(ISource &source, XMLNode &xmlNode);
+        void parseCDATA(ISource &source, XMLNode &xmlNode);
+        void parsePI(ISource &source, XMLNode &xmlNode);
+        void parseElementContents(ISource &source, XMLNode &xmlNode);
+        void parseElement(ISource &source, XMLNode &xmlNode);
+        void parseDeclaration(ISource &source, XMLNode &xmlNode);
+        void parseProlog(ISource &source, XMLNode &xmlNode);
+        void parseXML(ISource &source);
+        void stringifyElements(XMLNode &xmlNode, IDestination &destination);
+        void stringifyXML(IDestination &destination);
         // =================
         // PRIVATE VARIABLES
         // =================
-        std::unique_ptr<XML_Impl> m_implementaion;
+        std::unique_ptr<XMLNodeElement> m_prolog;
+        std::unique_ptr<DTD> m_dtd;
+        std::unique_ptr<IXMLValidator> m_validator;
+        std::unique_ptr<IXMLEntityMapper> m_entityMapper;
     };
 } // namespace XMLLib

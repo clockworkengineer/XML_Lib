@@ -20,8 +20,9 @@ set(XML_LIBRARY_NAME ${PROJECT_NAME})
 
 set (XML_SOURCES
     ./classes/XML.cpp
-    ./classes/XML_Parse.cpp
-    ./classes/XML_Stringify.cpp
+    ./classes/XML_Impl.cpp
+    ./classes/XML_Impl_Parse.cpp
+    ./classes/XML_Impl_Stringify.cpp
     ./classes/XML_Core.cpp
     ./classes/DTD.cpp
     ./classes/DTD_Parse.cpp
@@ -38,6 +39,7 @@ set (XML_INCLUDES
     ./include/interface/IXMLEntityMapper.hpp
     ./include/interface/IXMLValidator.hpp
     ./include/XML.hpp
+    ./include/XML_Impl.hpp
     ./include/XML_Sources.hpp
     ./include/XML_Destinations.hpp
     ./include/XML_Nodes.hpp
