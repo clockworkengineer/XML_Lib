@@ -8,7 +8,6 @@
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XML.hpp"
 #include "DTD.hpp"
 #include "DTD_Impl.hpp"
 // ====================

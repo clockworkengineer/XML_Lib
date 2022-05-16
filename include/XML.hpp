@@ -12,8 +12,7 @@
 //
 // XML character constants
 //
-#define kCarriageReturn 0x0D
-#define kLineFeed 0x0A
+#include "XML_Characters.hpp"
 // =========
 // NAMESPACE
 // =========
@@ -25,9 +24,9 @@ namespace XMLLib
     class XML_Impl;
     class ISource;
     class IDestination;
+    class IXMLEntityMapper;
     class DTD;
     struct XMLNodeElement;
-    class IXMLEntityMapper;
     // ================
     // CLASS DEFINITION
     // ================
