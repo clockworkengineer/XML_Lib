@@ -69,6 +69,6 @@ namespace XMLLib
         // =================
         // PRIVATE VARIABLES
         // =================
-        std::unique_ptr<XML_Impl> m_implementaion;
+        std::unique_ptr<XML_Impl> m_implementation;
     };
 } // namespace XMLLib

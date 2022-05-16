@@ -44,7 +44,7 @@ namespace XMLLib
     /// </summary>
     XML::XML()
     {
-        m_implementaion = std::make_unique<XML_Impl>();
+        m_implementation = std::make_unique<XML_Impl>();
     }
     /// <summary>
     /// XML destructor.
@@ -52,13 +52,19 @@ namespace XMLLib
     XML::~XML()
     {
     }
+    /// <summary>
+    /// Return reference to any internal DTD for parsed XML.
+    /// </summary>
     DTD &XML::dtd()
     {
-        return (m_implementaion->dtd());
+        return (m_implementation->dtd());
     }
+    /// <summary>
+    /// Return prolog node of parsed XML tree.
+    /// </summary>
     XMLNodeElement &XML::prolog()
     {
-        return (m_implementaion->prolog());
+        return (m_implementation->prolog());
     };
     /// <summary>
     /// Parse XML read from source stream into internal object generating an exception
@@ -66,7 +72,7 @@ namespace XMLLib
     /// </summary>
     void XML::parse(ISource &source)
     {
-        m_implementaion->parse(source);
+        m_implementation->parse(source);
     }
     /// <summary>
     /// Validate XML against any DTD provided to see whether it is valid. If an
@@ -74,7 +80,7 @@ namespace XMLLib
     /// </summary>
     void XML::validate()
     {
-        m_implementaion->validate();
+        m_implementation->validate();
     }
     /// <summary>
     /// Create XML text from an XML object.
@@ -82,6 +88,6 @@ namespace XMLLib
     /// <param name="destination">XML destination stream.</param>
     void XML::stringify(IDestination &destination)
     {
-        m_implementaion->stringify(destination);
+        m_implementation->stringify(destination);
     }
 } // namespace XMLLib
