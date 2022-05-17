@@ -119,7 +119,7 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML_Impl::parseTagName(ISource &source, XMLNode &xmlNode)
     {
-        XMLNodeRef<XMLNodeElement>(xmlNode).elementName = parseName(source);
+        XMLNodeRef<XMLNodeElement>(xmlNode).elementName = Core::parseName(source);
     }
     /// <summary>
     /// Parse a XML comment, create a XMLNodeComment for it and add to list
@@ -150,7 +150,7 @@ namespace XMLLib
     void XML_Impl::parsePI(ISource &source, XMLNode &xmlNode)
     {
         XMLNodePI xmlNodePI;
-        xmlNodePI.name = parseName(source);
+        xmlNodePI.name = Core::parseName(source);
         while (source.more() && !source.match(U"?>"))
         {
             xmlNodePI.parameters += source.current_to_bytes();
@@ -198,14 +198,14 @@ namespace XMLLib
                source.current() != '/' &&
                source.current() != '>')
         {
-            std::string attributeName = parseName(source);
+            std::string attributeName = Core::parseName(source);
             if (!source.match(U"="))
             {
                 throw SyntaxError(source, "Missing '=' between attribute name and value.");
             }
             source.ignoreWS();
-            XMLValue attributeValue = parseValue(source, *m_entityMapper);
-            if (!validAttributeValue(attributeValue))
+            XMLValue attributeValue = Core::parseValue(source, *m_entityMapper);
+            if (!Core::validAttributeValue(attributeValue))
             {
                 throw SyntaxError(source, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
             }
@@ -256,7 +256,7 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML_Impl::parseDefault(ISource &source, XMLNode &xmlNode)
     {
-        XMLValue entityReference = parseCharacter(source);
+        XMLValue entityReference = Core::parseCharacter(source);
         if (entityReference.isEntityReference())
         {
             m_entityMapper->map(entityReference);
@@ -352,7 +352,7 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after version.");
             }
             source.ignoreWS();
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("version", parseValue(source));
+            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("version", Core::parseValue(source));
             // Check valid declaration values
             std::set<std::string> validVersions{"1.0", "1.1"};
             if (validVersions.find(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("version").value.parsed) == validVersions.end())
@@ -372,9 +372,9 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after encoding.");
             }
             source.ignoreWS();
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("encoding", parseValue(source));
+            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("encoding", Core::parseValue(source));
             // Check valid declaration values
-            toUpperString(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("encoding").value.parsed);
+            Core::toUpperString(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("encoding").value.parsed);
             std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
             if (validEncodings.find(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("encoding").value.parsed) == validEncodings.end())
             {
@@ -393,7 +393,7 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after standalone.");
             }
             source.ignoreWS();
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("standalone", parseValue(source));
+            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("standalone", Core::parseValue(source));
             // Check valid declaration values
             std::set<std::string> validStandalone{"yes", "no"};
             if (validStandalone.find(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("standalone").value.parsed) == validStandalone.end())

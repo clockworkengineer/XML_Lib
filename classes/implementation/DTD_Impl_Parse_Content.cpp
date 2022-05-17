@@ -64,7 +64,7 @@ namespace XMLLib
     {
         contentSpecSource.next();
         contentSpecSource.ignoreWS();
-        if (validNameStartChar(contentSpecSource.current()))
+        if (Core::validNameStartChar(contentSpecSource.current()))
         {
             parseElementName(contentSpecSource, contentSpecDestination);
         }
@@ -146,7 +146,7 @@ namespace XMLLib
         contentSpecDestination.add("(<");
         contentSpecDestination.add(contentSpecSource.current());
         contentSpecSource.next();
-        while (contentSpecSource.more() && validNameChar(contentSpecSource.current()))
+        while (contentSpecSource.more() && Core::validNameChar(contentSpecSource.current()))
         {
             contentSpecDestination.add(contentSpecSource.current());
             contentSpecSource.next();
@@ -201,7 +201,7 @@ namespace XMLLib
                 contentSpecDestination.add("|");
                 contentSpecSource.next();
                 contentSpecSource.ignoreWS();
-                if (validNameStartChar(contentSpecSource.current()))
+                if (Core::validNameStartChar(contentSpecSource.current()))
                 {
                     parseElementName(contentSpecSource, contentSpecDestination);
                 }

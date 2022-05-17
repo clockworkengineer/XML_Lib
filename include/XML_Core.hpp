@@ -19,7 +19,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XMLLib::Core
 {
     //
     // XML validation
@@ -46,4 +46,4 @@ namespace XMLLib
     std::vector<std::string> splitString(std::string stringToSplit, char delimeter);
     void trimmString(std::string &stringToTrimm);
     void toUpperString(std::string &stringToUpper);
-} // namespace XMLLib
+} // namespace XMLLib::Core

@@ -46,7 +46,7 @@ namespace XMLLib
         {
             if (dtdSource.current() == '%')
             {
-                XMLValue entityReference = parseEntityReference(dtdSource);
+                XMLValue entityReference = Core::parseEntityReference(dtdSource);
                 dtdSource.ignoreWS();
                 m_entityMapper.map(entityReference);
                 conditionalValue = entityReference.parsed;
@@ -124,22 +124,22 @@ namespace XMLLib
         {
             if (dtdSource.match(U"<!ENTITY"))
             {
-                BufferSource dtdTranslatedSource(m_entityMapper.translate(parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseEntity(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!ELEMENT"))
             {
-                BufferSource dtdTranslatedSource(m_entityMapper.translate(parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseElement(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!ATTLIST"))
             {
-                BufferSource dtdTranslatedSource(m_entityMapper.translate(parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseAttributeList(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!NOTATION"))
             {
-                BufferSource dtdTranslatedSource(m_entityMapper.translate(parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseNotation(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!--"))
@@ -195,14 +195,14 @@ namespace XMLLib
         {
             dtdSource.ignoreWS();
             result.type = "SYSTEM";
-            result.systemID = parseValue(dtdSource, m_entityMapper).parsed;
+            result.systemID = Core::parseValue(dtdSource, m_entityMapper).parsed;
         }
         else if (dtdSource.match(U"PUBLIC"))
         {
             dtdSource.ignoreWS();
             result.type = "PUBLIC";
-            result.publicID = parseValue(dtdSource, m_entityMapper).parsed;
-            result.systemID = parseValue(dtdSource, m_entityMapper).parsed;
+            result.publicID = Core::parseValue(dtdSource, m_entityMapper).parsed;
+            result.systemID = Core::parseValue(dtdSource, m_entityMapper).parsed;
         }
         else
         {
