@@ -44,10 +44,9 @@ namespace XMLLib
         m_entityMappings["&lt;"].internal = "&#x3C;";
         m_entityMappings["&gt;"].internal = "&#x3E;";
     }
-    XML_EntityMapper::~XML_EntityMapper()
-    {
-    }
-    void XML_EntityMapper::add(const std::string &entityName, XMLEntityMapping &entityMapping)
+    XML_EntityMapper::~XML_EntityMapper() {}
+    void XML_EntityMapper::add(const std::string &entityName,
+                               XMLEntityMapping &entityMapping)
     {
         m_entityMappings[entityName] = entityMapping;
     }
@@ -77,9 +76,11 @@ namespace XMLLib
             }
             else
             {
-                if (std::filesystem::exists(get(entityReference.unparsed).external.systemID))
+                if (std::filesystem::exists(
+                        get(entityReference.unparsed).external.systemID))
                 {
-                    FileSource entitySource(get(entityReference.unparsed).external.systemID);
+                    FileSource entitySource(
+                        get(entityReference.unparsed).external.systemID);
                     entityReference.parsed = "";
                     while (entitySource.more())
                     {
@@ -89,12 +90,16 @@ namespace XMLLib
                 }
                 else
                 {
-                    throw SyntaxError("Entity '" + entityReference.unparsed + "' source file '" + get(entityReference.unparsed).external.systemID + "' does not exist.");
+                    throw SyntaxError("Entity '" + entityReference.unparsed +
+                                      "' source file '" +
+                                      get(entityReference.unparsed).external.systemID +
+                                      "' does not exist.");
                 }
             }
         }
     }
-    std::string XML_EntityMapper::translate(const std::string &toTranslate, char type) const
+    std::string XML_EntityMapper::translate(const std::string &toTranslate,
+                                            char type) const
     {
         std::string translated = toTranslate;
         bool matchFound;
@@ -108,7 +113,8 @@ namespace XMLLib
                     size_t pos = translated.find(entity.first);
                     if (pos != std::string::npos)
                     {
-                        translated.replace(pos, entity.first.length(), entity.second.internal);
+                        translated.replace(pos, entity.first.length(),
+                                           entity.second.internal);
                         matchFound = true;
                     }
                 }
@@ -117,12 +123,15 @@ namespace XMLLib
         return (translated);
     }
     /// <summary>
-    /// Take an entity reference string, check whether it contains any infinitely recursive
-    /// definition and throw an exception if so. This is done by recursively parsing any entities
-    /// found in a entity mapping and adding it to a current stack of used entities; throwing an
-    /// exception if it is already being used (recursive).
+    /// Take an entity reference string, check whether it contains any infinitely
+    /// recursive definition and throw an exception if so. This is done by
+    /// recursively parsing any entities found in a entity mapping and adding it to
+    /// a current stack of used entities; throwing an exception if it is already
+    /// being used (recursive).
     /// </summary>
-    void XML_EntityMapper::recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities)
+    void XML_EntityMapper::recursive(const std::string &entityReference,
+                                     ISource::Char type,
+                                     std::set<std::string> currentEntities)
     {
         BufferSource entitySource(entityReference);
         while (entitySource.more())
@@ -139,7 +148,9 @@ namespace XMLLib
                 mappedEntityName += entitySource.current_to_bytes();
                 if (currentEntities.find(mappedEntityName) != currentEntities.end())
                 {
-                    throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
+                    throw SyntaxError(
+                        "Entity '" + mappedEntityName +
+                        "' contains recursive definition which is not allowed.");
                 }
                 if (!get(mappedEntityName).internal.empty())
                 {

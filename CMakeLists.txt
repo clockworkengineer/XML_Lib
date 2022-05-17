@@ -23,7 +23,7 @@ set (XML_SOURCES
     ./classes/implementation/XML_Impl.cpp
     ./classes/implementation/XML_Impl_Parse.cpp
     ./classes/implementation/XML_Impl_Stringify.cpp
-    ./classes/XML_Core.cpp
+    ./classes/implementation/XML_Core.cpp
     ./classes/DTD.cpp
     ./classes/implementation/DTD_Impl.cpp
     ./classes/implementation/DTD_Impl_Parse.cpp
