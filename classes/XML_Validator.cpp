@@ -8,14 +8,14 @@
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XML_Validator.hpp"
 #include "XML.hpp"
-#include "XML_Core.hpp"
-#include "XML_Destinations.hpp"
-#include "XML_Errors.hpp"
-#include "XML_Nodes.hpp"
-#include "XML_Sources.hpp"
 #include "XML_Types.hpp"
+#include "XML_Nodes.hpp"
+#include "XML_Core.hpp"
+#include "XML_Validator.hpp"
+#include "XML_Errors.hpp"
+#include "XML_Sources.hpp"
+#include "XML_Destinations.hpp"
 
 // ====================
 // CLASS IMPLEMENTATION
