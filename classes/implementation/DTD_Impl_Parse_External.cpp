@@ -173,12 +173,12 @@ namespace XMLLib
     /// </summary>
     void DTD_Impl::parseExternalRefenceContent()
     {
-        if (m_parsed->m_external.type == "SYSTEM")
+        if (m_parsed->getExternalReference().type == "SYSTEM")
         {
-            FileSource dtdFile(m_parsed->m_external.systemID);
+            FileSource dtdFile(m_parsed->getExternalReference().systemID);
             parseExternalContent(dtdFile);
         }
-        else if (m_parsed->m_external.type == "PUBLIC")
+        else if (m_parsed->getExternalReference().type == "PUBLIC")
         {
             // Public external DTD currently not supported (Use system id ?)
         }

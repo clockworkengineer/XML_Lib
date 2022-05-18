@@ -63,11 +63,11 @@ namespace XMLLib
         // Only one ID attribute allowed per element
         else if ((dtdAttribute.type & DTDAttributeType::id) != 0)
         {
-            if (m_parsed->m_elements[elementName].idAttributePresent)
+            if (m_parsed->getElement(elementName).idAttributePresent)
             {
                 throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
             }
-            m_parsed->m_elements[elementName].idAttributePresent = true;
+            m_parsed->getElement(elementName).idAttributePresent = true;
         }
         // Enumeration contains unique values and default is valid value
         else if (dtdAttribute.type == (DTDAttributeType::enumeration | DTDAttributeType::normal))
@@ -236,7 +236,7 @@ namespace XMLLib
             parseAttributeType(dtdSource, dtdAttribute);
             parseAttributeValue(dtdSource, dtdAttribute);
             parseValidateAttribute(elementName, dtdAttribute);
-            m_parsed->m_elements[elementName].attributes.emplace_back(dtdAttribute);
+            m_parsed->getElement(elementName).attributes.emplace_back(dtdAttribute);
             dtdSource.ignoreWS();
         }
     }
@@ -312,7 +312,7 @@ namespace XMLLib
             }
             parseElementContentSpecification(elementName, contentSpecification);
         }
-        m_parsed->m_elements.emplace(elementName, DTDElement(elementName, contentSpecification));
+        m_parsed->addElement(elementName, DTDElement(elementName, contentSpecification));
         dtdSource.ignoreWS();
     }
     /// <summary>
@@ -395,11 +395,11 @@ namespace XMLLib
         // in its raw unparsed form.
         long start = dtdSource.position();
         dtdSource.ignoreWS();
-        m_parsed->m_name = Core::parseName(dtdSource);
+        m_parsed->setRootName(Core::parseName(dtdSource));
         // Parse in external DTD reference
         if (dtdSource.current() != '[')
         {
-            m_parsed->m_external = parseExternalReference(dtdSource);
+            m_parsed->setExternalReference(parseExternalReference(dtdSource));
         }
         // We have internal DTD so parse that first
         if (dtdSource.current() == '[')
@@ -407,7 +407,7 @@ namespace XMLLib
             dtdSource.next();
             dtdSource.ignoreWS();
             parseInternal(dtdSource);
-            m_parsed->m_type = DTD::DTDType::internal;
+            m_parsed->setType(DTD::DTDType::internal);
         }
         // Missing '>' after external DTD reference
         else if (dtdSource.current() != '>')
@@ -421,10 +421,10 @@ namespace XMLLib
             dtdSource.ignoreWS();
         }
         // Parse any DTD in external reference found
-        if (!m_parsed->m_external.type.empty())
+        if (!m_parsed->getExternalReference().type.empty())
         {
             parseExternal(dtdSource);
-            m_parsed->m_type |= DTD::DTDType::external;
+            m_parsed->setType(m_parsed->getType() | DTD::DTDType::external);
         }
         // Save away unparsed form of DTD
         m_unparsed = "<!DOCTYPE" + dtdSource.getRange(start, dtdSource.position());

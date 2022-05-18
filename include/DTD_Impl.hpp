@@ -13,9 +13,8 @@
 #include "XML_Destinations.hpp"
 #include "IXMLEntityMapper.hpp"
 //
-// DTD element/attribute
+// DTD parsed data structure
 //
-#include "DTD_Element.hpp"
 #include "DTD_Parsed.hpp"
 // =========
 // NAMESPACE
@@ -46,7 +45,7 @@ namespace XMLLib
         std::string &getRootName();
         XMLExternalReference &getExternalReference();
         [[nodiscard]] bool isElementPresent(const std::string &elementName) const;
-        [[nodiscard]] long getElementCount() const { return (static_cast<long>(m_parsed->m_elements.size())); }
+        [[nodiscard]] long getElementCount() const { return (m_parsed->getElementCount()); }
         DTDElement &getElement(const std::string &elementName);
         [[nodiscard]] bool isEntityPresent(const std::string &entityName) const;
         XMLEntityMapping &getEntity(const std::string &entityName);
@@ -98,7 +97,6 @@ namespace XMLLib
         // PRIVATE VARIABLES
         // =================
         std::unique_ptr<DTD_Parsed> m_parsed;
-        //IXMLEntityMapper &m_entityMapper;
         std::string m_unparsed;
     };
 } // namespace XMLLib

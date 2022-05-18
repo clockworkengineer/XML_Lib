@@ -66,7 +66,7 @@ namespace XMLLib
     /// <param name=""></param>
     uint16_t DTD_Impl::getType() const
     {
-        return (m_parsed->m_type);
+        return (m_parsed->getType());
     }
     /// <summary>
     ///
@@ -74,7 +74,7 @@ namespace XMLLib
     /// <param name=""></param>
     std::string &DTD_Impl::getRootName()
     {
-        return (m_parsed->m_name);
+        return (m_parsed->getRootName());
     }
     /// <summary>
     ///
@@ -82,7 +82,7 @@ namespace XMLLib
     /// <param name=""></param>
     XMLExternalReference &DTD_Impl::getExternalReference()
     {
-        return (m_parsed->m_external);
+        return (m_parsed->getExternalReference());
     }
     /// <summary>
     ///
@@ -90,7 +90,7 @@ namespace XMLLib
     /// <param name=""></param>
     bool DTD_Impl::isElementPresent(const std::string &elementName) const
     {
-        return (m_parsed->m_elements.find(elementName) != m_parsed->m_elements.end());
+        return (m_parsed->isElementPresent(elementName));
     }
     /// <summary>
     ///
@@ -98,7 +98,7 @@ namespace XMLLib
     /// <param name=""></param>
     DTDElement &DTD_Impl::getElement(const std::string &elementName)
     {
-        return (m_parsed->m_elements[elementName]);
+        return (m_parsed->getElement(elementName));
     }
     /// <summary>
     ///
@@ -122,7 +122,7 @@ namespace XMLLib
     /// <param name=""></param>
     XMLExternalReference &DTD_Impl::getNotation(const std::string &notationName)
     {
-        return (m_parsed->m_notations[notationName]);
+        return (m_parsed->getNotation(notationName));
     }
     /// <summary>
     /// Parse DTD read from source stream.
