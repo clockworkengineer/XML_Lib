@@ -98,5 +98,6 @@ namespace XMLLib
         // =================
         std::unique_ptr<DTD_Parsed> m_parsed;
         std::string m_unparsed;
+        IXMLEntityMapper &m_entityMapper;
     };
 } // namespace XMLLib

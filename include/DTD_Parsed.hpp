@@ -21,13 +21,6 @@ namespace XMLLib
         ///
         /// </summary>
         /// <param name=""></param>
-        DTD_Parsed(IXMLEntityMapper &entityMapper) : m_entityMapper(entityMapper)
-        {
-        }
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name=""></param>
         uint16_t getType() const
         {
             return (m_type);
@@ -108,22 +101,6 @@ namespace XMLLib
         ///
         /// </summary>
         /// <param name=""></param>
-        bool isEntityPresent(const std::string &entityName) const
-        {
-            return (m_entityMapper.isPresent(entityName));
-        }
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name=""></param>
-        XMLEntityMapping &getEntity(const std::string &entityName)
-        {
-            return (m_entityMapper.get(entityName));
-        }
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name=""></param>
         XMLExternalReference &getNotation(const std::string &notationName)
         {
             return (m_notations[notationName]);
@@ -136,7 +113,7 @@ namespace XMLLib
         {
             m_notations.emplace(notationName, notation);
         }
-              /// <summary>
+        /// <summary>
         ///
         /// </summary>
         /// <param name=""></param>
@@ -144,8 +121,6 @@ namespace XMLLib
         {
             return (static_cast<long>(m_notations.count(notationName)));
         }
-        IXMLEntityMapper &m_entityMapper;
-
     private:
         uint16_t m_type{};
         std::string m_name;
@@ -153,5 +128,4 @@ namespace XMLLib
         std::unordered_map<std::string, DTDElement> m_elements;
         std::unordered_map<std::string, XMLExternalReference> m_notations;
     };
-
 } // namespace XMLLib

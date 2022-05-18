@@ -37,9 +37,9 @@ namespace XMLLib
     // ==============
     // PUBLIC METHODS
     // ==============
-    DTD_Impl::DTD_Impl(IXMLEntityMapper &entityMapper)
+    DTD_Impl::DTD_Impl(IXMLEntityMapper &entityMapper) : m_entityMapper(entityMapper)
     {
-        m_parsed = std::make_unique<DTD_Parsed>(entityMapper);
+        m_parsed = std::make_unique<DTD_Parsed>();
     }
     DTD_Impl::~DTD_Impl()
     {
@@ -106,7 +106,7 @@ namespace XMLLib
     /// <param name=""></param>
     bool DTD_Impl::isEntityPresent(const std::string &entityName) const
     {
-        return (m_parsed->m_entityMapper.isPresent(entityName));
+        return (m_entityMapper.isPresent(entityName));
     }
     /// <summary>
     ///
@@ -114,7 +114,7 @@ namespace XMLLib
     /// <param name=""></param>
     XMLEntityMapping &DTD_Impl::getEntity(const std::string &entityName)
     {
-        return (m_parsed->m_entityMapper.get(entityName));
+        return (m_entityMapper.get(entityName));
     }
     /// <summary>
     ///
