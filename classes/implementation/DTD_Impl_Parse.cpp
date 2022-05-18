@@ -42,7 +42,7 @@ namespace XMLLib
     {
         for (auto &notation : Core::splitString(notations.substr(1, notations.size() - 2), '|'))
         {
-            if (m_parsed->m_notations.count(notation) == 0)
+            if (m_parsed->getNotationCount(notation) == 0)
             {
                 throw SyntaxError("NOTATION " + notation + " is not defined.");
             }
@@ -249,7 +249,7 @@ namespace XMLLib
         dtdSource.ignoreWS();
         XMLAttribute notation;
         std::string name = Core::parseName(dtdSource);
-        m_parsed->m_notations[name] = parseExternalReference(dtdSource);
+        m_parsed->addNotation(name, parseExternalReference(dtdSource));
         dtdSource.ignoreWS();
     }
     /// <summary>

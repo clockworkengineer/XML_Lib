@@ -128,9 +128,22 @@ namespace XMLLib
         {
             return (m_notations[notationName]);
         }
-
-        std::unordered_map<std::string, XMLExternalReference> m_notations;
-
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name=""></param>
+        void addNotation(const std::string &notationName, const XMLExternalReference &notation)
+        {
+            m_notations.emplace(notationName, notation);
+        }
+              /// <summary>
+        ///
+        /// </summary>
+        /// <param name=""></param>
+        [[nodiscard]] long getNotationCount(const std::string &notationName) const
+        {
+            return (static_cast<long>(m_notations.count(notationName)));
+        }
         IXMLEntityMapper &m_entityMapper;
 
     private:
@@ -138,6 +151,7 @@ namespace XMLLib
         std::string m_name;
         XMLExternalReference m_external;
         std::unordered_map<std::string, DTDElement> m_elements;
+        std::unordered_map<std::string, XMLExternalReference> m_notations;
     };
 
 } // namespace XMLLib
