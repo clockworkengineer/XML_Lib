@@ -48,7 +48,7 @@ namespace XMLLib
             {
                 XMLValue entityReference = Core::parseEntityReference(dtdSource);
                 dtdSource.ignoreWS();
-                m_entityMapper.map(entityReference);
+                m_parsed->m_entityMapper.map(entityReference);
                 conditionalValue = entityReference.parsed;
             }
             else if (dtdSource.match(U"INCLUDE"))
@@ -124,22 +124,22 @@ namespace XMLLib
         {
             if (dtdSource.match(U"<!ENTITY"))
             {
-                BufferSource dtdTranslatedSource(m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_parsed->m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseEntity(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!ELEMENT"))
             {
-                BufferSource dtdTranslatedSource(m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_parsed->m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseElement(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!ATTLIST"))
             {
-                BufferSource dtdTranslatedSource(m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_parsed->m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseAttributeList(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!NOTATION"))
             {
-                BufferSource dtdTranslatedSource(m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_parsed->m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseNotation(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!--"))
@@ -173,12 +173,12 @@ namespace XMLLib
     /// </summary>
     void DTD_Impl::parseExternalRefenceContent()
     {
-        if (m_external.type == "SYSTEM")
+        if (m_parsed->m_external.type == "SYSTEM")
         {
-            FileSource dtdFile(m_external.systemID);
+            FileSource dtdFile(m_parsed->m_external.systemID);
             parseExternalContent(dtdFile);
         }
-        else if (m_external.type == "PUBLIC")
+        else if (m_parsed->m_external.type == "PUBLIC")
         {
             // Public external DTD currently not supported (Use system id ?)
         }
@@ -195,14 +195,14 @@ namespace XMLLib
         {
             dtdSource.ignoreWS();
             result.type = "SYSTEM";
-            result.systemID = Core::parseValue(dtdSource, m_entityMapper).parsed;
+            result.systemID = Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed;
         }
         else if (dtdSource.match(U"PUBLIC"))
         {
             dtdSource.ignoreWS();
             result.type = "PUBLIC";
-            result.publicID = Core::parseValue(dtdSource, m_entityMapper).parsed;
-            result.systemID = Core::parseValue(dtdSource, m_entityMapper).parsed;
+            result.publicID = Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed;
+            result.systemID = Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed;
         }
         else
         {

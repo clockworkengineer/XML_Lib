@@ -42,7 +42,7 @@ namespace XMLLib
     {
         for (auto &notation : Core::splitString(notations.substr(1, notations.size() - 2), '|'))
         {
-            if (m_notations.count(notation) == 0)
+            if (m_parsed->m_notations.count(notation) == 0)
             {
                 throw SyntaxError("NOTATION " + notation + " is not defined.");
             }
@@ -63,11 +63,11 @@ namespace XMLLib
         // Only one ID attribute allowed per element
         else if ((dtdAttribute.type & DTDAttributeType::id) != 0)
         {
-            if (m_elements[elementName].idAttributePresent)
+            if (m_parsed->m_elements[elementName].idAttributePresent)
             {
                 throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
             }
-            m_elements[elementName].idAttributePresent = true;
+            m_parsed->m_elements[elementName].idAttributePresent = true;
         }
         // Enumeration contains unique values and default is valid value
         else if (dtdAttribute.type == (DTDAttributeType::enumeration | DTDAttributeType::normal))
@@ -211,13 +211,13 @@ namespace XMLLib
         else if (dtdSource.match(U"#FIXED"))
         {
             dtdSource.ignoreWS();
-            attribute.value = Core::parseValue(dtdSource, m_entityMapper);
+            attribute.value = Core::parseValue(dtdSource, m_parsed->m_entityMapper);
             attribute.type |= DTDAttributeType::fixed;
         }
         else
         {
             dtdSource.ignoreWS();
-            attribute.value = Core::parseValue(dtdSource, m_entityMapper);
+            attribute.value = Core::parseValue(dtdSource, m_parsed->m_entityMapper);
             attribute.type |= DTDAttributeType::normal;
         }
     }
@@ -236,7 +236,7 @@ namespace XMLLib
             parseAttributeType(dtdSource, dtdAttribute);
             parseAttributeValue(dtdSource, dtdAttribute);
             parseValidateAttribute(elementName, dtdAttribute);
-            m_elements[elementName].attributes.emplace_back(dtdAttribute);
+            m_parsed->m_elements[elementName].attributes.emplace_back(dtdAttribute);
             dtdSource.ignoreWS();
         }
     }
@@ -249,7 +249,7 @@ namespace XMLLib
         dtdSource.ignoreWS();
         XMLAttribute notation;
         std::string name = Core::parseName(dtdSource);
-        m_notations[name] = parseExternalReference(dtdSource);
+        m_parsed->m_notations[name] = parseExternalReference(dtdSource);
         dtdSource.ignoreWS();
     }
     /// <summary>
@@ -270,15 +270,15 @@ namespace XMLLib
         if (dtdSource.current() == '\'' || dtdSource.current() == '"')
         {
             XMLValue entityValue = Core::parseValue(dtdSource);
-            m_entityMapper.get(entityName).internal = entityValue.parsed;
+            m_parsed->m_entityMapper.get(entityName).internal = entityValue.parsed;
         }
         else
         {
-            m_entityMapper.get(entityName).external = parseExternalReference(dtdSource);
+            m_parsed->m_entityMapper.get(entityName).external = parseExternalReference(dtdSource);
             if (dtdSource.match(U"NDATA"))
             {
                 dtdSource.ignoreWS();
-                m_entityMapper.get(entityName).notation = Core::parseName(dtdSource);
+                m_parsed->m_entityMapper.get(entityName).notation = Core::parseName(dtdSource);
             }
         }
     }
@@ -312,7 +312,7 @@ namespace XMLLib
             }
             parseElementContentSpecification(elementName, contentSpecification);
         }
-        m_elements.emplace(elementName, DTDElement(elementName, contentSpecification));
+        m_parsed->m_elements.emplace(elementName, DTDElement(elementName, contentSpecification));
         dtdSource.ignoreWS();
     }
     /// <summary>
@@ -333,7 +333,7 @@ namespace XMLLib
     void DTD_Impl::parseParameterEntityReference(ISource &dtdSource)
     {
         XMLValue parameterEntity = Core::parseEntityReference(dtdSource);
-        BufferSource entitySource(m_entityMapper.translate(parameterEntity.unparsed));
+        BufferSource entitySource(m_parsed->m_entityMapper.translate(parameterEntity.unparsed));
         parseInternal(entitySource);
         dtdSource.ignoreWS();
     }
@@ -395,11 +395,11 @@ namespace XMLLib
         // in its raw unparsed form.
         long start = dtdSource.position();
         dtdSource.ignoreWS();
-        m_name = Core::parseName(dtdSource);
+        m_parsed->m_name = Core::parseName(dtdSource);
         // Parse in external DTD reference
         if (dtdSource.current() != '[')
         {
-            m_external = parseExternalReference(dtdSource);
+            m_parsed->m_external = parseExternalReference(dtdSource);
         }
         // We have internal DTD so parse that first
         if (dtdSource.current() == '[')
@@ -407,7 +407,7 @@ namespace XMLLib
             dtdSource.next();
             dtdSource.ignoreWS();
             parseInternal(dtdSource);
-            m_type = DTD::DTDType::internal;
+            m_parsed->m_type = DTD::DTDType::internal;
         }
         // Missing '>' after external DTD reference
         else if (dtdSource.current() != '>')
@@ -421,17 +421,17 @@ namespace XMLLib
             dtdSource.ignoreWS();
         }
         // Parse any DTD in external reference found
-        if (!m_external.type.empty())
+        if (!m_parsed->m_external.type.empty())
         {
             parseExternal(dtdSource);
-            m_type |= DTD::DTDType::external;
+            m_parsed->m_type |= DTD::DTDType::external;
         }
         // Save away unparsed form of DTD
         m_unparsed = "<!DOCTYPE" + dtdSource.getRange(start, dtdSource.position());
         // Make sure no defined entity contains recursion
-        for (auto &entityName : m_entityMapper.getList())
+        for (auto &entityName : m_parsed->m_entityMapper.getList())
         {
-            m_entityMapper.recursive(entityName.first, entityName.first[0]);
+            m_parsed->m_entityMapper.recursive(entityName.first, entityName.first[0]);
         }
     }
 } // namespace XMLLib

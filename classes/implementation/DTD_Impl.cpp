@@ -37,8 +37,9 @@ namespace XMLLib
     // ==============
     // PUBLIC METHODS
     // ==============
-    DTD_Impl::DTD_Impl(IXMLEntityMapper &entityMapper)  : m_entityMapper(entityMapper)
+    DTD_Impl::DTD_Impl(IXMLEntityMapper &entityMapper)
     {
+        m_parsed = std::make_unique<DTD_Parsed>(entityMapper);
     }
     DTD_Impl::~DTD_Impl()
     {
@@ -65,7 +66,7 @@ namespace XMLLib
     /// <param name=""></param>
     uint16_t DTD_Impl::getType() const
     {
-        return (m_type);
+        return (m_parsed->m_type);
     }
     /// <summary>
     ///
@@ -73,7 +74,7 @@ namespace XMLLib
     /// <param name=""></param>
     std::string &DTD_Impl::getRootName()
     {
-        return (m_name);
+        return (m_parsed->m_name);
     }
     /// <summary>
     ///
@@ -81,7 +82,7 @@ namespace XMLLib
     /// <param name=""></param>
     XMLExternalReference &DTD_Impl::getExternalReference()
     {
-        return (m_external);
+        return (m_parsed->m_external);
     }
     /// <summary>
     ///
@@ -89,7 +90,7 @@ namespace XMLLib
     /// <param name=""></param>
     bool DTD_Impl::isElementPresent(const std::string &elementName) const
     {
-        return (m_elements.find(elementName) != m_elements.end());
+        return (m_parsed->m_elements.find(elementName) != m_parsed->m_elements.end());
     }
     /// <summary>
     ///
@@ -97,7 +98,7 @@ namespace XMLLib
     /// <param name=""></param>
     DTDElement &DTD_Impl::getElement(const std::string &elementName)
     {
-        return (m_elements[elementName]);
+        return (m_parsed->m_elements[elementName]);
     }
     /// <summary>
     ///
@@ -105,7 +106,7 @@ namespace XMLLib
     /// <param name=""></param>
     bool DTD_Impl::isEntityPresent(const std::string &entityName) const
     {
-        return (m_entityMapper.isPresent(entityName));
+        return (m_parsed->m_entityMapper.isPresent(entityName));
     }
     /// <summary>
     ///
@@ -113,7 +114,7 @@ namespace XMLLib
     /// <param name=""></param>
     XMLEntityMapping &DTD_Impl::getEntity(const std::string &entityName)
     {
-        return (m_entityMapper.get(entityName));
+        return (m_parsed->m_entityMapper.get(entityName));
     }
     /// <summary>
     ///
@@ -121,7 +122,7 @@ namespace XMLLib
     /// <param name=""></param>
     XMLExternalReference &DTD_Impl::getNotation(const std::string &notationName)
     {
-        return (m_notations[notationName]);
+        return (m_parsed->m_notations[notationName]);
     }
     /// <summary>
     /// Parse DTD read from source stream.
