@@ -85,7 +85,7 @@ namespace XMLLib
     {
         return (m_implementation->isElementPresent(elementName));
     }
-        /// <summary>
+    /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
@@ -124,6 +124,14 @@ namespace XMLLib
     XMLExternalReference &DTD::getNotation(const std::string &notationName)
     {
         return (m_implementation->getNotation(notationName));
+    }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name=""></param>
+    DTDParsed &DTD::parsed()
+    {
+        return (m_implementation->parsed());
     }
     /// <summary>
     /// Parse DTD read from source stream.

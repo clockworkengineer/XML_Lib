@@ -5,6 +5,10 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
+//
+//
+//
+#include "DTD_Parsed.hpp"
 // =========
 // NAMESPACE
 // =========
@@ -18,6 +22,7 @@ namespace XMLLib
     class IDestination;
     class IXMLEntityMapper;
     struct DTDElement;
+    struct DTDParsed;
     struct XMLNodeElement;
     struct XMLEntityMapping;
     struct XMLExternalReference;
@@ -59,6 +64,7 @@ namespace XMLLib
         XMLEntityMapping &getEntity(const std::string &entityName);
         XMLExternalReference &getNotation(const std::string &notationName);
         [[nodiscard]] long getLineCount() const;
+        DTDParsed &parsed();
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         // ================

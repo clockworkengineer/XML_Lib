@@ -51,6 +51,7 @@ namespace XMLLib
         XMLEntityMapping &getEntity(const std::string &entityName);
         XMLExternalReference &getNotation(const std::string &notationName);
         [[nodiscard]] long getLineCount() const;
+        DTDParsed &parsed() { return(*m_parsed); }
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         // ================
@@ -96,7 +97,7 @@ namespace XMLLib
         // =================
         // PRIVATE VARIABLES
         // =================
-        std::unique_ptr<DTD_Parsed> m_parsed;
+        std::unique_ptr<DTDParsed> m_parsed;
         std::string m_unparsed;
         IXMLEntityMapper &m_entityMapper;
     };

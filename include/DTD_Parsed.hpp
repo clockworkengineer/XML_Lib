@@ -15,7 +15,7 @@
 // =========
 namespace XMLLib
 {
-    struct DTD_Parsed
+    struct DTDParsed
     {
         /// <summary>
         ///

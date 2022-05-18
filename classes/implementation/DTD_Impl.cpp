@@ -39,7 +39,7 @@ namespace XMLLib
     // ==============
     DTD_Impl::DTD_Impl(IXMLEntityMapper &entityMapper) : m_entityMapper(entityMapper)
     {
-        m_parsed = std::make_unique<DTD_Parsed>();
+        m_parsed = std::make_unique<DTDParsed>();
     }
     DTD_Impl::~DTD_Impl()
     {
