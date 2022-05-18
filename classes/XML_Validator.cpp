@@ -16,7 +16,6 @@
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
-
 // ====================
 // CLASS IMPLEMENTATION
 // ====================

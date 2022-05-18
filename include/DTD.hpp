@@ -61,7 +61,6 @@ namespace XMLLib
         [[nodiscard]] long getLineCount() const;
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
-        void validate(XMLNodeElement &prolog);
         // ================
         // PUBLIC VARIABLES
         // ================
