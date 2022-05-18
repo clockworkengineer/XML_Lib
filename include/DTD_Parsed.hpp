@@ -121,8 +121,26 @@ namespace XMLLib
         {
             return (static_cast<long>(m_notations.count(notationName)));
         }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name=""></param>
+        long getLineCount() const
+        {
+            return (m_lineCount);
+        }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name=""></param>
+        void setLineCount(long lineCount)
+        {
+            m_lineCount = lineCount;
+        }
+
     private:
         uint16_t m_type{};
+        long m_lineCount{};
         std::string m_name;
         XMLExternalReference m_external;
         std::unordered_map<std::string, DTDElement> m_elements;
