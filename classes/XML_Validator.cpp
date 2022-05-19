@@ -347,8 +347,7 @@ namespace XMLLib
     void XML_Validator::checkAttributes(XMLNode &xmlNode)
     {
         for (auto &attribute :
-             m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
-                 .attributes)
+             m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).attributes)
         {
             if (XMLNodeRef<XMLNodeElement>(xmlNode).isAttributePresent(
                     attribute.name))
@@ -368,8 +367,7 @@ namespace XMLLib
         {
             return;
         }
-        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
-                .content.parsed == "((<#PCDATA>))")
+        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "((<#PCDATA>))")
         {
             if (!checkIsPCDATA(xmlNode))
             {
@@ -380,8 +378,7 @@ namespace XMLLib
             }
             return;
         }
-        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
-                .content.parsed == "EMPTY")
+        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "EMPTY")
         {
             if (!checkIsEMPTY(xmlNode))
             {
@@ -392,14 +389,12 @@ namespace XMLLib
             }
             return;
         }
-        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
-                .content.parsed == "ANY")
+        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "ANY")
         {
             return;
         }
         std::regex match(
-            m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
-                .content.parsed);
+            m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed);
         std::string elements;
         for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
         {
@@ -423,8 +418,7 @@ namespace XMLLib
                 m_lineNumber,
                 "<" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
                     "> element does not conform to the content specification " +
-                    m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
-                        .content.unparsed +
+                    m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.unparsed +
                     ".");
         }
     }

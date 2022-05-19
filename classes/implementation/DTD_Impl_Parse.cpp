@@ -53,7 +53,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="elementName">Element associated with attribute.</param>
     /// <param name="dtdattribute">Attribute description to validate.</param>
-    void DTD_Impl::parseValidateAttribute(const std::string &elementName, DTDAttribute dtdAttribute)
+    void DTD_Impl::parseValidateAttribute(const std::string &elementName, const DTDAttribute &dtdAttribute)
     {
         // Attribute cannot be ID and fixed
         if (dtdAttribute.type == (DTDAttributeType::id | DTDAttributeType::fixed))

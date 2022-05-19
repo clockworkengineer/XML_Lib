@@ -41,7 +41,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        DTDParsed &parsed() { return(*m_parsed); }
+        DTDParsed &parsed() { return (*m_parsed); }
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         // ================
@@ -57,9 +57,10 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
-        void parseConditional(ISource &dtdSource, bool includeOff = true);
+
         void parseValidNotations(const std::string &notations);
-        void parseValidateAttribute(const std::string &elementName, DTDAttribute xDTDAttribute);
+        void parseValidateAttribute(const std::string &elementName, const DTDAttribute &dtdAttribute);
+        void parseConditional(ISource &dtdSource, bool includeOff = true);
         void parseParameterEntities(ISource &dtdSource);
         void parseExternalContent(ISource &dtdSource);
         std::string parseAttributeEnumerationType(ISource &source);
@@ -71,7 +72,7 @@ namespace XMLLib
         void parseElementName(ISource &contentSpecSource, IDestination &contentSpec);
         void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpec);
         void parseElementContentSpecification(const std::string &elementName, XMLValue &contentSpec);
-        void parseExternalRefenceContent();
+        void parseExternalReferenceContent();
         void parseAttributeList(ISource &dtdSource);
         void parseNotation(ISource &dtdSource);
         void parseEntity(ISource &dtdSource);

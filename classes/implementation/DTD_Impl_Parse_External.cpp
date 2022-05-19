@@ -171,7 +171,7 @@ namespace XMLLib
     /// <summary>
     /// Parse externally defined DTD into XMLNodeDTD.
     /// </summary>
-    void DTD_Impl::parseExternalRefenceContent()
+    void DTD_Impl::parseExternalReferenceContent()
     {
         if (m_parsed->getExternalReference().type == "SYSTEM")
         {
@@ -216,6 +216,6 @@ namespace XMLLib
     /// <param name="dtdSource">DTD source stream.</param>
     void DTD_Impl::parseExternal(ISource & /*dtdSource*/)
     {
-        parseExternalRefenceContent();
+        parseExternalReferenceContent();
     }
 } // namespace XMLLib
