@@ -51,7 +51,6 @@ namespace XMLLib
     void DTD_Impl::parse(ISource &dtdSource)
     {
         parseDTD(dtdSource);
-        m_parsed->setLineCount(static_cast<long>(std::count(m_unparsed.begin(), m_unparsed.end(), kLineFeed))+1);
     }
     /// <summary>
     /// Create DTD text from an DTD object.

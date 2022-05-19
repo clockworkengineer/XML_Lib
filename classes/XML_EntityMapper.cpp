@@ -44,7 +44,9 @@ namespace XMLLib
         m_entityMappings["&lt;"].internal = "&#x3C;";
         m_entityMappings["&gt;"].internal = "&#x3E;";
     }
-    XML_EntityMapper::~XML_EntityMapper() {}
+    XML_EntityMapper::~XML_EntityMapper()
+    {
+    }
     void XML_EntityMapper::add(const std::string &entityName,
                                XMLEntityMapping &entityMapping)
     {

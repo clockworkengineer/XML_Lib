@@ -52,7 +52,7 @@ namespace XMLLib
     /// Validate attribute description.
     /// </summary>
     /// <param name="elementName">Element associated with attribute.</param>
-    /// <param name="dtdattribute">Attribute description to validate.</param>
+    /// <param name="dtdAttribute">Attribute description to validate.</param>
     void DTD_Impl::parseValidateAttribute(const std::string &elementName, const DTDAttribute &dtdAttribute)
     {
         // Attribute cannot be ID and fixed
@@ -433,5 +433,7 @@ namespace XMLLib
         {
             m_parsed->m_entityMapper.recursive(entityName.first, entityName.first[0]);
         }
+        // Count lines in DTD
+        m_parsed->setLineCount(static_cast<long>(std::count(m_unparsed.begin(), m_unparsed.end(), kLineFeed)) + 1);
     }
 } // namespace XMLLib
