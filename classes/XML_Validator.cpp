@@ -278,7 +278,7 @@ namespace XMLLib
         }
         else if ((attribute.type & DTDAttributeType::entity) != 0)
         {
-            if (!m_dtd.parsed().m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";"))
+            if (!m_dtdParsed.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";"))
             {
                 throw ValidationError(
                     m_lineNumber,
@@ -291,7 +291,7 @@ namespace XMLLib
         {
             for (auto &entity : Core::splitString(elementAttribute.value.parsed, ' '))
             {
-                if (!m_dtd.parsed().m_entityMapper.isPresent("&" + entity + ";"))
+                if (!m_dtdParsed.m_entityMapper.isPresent("&" + entity + ";"))
                 {
                     throw ValidationError(
                         m_lineNumber, "Element <" +
@@ -347,7 +347,7 @@ namespace XMLLib
     void XML_Validator::checkAttributes(XMLNode &xmlNode)
     {
         for (auto &attribute :
-             m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).attributes)
+             m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).attributes)
         {
             if (XMLNodeRef<XMLNodeElement>(xmlNode).isAttributePresent(
                     attribute.name))
@@ -363,11 +363,11 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML_Validator::checkContentSpecification(XMLNode &xmlNode)
     {
-        if (m_dtd.parsed().getElementCount() == 0)
+        if (m_dtdParsed.getElementCount() == 0)
         {
             return;
         }
-        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "((<#PCDATA>))")
+        if (m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "((<#PCDATA>))")
         {
             if (!checkIsPCDATA(xmlNode))
             {
@@ -378,7 +378,7 @@ namespace XMLLib
             }
             return;
         }
-        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "EMPTY")
+        if (m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "EMPTY")
         {
             if (!checkIsEMPTY(xmlNode))
             {
@@ -389,12 +389,12 @@ namespace XMLLib
             }
             return;
         }
-        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "ANY")
+        if (m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "ANY")
         {
             return;
         }
         std::regex match(
-            m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed);
+            m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed);
         std::string elements;
         for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
         {
@@ -418,7 +418,7 @@ namespace XMLLib
                 m_lineNumber,
                 "<" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
                     "> element does not conform to the content specification " +
-                    m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.unparsed +
+                    m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.unparsed +
                     ".");
         }
     }
@@ -449,7 +449,7 @@ namespace XMLLib
         case XMLNodeType::element:
             if (xmlNode.getNodeType() == XMLNodeType::root &&
                 XMLNodeRef<XMLNodeElement>(xmlNode).elementName !=
-                    m_dtd.parsed().getRootName())
+                    m_dtdParsed.getRootName())
             {
                 throw ValidationError(
                     m_lineNumber, "DOCTYPE name does not match that of root element " +
@@ -494,7 +494,7 @@ namespace XMLLib
     /// validate.</param>
     void XML_Validator::checkAgainstDTD(XMLNodeElement &prolog)
     {
-        m_lineNumber = m_dtd.parsed().getLineCount();
+        m_lineNumber = m_dtdParsed.getLineCount();
         checkElements(prolog);
         for (auto &idref : m_assignedIDREFValues)
         {

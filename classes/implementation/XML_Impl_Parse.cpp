@@ -452,7 +452,7 @@ namespace XMLLib
                 {
                     m_dtd = std::make_unique<DTD>(*m_entityMapper);
                     m_dtd->parse(source);
-                    m_validator = std::make_unique<XML_Validator>(*m_dtd);
+                    m_validator = std::make_unique<XML_Validator>(m_dtd->parsed());
                     XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeDTD>());
                 }
                 else
