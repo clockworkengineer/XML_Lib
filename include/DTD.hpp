@@ -54,16 +54,6 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        [[nodiscard]] uint16_t getType() const;
-        std::string &getRootName();
-        XMLExternalReference &getExternalReference();
-        [[nodiscard]] bool isElementPresent(const std::string &elementName) const;
-        [[nodiscard]] long getElementCount() const;
-        DTDElement &getElement(const std::string &elementName);
-        [[nodiscard]] bool isEntityPresent(const std::string &entityName) const;
-        XMLEntityMapping &getEntity(const std::string &entityName);
-        XMLExternalReference &getNotation(const std::string &notationName);
-        [[nodiscard]] long getLineCount() const;
         DTDParsed &parsed();
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);

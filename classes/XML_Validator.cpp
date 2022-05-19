@@ -347,7 +347,7 @@ namespace XMLLib
     void XML_Validator::checkAttributes(XMLNode &xmlNode)
     {
         for (auto &attribute :
-             m_dtd.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
+             m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
                  .attributes)
         {
             if (XMLNodeRef<XMLNodeElement>(xmlNode).isAttributePresent(
@@ -364,11 +364,11 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML_Validator::checkContentSpecification(XMLNode &xmlNode)
     {
-        if (m_dtd.getElementCount() == 0)
+        if (m_dtd.parsed().getElementCount() == 0)
         {
             return;
         }
-        if (m_dtd.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
+        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
                 .content.parsed == "((<#PCDATA>))")
         {
             if (!checkIsPCDATA(xmlNode))
@@ -380,7 +380,7 @@ namespace XMLLib
             }
             return;
         }
-        if (m_dtd.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
+        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
                 .content.parsed == "EMPTY")
         {
             if (!checkIsEMPTY(xmlNode))
@@ -392,13 +392,13 @@ namespace XMLLib
             }
             return;
         }
-        if (m_dtd.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
+        if (m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
                 .content.parsed == "ANY")
         {
             return;
         }
         std::regex match(
-            m_dtd.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
+            m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
                 .content.parsed);
         std::string elements;
         for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
@@ -423,7 +423,7 @@ namespace XMLLib
                 m_lineNumber,
                 "<" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
                     "> element does not conform to the content specification " +
-                    m_dtd.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
+                    m_dtd.parsed().getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName)
                         .content.unparsed +
                     ".");
         }
@@ -455,7 +455,7 @@ namespace XMLLib
         case XMLNodeType::element:
             if (xmlNode.getNodeType() == XMLNodeType::root &&
                 XMLNodeRef<XMLNodeElement>(xmlNode).elementName !=
-                    m_dtd.getRootName())
+                    m_dtd.parsed().getRootName())
             {
                 throw ValidationError(
                     m_lineNumber, "DOCTYPE name does not match that of root element " +
@@ -500,7 +500,7 @@ namespace XMLLib
     /// validate.</param>
     void XML_Validator::checkAgainstDTD(XMLNodeElement &prolog)
     {
-        m_lineNumber = m_dtd.getLineCount();
+        m_lineNumber = m_dtd.parsed().getLineCount();
         checkElements(prolog);
         for (auto &idref : m_assignedIDREFValues)
         {
