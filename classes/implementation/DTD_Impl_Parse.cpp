@@ -211,13 +211,13 @@ namespace XMLLib
         else if (dtdSource.match(U"#FIXED"))
         {
             dtdSource.ignoreWS();
-            attribute.value = Core::parseValue(dtdSource, m_entityMapper);
+            attribute.value = Core::parseValue(dtdSource, m_parsed->m_entityMapper);
             attribute.type |= DTDAttributeType::fixed;
         }
         else
         {
             dtdSource.ignoreWS();
-            attribute.value = Core::parseValue(dtdSource, m_entityMapper);
+            attribute.value = Core::parseValue(dtdSource, m_parsed->m_entityMapper);
             attribute.type |= DTDAttributeType::normal;
         }
     }
@@ -270,15 +270,15 @@ namespace XMLLib
         if (dtdSource.current() == '\'' || dtdSource.current() == '"')
         {
             XMLValue entityValue = Core::parseValue(dtdSource);
-            m_entityMapper.get(entityName).internal = entityValue.parsed;
+            m_parsed->m_entityMapper.get(entityName).internal = entityValue.parsed;
         }
         else
         {
-            m_entityMapper.get(entityName).external = parseExternalReference(dtdSource);
+            m_parsed->m_entityMapper.get(entityName).external = parseExternalReference(dtdSource);
             if (dtdSource.match(U"NDATA"))
             {
                 dtdSource.ignoreWS();
-                m_entityMapper.get(entityName).notation = Core::parseName(dtdSource);
+                m_parsed->m_entityMapper.get(entityName).notation = Core::parseName(dtdSource);
             }
         }
     }
@@ -333,7 +333,7 @@ namespace XMLLib
     void DTD_Impl::parseParameterEntityReference(ISource &dtdSource)
     {
         XMLValue parameterEntity = Core::parseEntityReference(dtdSource);
-        BufferSource entitySource(m_entityMapper.translate(parameterEntity.unparsed));
+        BufferSource entitySource(m_parsed->m_entityMapper.translate(parameterEntity.unparsed));
         parseInternal(entitySource);
         dtdSource.ignoreWS();
     }
@@ -429,9 +429,9 @@ namespace XMLLib
         // Save away unparsed form of DTD
         m_unparsed = "<!DOCTYPE" + dtdSource.getRange(start, dtdSource.position());
         // Make sure no defined entity contains recursion
-        for (auto &entityName : m_entityMapper.getList())
+        for (auto &entityName : m_parsed->m_entityMapper.getList())
         {
-            m_entityMapper.recursive(entityName.first, entityName.first[0]);
+            m_parsed->m_entityMapper.recursive(entityName.first, entityName.first[0]);
         }
     }
 } // namespace XMLLib

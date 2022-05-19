@@ -17,6 +17,9 @@ namespace XMLLib
 {
     struct DTDParsed
     {
+        explicit DTDParsed(IXMLEntityMapper &entityMapper) : m_entityMapper(entityMapper)
+        {
+        }
         /// <summary>
         ///
         /// </summary>
@@ -137,6 +140,8 @@ namespace XMLLib
         {
             m_lineCount = lineCount;
         }
+
+        IXMLEntityMapper &m_entityMapper;
 
     private:
         uint16_t m_type{};
