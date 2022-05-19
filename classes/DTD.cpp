@@ -105,22 +105,6 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name=""></param>
-    bool DTD::isEntityPresent(const std::string &entityName) const
-    {
-        return (m_implementation->isEntityPresent(entityName));
-    }
-    /// <summary>
-    ///
-    /// </summary>
-    /// <param name=""></param>
-    XMLEntityMapping &DTD::getEntity(const std::string &entityName)
-    {
-        return (m_implementation->getEntity(entityName));
-    }
-    /// <summary>
-    ///
-    /// </summary>
-    /// <param name=""></param>
     XMLExternalReference &DTD::getNotation(const std::string &notationName)
     {
         return (m_implementation->getNotation(notationName));

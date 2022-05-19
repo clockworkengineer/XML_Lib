@@ -96,18 +96,18 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name=""></param>
-    bool DTD_Impl::isEntityPresent(const std::string &entityName) const
-    {
-        return (m_parsed->m_entityMapper.isPresent(entityName));
-    }
+    // bool DTD_Impl::isEntityPresent(const std::string &entityName) const
+    // {
+    //     return (m_parsed->m_entityMapper.isPresent(entityName));
+    // }
     /// <summary>
     ///
     /// </summary>
     /// <param name=""></param>
-    XMLEntityMapping &DTD_Impl::getEntity(const std::string &entityName)
-    {
-        return (m_parsed->m_entityMapper.get(entityName));
-    }
+    // XMLEntityMapping &DTD_Impl::getEntity(const std::string &entityName)
+    // {
+    //     return (m_parsed->m_entityMapper.get(entityName));
+    // }
     /// <summary>
     ///
     /// </summary>

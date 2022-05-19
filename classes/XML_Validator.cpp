@@ -278,7 +278,7 @@ namespace XMLLib
         }
         else if ((attribute.type & DTDAttributeType::entity) != 0)
         {
-            if (!m_dtd.isEntityPresent("&" + elementAttribute.value.parsed + ";"))
+            if (!m_dtd.parsed().m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";"))
             {
                 throw ValidationError(
                     m_lineNumber,
@@ -291,7 +291,7 @@ namespace XMLLib
         {
             for (auto &entity : Core::splitString(elementAttribute.value.parsed, ' '))
             {
-                if (!m_dtd.isEntityPresent("&" + entity + ";"))
+                if (!m_dtd.parsed().m_entityMapper.isPresent("&" + entity + ";"))
                 {
                     throw ValidationError(
                         m_lineNumber, "Element <" +

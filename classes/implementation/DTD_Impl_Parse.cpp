@@ -197,7 +197,7 @@ namespace XMLLib
     /// Parse DTD attribute value.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>
-    /// <param name="dtdattribute">Attribute description.</param>
+    /// <param name="attribute">Attribute description.</param>
     void DTD_Impl::parseAttributeValue(ISource &dtdSource, DTDAttribute &attribute)
     {
         if (dtdSource.match(U"#REQUIRED"))

@@ -47,8 +47,6 @@ namespace XMLLib
         [[nodiscard]] bool isElementPresent(const std::string &elementName) const;
         [[nodiscard]] long getElementCount() const { return (m_parsed->getElementCount()); }
         DTDElement &getElement(const std::string &elementName);
-        [[nodiscard]] bool isEntityPresent(const std::string &entityName) const;
-        XMLEntityMapping &getEntity(const std::string &entityName);
         XMLExternalReference &getNotation(const std::string &notationName);
         [[nodiscard]] long getLineCount() const;
         DTDParsed &parsed() { return(*m_parsed); }
@@ -99,6 +97,5 @@ namespace XMLLib
         // =================
         std::unique_ptr<DTDParsed> m_parsed;
         std::string m_unparsed;
-        // IXMLEntityMapper &m_entityMapper;
     };
 } // namespace XMLLib
