@@ -28,7 +28,7 @@ namespace XMLLib
         {
             m_type = type;
         }
-        std::string &getRootName()
+        std::string getRootName() const
         {
             return (m_name);
         }
@@ -36,7 +36,7 @@ namespace XMLLib
         {
             m_name = name;
         }
-        XMLExternalReference &getExternalReference()
+        XMLExternalReference getExternalReference() const
         {
             return (m_external);
         }
