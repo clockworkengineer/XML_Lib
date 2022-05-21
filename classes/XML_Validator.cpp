@@ -43,6 +43,10 @@ namespace XMLLib
     // ===============
     // PRIVATE METHODS
     // ===============
+    void XML_Validator::elementError(const XMLNodeElement &xNodeElement, const std::string &error)
+    {
+        throw ValidationError(m_lineNumber, "Element <" + xNodeElement.elementName + "> " + error);
+    }
     /// <summary>
     /// Check whether a token value is valid.
     /// </summary>
@@ -126,10 +130,7 @@ namespace XMLLib
         {
             if (!xNodeElement.isAttributePresent(attribute.name))
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" + xNodeElement.elementName + "> is missing required attribute '" +
-                        attribute.name + "'.");
+                elementError(xNodeElement, "is missing required attribute '" + attribute.name + "'.");
             }
         }
         else if ((attribute.type & DTDAttributeType::implied) != 0)
@@ -143,12 +144,9 @@ namespace XMLLib
                 XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
                 if (attribute.value.parsed != elementAttribute.value.parsed)
                 {
-                    throw ValidationError(
-                        m_lineNumber,
-                        "Element <" + xNodeElement.elementName + "> attribute '" +
-                            attribute.name + "' is '" +
-                            elementAttribute.value.parsed + "' instead of '" +
-                            attribute.value.parsed + "'.");
+                    elementError(xNodeElement, "attribute '" + attribute.name + "' is '" +
+                                                   elementAttribute.value.parsed + "' instead of '" +
+                                                   attribute.value.parsed + "'.");
                 }
             }
             else
@@ -195,27 +193,19 @@ namespace XMLLib
         {
             if (elementAttribute.value.parsed.empty()) // No character data present.
             {
-                ValidationError(m_lineNumber,
-                                "Element <" +
-                                    xNodeElement.elementName + "> attribute '" + attribute.name +
-                                    "' does not contain character data.");
+                elementError(xNodeElement, "attribute '" + attribute.name +
+                                               "' does not contain character data.");
             }
         }
         else if ((attribute.type & DTDAttributeType::id) != 0)
         {
             if (!checkIsIDOK(elementAttribute.value.parsed))
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" + xNodeElement.elementName +
-                        "> ID attribute '" + attribute.name + "' is invalid.");
+                elementError(xNodeElement, "ID attribute '" + attribute.name + "' is invalid.");
             }
             if (m_assignedIDValues.find(elementAttribute.value.parsed) != m_assignedIDValues.end())
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" + xNodeElement.elementName +
-                        "> ID attribute '" + attribute.name + "' is not unique.");
+                elementError(xNodeElement, "ID attribute '" + attribute.name + "' is not unique.");
             }
             m_assignedIDValues.insert(elementAttribute.value.parsed);
         }
@@ -223,10 +213,7 @@ namespace XMLLib
         {
             if (!checkIsIDOK(elementAttribute.value.parsed))
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" + xNodeElement.elementName +
-                        "> IDREF attribute '" + attribute.name + "' is invalid.");
+                elementError(xNodeElement, "IDREF attribute '" + attribute.name + "' is invalid.");
             }
             m_assignedIDREFValues.insert(elementAttribute.value.parsed);
         }
@@ -236,12 +223,8 @@ namespace XMLLib
             {
                 if (!checkIsIDOK(id))
                 {
-                    throw ValidationError(
-                        m_lineNumber,
-                        "Element <" +
-                            xNodeElement.elementName +
-                            "> IDREFS attribute '" + attribute.name +
-                            "' contains an invalid IDREF.");
+                    elementError(xNodeElement, "IDREFS attribute '" + attribute.name +
+                                                   "' contains an invalid IDREF.");
                 }
                 m_assignedIDREFValues.insert(id);
             }
@@ -250,10 +233,7 @@ namespace XMLLib
         {
             if (!checkIsNMTOKENOK(elementAttribute.value.parsed))
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" + xNodeElement.elementName +
-                        "> NMTOKEN attribute '" + attribute.name + "' is invalid.");
+                elementError(xNodeElement, "NMTOKEN attribute '" + attribute.name + "' is invalid.");
             }
         }
         else if ((attribute.type & DTDAttributeType::nmtokens) != 0)
@@ -263,11 +243,7 @@ namespace XMLLib
             {
                 if (!checkIsNMTOKENOK(nmtoken))
                 {
-                    throw ValidationError(
-                        m_lineNumber,
-                        "Element <" + xNodeElement.elementName +
-                            "> NMTOKEN attribute '" + attribute.name +
-                            "' contains an invalid NMTOKEN.");
+                    elementError(xNodeElement, "NMTOKEN attribute '" + attribute.name + "' contains an invalid NMTOKEN.");
                 }
             }
         }
@@ -275,11 +251,8 @@ namespace XMLLib
         {
             if (!m_dtdParsed.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";"))
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" + xNodeElement.elementName +
-                        "> ENTITY attribute '" + attribute.name + "' value '" +
-                        elementAttribute.value.parsed + "' is not defined.");
+                elementError(xNodeElement, "ENTITY attribute '" + attribute.name + "' value '" +
+                                               elementAttribute.value.parsed + "' is not defined.");
             }
         }
         else if ((attribute.type & DTDAttributeType::entities) != 0)
@@ -288,12 +261,8 @@ namespace XMLLib
             {
                 if (!m_dtdParsed.m_entityMapper.isPresent("&" + entity + ";"))
                 {
-                    throw ValidationError(
-                        m_lineNumber,
-                        "Element <" +
-                            xNodeElement.elementName +
-                            "> ENTITIES attribute '" + attribute.name +
-                            "' value '" + entity + "' is not defined.");
+                    elementError(xNodeElement, "ENTITIES attribute '" + attribute.name +
+                                                   "' value '" + entity + "' is not defined.");
                 }
             }
         }
@@ -307,12 +276,8 @@ namespace XMLLib
             }
             if (notations.count(elementAttribute.value.parsed) == 0)
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" +
-                        xNodeElement.elementName +
-                        "> NOTATION attribute '" + attribute.name + "' value '" +
-                        elementAttribute.value.parsed + "' is not defined.");
+                elementError(xNodeElement, "NOTATION attribute '" + attribute.name + "' value '" +
+                                               elementAttribute.value.parsed + "' is not defined.");
             }
         }
         else if ((attribute.type & DTDAttributeType::enumeration) != 0)
@@ -325,13 +290,9 @@ namespace XMLLib
             }
             if (enumeration.find(elementAttribute.value.parsed) == enumeration.end())
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" +
-                        xNodeElement.elementName +
-                        "> attribute '" + attribute.name +
-                        "' contains invalid enumeration value '" +
-                        elementAttribute.value.parsed + "'.");
+                elementError(xNodeElement, "attribute '" + attribute.name +
+                                               "' contains invalid enumeration value '" +
+                                               elementAttribute.value.parsed + "'.");
             }
         }
     }
@@ -367,11 +328,7 @@ namespace XMLLib
         {
             if (!checkIsPCDATA(xmlNode))
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" +
-                        xNodeElement.elementName +
-                        "> does not contain just any parsable data.");
+                elementError(xNodeElement, "does not contain just any parsable data.");
             }
             return;
         }
@@ -379,11 +336,7 @@ namespace XMLLib
         {
             if (!checkIsEMPTY(xmlNode))
             {
-                throw ValidationError(
-                    m_lineNumber,
-                    "Element <" +
-                        xNodeElement.elementName +
-                        "> is not empty.");
+                elementError(xNodeElement, "is not empty.");
             }
             return;
         }
@@ -411,12 +364,8 @@ namespace XMLLib
         }
         if (!std::regex_match(elements, match))
         {
-            throw ValidationError(
-                m_lineNumber,
-                "Element <" +
-                    xNodeElement.elementName +
-                    "> does not conform to the content specification " +
-                    m_dtdParsed.getElement(xNodeElement.elementName).content.unparsed + ".");
+            elementError(xNodeElement, "does not conform to the content specification " +
+                                           m_dtdParsed.getElement(xNodeElement.elementName).content.unparsed + ".");
         }
     }
     /// <summary>

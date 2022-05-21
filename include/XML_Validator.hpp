@@ -52,6 +52,7 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
+        void elementError(const XMLNodeElement &xNodeElement, const std::string &error);
         void checkAttributes(XMLNode &xmlNode);
         void checkContentSpecification(XMLNode &xmlNode);
         void checkElement(XMLNode &xmlNode);
