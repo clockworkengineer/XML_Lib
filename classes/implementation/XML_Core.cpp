@@ -130,7 +130,7 @@ namespace XMLLib::Core
     /// </summary>
     /// <param name=""></param>
     /// <returns>true then contains all legal characters otherwise false.</returns>
-    bool validAttributeValue(XMLValue &value)
+    bool validAttributeValue(const XMLValue &value)
     {
         BufferSource valueSource(value.parsed);
         while (valueSource.more())
@@ -342,7 +342,7 @@ namespace XMLLib::Core
     /// <param name="stringToSplit">String to split up.</param>
     /// <param name="delimeter">Character delimeter to split on.</param>
     /// <returns>Vector of split strings.</returns>
-    std::vector<std::string> splitString(std::string stringToSplit, char delimeter)
+    std::vector<std::string> splitString(const std::string &stringToSplit, char delimeter)
     {
         std::stringstream sourceStream(stringToSplit);
         std::string splitOffItem;
@@ -357,23 +357,27 @@ namespace XMLLib::Core
     /// Trimm whitespace from beginning and end of a string.
     /// </summary>
     /// <param name="stringToTrimm">String to trimm.</param>
-    void trimmString(std::string &stringToTrimm)
+    std::string trimmString(const std::string &stringToTrimm)
     {
-        stringToTrimm.erase(stringToTrimm.begin(), std::find_if(stringToTrimm.begin(), stringToTrimm.end(), [](unsigned char ch)
+        std::string trimmedString{stringToTrimm};
+        trimmedString.erase(trimmedString.begin(), std::find_if(trimmedString.begin(), trimmedString.end(), [](unsigned char ch)
                                                                 { return !std::iswspace(ch); }));
-        stringToTrimm.erase(std::find_if(stringToTrimm.rbegin(), stringToTrimm.rend(), [](unsigned char ch)
+        trimmedString.erase(std::find_if(trimmedString.rbegin(), trimmedString.rend(), [](unsigned char ch)
                                          { return !std::iswspace(ch); })
                                 .base(),
-                            stringToTrimm.end());
+                            trimmedString.end());
+        return (trimmedString);
     }
     /// <summary>
     /// Trimm whitespace from beginning and end of a string.
     /// </summary>
     /// <param name="stringToTrimm">String to trimm.</param>
-    void toUpperString(std::string &stringToUpper)
+    std::string toUpperString(const std::string &stringToUpper)
     {
-        std::transform(stringToUpper.begin(), stringToUpper.end(),
-                       stringToUpper.begin(), [](unsigned int c)
+        std::string upperCaseString{stringToUpper};
+        std::transform(upperCaseString.begin(), upperCaseString.end(),
+                       upperCaseString.begin(), [](unsigned int c)
                        { return static_cast<char>(std::toupper(c)); });
+        return (upperCaseString);
     }
 } // namespace  XMLLib::Core

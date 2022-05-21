@@ -344,6 +344,7 @@ namespace XMLLib
     /// <param name="xmlNode">Prolog element node.</param>
     void XML_Impl::parseDeclaration(ISource &source, XMLNode &xmlNode)
     {
+        XMLValue versionValue{"1.0", "1.0"};
         if (source.match(U"version"))
         {
             source.ignoreWS();
@@ -352,18 +353,20 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after version.");
             }
             source.ignoreWS();
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("version", Core::parseValue(source));
+            versionValue = Core::parseValue(source);
             // Check valid declaration values
             std::set<std::string> validVersions{"1.0", "1.1"};
-            if (validVersions.find(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("version").value.parsed) == validVersions.end())
+            if (validVersions.find(versionValue.parsed) == validVersions.end())
             {
-                throw SyntaxError(source, "Unsupported version " + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("version").value.parsed + ".");
+                throw SyntaxError(source, "Unsupported version " + versionValue.parsed + ".");
             }
+            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("version", versionValue);
         }
         else
         {
             throw SyntaxError(source, "Version missing from declaration.");
         }
+        XMLValue encodingValue{"UTF-8", "UTF-8"};
         if (source.match(U"encoding"))
         {
             source.ignoreWS();
@@ -372,19 +375,17 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after encoding.");
             }
             source.ignoreWS();
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("encoding", Core::parseValue(source));
             // Check valid declaration values
-            Core::toUpperString(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("encoding").value.parsed);
+            encodingValue = Core::parseValue(source);
+            encodingValue.parsed = Core::toUpperString(encodingValue.parsed);
             std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
-            if (validEncodings.find(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("encoding").value.parsed) == validEncodings.end())
+            if (validEncodings.find(encodingValue.parsed) == validEncodings.end())
             {
-                throw SyntaxError(source, "Unsupported encoding " + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("encoding").value.parsed + " specified.");
+                throw SyntaxError(source, "Unsupported encoding " + encodingValue.parsed + " specified.");
             }
         }
-        else
-        {
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("encoding", {"UTF-8", "UTF-8"});
-        }
+        XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("encoding", encodingValue);
+        XMLValue standaloneValue{"no", "no"};
         if (source.match(U"standalone"))
         {
             source.ignoreWS();
@@ -393,18 +394,15 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after standalone.");
             }
             source.ignoreWS();
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("standalone", Core::parseValue(source));
+            standaloneValue = Core::parseValue(source);
             // Check valid declaration values
             std::set<std::string> validStandalone{"yes", "no"};
-            if (validStandalone.find(XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("standalone").value.parsed) == validStandalone.end())
+            if (validStandalone.find(standaloneValue.parsed) == validStandalone.end())
             {
-                throw SyntaxError(source, "Invalid standalone value of '" + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("standalone").value.parsed + "'.");
+                throw SyntaxError(source, "Invalid standalone value of '" + standaloneValue.parsed + "'.");
             }
         }
-        else
-        {
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("standalone", {"no", "no"});
-        }
+        XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("standalone", standaloneValue);
         if (source.match(U"encoding"))
         {
             throw SyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");

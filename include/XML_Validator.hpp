@@ -57,7 +57,7 @@ namespace XMLLib
         void checkContentSpecification(XMLNode &xmlNode);
         void checkElement(XMLNode &xmlNode);
         void checkElements(XMLNode &xmlNode);
-        bool checkIsNMTOKENOK(std::string nmTokenValue);
+        bool checkIsNMTOKENOK(const std::string &nmTokenValue);
         bool checkIsIDOK(const std::string &idValue);
         void checkAttributeValue(XMLNode &xmlNode, const DTDAttribute &attribute);
         void checkAttributeType(XMLNode &xmlNode, const DTDAttribute &attribute);

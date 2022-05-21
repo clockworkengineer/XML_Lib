@@ -29,7 +29,7 @@ namespace XMLLib::Core
     bool validNameChar(ISource::Char ch);
     bool validReservedName(const ISource::String &name);
     bool validName(ISource::String name);
-    bool validAttributeValue(XMLValue &value);
+    bool validAttributeValue(const XMLValue &value);
     //
     // XML parsing
     //
@@ -43,7 +43,7 @@ namespace XMLLib::Core
     //
     // XML utility
     //
-    std::vector<std::string> splitString(std::string stringToSplit, char delimeter);
-    void trimmString(std::string &stringToTrimm);
-    void toUpperString(std::string &stringToUpper);
+    std::vector<std::string> splitString(const std::string &stringToSplit, char delimeter);
+    std::string trimmString(const std::string &stringToTrimm);
+    std::string toUpperString(const std::string &stringToUpper);
 } // namespace XMLLib::Core

@@ -52,10 +52,9 @@ namespace XMLLib
     /// </summary>
     /// <param name="nmTokenValue">Token value</param>
     /// <returns>true then token is valid otherwise false.</returns>
-    bool XML_Validator::checkIsNMTOKENOK(std::string nmTokenValue)
+    bool XML_Validator::checkIsNMTOKENOK(const std::string &nmTokenValue)
     {
-        Core::trimmString(nmTokenValue);
-        BufferSource nmTokenValueSource(nmTokenValue);
+        BufferSource nmTokenValueSource(Core::trimmString(nmTokenValue));
         while (nmTokenValueSource.more())
         {
             if (!Core::validNameChar(nmTokenValueSource.current()))
