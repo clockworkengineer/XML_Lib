@@ -99,7 +99,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     XML xml;
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 1 Column: 94] Attribute defined more than once within start tag.");
   }
-  SECTION("A root document defining one namespae tha is overridden by a child", "[XML][Parse][Namespace]")
+  SECTION("A root document defining one namespace tha is overridden by a child", "[XML][Parse][Namespace]")
   {
     xmlString = "<root xmlns:h=\"http://www.w3.org/TR/html4/\" xmlns:f=\"https://www.w3schools.com/furniture\">\n"
                 "<h:table><h:tr><h:td>Apples</h:td><h:td>Bananas</h:td></h:tr></h:table>\n"

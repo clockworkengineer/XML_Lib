@@ -121,10 +121,6 @@ namespace XMLLib
         {
             return (attributes);
         }
-        void clearAttributes()
-        {
-            attributes.clear();
-        }
         [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
         {
             return (std::find_if(namespaces.rbegin(), namespaces.rend(),
@@ -144,10 +140,6 @@ namespace XMLLib
         [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaceList() const
         {
             return (namespaces);
-        }
-        void clearNameSpaces()
-        {
-            namespaces.clear();
         }
         XMLNodeElement &operator[](int index);
         XMLNodeElement &operator[](const std::string &name);
@@ -208,7 +200,7 @@ namespace XMLLib
     //
     inline const XMLNode &XMLNode::operator[](int index) const // Array
     {
-        if ((index >= 0) && (index < ((int)XMLNodeRef<XMLNode>(*this).children.size())))
+        if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XMLNode>(*this).children.size()))))
         {
             return (*((XMLNodeRef<XMLNode>(*this).children[index])));
         }
@@ -221,7 +213,7 @@ namespace XMLLib
     {
         if (xmlNodeType <= XMLNodeType::element)
         {
-            for (auto &element : XMLNodeRef<XMLNodeElement>(*this).children)
+            for (const auto &element : XMLNodeRef<XMLNodeElement>(*this).children)
             {
                 if (XMLNodeRef<XMLNodeElement>(*element).elementName == name)
                 {
@@ -237,9 +229,9 @@ namespace XMLLib
     inline XMLNodeElement &XMLNodeElement::operator[](int index) // Array
     {
         int number = 0;
-        if ((index >= 0) && (index < ((int)XMLNodeRef<XMLNodeElement>(*this).children.size())))
+        if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XMLNodeElement>(*this).children.size()))))
         {
-            for (auto &child : XMLNodeRef<XMLNode>(*this).children)
+            for (const auto &child : XMLNodeRef<XMLNode>(*this).children)
             {
                 if (XMLNodeRef<XMLNode>(*child).getNodeType() <= XMLNodeType::element)
                 {
@@ -260,7 +252,7 @@ namespace XMLLib
     {
         if (getNodeType() <= XMLNodeType::element)
         {
-            for (auto &element : XMLNodeRef<XMLNodeElement>(*this).children)
+            for (const auto &element : XMLNodeRef<XMLNodeElement>(*this).children)
             {
                 if (XMLNodeRef<XMLNodeElement>(*element).elementName == name)
                 {
