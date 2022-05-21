@@ -141,8 +141,8 @@ namespace XMLLib
         {
             return (namespaces);
         }
-        XMLNodeElement &operator[](int index);
-        XMLNodeElement &operator[](const std::string &name);
+        const XMLNodeElement &operator[](int index) const;
+        const XMLNodeElement &operator[](const std::string &name) const;
         std::string elementName;
 
     private:
@@ -226,7 +226,7 @@ namespace XMLLib
     //
     // XNodeElement index access
     //
-    inline XMLNodeElement &XMLNodeElement::operator[](int index) // Array
+    inline const XMLNodeElement &XMLNodeElement::operator[](int index) const // Array
     {
         int number = 0;
         if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XMLNodeElement>(*this).children.size()))))
@@ -248,7 +248,7 @@ namespace XMLLib
     //
     // XNodeElement name access
     //
-    inline XMLNodeElement &XMLNodeElement::operator[](const std::string &name) // Array
+    inline const XMLNodeElement &XMLNodeElement::operator[](const std::string &name) const // Array
     {
         if (getNodeType() <= XMLNodeType::element)
         {

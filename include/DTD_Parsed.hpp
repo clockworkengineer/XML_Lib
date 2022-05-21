@@ -28,7 +28,7 @@ namespace XMLLib
         {
             m_type = type;
         }
-        std::string getRootName() const
+        const std::string getRootName() const
         {
             return (m_name);
         }
