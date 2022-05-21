@@ -43,6 +43,11 @@ namespace XMLLib
     // ===============
     // PRIVATE METHODS
     // ===============
+    /// <summary>
+    /// Generate an exception for an element error.
+    /// </summary>
+    /// <param name="xNodeElement">Element X Node.</param>
+    /// <param name="error">Error text string.</param>
     void XML_Validator::elementError(const XMLNodeElement &xNodeElement, const std::string &error)
     {
         throw ValidationError(m_lineNumber, "Element <" + xNodeElement.elementName + "> " + error);
@@ -121,24 +126,20 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkAttributeValue(XMLNode &xmlNode,
-                                            const DTDAttribute &attribute)
+    void XML_Validator::checkAttributeValue(XMLNode &xmlNode, const DTDAttribute &attribute)
     {
         XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
+        bool attributePresent = xNodeElement.isAttributePresent(attribute.name);
         if ((attribute.type & DTDAttributeType::required) != 0)
         {
-            if (!xNodeElement.isAttributePresent(attribute.name))
+            if (!attributePresent)
             {
                 elementError(xNodeElement, "is missing required attribute '" + attribute.name + "'.");
             }
         }
-        else if ((attribute.type & DTDAttributeType::implied) != 0)
-        {
-            return;
-        }
         else if ((attribute.type & DTDAttributeType::fixed) != 0)
         {
-            if (xNodeElement.isAttributePresent(attribute.name))
+            if (attributePresent)
             {
                 XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
                 if (attribute.value.parsed != elementAttribute.value.parsed)
@@ -148,21 +149,10 @@ namespace XMLLib
                                                    attribute.value.parsed + "'.");
                 }
             }
-            else
-            {
-                XMLValue value;
-                value.parsed = value.unparsed = attribute.value.parsed;
-                xNodeElement.addAttribute(attribute.name, value);
-            }
         }
-        else
+        if (!attributePresent)
         {
-            if (!xNodeElement.isAttributePresent(attribute.name))
-            {
-                XMLValue value;
-                value.parsed = value.unparsed = attribute.value.parsed;
-                xNodeElement.addAttribute(attribute.name, value);
-            }
+            xNodeElement.addAttribute(attribute.name, {attribute.value.parsed, attribute.value.parsed});
         }
     }
     /// <summary>
