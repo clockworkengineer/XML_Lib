@@ -95,9 +95,9 @@ namespace XMLLib
     /// <returns>true if element contains characters otherwise false.</returns>
     bool XML_Validator::checkIsPCDATA(const XMLNode &xmlNode)
     {
-        for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
+        for (const auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
         {
-            XMLNode &xNode = XMLNodeRef<XMLNode>(*element);
+            const XMLNode &xNode = XMLNodeRef<XMLNode>(*element);
             if ((xNode.getNodeType() == XMLNodeType::element) || (xNode.getNodeType() == XMLNodeType::self))
             {
                 return (false);

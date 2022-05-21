@@ -46,9 +46,9 @@ namespace XMLLib
         {
             xmlNodeType = nodeType;
         }
-        [[nodiscard]] std::string getContents() const;
-        XMLNode &operator[](int index);
-        XMLNode &operator[](const std::string &name);
+        [[nodiscard]] const std::string getContents() const;
+        const XMLNode &operator[](int index) const;
+        const XMLNode &operator[](const std::string &name) const;
         std::vector<std::unique_ptr<XMLNode>> children;
 
     private:
@@ -83,7 +83,7 @@ namespace XMLLib
     struct XMLNodeEntityReference : XMLNode
     {
     public:
-        explicit XMLNodeEntityReference(XMLValue value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), value(std::move(value))
+        explicit XMLNodeEntityReference(const XMLValue &value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), value(std::move(value))
         {
         }
         XMLValue value;
@@ -111,13 +111,13 @@ namespace XMLLib
         {
             attributes.emplace_back(name, value);
         }
-        XMLAttribute &getAttribute(const std::string &name)
+        [[nodiscard]] const XMLAttribute getAttribute(const std::string &name) const
         {
             return (*std::find_if(attributes.rbegin(), attributes.rend(),
                                   [&name](const XMLAttribute &attr)
                                   { return (attr.name == name); }));
         }
-        const std::vector<XMLAttribute> &getAttributeList()
+        [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const
         {
             return (attributes);
         }
@@ -135,13 +135,13 @@ namespace XMLLib
         {
             namespaces.emplace_back(name, value);
         }
-        [[nodiscard]] XMLAttribute getNameSpace(const std::string &name) const
+        [[nodiscard]] const XMLAttribute getNameSpace(const std::string &name) const
         {
             return (*std::find_if(namespaces.rbegin(), namespaces.rend(),
                                   [&name](const XMLAttribute &ns)
                                   { return (ns.name == name); }));
         }
-        const std::vector<XMLAttribute> &getNameSpaceList()
+        [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaceList() const
         {
             return (namespaces);
         }
@@ -203,11 +203,10 @@ namespace XMLLib
     {
         return (static_cast<const T &>(xmlNode));
     }
-
     //
     // XMLNode index access
     //
-    inline XMLNode &XMLNode::operator[](int index) // Array
+    inline const XMLNode &XMLNode::operator[](int index) const // Array
     {
         if ((index >= 0) && (index < ((int)XMLNodeRef<XMLNode>(*this).children.size())))
         {
@@ -218,7 +217,7 @@ namespace XMLLib
     //
     // XMLNode name access
     //
-    inline XMLNode &XMLNode::operator[](const std::string &name) // Array
+    inline const XMLNode &XMLNode::operator[](const std::string &name) const // Array
     {
         if (xmlNodeType <= XMLNodeType::element)
         {
@@ -274,7 +273,7 @@ namespace XMLLib
     //
     // XMLNode get contents
     //
-    inline std::string XMLNode::getContents() const
+    inline const std::string XMLNode::getContents() const
     {
         std::string result;
         for (const auto &node : children)
