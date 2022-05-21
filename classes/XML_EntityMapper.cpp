@@ -48,7 +48,7 @@ namespace XMLLib
     {
     }
     void XML_EntityMapper::add(const std::string &entityName,
-                               XMLEntityMapping &entityMapping)
+                               const XMLEntityMapping &entityMapping)
     {
         m_entityMappings[entityName] = entityMapping;
     }

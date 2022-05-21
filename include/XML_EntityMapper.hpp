@@ -39,7 +39,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        void add(const std::string &entityName, XMLEntityMapping &entityMapping) override;
+        void add(const std::string &entityName, const XMLEntityMapping &entityMapping) override;
         XMLEntityMapping &get(const std::string &entityName) override;
         void remove(const std::string &entityName) override;
         [[nodiscard]] bool isPresent(const std::string &entityName) const override;

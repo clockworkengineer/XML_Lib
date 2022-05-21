@@ -58,8 +58,8 @@ namespace XMLLib
         void checkElements(XMLNode &xmlNode);
         bool checkIsNMTOKENOK(std::string nmTokenValue);
         bool checkIsIDOK(const std::string &idValue);
-        void checkAttributeValue(XMLNode &xmlNode, DTDAttribute &attribute);
-        void checkAttributeType(XMLNode &xmlNode, DTDAttribute &attribute);
+        void checkAttributeValue(XMLNode &xmlNode, const DTDAttribute &attribute);
+        void checkAttributeType(XMLNode &xmlNode, const DTDAttribute &attribute);
         bool checkIsPCDATA(XMLNode &xmlNode);
         bool checkIsEMPTY(XMLNode &xmlNode);
         void checkAgainstDTD(XMLNodeElement &prolog);

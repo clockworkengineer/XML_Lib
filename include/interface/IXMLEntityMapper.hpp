@@ -25,7 +25,7 @@ namespace XMLLib
     {
     public:
         virtual ~IXMLEntityMapper() = default;
-        virtual void add(const std::string &entityName, XMLEntityMapping &entityMapping) = 0;
+        virtual void add(const std::string &entityName, const XMLEntityMapping &entityMapping) = 0;
         virtual XMLEntityMapping &get(const std::string &entityName) = 0;
         virtual void remove(const std::string &entityName) = 0;
         [[nodiscard]] virtual bool isPresent(const std::string &entityName) const = 0;

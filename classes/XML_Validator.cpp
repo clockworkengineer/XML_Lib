@@ -120,7 +120,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     void XML_Validator::checkAttributeValue(XMLNode &xmlNode,
-                                            DTDAttribute &attribute)
+                                            const DTDAttribute &attribute)
     {
         if ((attribute.type & DTDAttributeType::required) != 0)
         {
@@ -191,7 +191,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     void XML_Validator::checkAttributeType(XMLNode &xmlNode,
-                                           DTDAttribute &attribute)
+                                           const DTDAttribute &attribute)
     {
         XMLAttribute elementAttribute =
             XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute(attribute.name);
