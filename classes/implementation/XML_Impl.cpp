@@ -41,7 +41,7 @@ namespace XMLLib
     /// </summary>
     XML_Impl::XML_Impl()
     {
-        m_prolog = std::make_unique<XMLNodeElement>();
+        m_prolog = std::make_unique<XMLNodeElement>(XMLNodeType::prolog);
         m_entityMapper = std::make_unique<XML_EntityMapper>();
     }
     /// <summary>

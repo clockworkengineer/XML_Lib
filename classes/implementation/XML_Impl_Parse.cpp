@@ -418,7 +418,6 @@ namespace XMLLib
     /// <param name="xmlNode">Prolog element node.</param>
     void XML_Impl::parseProlog(ISource &source, XMLNode &xmlNode)
     {
-        XMLNodeRef<XMLNodeElement>(xmlNode).setNodeType(XMLNodeType::prolog);
         source.ignoreWS();
         if (source.match(U"<?xml"))
         {
@@ -477,7 +476,7 @@ namespace XMLLib
         parseProlog(source, *m_prolog);
         if (source.match(U"<"))
         {
-            prolog().children.emplace_back(std::make_unique<XMLNodeElement>(XMLNodeElement(XMLNodeType::root)));
+            prolog().children.emplace_back(std::make_unique<XMLNodeElement>(XMLNodeType::root));
             parseElement(source, XMLNodeRef<XMLNode>(*prolog().children.back()));
             while (source.more())
             {
