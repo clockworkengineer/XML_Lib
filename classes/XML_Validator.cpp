@@ -85,7 +85,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <returns>true if element contains characters otherwise false.</returns>
-    bool XML_Validator::checkIsPCDATA(XMLNode &xmlNode)
+    bool XML_Validator::checkIsPCDATA(const XMLNode &xmlNode)
     {
         for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
         {
@@ -102,7 +102,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <returns>true if element empty otherwise false.</returns>
-    bool XML_Validator::checkIsEMPTY(XMLNode &xmlNode)
+    bool XML_Validator::checkIsEMPTY(const XMLNode &xmlNode)
     {
         return (XMLNodeRef<XMLNodeElement>(xmlNode).children.empty() ||
                 XMLNodeRef<XMLNodeElement>(xmlNode).getNodeType() ==
@@ -122,15 +122,15 @@ namespace XMLLib
     void XML_Validator::checkAttributeValue(XMLNode &xmlNode,
                                             const DTDAttribute &attribute)
     {
+        XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         if ((attribute.type & DTDAttributeType::required) != 0)
         {
-            if (!XMLNodeRef<XMLNodeElement>(xmlNode).isAttributePresent(
-                    attribute.name))
+            if (!xNodeElement.isAttributePresent(attribute.name))
             {
                 throw ValidationError(
                     m_lineNumber,
                     "Required attribute '" + attribute.name + "' missing for element <" +
-                        XMLNodeRef<XMLNodeElement>(xmlNode).elementName + ">.");
+                        xNodeElement.elementName + ">.");
             }
         }
         else if ((attribute.type & DTDAttributeType::implied) != 0)
@@ -139,16 +139,14 @@ namespace XMLLib
         }
         else if ((attribute.type & DTDAttributeType::fixed) != 0)
         {
-            if (XMLNodeRef<XMLNodeElement>(xmlNode).isAttributePresent(
-                    attribute.name))
+            if (xNodeElement.isAttributePresent(attribute.name))
             {
-                XMLAttribute elementAttribute =
-                    XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute(attribute.name);
+                XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
                 if (attribute.value.parsed != elementAttribute.value.parsed)
                 {
                     throw ValidationError(
                         m_lineNumber, "Element <" +
-                                          XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                                          xNodeElement.elementName +
                                           "> attribute '" + attribute.name + "' is '" +
                                           elementAttribute.value.parsed + "' instead of '" +
                                           attribute.value.parsed + "'.");
@@ -158,17 +156,16 @@ namespace XMLLib
             {
                 XMLValue value;
                 value.parsed = value.unparsed = attribute.value.parsed;
-                XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute(attribute.name, value);
+                xNodeElement.addAttribute(attribute.name, value);
             }
         }
         else
         {
-            if (!XMLNodeRef<XMLNodeElement>(xmlNode).isAttributePresent(
-                    attribute.name))
+            if (!xNodeElement.isAttributePresent(attribute.name))
             {
                 XMLValue value;
                 value.parsed = value.unparsed = attribute.value.parsed;
-                XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute(attribute.name, value);
+                xNodeElement.addAttribute(attribute.name, value);
             }
         }
     }
@@ -193,15 +190,15 @@ namespace XMLLib
     void XML_Validator::checkAttributeType(XMLNode &xmlNode,
                                            const DTDAttribute &attribute)
     {
-        XMLAttribute elementAttribute =
-            XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute(attribute.name);
+        XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
+        XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
         if ((attribute.type & DTDAttributeType::cdata) != 0)
         {
             if (elementAttribute.value.parsed.empty()) // No character data present.
             {
                 ValidationError(m_lineNumber,
                                 "Element <" +
-                                    XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                                    xNodeElement.elementName +
                                     "> attribute '" + attribute.name +
                                     "' does not contain character data.");
             }
@@ -212,15 +209,14 @@ namespace XMLLib
             {
                 throw ValidationError(
                     m_lineNumber,
-                    "Element <" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                    "Element <" + xNodeElement.elementName +
                         "> ID attribute '" + attribute.name + "' is invalid.");
             }
-            if (m_assignedIDValues.find(elementAttribute.value.parsed) !=
-                m_assignedIDValues.end())
+            if (m_assignedIDValues.find(elementAttribute.value.parsed) != m_assignedIDValues.end())
             {
                 throw ValidationError(
                     m_lineNumber,
-                    "Element <" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                    "Element <" + xNodeElement.elementName +
                         "> ID attribute '" + attribute.name + "' is not unique.");
             }
             m_assignedIDValues.insert(elementAttribute.value.parsed);
@@ -231,7 +227,7 @@ namespace XMLLib
             {
                 throw ValidationError(
                     m_lineNumber,
-                    "Element <" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                    "Element <" + xNodeElement.elementName +
                         "> IDREF attribute '" + attribute.name + "' is invalid.");
             }
             m_assignedIDREFValues.insert(elementAttribute.value.parsed);
@@ -243,10 +239,11 @@ namespace XMLLib
                 if (!checkIsIDOK(id))
                 {
                     throw ValidationError(
-                        m_lineNumber, "Element <" +
-                                          XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
-                                          "> IDREFS attribute '" + attribute.name +
-                                          "' contains an invalid IDREF.");
+                        m_lineNumber,
+                        "Element <" +
+                            xNodeElement.elementName +
+                            "> IDREFS attribute '" + attribute.name +
+                            "' contains an invalid IDREF.");
                 }
                 m_assignedIDREFValues.insert(id);
             }
@@ -257,7 +254,7 @@ namespace XMLLib
             {
                 throw ValidationError(
                     m_lineNumber,
-                    "Element <" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                    "Element <" + xNodeElement.elementName +
                         "> NMTOKEN attribute '" + attribute.name + "' is invalid.");
             }
         }
@@ -269,10 +266,10 @@ namespace XMLLib
                 if (!checkIsNMTOKENOK(nmtoken))
                 {
                     throw ValidationError(
-                        m_lineNumber, "Element <" +
-                                          XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
-                                          "> NMTOKEN attribute '" + attribute.name +
-                                          "' contains an invald NMTOKEN.");
+                        m_lineNumber,
+                        "Element <" + xNodeElement.elementName +
+                            "> NMTOKEN attribute '" + attribute.name +
+                            "' contains an invalid NMTOKEN.");
                 }
             }
         }
@@ -282,7 +279,7 @@ namespace XMLLib
             {
                 throw ValidationError(
                     m_lineNumber,
-                    "Element <" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                    "Element <" + xNodeElement.elementName +
                         "> ENTITY attribute '" + attribute.name + "' value '" +
                         elementAttribute.value.parsed + "' is not defined.");
             }
@@ -294,10 +291,11 @@ namespace XMLLib
                 if (!m_dtdParsed.m_entityMapper.isPresent("&" + entity + ";"))
                 {
                     throw ValidationError(
-                        m_lineNumber, "Element <" +
-                                          XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
-                                          "> ENTITIES attribute '" + attribute.name +
-                                          "' value '" + entity + "' is not defined.");
+                        m_lineNumber,
+                        "Element <" +
+                            xNodeElement.elementName +
+                            "> ENTITIES attribute '" + attribute.name +
+                            "' value '" + entity + "' is not defined.");
                 }
             }
         }
@@ -305,8 +303,7 @@ namespace XMLLib
         {
             std::set<std::string> notations;
             for (auto &notation : Core::splitString(
-                     attribute.enumeration.substr(1, attribute.enumeration.size() - 2),
-                     '|'))
+                     attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|'))
             {
                 notations.insert(notation);
             }
@@ -314,7 +311,8 @@ namespace XMLLib
             {
                 throw ValidationError(
                     m_lineNumber,
-                    "Element <" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                    "Element <" +
+                        xNodeElement.elementName +
                         "> NOTATION attribute '" + attribute.name + "' value '" +
                         elementAttribute.value.parsed + "' is not defined.");
             }
@@ -323,19 +321,19 @@ namespace XMLLib
         {
             std::set<std::string> enumeration;
             for (auto &option : Core::splitString(
-                     attribute.enumeration.substr(1, attribute.enumeration.size() - 2),
-                     '|'))
+                     attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|'))
             {
                 enumeration.insert(option);
             }
             if (enumeration.find(elementAttribute.value.parsed) == enumeration.end())
             {
                 throw ValidationError(
-                    m_lineNumber, "Element <" +
-                                      XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
-                                      "> attribute '" + attribute.name +
-                                      "' contains invalid enumeration value '" +
-                                      elementAttribute.value.parsed + "'.");
+                    m_lineNumber,
+                    "Element <" +
+                        xNodeElement.elementName +
+                        "> attribute '" + attribute.name +
+                        "' contains invalid enumeration value '" +
+                        elementAttribute.value.parsed + "'.");
             }
         }
     }
@@ -346,11 +344,10 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML_Validator::checkAttributes(XMLNode &xmlNode)
     {
-        for (auto &attribute :
-             m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).attributes)
+        XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
+        for (auto &attribute : m_dtdParsed.getElement(xNodeElement.elementName).attributes)
         {
-            if (XMLNodeRef<XMLNodeElement>(xmlNode).isAttributePresent(
-                    attribute.name))
+            if (xNodeElement.isAttributePresent(attribute.name))
             {
                 checkAttributeType(xmlNode, attribute);
             }
@@ -363,40 +360,42 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML_Validator::checkContentSpecification(XMLNode &xmlNode)
     {
+        XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         if (m_dtdParsed.getElementCount() == 0)
         {
             return;
         }
-        if (m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "((<#PCDATA>))")
+        if (m_dtdParsed.getElement(xNodeElement.elementName).content.parsed == "((<#PCDATA>))")
         {
             if (!checkIsPCDATA(xmlNode))
             {
                 throw ValidationError(
-                    m_lineNumber, "Element <" +
-                                      XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
-                                      "> does not contain just any parsable data.");
+                    m_lineNumber, 
+                    "Element <" +
+                    xNodeElement.elementName +
+                    "> does not contain just any parsable data.");
             }
             return;
         }
-        if (m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "EMPTY")
+        if (m_dtdParsed.getElement(xNodeElement.elementName).content.parsed == "EMPTY")
         {
             if (!checkIsEMPTY(xmlNode))
             {
                 throw ValidationError(
-                    m_lineNumber, "Element <" +
-                                      XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
-                                      "> is not empty.");
+                    m_lineNumber, 
+                    "Element <" +
+                    xNodeElement.elementName +
+                    "> is not empty.");
             }
             return;
         }
-        if (m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed == "ANY")
+        if (m_dtdParsed.getElement(xNodeElement.elementName).content.parsed == "ANY")
         {
             return;
         }
-        std::regex match(
-            m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.parsed);
+        std::regex match { m_dtdParsed.getElement(xNodeElement.elementName).content.parsed };
         std::string elements;
-        for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
+        for (auto &element : xNodeElement.children)
         {
             if ((XMLNodeRef<XMLNode>(*element).getNodeType() == XMLNodeType::element) ||
                 (XMLNodeRef<XMLNode>(*element).getNodeType() == XMLNodeType::self))
@@ -416,10 +415,9 @@ namespace XMLLib
         {
             throw ValidationError(
                 m_lineNumber,
-                "<" + XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
-                    "> element does not conform to the content specification " +
-                    m_dtdParsed.getElement(XMLNodeRef<XMLNodeElement>(xmlNode).elementName).content.unparsed +
-                    ".");
+                "<" + xNodeElement.elementName +
+                "> element does not conform to the content specification " +
+                m_dtdParsed.getElement(xNodeElement.elementName).content.unparsed + ".");
         }
     }
     /// <summary>

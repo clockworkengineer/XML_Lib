@@ -42,9 +42,9 @@ namespace XMLLib
     struct ValidationError : public std::exception
     {
     public:
-        explicit ValidationError(long m_lineNumber, const std::string &description = "")
+        explicit ValidationError(long lineNumber, const std::string &description = "")
         {
-            errorMessage = "XML Validation Error [Line: " + std::to_string(m_lineNumber) + "] " + description;
+            errorMessage = "XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + description;
         }
         [[nodiscard]] const char *what() const noexcept override
         {

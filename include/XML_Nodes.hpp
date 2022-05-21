@@ -198,6 +198,12 @@ namespace XMLLib
     {
         return (static_cast<T &>(xmlNode));
     }
+    template <typename T>
+    const T &XMLNodeRef(const XMLNode &xmlNode)
+    {
+        return (static_cast<const T &>(xmlNode));
+    }
+
     //
     // XMLNode index access
     //

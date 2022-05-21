@@ -60,8 +60,8 @@ namespace XMLLib
         bool checkIsIDOK(const std::string &idValue);
         void checkAttributeValue(XMLNode &xmlNode, const DTDAttribute &attribute);
         void checkAttributeType(XMLNode &xmlNode, const DTDAttribute &attribute);
-        bool checkIsPCDATA(XMLNode &xmlNode);
-        bool checkIsEMPTY(XMLNode &xmlNode);
+        bool checkIsPCDATA(const XMLNode &xmlNode);
+        bool checkIsEMPTY(const XMLNode &xmlNode);
         void checkAgainstDTD(XMLNodeElement &prolog);
         // =================
         // PRIVATE VARIABLES
