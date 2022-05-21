@@ -89,8 +89,8 @@ namespace XMLLib
     {
         for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
         {
-            if ((XMLNodeRef<XMLNode>(*element).getNodeType() == XMLNodeType::element) ||
-                (XMLNodeRef<XMLNode>(*element).getNodeType() == XMLNodeType::self))
+            XMLNode &xNode = XMLNodeRef<XMLNode>(*element);
+            if ((xNode.getNodeType() == XMLNodeType::element) || (xNode.getNodeType() == XMLNodeType::self))
             {
                 return (false);
             }
@@ -104,9 +104,8 @@ namespace XMLLib
     /// <returns>true if element empty otherwise false.</returns>
     bool XML_Validator::checkIsEMPTY(const XMLNode &xmlNode)
     {
-        return (XMLNodeRef<XMLNodeElement>(xmlNode).children.empty() ||
-                XMLNodeRef<XMLNodeElement>(xmlNode).getNodeType() ==
-                    XMLNodeType::self);
+        const XMLNode &xNode = XMLNodeRef<XMLNode>(xmlNode);
+        return (xNode.children.empty() || xNode.getNodeType() == XMLNodeType::self);
     }
     /// <summary>
     ///
@@ -129,8 +128,8 @@ namespace XMLLib
             {
                 throw ValidationError(
                     m_lineNumber,
-                    "Required attribute '" + attribute.name + "' missing for element <" +
-                        xNodeElement.elementName + ">.");
+                    "Element <" + xNodeElement.elementName + "> is missing required attribute '" +
+                        attribute.name + "'.");
             }
         }
         else if ((attribute.type & DTDAttributeType::implied) != 0)
@@ -145,11 +144,11 @@ namespace XMLLib
                 if (attribute.value.parsed != elementAttribute.value.parsed)
                 {
                     throw ValidationError(
-                        m_lineNumber, "Element <" +
-                                          xNodeElement.elementName +
-                                          "> attribute '" + attribute.name + "' is '" +
-                                          elementAttribute.value.parsed + "' instead of '" +
-                                          attribute.value.parsed + "'.");
+                        m_lineNumber,
+                        "Element <" + xNodeElement.elementName + "> attribute '" +
+                            attribute.name + "' is '" +
+                            elementAttribute.value.parsed + "' instead of '" +
+                            attribute.value.parsed + "'.");
                 }
             }
             else
@@ -198,8 +197,7 @@ namespace XMLLib
             {
                 ValidationError(m_lineNumber,
                                 "Element <" +
-                                    xNodeElement.elementName +
-                                    "> attribute '" + attribute.name +
+                                    xNodeElement.elementName + "> attribute '" + attribute.name +
                                     "' does not contain character data.");
             }
         }
@@ -370,10 +368,10 @@ namespace XMLLib
             if (!checkIsPCDATA(xmlNode))
             {
                 throw ValidationError(
-                    m_lineNumber, 
+                    m_lineNumber,
                     "Element <" +
-                    xNodeElement.elementName +
-                    "> does not contain just any parsable data.");
+                        xNodeElement.elementName +
+                        "> does not contain just any parsable data.");
             }
             return;
         }
@@ -382,10 +380,10 @@ namespace XMLLib
             if (!checkIsEMPTY(xmlNode))
             {
                 throw ValidationError(
-                    m_lineNumber, 
+                    m_lineNumber,
                     "Element <" +
-                    xNodeElement.elementName +
-                    "> is not empty.");
+                        xNodeElement.elementName +
+                        "> is not empty.");
             }
             return;
         }
@@ -393,7 +391,7 @@ namespace XMLLib
         {
             return;
         }
-        std::regex match { m_dtdParsed.getElement(xNodeElement.elementName).content.parsed };
+        std::regex match{m_dtdParsed.getElement(xNodeElement.elementName).content.parsed};
         std::string elements;
         for (auto &element : xNodeElement.children)
         {
@@ -415,9 +413,10 @@ namespace XMLLib
         {
             throw ValidationError(
                 m_lineNumber,
-                "<" + xNodeElement.elementName +
-                "> element does not conform to the content specification " +
-                m_dtdParsed.getElement(xNodeElement.elementName).content.unparsed + ".");
+                "Element <" +
+                    xNodeElement.elementName +
+                    "> does not conform to the content specification " +
+                    m_dtdParsed.getElement(xNodeElement.elementName).content.unparsed + ".");
         }
     }
     /// <summary>

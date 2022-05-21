@@ -35,7 +35,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 11] Required attribute 'number' missing for element <child2>.");
+    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 11] Element <child2> is missing required attribute 'number'.");
   }
   SECTION("XML with a DTD that specifies a required attribute that is present.", "[XML][DTD][Validate][Attributes]")
   {

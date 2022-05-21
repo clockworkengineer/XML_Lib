@@ -51,7 +51,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] <note> element does not conform to the content specification (to,from,heading,body).");
+    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] Element <note> does not conform to the content specification (to,from,heading,body).");
   }
   SECTION("XML with an missing <to> tag which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
@@ -70,7 +70,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] <note> element does not conform to the content specification (to,from,heading,body).");
+    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] Element <note> does not conform to the content specification (to,from,heading,body).");
   }
   SECTION("XML with an empty notes tag which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
@@ -88,7 +88,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 10] <notes> element does not conform to the content specification (note)+.");
+    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 10] Element <notes> does not conform to the content specification (note)+.");
   }
   SECTION("XML with an empty notes tag which is valid given DTD.", "[XML][DTD][Validate][Elements]")
   {
@@ -162,7 +162,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 8] <album> element does not conform to the content specification ( title, ( songTitle, duration )+ ).");
+    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 8] Element <album> does not conform to the content specification ( title, ( songTitle, duration )+ ).");
   }
   SECTION("XML with a DTD and XML that has out of sequence duration tag.", "[XML][DTD][Validate][Elements]")
   {
@@ -183,7 +183,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 8] <album> element does not conform to the content specification ( title, ( songTitle, duration )+ ).");
+    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 8] Element <album> does not conform to the content specification ( title, ( songTitle, duration )+ ).");
   }
   SECTION("XML with a DTD that uses '*' (zero or more times) operator and has XML that complies.", "[XML][DTD][Validate][Elements]")
   {
@@ -300,7 +300,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 23] <class> element does not conform to the content specification ( number, ( instructor | assistant+ ),( credit | noCredit ) ).");
+    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 23] Element <class> does not conform to the content specification ( number, ( instructor | assistant+ ),( credit | noCredit ) ).");
   }
   SECTION("XML with a DTD that uses all of the content specification operators and has valid XML for it.", "[XML][DTD][Validate][Elements]")
   {
@@ -363,7 +363,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 24] <donutBox> element does not conform to the content specification ( jelly?, lemon*,( ( creme | sugar )+ | glazed ) ).");
+    REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 24] Element <donutBox> does not conform to the content specification ( jelly?, lemon*,( ( creme | sugar )+ | glazed ) ).");
   }
   SECTION("XML with a DTD that specifies elements that are empty.", "[XML][DTD][Validate][Elements]")
   {
