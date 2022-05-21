@@ -218,12 +218,11 @@ namespace XMLLib
                 throw SyntaxError(source, "Attribute defined more than once within start tag.");
             }
         }
-        for (auto attribute : XMLNodeRef<XMLNodeElement>(xmlNode).getAttributeList())
+        for (const auto attribute : XMLNodeRef<XMLNodeElement>(xmlNode).getAttributeList())
         {
             if (attribute.name.find("xmlns") == 0)
             {
-                attribute.name = (attribute.name.size() > 5) ? attribute.name.substr(6) : ":";
-                XMLNodeRef<XMLNodeElement>(xmlNode).addNameSpace(attribute.name, attribute.value);
+                XMLNodeRef<XMLNodeElement>(xmlNode).addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
             }
         }
     }

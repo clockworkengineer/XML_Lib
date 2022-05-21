@@ -15,8 +15,6 @@ namespace XMLLib
     struct XMLValue
     {
     public:
-        std::string unparsed;
-        std::string parsed;
         XMLValue operator+=(const XMLValue &rhs)
         {
             parsed += rhs.parsed;
@@ -31,6 +29,8 @@ namespace XMLLib
         {
             return (unparsed[0] == '&' && unparsed[1] == '#' && unparsed.back() == ';');
         }
+        std::string unparsed;
+        std::string parsed;
     };
     //
     // XML Attribute
@@ -39,11 +39,11 @@ namespace XMLLib
     {
     public:
         XMLAttribute() = default;
-        XMLAttribute(std::string name, XMLValue value) : name(std::move(name)), value(std::move(value))
+        XMLAttribute(const std::string &attributeName, const XMLValue &attributeValue) : name(attributeName), value(attributeValue)
         {
         }
-        std::string name;
-        XMLValue value;
+        const std::string name;
+        const XMLValue value;
     };
     //
     // XML External reference
