@@ -344,7 +344,7 @@ namespace XMLLib
     /// <param name="xmlNode">Prolog element node.</param>
     void XML_Impl::parseDeclaration(ISource &source, XMLNode &xmlNode)
     {
-        XMLValue versionValue{"1.0", "1.0"};
+        XMLValue value{"1.0", "1.0"};
         if (source.match(U"version"))
         {
             source.ignoreWS();
@@ -353,20 +353,20 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after version.");
             }
             source.ignoreWS();
-            versionValue = Core::parseValue(source);
+            value = Core::parseValue(source);
             // Check valid declaration values
             std::set<std::string> validVersions{"1.0", "1.1"};
-            if (validVersions.find(versionValue.parsed) == validVersions.end())
+            if (!validVersions.contains(value.parsed))
             {
-                throw SyntaxError(source, "Unsupported version " + versionValue.parsed + ".");
+                throw SyntaxError(source, "Unsupported version " + value.parsed + ".");
             }
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("version", versionValue);
+            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("version", value);
         }
         else
         {
             throw SyntaxError(source, "Version missing from declaration.");
         }
-        XMLValue encodingValue{"UTF-8", "UTF-8"};
+        value = {"UTF-8", "UTF-8"};
         if (source.match(U"encoding"))
         {
             source.ignoreWS();
@@ -376,16 +376,16 @@ namespace XMLLib
             }
             source.ignoreWS();
             // Check valid declaration values
-            encodingValue = Core::parseValue(source);
-            encodingValue.parsed = Core::toUpperString(encodingValue.parsed);
+            value = Core::parseValue(source);
+            value.parsed = Core::toUpperString(value.parsed);
             std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
-            if (validEncodings.find(encodingValue.parsed) == validEncodings.end())
+            if (!validEncodings.contains(value.parsed))
             {
-                throw SyntaxError(source, "Unsupported encoding " + encodingValue.parsed + " specified.");
+                throw SyntaxError(source, "Unsupported encoding " + value.parsed + " specified.");
             }
         }
-        XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("encoding", encodingValue);
-        XMLValue standaloneValue{"no", "no"};
+        XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("encoding", value);
+        value = {"no", "no"};
         if (source.match(U"standalone"))
         {
             source.ignoreWS();
@@ -394,15 +394,15 @@ namespace XMLLib
                 throw SyntaxError(source, "Missing '=' after standalone.");
             }
             source.ignoreWS();
-            standaloneValue = Core::parseValue(source);
+            value = Core::parseValue(source);
             // Check valid declaration values
             std::set<std::string> validStandalone{"yes", "no"};
-            if (validStandalone.find(standaloneValue.parsed) == validStandalone.end())
+            if (!validStandalone.contains(value.parsed))
             {
-                throw SyntaxError(source, "Invalid standalone value of '" + standaloneValue.parsed + "'.");
+                throw SyntaxError(source, "Invalid standalone value of '" + value.parsed + "'.");
             }
         }
-        XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("standalone", standaloneValue);
+        XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("standalone", value);
         if (source.match(U"encoding"))
         {
             throw SyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
