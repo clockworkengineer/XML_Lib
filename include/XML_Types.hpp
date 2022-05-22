@@ -39,7 +39,7 @@ namespace XMLLib
         {
         }
         const std::string name;
-        const XMLValue value{"", ""};
+        const XMLValue value;
     };
     //
     // XML External reference

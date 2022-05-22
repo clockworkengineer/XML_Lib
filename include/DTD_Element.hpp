@@ -51,7 +51,7 @@ namespace XMLLib
     struct DTDElement
     {
         DTDElement() = default;
-        DTDElement(std::string name, XMLValue content) : name(std::move(name)), content(std::move(content)) {}
+        DTDElement(const std::string &name, const XMLValue &content) : name(name), content(content) {}
         std::string name;
         bool idAttributePresent = false;
         XMLValue content { "", ""};
