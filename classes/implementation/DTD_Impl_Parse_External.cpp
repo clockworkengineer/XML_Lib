@@ -187,25 +187,19 @@ namespace XMLLib
     /// <returns>External reference.</returns>
     XMLExternalReference DTD_Impl::parseExternalReference(ISource &dtdSource)
     {
-        XMLExternalReference result;
         if (dtdSource.match(U"SYSTEM"))
         {
             dtdSource.ignoreWS();
-            result.type = "SYSTEM";
-            result.systemID = Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed;
+            return (XMLExternalReference{"SYSTEM", Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed, ""});
         }
         else if (dtdSource.match(U"PUBLIC"))
         {
             dtdSource.ignoreWS();
-            result.type = "PUBLIC";
-            result.publicID = Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed;
-            result.systemID = Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed;
+            std::string publicID{Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed};
+            std::string systemID{Core::parseValue(dtdSource, m_parsed->m_entityMapper).parsed};
+            return (XMLExternalReference{"PUBLIC", systemID, publicID});
         }
-        else
-        {
-            throw SyntaxError(dtdSource, "Invalid external DTD specifier.");
-        }
-        return (result);
+        throw SyntaxError(dtdSource, "Invalid external DTD specifier.");
     }
     /// <summary>
     /// Parse externally defined DTD.

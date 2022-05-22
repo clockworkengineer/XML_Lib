@@ -62,7 +62,12 @@ namespace XMLLib
         }
         XMLExternalReference &getNotation(const std::string &notationName)
         {
-            return (m_notations[notationName]);
+            auto notation = m_notations.find(notationName);
+            if (notation != m_notations.end())
+            {
+                return (notation->second);
+            }
+            throw std::runtime_error("Error: Could not find notation name.");
         }
         void addNotation(const std::string &notationName, const XMLExternalReference &notation)
         {
@@ -86,7 +91,7 @@ namespace XMLLib
         uint16_t m_type{};
         long m_lineCount{};
         std::string m_name;
-        XMLExternalReference m_external;
+        XMLExternalReference m_external{"", "", ""};
         std::unordered_map<std::string, DTDElement> m_elements;
         std::unordered_map<std::string, XMLExternalReference> m_notations;
     };

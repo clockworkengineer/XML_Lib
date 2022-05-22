@@ -38,19 +38,18 @@ namespace XMLLib
         XMLAttribute(const std::string &attributeName, const XMLValue &attributeValue) : name(attributeName), value(attributeValue)
         {
         }
-        const std::string name;
-        const XMLValue value;
+        std::string name;
+        XMLValue value;
     };
     //
     // XML External reference
     //
     struct XMLExternalReference
     {
-        // XMLExternalReference() = default;
-        // XMLExternalReference(const std::string &refType, const std::string &refSystemID, const std::string &refPublicID) : type(refType), systemID(refSystemID), publicID(refPublicID)
-        // {
-        // }
     public:
+        XMLExternalReference(const std::string &refType, const std::string &refSystemID, const std::string &refPublicID) : type(refType), systemID(refSystemID), publicID(refPublicID)
+        {
+        }
         std::string type;
         std::string systemID;
         std::string publicID;
@@ -62,7 +61,7 @@ namespace XMLLib
     {
     public:
         std::string internal;
-        XMLExternalReference external;
+        XMLExternalReference external{"", "", ""};
         std::string notation;
     };
 } // namespace XMLLib
