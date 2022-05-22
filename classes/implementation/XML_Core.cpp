@@ -279,10 +279,15 @@ namespace XMLLib::Core
                 XMLValue character{parseCharacter(source)};
                 if (character.isEntityReference())
                 {
-                    character = entityMapper.map(character);
+                    XMLValue entityReference{entityMapper.map(character)};
+                    unparsed += entityReference.unparsed;
+                    parsed += entityReference.parsed;
                 }
-                unparsed += character.unparsed;
-                parsed += character.parsed;
+                else
+                {
+                    unparsed += character.unparsed;
+                    parsed += character.parsed;
+                }
             }
             source.next();
             source.ignoreWS();
