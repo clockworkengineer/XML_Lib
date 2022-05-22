@@ -68,37 +68,36 @@ namespace XMLLib
     {
         return (m_entityMappings);
     }
-    void XML_EntityMapper::map(XMLValue &entityReference)
+    XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
     {
+        std::string unparsed{entityReference.unparsed}, parsed{entityReference.unparsed};
         if (isPresent(entityReference.unparsed))
         {
             if (!get(entityReference.unparsed).internal.empty())
             {
-                entityReference.parsed = get(entityReference.unparsed).internal;
+                parsed = get(entityReference.unparsed).internal;
             }
             else
             {
-                if (std::filesystem::exists(
-                        get(entityReference.unparsed).external.systemID))
+                if (std::filesystem::exists(get(entityReference.unparsed).external.systemID))
                 {
-                    FileSource entitySource(
-                        get(entityReference.unparsed).external.systemID);
-                    entityReference.parsed = "";
+                    FileSource entitySource{get(entityReference.unparsed).external.systemID};
+                    parsed = "";
                     while (entitySource.more())
                     {
-                        entityReference.parsed += entitySource.current_to_bytes();
+                        parsed += entitySource.current_to_bytes();
                         entitySource.next();
                     }
                 }
                 else
                 {
-                    throw SyntaxError("Entity '" + entityReference.unparsed +
-                                      "' source file '" +
+                    throw SyntaxError("Entity '" + entityReference.unparsed + "' source file '" +
                                       get(entityReference.unparsed).external.systemID +
                                       "' does not exist.");
                 }
             }
         }
+        return (XMLValue{unparsed, parsed});
     }
     std::string XML_EntityMapper::translate(const std::string &toTranslate,
                                             char type) const

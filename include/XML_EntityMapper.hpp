@@ -44,7 +44,7 @@ namespace XMLLib
         void remove(const std::string &entityName) override;
         [[nodiscard]] bool isPresent(const std::string &entityName) const override;
         std::map<std::string, XMLEntityMapping> &getList() override;
-        void map(XMLValue &entityReference) override;
+        XMLValue  map(const XMLValue &entityReference) override;
         [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
         void recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities) override;
         // ================

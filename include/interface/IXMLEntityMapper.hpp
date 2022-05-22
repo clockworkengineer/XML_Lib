@@ -30,7 +30,7 @@ namespace XMLLib
         virtual void remove(const std::string &entityName) = 0;
         [[nodiscard]] virtual bool isPresent(const std::string &entityName) const = 0;
         virtual std::map<std::string, XMLEntityMapping> &getList() = 0;
-        virtual void map(XMLValue &entityReference) = 0;
+        virtual XMLValue map(const XMLValue &entityReference) = 0;
         [[nodiscard]] virtual std::string translate(const std::string &toTranslate, char type = '%') const = 0;
         virtual void recursive(const std::string &entityName, ISource::Char type, std::set<std::string> names = {}) = 0;
     };

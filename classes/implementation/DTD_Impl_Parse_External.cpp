@@ -48,7 +48,7 @@ namespace XMLLib
             {
                 XMLValue entityReference = Core::parseEntityReference(dtdSource);
                 dtdSource.ignoreWS();
-                m_parsed->m_entityMapper.map(entityReference);
+                entityReference = m_parsed->m_entityMapper.map(entityReference);
                 conditionalValue = entityReference.parsed;
             }
             else if (dtdSource.match(U"INCLUDE"))

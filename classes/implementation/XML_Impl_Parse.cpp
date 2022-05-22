@@ -258,7 +258,7 @@ namespace XMLLib
         XMLValue entityReference = Core::parseCharacter(source);
         if (entityReference.isEntityReference())
         {
-            m_entityMapper->map(entityReference);
+            entityReference = m_entityMapper->map(entityReference);
             parseEntityMappingContents(xmlNode, entityReference);
         }
         else if (entityReference.isCharacterReference())
