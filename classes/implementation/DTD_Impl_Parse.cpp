@@ -289,29 +289,26 @@ namespace XMLLib
     {
         dtdSource.ignoreWS();
         std::string elementName = Core::parseName(dtdSource);
-        XMLValue contentSpecification;
         if (dtdSource.match(U"EMPTY"))
         {
-            contentSpecification.unparsed = "EMPTY";
-            contentSpecification.parsed = "EMPTY";
+            m_parsed->addElement(elementName, DTDElement(elementName, XMLValue{"EMPTY", "EMPTY"}));
         }
         else if (dtdSource.match(U"ANY"))
         {
-            contentSpecification.unparsed = "ANY";
-            contentSpecification.parsed = "ANY";
+            m_parsed->addElement(elementName, DTDElement(elementName, XMLValue{"ANY", "ANY"}));
         }
         else
         {
+            std::string unparsed;
             while (dtdSource.more() &&
                    (dtdSource.current() != '<') &&
                    (dtdSource.current() != '>'))
             {
-                contentSpecification.unparsed += dtdSource.current_to_bytes();
+                unparsed += dtdSource.current_to_bytes();
                 dtdSource.next();
             }
-            parseElementContentSpecification(elementName, contentSpecification);
+            m_parsed->addElement(elementName, DTDElement(elementName, parseElementContentSpecification(elementName, XMLValue{unparsed, ""})));
         }
-        m_parsed->addElement(elementName, DTDElement(elementName, contentSpecification));
         dtdSource.ignoreWS();
     }
     /// <summary>

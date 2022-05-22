@@ -71,7 +71,7 @@ namespace XMLLib
         void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpec);
         void parseElementName(ISource &contentSpecSource, IDestination &contentSpec);
         void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpec);
-        void parseElementContentSpecification(const std::string &elementName, XMLValue &contentSpec);
+        XMLValue parseElementContentSpecification(const std::string &elementName, const XMLValue &contentSpec);
         void parseExternalReferenceContent();
         void parseAttributeList(ISource &dtdSource);
         void parseNotation(ISource &dtdSource);

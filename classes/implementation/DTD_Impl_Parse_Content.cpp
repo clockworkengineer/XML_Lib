@@ -241,7 +241,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="elementName">Elements name.</param>
     /// <param name="contentSpec">Elements content specification.</param>
-    void DTD_Impl::parseElementContentSpecification(const std::string &elementName, XMLValue &contentSpec)
+    XMLValue DTD_Impl::parseElementContentSpecification(const std::string &elementName, const XMLValue &contentSpec)
     {
         try
         {
@@ -266,7 +266,7 @@ namespace XMLLib
             {
                 throw SyntaxError("Invalid element content specification.");
             }
-            contentSpec.parsed = contentSpecDestination.getBuffer();
+            return (XMLValue{contentSpec.unparsed, contentSpecDestination.getBuffer()});
         }
         catch (SyntaxError &e)
         {

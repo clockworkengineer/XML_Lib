@@ -15,7 +15,6 @@ namespace XMLLib
     struct XMLValue
     {
     public:
-        XMLValue() = default;
         XMLValue(const std::string &unparsedValue, const std::string &parsedValue) : unparsed(unparsedValue), parsed(parsedValue)
         {
         }
