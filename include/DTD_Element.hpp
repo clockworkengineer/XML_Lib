@@ -43,7 +43,7 @@ namespace XMLLib
         std::string name;
         uint16_t type;
         std::string enumeration;
-        XMLValue value;
+        XMLValue value {"", ""};
     };
     //
     // XML DTD element definition
@@ -54,7 +54,7 @@ namespace XMLLib
         DTDElement(std::string name, XMLValue content) : name(std::move(name)), content(std::move(content)) {}
         std::string name;
         bool idAttributePresent = false;
-        XMLValue content;
+        XMLValue content { "", ""};
         std::vector<DTDAttribute> attributes;
     };
 } // namespace XMLLib

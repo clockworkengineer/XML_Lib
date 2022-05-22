@@ -183,17 +183,16 @@ namespace XMLLib::Core
     /// <returns>Parsed entity reference value.</returns>
     XMLValue parseEntityReference(ISource &source)
     {
-        XMLValue entityReference;
-        entityReference.unparsed = source.current_to_bytes();
+        std::string unparsed{source.current_to_bytes()};
         source.next();
-        entityReference.unparsed += parseName(source);
+        unparsed += parseName(source);
         if (source.current() != ';')
         {
             throw SyntaxError(source, "Invalidly formed entity reference.");
         }
-        entityReference.unparsed += ';';
+        unparsed += ';';
         source.next();
-        return (entityReference);
+        return (XMLValue{unparsed, unparsed});
     }
     /// <summary>
     /// Parse a character reference value (hex/dec) returning its value.
@@ -202,11 +201,10 @@ namespace XMLLib::Core
     /// <returns>Character reference value.</returns>
     XMLValue parseCharacterReference(ISource &source)
     {
-        XMLValue characterRefence;
-        characterRefence.unparsed = "&#";
+        std::string unparsed{"&#"};
         while (source.more() && source.current() != ';')
         {
-            characterRefence.unparsed += source.current_to_bytes();
+            unparsed += source.current_to_bytes();
             source.next();
         }
         if (source.current() != ';')
@@ -214,8 +212,8 @@ namespace XMLLib::Core
             throw SyntaxError(source, "Invalidly formed  character reference.");
         }
         source.next();
-        characterRefence.unparsed += ';';
-        std::string reference = characterRefence.unparsed;
+        unparsed += ';';
+        std::string reference{unparsed};
         char *end;
         long result = 10;
         if (reference[2] == 'x')
@@ -234,8 +232,7 @@ namespace XMLLib::Core
             {
                 throw SyntaxError(source, "Character reference invalid character.");
             }
-            characterRefence.parsed = source.to_bytes(result);
-            return (characterRefence);
+            return (XMLValue{unparsed, source.to_bytes(result)});
         }
         throw SyntaxError(source, "Cannot convert character reference.");
     }
@@ -248,27 +245,21 @@ namespace XMLLib::Core
     /// <returns>Character value.</returns>
     XMLValue parseCharacter(ISource &source)
     {
-        XMLValue character;
         if (source.match(U"&#"))
         {
-            character = parseCharacterReference(source);
+            return (parseCharacterReference(source));
         }
         else if (source.current() == '&')
         {
-            character = parseEntityReference(source);
-            character.parsed = character.unparsed;
+            return (parseEntityReference(source));
         }
         else if (validChar(source.current()))
         {
-            character.parsed = source.current_to_bytes();
-            character.unparsed = character.parsed;
+            std::string character{source.current_to_bytes()};
             source.next();
+            return (XMLValue{character, character});
         }
-        else
-        {
-            throw SyntaxError(source, "Invalid character value encountered.");
-        }
-        return (character);
+        throw SyntaxError(source, "Invalid character value encountered.");
     }
     /// <summary>
     /// Parse literal string value and return it.
@@ -280,21 +271,22 @@ namespace XMLLib::Core
     {
         if ((source.current() == '\'') || ((source.current() == '"')))
         {
-            XMLValue value;
+            std::string unparsed, parsed;
             ISource::Char quote = source.current();
             source.next();
             while (source.more() && source.current() != quote)
             {
-                XMLValue character = parseCharacter(source);
+                XMLValue character{parseCharacter(source)};
                 if (character.isEntityReference())
                 {
                     entityMapper.map(character);
                 }
-                value += character;
+                unparsed += character.unparsed;
+                parsed += character.parsed;
             }
             source.next();
             source.ignoreWS();
-            return (value);
+            return (XMLValue{unparsed, parsed});
         }
         throw SyntaxError(source, "Invalid attribute value.");
     }
@@ -307,16 +299,18 @@ namespace XMLLib::Core
     {
         if ((source.current() == '\'') || ((source.current() == '"')))
         {
-            XMLValue value;
+            std::string unparsed, parsed;
             ISource::Char quote = source.current();
             source.next();
             while (source.more() && source.current() != quote)
             {
-                value += parseCharacter(source);
+                XMLValue character{parseCharacter(source)};
+                unparsed += character.unparsed;
+                parsed += character.parsed;
             }
             source.next();
             source.ignoreWS();
-            return (value);
+            return (XMLValue{unparsed, parsed});
         }
         throw SyntaxError(source, "Invalid attribute value.");
     }

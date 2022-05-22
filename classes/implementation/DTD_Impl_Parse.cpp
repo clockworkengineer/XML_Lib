@@ -247,7 +247,6 @@ namespace XMLLib
     void DTD_Impl::parseNotation(ISource &dtdSource)
     {
         dtdSource.ignoreWS();
-        XMLAttribute notation;
         std::string name = Core::parseName(dtdSource);
         m_parsed->addNotation(name, parseExternalReference(dtdSource));
         dtdSource.ignoreWS();

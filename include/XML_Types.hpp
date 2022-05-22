@@ -15,11 +15,9 @@ namespace XMLLib
     struct XMLValue
     {
     public:
-        XMLValue operator+=(const XMLValue &rhs)
+        XMLValue() = default;
+        XMLValue(const std::string &unparsedValue, const std::string &parsedValue) : unparsed(unparsedValue), parsed(parsedValue)
         {
-            parsed += rhs.parsed;
-            unparsed += rhs.unparsed;
-            return (*this);
         }
         [[nodiscard]] bool isEntityReference() const
         {
@@ -38,12 +36,11 @@ namespace XMLLib
     struct XMLAttribute
     {
     public:
-        XMLAttribute() = default;
         XMLAttribute(const std::string &attributeName, const XMLValue &attributeValue) : name(attributeName), value(attributeValue)
         {
         }
         const std::string name;
-        const XMLValue value;
+        const XMLValue value{"", ""};
     };
     //
     // XML External reference
