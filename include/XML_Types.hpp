@@ -46,6 +46,10 @@ namespace XMLLib
     //
     struct XMLExternalReference
     {
+        // XMLExternalReference() = default;
+        // XMLExternalReference(const std::string &refType, const std::string &refSystemID, const std::string &refPublicID) : type(refType), systemID(refSystemID), publicID(refPublicID)
+        // {
+        // }
     public:
         std::string type;
         std::string systemID;

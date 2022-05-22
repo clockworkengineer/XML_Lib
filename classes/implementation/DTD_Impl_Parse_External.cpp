@@ -40,16 +40,13 @@ namespace XMLLib
     /// <param name="includeOn">If set to false then enclosing conditionals treated as ignored.</param>
     void DTD_Impl::parseConditional(ISource &dtdSource, bool includeOn)
     {
+        std::string conditionalValue;
         dtdSource.ignoreWS();
-        std::string conditionalValue = "";
         if (includeOn)
         {
             if (dtdSource.current() == '%')
             {
-                XMLValue entityReference = Core::parseEntityReference(dtdSource);
-                dtdSource.ignoreWS();
-                entityReference = m_parsed->m_entityMapper.map(entityReference);
-                conditionalValue = entityReference.parsed;
+                conditionalValue = m_parsed->m_entityMapper.map(Core::parseEntityReference(dtdSource)).parsed;
             }
             else if (dtdSource.match(U"INCLUDE"))
             {
@@ -64,9 +61,9 @@ namespace XMLLib
         {
             conditionalValue = "IGNORE";
         }
+        dtdSource.ignoreWS();
         if (conditionalValue == "INCLUDE")
         {
-            dtdSource.ignoreWS();
             if (dtdSource.current() != '[')
             {
                 throw SyntaxError(dtdSource, "Missing opening '[' from conditional.");
