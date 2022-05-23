@@ -13,6 +13,11 @@
 namespace XMLLib
 {
     //
+    // Pointer to XMLNode
+    //
+    struct XMLNode;
+    using XMLNodePtr = std::unique_ptr<XMLNode>;
+    //
     // XML Node structure
     //
     enum class XMLNodeType
@@ -48,7 +53,8 @@ namespace XMLLib
         [[nodiscard]] const std::string getContents() const;
         const XMLNode &operator[](int index) const;
         const XMLNode &operator[](const std::string &name) const;
-        std::vector<std::unique_ptr<XMLNode>> children;
+        std::vector<XMLNodePtr> children;
+
     private:
         XMLNodeType xmlNodeType;
     };
@@ -138,6 +144,7 @@ namespace XMLLib
         const XMLNodeElement &operator[](int index) const;
         const XMLNodeElement &operator[](const std::string &name) const;
         std::string elementName;
+
     private:
         std::vector<XMLAttribute> namespaces;
         std::vector<XMLAttribute> attributes;

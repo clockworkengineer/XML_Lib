@@ -43,7 +43,7 @@ namespace XMLLib
         // PUBLIC METHODS
         // ==============
         DTD &dtd() { return (*m_dtd); }
-        XMLNodeElement &prolog() { return (*m_prolog); };
+        XMLNodeElement &prolog() { return (XMLNodeRef<XMLNodeElement>(*m_prolog)); };
         void parse(ISource &source);
         void stringify(IDestination &destination);
         void validate();
@@ -79,7 +79,7 @@ namespace XMLLib
         // =================
         // PRIVATE VARIABLES
         // =================
-        std::unique_ptr<XMLNodeElement> m_prolog;
+        XMLNodePtr m_prolog;
         std::unique_ptr<DTD> m_dtd;
         std::unique_ptr<IXMLValidator> m_validator;
         std::unique_ptr<IXMLEntityMapper> m_entityMapper;
