@@ -15,7 +15,7 @@ namespace XMLLib
     struct XMLValue
     {
     public:
-        XMLValue(const std::string &unparsedValue, const std::string &parsedValue=) : unparsed(unparsedValue), parsed(parsedValue)
+        XMLValue(const std::string &unparsed, const std::string &parsed="") : unparsed(unparsed), parsed(parsed)
         {
         }
         [[nodiscard]] bool isEntityReference() const
@@ -35,7 +35,7 @@ namespace XMLLib
     struct XMLAttribute
     {
     public:
-        XMLAttribute(const std::string &attributeName, const XMLValue &attributeValue) : name(attributeName), value(attributeValue)
+        XMLAttribute(const std::string &name, const XMLValue &value) : name(name), value(value)
         {
         }
         std::string name;
@@ -47,7 +47,7 @@ namespace XMLLib
     struct XMLExternalReference
     {
     public:
-        XMLExternalReference(const std::string &refType, const std::string &refSystemID="", const std::string &refPublicID="") : type(refType), systemID(refSystemID), publicID(refPublicID)
+        XMLExternalReference(const std::string &type, const std::string &systemID="", const std::string &publicID="") : type(type), systemID(systemID), publicID(publicID)
         {
         }
         std::string type;
@@ -60,7 +60,7 @@ namespace XMLLib
     struct XMLEntityMapping
     {
     public:
-        XMLEntityMapping(const std::string &mappingInternal, const XMLExternalReference &mappingExternal={""}, std::string mappingNotation="") : internal(mappingInternal), external(mappingExternal), notation(mappingNotation)
+        XMLEntityMapping(const std::string &internal, const XMLExternalReference &external={""}, std::string notation="") : internal(internal), external(external), notation(notation)
         {
         }
         std::string internal;
