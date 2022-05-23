@@ -14,7 +14,6 @@ namespace XMLLib
     //
     struct XMLValue
     {
-    public:
         XMLValue(const std::string &unparsed, const std::string &parsed="") : unparsed(unparsed), parsed(parsed)
         {
         }
@@ -34,7 +33,6 @@ namespace XMLLib
     //
     struct XMLAttribute
     {
-    public:
         XMLAttribute(const std::string &name, const XMLValue &value) : name(name), value(value)
         {
         }
@@ -46,7 +44,6 @@ namespace XMLLib
     //
     struct XMLExternalReference
     {
-    public:
         XMLExternalReference(const std::string &type, const std::string &systemID="", const std::string &publicID="") : type(type), systemID(systemID), publicID(publicID)
         {
         }
@@ -59,7 +56,6 @@ namespace XMLLib
     //
     struct XMLEntityMapping
     {
-    public:
         XMLEntityMapping(const std::string &internal, const XMLExternalReference &external={""}, std::string notation="") : internal(internal), external(external), notation(notation)
         {
         }

@@ -18,7 +18,6 @@ namespace XMLLib
     //
     struct SyntaxError : public std::exception
     {
-    public:
         explicit SyntaxError(const std::string &description = "")
         {
             errorMessage = "XML Syntax Error: " + description;
@@ -32,7 +31,6 @@ namespace XMLLib
         {
             return (errorMessage.c_str());
         }
-
     private:
         std::string errorMessage;
     };
@@ -41,7 +39,6 @@ namespace XMLLib
     //
     struct ValidationError : public std::exception
     {
-    public:
         explicit ValidationError(long lineNumber, const std::string &description = "")
         {
             errorMessage = "XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + description;
@@ -50,7 +47,6 @@ namespace XMLLib
         {
             return (errorMessage.c_str());
         }
-
     private:
         std::string errorMessage;
     };

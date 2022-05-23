@@ -34,7 +34,6 @@ namespace XMLLib
     //
     struct XMLNode
     {
-    public:
         explicit XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType)
         {
         }
@@ -50,7 +49,6 @@ namespace XMLLib
         const XMLNode &operator[](int index) const;
         const XMLNode &operator[](const std::string &name) const;
         std::vector<std::unique_ptr<XMLNode>> children;
-
     private:
         XMLNodeType xmlNodeType;
     };
@@ -59,7 +57,6 @@ namespace XMLLib
     //
     struct XMLNodeContent : XMLNode
     {
-    public:
         explicit XMLNodeContent(XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType)
         {
         }
@@ -71,7 +68,6 @@ namespace XMLLib
     //
     struct XMLNodeCDATA : XMLNode
     {
-    public:
         explicit XMLNodeCDATA(XMLNodeType nodeType = XMLNodeType::cdata) : XMLNode(nodeType)
         {
         }
@@ -82,7 +78,6 @@ namespace XMLLib
     //
     struct XMLNodeEntityReference : XMLNode
     {
-    public:
         explicit XMLNodeEntityReference(const XMLValue &value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), value(std::move(value))
         {
         }
@@ -93,7 +88,6 @@ namespace XMLLib
     //
     struct XMLNodeElement : XMLNode
     {
-    public:
         explicit XMLNodeElement(XMLNodeType nodeType = XMLNodeType::element) : XMLNode(nodeType)
         {
         }
@@ -144,7 +138,6 @@ namespace XMLLib
         const XMLNodeElement &operator[](int index) const;
         const XMLNodeElement &operator[](const std::string &name) const;
         std::string elementName;
-
     private:
         std::vector<XMLAttribute> namespaces;
         std::vector<XMLAttribute> attributes;
@@ -154,7 +147,6 @@ namespace XMLLib
     //
     struct XMLNodeComment : XMLNode
     {
-    public:
         explicit XMLNodeComment(XMLNodeType nodeType = XMLNodeType::comment) : XMLNode(nodeType)
         {
         }
@@ -165,7 +157,6 @@ namespace XMLLib
     //
     struct XMLNodePI : XMLNode
     {
-    public:
         explicit XMLNodePI(XMLNodeType nodeType = XMLNodeType::pi) : XMLNode(nodeType)
         {
         }
@@ -177,7 +168,6 @@ namespace XMLLib
     //
     struct XMLNodeDTD : XMLNode
     {
-    public:
         explicit XMLNodeDTD(XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType)
         {
         }
