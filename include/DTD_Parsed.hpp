@@ -91,7 +91,7 @@ namespace XMLLib
         uint16_t m_type{};
         long m_lineCount{};
         std::string m_name;
-        XMLExternalReference m_external{"", "", ""};
+        XMLExternalReference m_external{""};
         std::unordered_map<std::string, DTDElement> m_elements;
         std::unordered_map<std::string, XMLExternalReference> m_notations;
     };

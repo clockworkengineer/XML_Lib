@@ -38,11 +38,11 @@ namespace XMLLib
     // ==============
     XML_EntityMapper::XML_EntityMapper()
     {
-        add("&amp;", XMLEntityMapping{"&#x26;", {"", "", ""}, ""});
-        add("&quot;", XMLEntityMapping{"&#x22;", {"", "", ""}, ""});
-        add("&apos;", XMLEntityMapping{"&#x27;", {"", "", ""}, ""});
-        add("&lt;", XMLEntityMapping{"&#x3C;", {"", "", ""}, ""});
-        add("&gt;", XMLEntityMapping{"&#x3E;", {"", "", ""}, ""});
+        add("&amp;", XMLEntityMapping{"&#x26;"});
+        add("&quot;", XMLEntityMapping{"&#x22;"});
+        add("&apos;", XMLEntityMapping{"&#x27;"});
+        add("&lt;", XMLEntityMapping{"&#x3C;"});
+        add("&gt;", XMLEntityMapping{"&#x3E;"});
     }
     XML_EntityMapper::~XML_EntityMapper()
     {
@@ -55,7 +55,7 @@ namespace XMLLib
     {
         if (!isPresent(entityName))
         {
-            add(entityName, XMLEntityMapping{"", {"", "", ""}, ""});
+            add(entityName, XMLEntityMapping{""});
         }
         auto entity = m_entityMappings.find(entityName);
         if (entity != m_entityMappings.end())
@@ -122,8 +122,7 @@ namespace XMLLib
                     size_t pos = translated.find(entity.first);
                     if (pos != std::string::npos)
                     {
-                        translated.replace(pos, entity.first.length(),
-                                           entity.second.internal);
+                        translated.replace(pos, entity.first.length(), entity.second.internal);
                         matchFound = true;
                     }
                 }
