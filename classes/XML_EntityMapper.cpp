@@ -38,23 +38,31 @@ namespace XMLLib
     // ==============
     XML_EntityMapper::XML_EntityMapper()
     {
-        m_entityMappings["&amp;"].internal = "&#x26;";
-        m_entityMappings["&quot;"].internal = "&#x22;";
-        m_entityMappings["&apos;"].internal = "&#x27;";
-        m_entityMappings["&lt;"].internal = "&#x3C;";
-        m_entityMappings["&gt;"].internal = "&#x3E;";
+        add("&amp;", XMLEntityMapping{"&#x26;", {"", "", ""}, ""});
+        add("&quot;", XMLEntityMapping{"&#x22;", {"", "", ""}, ""});
+        add("&apos;", XMLEntityMapping{"&#x27;", {"", "", ""}, ""});
+        add("&lt;", XMLEntityMapping{"&#x3C;", {"", "", ""}, ""});
+        add("&gt;", XMLEntityMapping{"&#x3E;", {"", "", ""}, ""});
     }
     XML_EntityMapper::~XML_EntityMapper()
     {
     }
-    void XML_EntityMapper::add(const std::string &entityName,
-                               const XMLEntityMapping &entityMapping)
+    void XML_EntityMapper::add(const std::string &entityName, const XMLEntityMapping &entityMapping)
     {
-        m_entityMappings[entityName] = entityMapping;
+        m_entityMappings.emplace(std::make_pair(entityName, entityMapping));
     }
     XMLEntityMapping &XML_EntityMapper::get(const std::string &entityName)
     {
-        return (m_entityMappings[entityName]);
+        if (!isPresent(entityName))
+        {
+            add(entityName, XMLEntityMapping{"", {"", "", ""}, ""});
+        }
+        auto entity = m_entityMappings.find(entityName);
+        if (entity != m_entityMappings.end())
+        {
+            return (entity->second);
+        }
+        throw std::runtime_error("Error: Could not insert mapping name.");
     }
     void XML_EntityMapper::remove(const std::string &entityName)
     {

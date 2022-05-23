@@ -60,6 +60,9 @@ namespace XMLLib
     struct XMLEntityMapping
     {
     public:
+        XMLEntityMapping(const std::string &mappingInternal, const XMLExternalReference &mappingExternal, std::string mappingNotation) : internal(mappingInternal), external(mappingExternal), notation(mappingNotation)
+        {
+        }
         std::string internal;
         XMLExternalReference external{"", "", ""};
         std::string notation;
