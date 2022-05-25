@@ -81,36 +81,36 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <param name="content">Content to add to new content node (XMLNodeContent).</param>
-    void XML_Impl::parseAddElementContent(XMLNode &xmlNode, const std::string &content)
+    void XML_Impl::parseAddElementContent(XMLNodeElement &xmlNode, const std::string &content)
     {
         // Make sure there is a content node to receive characters
-        if (XMLNodeRef<XMLNodeElement>(xmlNode).children.empty() ||
-            XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() != XMLNodeType::content)
+        if (xmlNode.children.empty() ||
+            xmlNode.children.back()->getNodeType() != XMLNodeType::content)
         {
             bool isWWhitespace = true;
-            if (!XMLNodeRef<XMLNodeElement>(xmlNode).children.empty())
+            if (!xmlNode.children.empty())
             {
-                if ((XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::cdata) ||
-                    (XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::entity))
+                if ((xmlNode.children.back()->getNodeType() == XMLNodeType::cdata) ||
+                    (xmlNode.children.back()->getNodeType() == XMLNodeType::entity))
                 {
                     isWWhitespace = false;
                 }
             }
-            XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeContent>());
-            XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = isWWhitespace;
+            xmlNode.children.emplace_back(std::make_unique<XMLNodeContent>());
+            XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = isWWhitespace;
         }
-        if (XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace)
+        if (XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace)
         {
             for (auto ch : content)
             {
                 if (!std::iswspace(ch))
                 {
-                    XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = false;
+                    XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = false;
                     break;
                 }
             }
         }
-        XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).content += content;
+        XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).content += content;
     }
     /// <summary>
     /// Parse a element tag name and set its value in current XMLNodeElement.
@@ -127,7 +127,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Impl::parseComment(ISource &source, XMLNode &xmlNode)
+    XMLNodeComment XML_Impl::parseComment(ISource &source)
     {
         XMLNodeComment xmlNodeComment;
         while (source.more() && !source.match(U"--"))
@@ -139,15 +139,14 @@ namespace XMLLib
         {
             throw SyntaxError(source, "Missing closing '>' for comment line.");
         }
-        XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeComment>(std::move(xmlNodeComment)));
+        return (xmlNodeComment);
     }
     /// <summary>
     /// Parse a XML process instruction, create an XMLNodePI for it and add it to
     /// the list of elements under the current XMLNodeElement.
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    /// <param name="xmlNode">Current element node.</param>
-    void XML_Impl::parsePI(ISource &source, XMLNode &xmlNode)
+    XMLNodePI XML_Impl::parsePI(ISource &source)
     {
         XMLNodePI xmlNodePI;
         xmlNodePI.name = Core::parseName(source);
@@ -156,7 +155,7 @@ namespace XMLLib
             xmlNodePI.parameters += source.current_to_bytes();
             source.next();
         }
-        XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodePI>(std::move(xmlNodePI)));
+        return (xmlNodePI);
     }
     /// <summary>
     /// Parse an XML CDATA section, create an XNodeCDATA for it and add it to
@@ -266,7 +265,7 @@ namespace XMLLib
         }
         else
         {
-            parseAddElementContent(xmlNode, entityReference.parsed);
+            parseAddElementContent(static_cast<XMLNodeElement&>(xmlNode), entityReference.parsed);
         }
     }
     /// <summary>
@@ -279,11 +278,11 @@ namespace XMLLib
     {
         if (source.match(U"<!--"))
         {
-            parseComment(source, xmlNode);
+            xmlNode.children.emplace_back(std::make_unique<XMLNodeComment>(std::move(parseComment(source))));
         }
         else if (source.match(U"<?"))
         {
-            parsePI(source, xmlNode);
+            XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodePI>(std::move(parsePI(source))));
         }
         else if (source.match(U"<![CDATA["))
         {
@@ -340,8 +339,9 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Prolog element node.</param>
-    void XML_Impl::parseDeclaration(ISource &source, XMLNode &xmlNode)
+    std::vector<XMLAttribute> XML_Impl::parseDeclaration(ISource &source)
     {
+        std::vector<XMLAttribute> declaration;
         std::string value;
         if (source.match(U"version"))
         {
@@ -358,7 +358,7 @@ namespace XMLLib
             {
                 throw SyntaxError(source, "Unsupported version " + value + ".");
             }
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("version", XMLValue{value, value});
+            declaration.emplace_back(XMLAttribute{"version", XMLValue{value, value}});
         }
         else
         {
@@ -381,7 +381,7 @@ namespace XMLLib
                 throw SyntaxError(source, "Unsupported encoding " + value + " specified.");
             }
         }
-        XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("encoding", XMLValue{value, value});
+        declaration.emplace_back(XMLAttribute{"encoding", XMLValue{value, value}});
         value = "no"; // Default
         if (source.match(U"standalone"))
         {
@@ -399,11 +399,12 @@ namespace XMLLib
                 throw SyntaxError(source, "Invalid standalone value of '" + value + "'.");
             }
         }
-        XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute("standalone", XMLValue{value, value});
+        declaration.emplace_back(XMLAttribute{"standalone", XMLValue{value, value}});
         if (source.match(U"encoding"))
         {
             throw SyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
         }
+        return (declaration);
     }
     /// <summary>
     /// Parse XML prolog and create the necessary XMLNodeElements for it. Valid
@@ -413,13 +414,17 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Prolog element node.</param>
-    void XML_Impl::parseProlog(ISource &source, XMLNode &xmlNode)
+    XMLNodePtr XML_Impl::parseProlog(ISource &source)
     {
+        XMLNodeElement xmlNode{XMLNodeType::prolog};
         source.ignoreWS();
         if (source.match(U"<?xml"))
         {
             source.ignoreWS();
-            parseDeclaration(source, xmlNode);
+            for (auto &attribute : parseDeclaration(source))
+            {
+                xmlNode.addAttribute(attribute.name, attribute.value);
+            }
             if (!source.match(U"?>"))
             {
                 throw SyntaxError(source, "Declaration end tag not found.");
@@ -429,11 +434,12 @@ namespace XMLLib
         {
             if (source.match(U"<!--"))
             {
-                parseComment(source, xmlNode);
+
+                xmlNode.children.emplace_back(std::make_unique<XMLNodeComment>(std::move(parseComment(source))));
             }
             else if (source.match(U"<?"))
             {
-                parsePI(source, xmlNode);
+                xmlNode.children.emplace_back(std::make_unique<XMLNodePI>(std::move(parsePI(source))));
             }
             else if (source.isWS())
             {
@@ -447,7 +453,7 @@ namespace XMLLib
                     m_dtd = std::make_unique<DTD>(*m_entityMapper);
                     m_dtd->parse(source);
                     m_validator = std::make_unique<XML_Validator>(m_dtd->parsed());
-                    XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeDTD>());
+                    xmlNode.children.emplace_back(std::make_unique<XMLNodeDTD>());
                 }
                 else
                 {
@@ -464,13 +470,14 @@ namespace XMLLib
                 break;
             }
         }
+        return (std::make_unique<XMLNodeElement>(std::move(xmlNode)));
     }
     /// <summary>
     /// Parse XML source stream.
     /// </summary>
     void XML_Impl::parseXML(ISource &source)
     {
-        parseProlog(source, *m_prolog);
+        m_prolog = parseProlog(source);
         if (source.match(U"<"))
         {
             prolog().children.emplace_back(std::make_unique<XMLNodeElement>(XMLNodeType::root));
@@ -479,15 +486,15 @@ namespace XMLLib
             {
                 if (source.match(U"<!--"))
                 {
-                    parseComment(source, *m_prolog);
+                    m_prolog->children.emplace_back(std::make_unique<XMLNodeComment>(std::move(parseComment(source))));
                 }
                 else if (source.match(U"<?"))
                 {
-                    parsePI(source, *m_prolog);
+                    prolog().children.emplace_back(std::make_unique<XMLNodePI>(std::move(parsePI(source))));
                 }
                 else if (source.isWS())
                 {
-                    parseAddElementContent(*m_prolog, source.current_to_bytes());
+                    parseAddElementContent(static_cast<XMLNodeElement &>(*m_prolog), source.current_to_bytes());
                     source.next();
                 }
                 else
