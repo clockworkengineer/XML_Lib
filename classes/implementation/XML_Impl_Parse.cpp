@@ -213,21 +213,6 @@ namespace XMLLib
         return (attributes);
     }
     /// <summary>
-    /// Recursively parse any child elements of the current XMLNodeElement.
-    /// </summary>
-    /// <param name="source">XML source stream.</param>
-    /// <param name="xmlNode">Current element node.</param>
-    XMLNodePtr XML_Impl::parseChildElement(ISource &source, const XMLAttributeList &namespaces)
-    {
-        XMLNodeElement xmlNodeChildElement;
-        for (auto &ns : namespaces)
-        {
-            xmlNodeChildElement.addNameSpace(ns.name, ns.value);
-        }
-        parseElement(source, xmlNodeChildElement);
-        return (std::make_unique<XMLNodeElement>(std::move(xmlNodeChildElement)));
-    }
-    /// <summary>
     /// Parse any element content that is found.
     /// </summary>
     /// <param name="source">XML source stream.</param>
@@ -281,7 +266,7 @@ namespace XMLLib
         }
         else if (source.match(U"<"))
         {
-            xmlNode.children.emplace_back(parseChildElement(source, XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList()));
+            xmlNode.children.emplace_back(parseElement(source, XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList()));
             XMLNodeElement &xmlNodeChildElement = XMLNodeRef<XMLNodeElement>(*xmlNode.children.back());
             if (auto pos = xmlNodeChildElement.elementName.find(':'); pos != std::string::npos)
             {
@@ -305,25 +290,29 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    XMLNodePtr XML_Impl::parseElement(ISource &source, XMLNode &xmlNode)
+    XMLNodePtr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces)
     {
         XMLNodeElement xmlNodeElement;
-        XMLNodeRef<XMLNodeElement>(xmlNode).elementName = parseTagName(source);
+        for (auto &ns : namespaces)
+        {
+            xmlNodeElement.addNameSpace(ns.name, ns.value);
+        }
+        xmlNodeElement.elementName = parseTagName(source);
         for (auto &attribute : parseAttributes(source))
         {
-            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute(attribute.name, attribute.value);
+            xmlNodeElement.addAttribute(attribute.name, attribute.value);
             if (attribute.name.find("xmlns") == 0)
             {
-                XMLNodeRef<XMLNodeElement>(xmlNode).addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
+                xmlNodeElement.addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
             }
         }
         if (source.match(U">"))
         {
             while (source.more() && !source.match(U"</"))
             {
-                parseElementContents(source, xmlNode);
+                parseElementContents(source, xmlNodeElement);
             }
-            if (!source.match(source.from_bytes(XMLNodeRef<XMLNodeElement>(xmlNode).elementName) + U">"))
+            if (!source.match(source.from_bytes(xmlNodeElement.elementName) + U">"))
             {
                 throw SyntaxError(source, "Missing closing tag.");
             }
@@ -331,7 +320,7 @@ namespace XMLLib
         else if (source.match(U"/>"))
         {
             // Self closing element tag
-            XMLNodeRef<XMLNodeElement>(xmlNode).setNodeType(XMLNodeType::self);
+            xmlNodeElement.setNodeType(XMLNodeType::self);
         }
         else
         {
@@ -483,8 +472,11 @@ namespace XMLLib
         m_prolog = parseProlog(source);
         if (source.match(U"<"))
         {
-            prolog().children.emplace_back(std::make_unique<XMLNodeElement>(XMLNodeType::root));
-            parseElement(source, XMLNodeRef<XMLNode>(*prolog().children.back()));
+            prolog().children.emplace_back(parseElement(source, {}));
+            if (prolog().children.back()->getNodeType() != XMLNodeType::self)
+            {
+                prolog().children.back()->setNodeType(XMLNodeType::root);
+            }
             while (source.more())
             {
                 if (source.match(U"<!--"))
