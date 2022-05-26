@@ -117,9 +117,9 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Impl::parseTagName(ISource &source, XMLNode &xmlNode)
+    std::string XML_Impl::parseTagName(ISource &source)
     {
-        XMLNodeRef<XMLNodeElement>(xmlNode).elementName = Core::parseName(source);
+        return (Core::parseName(source));
     }
     /// <summary>
     /// Parse a XML comment, create a XMLNodeComment for it and add to list
@@ -190,12 +190,11 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Impl::parseAttributes(ISource &source, XMLNode &xmlNode)
+    std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
     {
-        while (source.more() &&
-               source.current() != '?' &&
-               source.current() != '/' &&
-               source.current() != '>')
+        std::vector<XMLAttribute> attributes;
+        std::set<std::string> attributeNames;
+        while (source.more() &&source.current() != '?' &&source.current() != '/' &&source.current() != '>')
         {
             std::string attributeName = Core::parseName(source);
             if (!source.match(U"="))
@@ -208,22 +207,17 @@ namespace XMLLib
             {
                 throw SyntaxError(source, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
             }
-            if (!XMLNodeRef<XMLNodeElement>(xmlNode).isAttributePresent(attributeName))
+            if (!attributeNames.contains(attributeName))
             {
-                XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute(attributeName, attributeValue);
+                attributes.emplace_back(attributeName, attributeValue);
+                attributeNames.insert(attributeName);
             }
             else
             {
                 throw SyntaxError(source, "Attribute defined more than once within start tag.");
             }
         }
-        for (const auto attribute : XMLNodeRef<XMLNodeElement>(xmlNode).getAttributeList())
-        {
-            if (attribute.name.find("xmlns") == 0)
-            {
-                XMLNodeRef<XMLNodeElement>(xmlNode).addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
-            }
-        }
+        return (attributes);
     }
     /// <summary>
     /// Recursively parse any child elements of the current XMLNodeElement.
@@ -265,7 +259,7 @@ namespace XMLLib
         }
         else
         {
-            parseAddElementContent(static_cast<XMLNodeElement&>(xmlNode), entityReference.parsed);
+            parseAddElementContent(static_cast<XMLNodeElement &>(xmlNode), entityReference.parsed);
         }
     }
     /// <summary>
@@ -310,10 +304,18 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Impl::parseElement(ISource &source, XMLNode &xmlNode)
+    XMLNodeElement XML_Impl::parseElement(ISource &source, XMLNode &xmlNode)
     {
-        parseTagName(source, xmlNode);
-        parseAttributes(source, xmlNode);
+        XMLNodeElement xmlNodeElement;
+        XMLNodeRef<XMLNodeElement>(xmlNode).elementName = parseTagName(source);
+        for (auto &attribute : parseAttributes(source))
+        {
+            XMLNodeRef<XMLNodeElement>(xmlNode).addAttribute(attribute.name, attribute.value);
+            if (attribute.name.find("xmlns") == 0)
+            {
+                XMLNodeRef<XMLNodeElement>(xmlNode).addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
+            }
+        }
         if (source.match(U">"))
         {
             while (source.more() && !source.match(U"</"))
@@ -334,6 +336,7 @@ namespace XMLLib
         {
             throw SyntaxError(source, "Missing closing tag.");
         }
+        return (xmlNodeElement);
     }
     /// <summary>
     /// </summary>
