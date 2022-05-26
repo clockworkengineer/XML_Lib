@@ -64,13 +64,13 @@ namespace XMLLib
         void parseEntityMappingContents(XMLNode &xmlNode, const XMLValue &entityReference);
         void parseDefault(ISource &source, XMLNode &xmlNode);
         std::string parseTagName(ISource &source);
-        XMLNodeElement parseChildElement(ISource &source, const XMLAttributeList &namespaces);
+        XMLNodePtr parseChildElement(ISource &source, const XMLAttributeList &namespaces);
         XMLAttributeList parseAttributes(ISource &source);
-        XMLNodeComment parseComment(ISource &source);
-        XMLNodeCDATA parseCDATA(ISource &source);
-        XMLNodePI parsePI(ISource &source);
+        XMLNodePtr parseComment(ISource &source);
+        XMLNodePtr parseCDATA(ISource &source);
+        XMLNodePtr parsePI(ISource &source);
         void parseElementContents(ISource &source, XMLNode &xmlNode);
-        XMLNodeElement parseElement(ISource &source, XMLNode &xmlNode);
+        XMLNodePtr parseElement(ISource &source, XMLNode &xmlNode);
         XMLAttributeList parseDeclaration(ISource &source);
         XMLNodePtr parseProlog(ISource &source);
         void parseXML(ISource &source);

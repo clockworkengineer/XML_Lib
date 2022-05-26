@@ -127,7 +127,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    XMLNodeComment XML_Impl::parseComment(ISource &source)
+    XMLNodePtr XML_Impl::parseComment(ISource &source)
     {
         XMLNodeComment xmlNodeComment;
         while (source.more() && !source.match(U"--"))
@@ -139,14 +139,14 @@ namespace XMLLib
         {
             throw SyntaxError(source, "Missing closing '>' for comment line.");
         }
-        return (xmlNodeComment);
+        return (std::make_unique<XMLNodeComment>(std::move(xmlNodeComment)));
     }
     /// <summary>
     /// Parse a XML process instruction, create an XMLNodePI for it and add it to
     /// the list of elements under the current XMLNodeElement.
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    XMLNodePI XML_Impl::parsePI(ISource &source)
+    XMLNodePtr XML_Impl::parsePI(ISource &source)
     {
         XMLNodePI xmlNodePI;
         xmlNodePI.name = Core::parseName(source);
@@ -155,7 +155,7 @@ namespace XMLLib
             xmlNodePI.parameters += source.current_to_bytes();
             source.next();
         }
-        return (xmlNodePI);
+        return (std::make_unique<XMLNodePI>(std::move(xmlNodePI)));
     }
     /// <summary>
     /// Parse an XML CDATA section, create an XNodeCDATA for it and add it to
@@ -163,7 +163,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    XMLNodeCDATA XML_Impl::parseCDATA(ISource &source)
+    XMLNodePtr XML_Impl::parseCDATA(ISource &source)
     {
         XMLNodeCDATA xmlNodeCDATA;
         while (source.more() && !source.match(U"]]>"))
@@ -175,7 +175,7 @@ namespace XMLLib
             xmlNodeCDATA.cdata += source.current_to_bytes();
             source.next();
         }
-        return (xmlNodeCDATA);
+        return (std::make_unique<XMLNodeCDATA>(std::move(xmlNodeCDATA)));
     }
     /// <summary>
     /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
@@ -217,7 +217,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    XMLNodeElement XML_Impl::parseChildElement(ISource &source, const XMLAttributeList &namespaces)
+    XMLNodePtr XML_Impl::parseChildElement(ISource &source, const XMLAttributeList &namespaces)
     {
         XMLNodeElement xmlNodeChildElement;
         for (auto &ns : namespaces)
@@ -225,7 +225,7 @@ namespace XMLLib
             xmlNodeChildElement.addNameSpace(ns.name, ns.value);
         }
         parseElement(source, xmlNodeChildElement);
-        return (xmlNodeChildElement);
+        return (std::make_unique<XMLNodeElement>(std::move(xmlNodeChildElement)));
     }
     /// <summary>
     /// Parse any element content that is found.
@@ -258,11 +258,11 @@ namespace XMLLib
     {
         if (source.match(U"<!--"))
         {
-            xmlNode.children.emplace_back(std::make_unique<XMLNodeComment>(std::move(parseComment(source))));
+            xmlNode.children.emplace_back(parseComment(source));
         }
         else if (source.match(U"<?"))
         {
-            xmlNode.children.emplace_back(std::make_unique<XMLNodePI>(std::move(parsePI(source))));
+            xmlNode.children.emplace_back(parsePI(source));
         }
         else if (source.match(U"<![CDATA["))
         {
@@ -273,7 +273,7 @@ namespace XMLLib
                     XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = false;
                 }
             }
-            xmlNode.children.emplace_back(std::make_unique<XMLNodeCDATA>(std::move(parseCDATA(source))));
+            xmlNode.children.emplace_back(parseCDATA(source));
         }
         else if (source.match(U"</"))
         {
@@ -281,7 +281,7 @@ namespace XMLLib
         }
         else if (source.match(U"<"))
         {
-            xmlNode.children.emplace_back(std::make_unique<XMLNodeElement>(std::move(parseChildElement(source, XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList()))));
+            xmlNode.children.emplace_back(parseChildElement(source, XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList()));
             XMLNodeElement &xmlNodeChildElement = XMLNodeRef<XMLNodeElement>(*xmlNode.children.back());
             if (auto pos = xmlNodeChildElement.elementName.find(':'); pos != std::string::npos)
             {
@@ -305,7 +305,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    XMLNodeElement XML_Impl::parseElement(ISource &source, XMLNode &xmlNode)
+    XMLNodePtr XML_Impl::parseElement(ISource &source, XMLNode &xmlNode)
     {
         XMLNodeElement xmlNodeElement;
         XMLNodeRef<XMLNodeElement>(xmlNode).elementName = parseTagName(source);
@@ -337,7 +337,7 @@ namespace XMLLib
         {
             throw SyntaxError(source, "Missing closing tag.");
         }
-        return (xmlNodeElement);
+        return (std::make_unique<XMLNodeElement>(std::move(xmlNodeElement)));
     }
     /// <summary>
     /// </summary>
@@ -438,11 +438,11 @@ namespace XMLLib
         {
             if (source.match(U"<!--"))
             {
-                xmlNode.children.emplace_back(std::make_unique<XMLNodeComment>(std::move(parseComment(source))));
+                xmlNode.children.emplace_back(parseComment(source));
             }
             else if (source.match(U"<?"))
             {
-                xmlNode.children.emplace_back(std::make_unique<XMLNodePI>(std::move(parsePI(source))));
+                xmlNode.children.emplace_back(parsePI(source));
             }
             else if (source.isWS())
             {
@@ -489,11 +489,11 @@ namespace XMLLib
             {
                 if (source.match(U"<!--"))
                 {
-                    m_prolog->children.emplace_back(std::make_unique<XMLNodeComment>(std::move(parseComment(source))));
+                    m_prolog->children.emplace_back(parseComment(source));
                 }
                 else if (source.match(U"<?"))
                 {
-                    prolog().children.emplace_back(std::make_unique<XMLNodePI>(std::move(parsePI(source))));
+                    prolog().children.emplace_back(parsePI(source));
                 }
                 else if (source.isWS())
                 {
