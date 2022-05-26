@@ -183,9 +183,9 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
+    XMLAttributeList XML_Impl::parseAttributes(ISource &source)
     {
-        std::vector<XMLAttribute> attributes;
+        XMLAttributeList attributes;
         std::set<std::string> attributeNames;
         while (source.more() && source.current() != '?' && source.current() != '/' && source.current() != '>')
         {
@@ -217,22 +217,15 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Impl::parseChildElement(ISource &source, XMLNode &xmlNode)
+    XMLNodeElement XML_Impl::parseChildElement(ISource &source, const XMLAttributeList &namespaces)
     {
         XMLNodeElement xmlNodeChildElement;
-        for (auto &ns : XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList())
+        for (auto &ns : namespaces)
         {
             xmlNodeChildElement.addNameSpace(ns.name, ns.value);
         }
         parseElement(source, xmlNodeChildElement);
-        if (auto pos = xmlNodeChildElement.elementName.find(':'); pos != std::string::npos)
-        {
-            if (!xmlNodeChildElement.isNameSpacePresent(xmlNodeChildElement.elementName.substr(0, pos)))
-            {
-                throw SyntaxError(source, "Namespace used but not defined.");
-            }
-        }
-        XMLNodeRef<XMLNodeElement>(xmlNode).children.push_back(std::make_unique<XMLNodeElement>(std::move(xmlNodeChildElement)));
+        return (xmlNodeChildElement);
     }
     /// <summary>
     /// Parse any element content that is found.
@@ -288,7 +281,15 @@ namespace XMLLib
         }
         else if (source.match(U"<"))
         {
-            parseChildElement(source, xmlNode);
+            xmlNode.children.emplace_back(std::make_unique<XMLNodeElement>(std::move(parseChildElement(source, XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList()))));
+            XMLNodeElement &xmlNodeChildElement = XMLNodeRef<XMLNodeElement>(*xmlNode.children.back());
+            if (auto pos = xmlNodeChildElement.elementName.find(':'); pos != std::string::npos)
+            {
+                if (!xmlNodeChildElement.isNameSpacePresent(xmlNodeChildElement.elementName.substr(0, pos)))
+                {
+                    throw SyntaxError(source, "Namespace used but not defined.");
+                }
+            }
         }
         else if (source.match(U"]]>"))
         {
@@ -342,9 +343,9 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Prolog element node.</param>
-    std::vector<XMLAttribute> XML_Impl::parseDeclaration(ISource &source)
+    XMLAttributeList XML_Impl::parseDeclaration(ISource &source)
     {
-        std::vector<XMLAttribute> declaration;
+        XMLAttributeList declaration;
         std::string value;
         if (source.match(U"version"))
         {

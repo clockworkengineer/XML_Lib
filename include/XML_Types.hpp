@@ -4,6 +4,7 @@
 //
 #include <string>
 #include <utility>
+#include <vector>
 // =========
 // NAMESPACE
 // =========
@@ -39,6 +40,7 @@ namespace XMLLib
         std::string name;
         XMLValue value;
     };
+    using XMLAttributeList = std::vector<XMLAttribute>;
     //
     // XML External reference
     //

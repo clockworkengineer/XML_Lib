@@ -117,7 +117,7 @@ namespace XMLLib
                                   [&name](const XMLAttribute &attr)
                                   { return (attr.name == name); }));
         }
-        [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const
+        [[nodiscard]] const XMLAttributeList &getAttributeList() const
         {
             return (attributes);
         }
@@ -137,7 +137,7 @@ namespace XMLLib
                                   [&name](const XMLAttribute &ns)
                                   { return (ns.name == name); }));
         }
-        [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaceList() const
+        [[nodiscard]] const XMLAttributeList &getNameSpaceList() const
         {
             return (namespaces);
         }
@@ -146,8 +146,8 @@ namespace XMLLib
         std::string elementName;
 
     private:
-        std::vector<XMLAttribute> namespaces;
-        std::vector<XMLAttribute> attributes;
+        XMLAttributeList namespaces;
+        XMLAttributeList attributes;
     };
     //
     // Comment XMLNode
