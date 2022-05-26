@@ -163,7 +163,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Impl::parseCDATA(ISource &source, XMLNode &xmlNode)
+    XMLNodeCDATA XML_Impl::parseCDATA(ISource &source)
     {
         XMLNodeCDATA xmlNodeCDATA;
         while (source.more() && !source.match(U"]]>"))
@@ -175,14 +175,7 @@ namespace XMLLib
             xmlNodeCDATA.cdata += source.current_to_bytes();
             source.next();
         }
-        if (!XMLNodeRef<XMLNodeElement>(xmlNode).children.empty())
-        {
-            if (XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::content)
-            {
-                XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = false;
-            }
-        }
-        XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeCDATA>(std::move(xmlNodeCDATA)));
+        return (xmlNodeCDATA);
     }
     /// <summary>
     /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
@@ -194,7 +187,7 @@ namespace XMLLib
     {
         std::vector<XMLAttribute> attributes;
         std::set<std::string> attributeNames;
-        while (source.more() &&source.current() != '?' &&source.current() != '/' &&source.current() != '>')
+        while (source.more() && source.current() != '?' && source.current() != '/' && source.current() != '>')
         {
             std::string attributeName = Core::parseName(source);
             if (!source.match(U"="))
@@ -276,11 +269,18 @@ namespace XMLLib
         }
         else if (source.match(U"<?"))
         {
-            XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodePI>(std::move(parsePI(source))));
+            xmlNode.children.emplace_back(std::make_unique<XMLNodePI>(std::move(parsePI(source))));
         }
         else if (source.match(U"<![CDATA["))
         {
-            parseCDATA(source, xmlNode);
+            if (!XMLNodeRef<XMLNodeElement>(xmlNode).children.empty())
+            {
+                if (XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::content)
+                {
+                    XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = false;
+                }
+            }
+            xmlNode.children.emplace_back(std::make_unique<XMLNodeCDATA>(std::move(parseCDATA(source))));
         }
         else if (source.match(U"</"))
         {
@@ -437,7 +437,6 @@ namespace XMLLib
         {
             if (source.match(U"<!--"))
             {
-
                 xmlNode.children.emplace_back(std::make_unique<XMLNodeComment>(std::move(parseComment(source))));
             }
             else if (source.match(U"<?"))

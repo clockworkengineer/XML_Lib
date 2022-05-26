@@ -67,7 +67,7 @@ namespace XMLLib
         void parseChildElement(ISource &source, XMLNode &xmlNode);
         std::vector<XMLAttribute> parseAttributes(ISource &source);
         XMLNodeComment parseComment(ISource &source);
-        void parseCDATA(ISource &source, XMLNode &xmlNode);
+        XMLNodeCDATA parseCDATA(ISource &source);
         XMLNodePI parsePI(ISource &source);
         void parseElementContents(ISource &source, XMLNode &xmlNode);
         XMLNodeElement parseElement(ISource &source, XMLNode &xmlNode);
