@@ -38,7 +38,7 @@ namespace XMLLib
     /// <summary>
     /// Add content node to elements child list.
     /// </summary>
-    /// <param name="xmlNode">Element node.</param>
+    /// <param name="xmlNode">Current element node.</param>
     /// <param name="content">Content to add to new content node (XMLNodeContent).</param>
     void XML_Impl::addContentToElement(XMLNode &xmlNode, const std::string &content)
     {
@@ -75,7 +75,7 @@ namespace XMLLib
     /// <summary>
     /// Take an entity reference and parse its contents into XML internal description.
     /// </summary>
-    /// <param name="xmlNode">Current XML Element.</param>
+    /// <param name="xmlNode">Current element node.</param>
     /// <param name="entityReference">Entity reference to be parsed.</param>
     void XML_Impl::parseEntityMappingContents(XMLNode &xmlNode, const XMLValue &entityReference)
     {
@@ -117,7 +117,6 @@ namespace XMLLib
     /// Parse a element tag name and set its value in current XMLNodeElement.
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    /// <param name="xmlNode">Current element node.</param>
     std::string XML_Impl::parseTagName(ISource &source)
     {
         return (Core::parseName(source));
@@ -127,7 +126,6 @@ namespace XMLLib
     /// of elements for the current XMLNodeElement.
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    /// <param name="xmlNode">Current element node.</param>
     XMLNodePtr XML_Impl::parseComment(ISource &source)
     {
         XMLNodeComment xmlNodeComment;
@@ -290,7 +288,7 @@ namespace XMLLib
     /// Parse current XML element found.
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    /// <param name="xmlNode">Current element node.</param>
+    /// <param name="namespaces">Current list of namespaces.</param>
     XMLNodePtr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces)
     {
         XMLNodeElement xmlNodeElement;
@@ -332,7 +330,6 @@ namespace XMLLib
     /// <summary>
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    /// <param name="xmlNode">Prolog element node.</param>
     XMLAttributeList XML_Impl::parseDeclaration(ISource &source)
     {
         XMLAttributeList declaration;
@@ -401,13 +398,38 @@ namespace XMLLib
         return (declaration);
     }
     /// <summary>
+    /// </summary>
+    /// <param name="source">XML source stream.</param>
+    void XML_Impl::parseTail(ISource &source)
+    {
+        while (source.more())
+        {
+            if (source.match(U"<!--"))
+            {
+                prolog().children.emplace_back(parseComment(source));
+            }
+            else if (source.match(U"<?"))
+            {
+                prolog().children.emplace_back(parsePI(source));
+            }
+            else if (source.isWS())
+            {
+                addContentToElement(prolog(), source.current_to_bytes());
+                source.next();
+            }
+            else
+            {
+                throw SyntaxError(source, "Extra content at the end of document.");
+            }
+        }
+    }
+    /// <summary>
     /// Parse XML prolog and create the necessary XMLNodeElements for it. Valid
     /// parts of the prolog include declaration (first line if present),
     /// processing instructions, comments, whitespace content and XML
     /// Document Type Declaration (DTD).
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    /// <param name="xmlNode">Prolog element node.</param>
     XMLNodePtr XML_Impl::parseProlog(ISource &source)
     {
         XMLNodeElement xmlNode{XMLNodeType::prolog};
@@ -478,26 +500,7 @@ namespace XMLLib
             {
                 prolog().children.back()->setNodeType(XMLNodeType::root);
             }
-            while (source.more())
-            {
-                if (source.match(U"<!--"))
-                {
-                    m_prolog->children.emplace_back(parseComment(source));
-                }
-                else if (source.match(U"<?"))
-                {
-                    prolog().children.emplace_back(parsePI(source));
-                }
-                else if (source.isWS())
-                {
-                    addContentToElement(static_cast<XMLNodeElement &>(*m_prolog), source.current_to_bytes());
-                    source.next();
-                }
-                else
-                {
-                    throw SyntaxError(source, "Extra content at the end of document.");
-                }
-            }
+            parseTail(source);
         }
         else
         {
