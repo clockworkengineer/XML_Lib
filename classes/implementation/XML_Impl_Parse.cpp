@@ -40,23 +40,24 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <param name="content">Content to add to new content node (XMLNodeContent).</param>
-    void XML_Impl::addContentToElement(std::vector<XMLNodePtr> &children, const std::string &content)
+    void XML_Impl::addContentToElement(XMLNode &xmlNode, const std::string &content)
     {
         // Make sure there is a content node to receive characters
-        if (children.empty() ||children.back()->getNodeType() != XMLNodeType::content)
+        if (xmlNode.children.empty() || xmlNode.children.back()->getNodeType() != XMLNodeType::content)
         {
             bool isWWhitespace = true;
-            if (!children.empty())
+            if (!xmlNode.children.empty())
             {
-                if ((children.back()->getNodeType() == XMLNodeType::cdata) || (children.back()->getNodeType() == XMLNodeType::entity))
+                if ((xmlNode.children.back()->getNodeType() == XMLNodeType::cdata) ||
+                    (xmlNode.children.back()->getNodeType() == XMLNodeType::entity))
                 {
                     isWWhitespace = false;
                 }
             }
-            children.emplace_back(std::make_unique<XMLNodeContent>());
-            XMLNodeRef<XMLNodeContent>(*children.back()).isWhiteSpace = isWWhitespace;
+            xmlNode.children.emplace_back(std::make_unique<XMLNodeContent>());
+            XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = isWWhitespace;
         }
-        XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*children.back());
+        XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*xmlNode.children.back());
         if (xmlContent.isWhiteSpace)
         {
             for (auto ch : content)
@@ -82,15 +83,19 @@ namespace XMLLib
         {
             XMLNodeElement entityElement;
             BufferSource entitySource(entityReference.parsed);
+            // Parse entity XML
+            while (entitySource.more())
+            {
+                parseElementContents(entitySource, entityElement);
+            }
             // Does contain start tag ?
-            // NO then parse XML into entity elements list.
+            // XML into entity elements list.
             if (entityReference.parsed.find("<") == std::string::npos)
             {
-                while (entitySource.more())
+                for (auto &xmlNodePtr : entityElement.children)
                 {
-                    parseElementContents(entitySource, entityElement);
+                    xNodeEntityReference.children.emplace_back(std::move(xmlNodePtr));
                 }
-                xNodeEntityReference.children = std::move(entityElement.children);
                 if (!XMLNodeRef<XMLNodeElement>(xmlNode).children.empty())
                 {
                     if (XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::content)
@@ -99,12 +104,12 @@ namespace XMLLib
                     }
                 }
             }
+            // YES then XML into current element list
             else
-            // YES then parse XML into current element list
             {
-                while (entitySource.more())
+                for (auto &xmlNodePtr : entityElement.children)
                 {
-                    parseElementContents(entitySource, xmlNode);
+                    xmlNode.children.emplace_back(std::move(xmlNodePtr));
                 }
                 return;
             }
@@ -227,7 +232,7 @@ namespace XMLLib
         }
         else
         {
-            addContentToElement(xmlNode.children, entityReference.parsed);
+            addContentToElement(xmlNode, entityReference.parsed);
         }
     }
     /// <summary>
@@ -412,7 +417,7 @@ namespace XMLLib
             }
             else if (source.isWS())
             {
-                addContentToElement(prolog().children, source.current_to_bytes());
+                addContentToElement(prolog(), source.current_to_bytes());
                 source.next();
             }
             else
@@ -456,7 +461,7 @@ namespace XMLLib
             }
             else if (source.isWS())
             {
-                addContentToElement(xmlNode.children, source.current_to_bytes());
+                addContentToElement(xmlNode, source.current_to_bytes());
                 source.next();
             }
             else if (source.match(U"<!DOCTYPE"))
