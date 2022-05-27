@@ -60,7 +60,7 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
-        void parseAddElementContent(XMLNodeElement &xmlNode, const std::string &content);
+        void addContentToElement(XMLNode &xmlNode, const std::string &content);
         void parseEntityMappingContents(XMLNode &xmlNode, const XMLValue &entityReference);
         void parseDefault(ISource &source, XMLNode &xmlNode);
         std::string parseTagName(ISource &source);

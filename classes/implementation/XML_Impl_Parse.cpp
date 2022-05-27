@@ -36,6 +36,43 @@ namespace XMLLib
     // PRIVATE METHODS
     // ===============
     /// <summary>
+    /// Add content node to elements child list.
+    /// </summary>
+    /// <param name="xmlNode">Element node.</param>
+    /// <param name="content">Content to add to new content node (XMLNodeContent).</param>
+    void XML_Impl::addContentToElement(XMLNode &xmlNode, const std::string &content)
+    {
+        // Make sure there is a content node to receive characters
+        if (xmlNode.children.empty() ||
+            xmlNode.children.back()->getNodeType() != XMLNodeType::content)
+        {
+            bool isWWhitespace = true;
+            if (!xmlNode.children.empty())
+            {
+                if ((xmlNode.children.back()->getNodeType() == XMLNodeType::cdata) ||
+                    (xmlNode.children.back()->getNodeType() == XMLNodeType::entity))
+                {
+                    isWWhitespace = false;
+                }
+            }
+            xmlNode.children.emplace_back(std::make_unique<XMLNodeContent>());
+            XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = isWWhitespace;
+        }
+        XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*xmlNode.children.back());
+        if (xmlContent.isWhiteSpace)
+        {
+            for (auto ch : content)
+            {
+                if (!std::iswspace(ch))
+                {
+                    xmlContent.isWhiteSpace = false;
+                    break;
+                }
+            }
+        }
+        xmlContent.content += content;
+    }
+    /// <summary>
     /// Take an entity reference and parse its contents into XML internal description.
     /// </summary>
     /// <param name="xmlNode">Current XML Element.</param>
@@ -75,42 +112,6 @@ namespace XMLLib
             }
         }
         XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
-    }
-    /// <summary>
-    /// Add content node to current XMLNodeElement elements list.
-    /// </summary>
-    /// <param name="xmlNode">Current element node.</param>
-    /// <param name="content">Content to add to new content node (XMLNodeContent).</param>
-    void XML_Impl::parseAddElementContent(XMLNodeElement &xmlNode, const std::string &content)
-    {
-        // Make sure there is a content node to receive characters
-        if (xmlNode.children.empty() ||
-            xmlNode.children.back()->getNodeType() != XMLNodeType::content)
-        {
-            bool isWWhitespace = true;
-            if (!xmlNode.children.empty())
-            {
-                if ((xmlNode.children.back()->getNodeType() == XMLNodeType::cdata) ||
-                    (xmlNode.children.back()->getNodeType() == XMLNodeType::entity))
-                {
-                    isWWhitespace = false;
-                }
-            }
-            xmlNode.children.emplace_back(std::make_unique<XMLNodeContent>());
-            XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = isWWhitespace;
-        }
-        if (XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace)
-        {
-            for (auto ch : content)
-            {
-                if (!std::iswspace(ch))
-                {
-                    XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = false;
-                    break;
-                }
-            }
-        }
-        XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).content += content;
     }
     /// <summary>
     /// Parse a element tag name and set its value in current XMLNodeElement.
@@ -230,7 +231,7 @@ namespace XMLLib
         }
         else
         {
-            parseAddElementContent(static_cast<XMLNodeElement &>(xmlNode), entityReference.parsed);
+            addContentToElement(static_cast<XMLNodeElement &>(xmlNode), entityReference.parsed);
         }
     }
     /// <summary>
@@ -435,7 +436,7 @@ namespace XMLLib
             }
             else if (source.isWS())
             {
-                parseAddElementContent(xmlNode, source.current_to_bytes());
+                addContentToElement(xmlNode, source.current_to_bytes());
                 source.next();
             }
             else if (source.match(U"<!DOCTYPE"))
@@ -489,7 +490,7 @@ namespace XMLLib
                 }
                 else if (source.isWS())
                 {
-                    parseAddElementContent(static_cast<XMLNodeElement &>(*m_prolog), source.current_to_bytes());
+                    addContentToElement(static_cast<XMLNodeElement &>(*m_prolog), source.current_to_bytes());
                     source.next();
                 }
                 else
