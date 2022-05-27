@@ -218,7 +218,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Impl::parseDefault(ISource &source, XMLNode &xmlNode)
+    void XML_Impl::parseElementContent(ISource &source, XMLNode &xmlNode)
     {
         XMLValue entityReference{Core::parseCharacter(source)};
         if (entityReference.isEntityReference())
@@ -231,7 +231,7 @@ namespace XMLLib
         }
         else
         {
-            addContentToElement(static_cast<XMLNodeElement &>(xmlNode), entityReference.parsed);
+            addContentToElement(xmlNode, entityReference.parsed);
         }
     }
     /// <summary>
@@ -261,10 +261,6 @@ namespace XMLLib
             }
             xmlNode.children.emplace_back(parseCDATA(source));
         }
-        else if (source.match(U"</"))
-        {
-            throw SyntaxError(source, "Missing closing tag.");
-        }
         else if (source.match(U"<"))
         {
             xmlNode.children.emplace_back(parseElement(source, XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList()));
@@ -277,13 +273,17 @@ namespace XMLLib
                 }
             }
         }
-        else if (source.match(U"]]>"))
-        {
-            throw SyntaxError(source, "']]>' invalid in element content area.");
-        }
         else
         {
-            parseDefault(source, xmlNode);
+            if (source.match(U"</"))
+            {
+                throw SyntaxError(source, "Missing closing tag.");
+            }
+            else if (source.match(U"]]>"))
+            {
+                throw SyntaxError(source, "']]>' invalid in element content area.");
+            }
+            parseElementContent(source, xmlNode);
         }
     }
     /// <summary>

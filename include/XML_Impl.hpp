@@ -62,7 +62,7 @@ namespace XMLLib
         // ===============
         void addContentToElement(XMLNode &xmlNode, const std::string &content);
         void parseEntityMappingContents(XMLNode &xmlNode, const XMLValue &entityReference);
-        void parseDefault(ISource &source, XMLNode &xmlNode);
+        void parseElementContent(ISource &source, XMLNode &xmlNode);
         std::string parseTagName(ISource &source);
         XMLAttributeList parseAttributes(ISource &source);
         XMLNodePtr parseComment(ISource &source);

@@ -77,7 +77,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
                 "<g:length>120</g:length></g:table></root>\n";
     BufferSource source { xmlString };
     XML xml;
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 44] Namespace used but not defined.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 43] Namespace used but not defined.");
   }
   SECTION("A root document with a default namespace", "[XML][Parse][Namespace]")
   {

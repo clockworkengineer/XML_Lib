@@ -126,7 +126,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
                 "<root><child></root>\n";
     BufferSource source { xmlString };
     XML xml;
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 25] Missing closing tag.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 24] Missing closing tag.");
   }
   SECTION("Parse wrongly ordered attributes in XML declaration. ", "[XML][Parse][Declaration]")
   {
