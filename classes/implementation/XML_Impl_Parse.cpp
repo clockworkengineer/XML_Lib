@@ -40,25 +40,23 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <param name="content">Content to add to new content node (XMLNodeContent).</param>
-    void XML_Impl::addContentToElement(XMLNode &xmlNode, const std::string &content)
+    void XML_Impl::addContentToElement(std::vector<XMLNodePtr> &children, const std::string &content)
     {
         // Make sure there is a content node to receive characters
-        if (xmlNode.children.empty() ||
-            xmlNode.children.back()->getNodeType() != XMLNodeType::content)
+        if (children.empty() ||children.back()->getNodeType() != XMLNodeType::content)
         {
             bool isWWhitespace = true;
-            if (!xmlNode.children.empty())
+            if (!children.empty())
             {
-                if ((xmlNode.children.back()->getNodeType() == XMLNodeType::cdata) ||
-                    (xmlNode.children.back()->getNodeType() == XMLNodeType::entity))
+                if ((children.back()->getNodeType() == XMLNodeType::cdata) || (children.back()->getNodeType() == XMLNodeType::entity))
                 {
                     isWWhitespace = false;
                 }
             }
-            xmlNode.children.emplace_back(std::make_unique<XMLNodeContent>());
-            XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = isWWhitespace;
+            children.emplace_back(std::make_unique<XMLNodeContent>());
+            XMLNodeRef<XMLNodeContent>(*children.back()).isWhiteSpace = isWWhitespace;
         }
-        XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*xmlNode.children.back());
+        XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*children.back());
         if (xmlContent.isWhiteSpace)
         {
             for (auto ch : content)
@@ -229,7 +227,7 @@ namespace XMLLib
         }
         else
         {
-            addContentToElement(xmlNode, entityReference.parsed);
+            addContentToElement(xmlNode.children, entityReference.parsed);
         }
     }
     /// <summary>
@@ -414,7 +412,7 @@ namespace XMLLib
             }
             else if (source.isWS())
             {
-                addContentToElement(prolog(), source.current_to_bytes());
+                addContentToElement(prolog().children, source.current_to_bytes());
                 source.next();
             }
             else
@@ -458,7 +456,7 @@ namespace XMLLib
             }
             else if (source.isWS())
             {
-                addContentToElement(xmlNode, source.current_to_bytes());
+                addContentToElement(xmlNode.children, source.current_to_bytes());
                 source.next();
             }
             else if (source.match(U"<!DOCTYPE"))
