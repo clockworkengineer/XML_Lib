@@ -85,7 +85,7 @@ namespace XMLLib
         XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*xmlNode.children.back());
         if (xmlContent.isWhiteSpace)
         {
-            for (auto ch : content)
+            for (const auto ch : content)
             {
                 if (!std::iswspace(ch))
                 {
@@ -295,12 +295,12 @@ namespace XMLLib
     XMLNodePtr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces)
     {
         XMLNodeElement xmlNodeElement;
-        for (auto &ns : namespaces)
+        for (const auto &ns : namespaces)
         {
             xmlNodeElement.addNameSpace(ns.name, ns.value);
         }
         xmlNodeElement.elementName = parseTagName(source);
-        for (auto &attribute : parseAttributes(source))
+        for (const auto &attribute : parseAttributes(source))
         {
             xmlNodeElement.addAttribute(attribute.name, attribute.value);
             if (attribute.name.find("xmlns") == 0)
@@ -403,7 +403,7 @@ namespace XMLLib
     /// <summary>
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    void XML_Impl::parseTail(ISource &source)
+    void XML_Impl::parseXMLTail(ISource &source)
     {
         while (source.more())
         {
@@ -426,6 +426,20 @@ namespace XMLLib
             }
         }
     }
+    XMLNodePtr XML_Impl::parseDTD(ISource &source)
+    {
+        if (m_dtd == nullptr)
+        {
+            m_dtd = std::make_unique<DTD>(*m_entityMapper);
+            m_dtd->parse(source);
+            m_validator = std::make_unique<XML_Validator>(m_dtd->parsed());
+        }
+        else
+        {
+            throw SyntaxError(source, "More than one DOCTYPE declaration.");
+        }
+        return (std::make_unique<XMLNodeDTD>());
+    }
     /// <summary>
     /// Parse XML prolog and create the necessary XMLNodeElements for it. Valid
     /// parts of the prolog include declaration (first line if present),
@@ -440,7 +454,7 @@ namespace XMLLib
         if (source.match(U"<?xml"))
         {
             source.ignoreWS();
-            for (auto &attribute : parseDeclaration(source))
+            for (const auto &attribute : parseDeclaration(source))
             {
                 xmlNode.addAttribute(attribute.name, attribute.value);
             }
@@ -466,17 +480,7 @@ namespace XMLLib
             }
             else if (source.match(U"<!DOCTYPE"))
             {
-                if (m_dtd == nullptr)
-                {
-                    m_dtd = std::make_unique<DTD>(*m_entityMapper);
-                    m_dtd->parse(source);
-                    m_validator = std::make_unique<XML_Validator>(m_dtd->parsed());
-                    xmlNode.children.emplace_back(std::make_unique<XMLNodeDTD>());
-                }
-                else
-                {
-                    throw SyntaxError(source, "More than one DOCTYPE declaration.");
-                }
+                xmlNode.children.emplace_back(parseDTD(source));
             }
             else if (source.current() != '<')
             {
@@ -491,7 +495,7 @@ namespace XMLLib
         return (std::make_unique<XMLNodeElement>(std::move(xmlNode)));
     }
     /// <summary>
-    /// Parse XML source stream.
+    /// Parse XML from source stream.
     /// </summary>
     void XML_Impl::parseXML(ISource &source)
     {
@@ -503,7 +507,7 @@ namespace XMLLib
             {
                 prolog().children.back()->setNodeType(XMLNodeType::root);
             }
-            parseTail(source);
+            parseXMLTail(source);
         }
         else
         {
