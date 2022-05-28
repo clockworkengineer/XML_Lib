@@ -35,6 +35,31 @@ namespace XMLLib
     // ===============
     // PRIVATE METHODS
     // ===============
+    void XML_Impl::parseEntityContents(XMLNode &xmlNode, const XMLValue &entityReference)
+    {
+        XMLNodeElement entityElement;
+        BufferSource entitySource(entityReference.parsed);
+        // Parse entity XML
+        while (entitySource.more())
+        {
+            parseElementContents(entitySource, entityElement);
+        }
+        // Place into node (element) child list
+        for (auto &xmlNodePtr : entityElement.children)
+        {
+            xmlNode.children.emplace_back(std::move(xmlNodePtr));
+        }
+    }
+    void XML_Impl::resetIsWhiteSpace(XMLNode &xmlNode)
+    {
+        if (!XMLNodeRef<XMLNodeElement>(xmlNode).children.empty())
+        {
+            if (XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::content)
+            {
+                XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = false;
+            }
+        }
+    }
     /// <summary>
     /// Add content node to elements child list.
     /// </summary>
@@ -81,37 +106,18 @@ namespace XMLLib
         XMLNodeEntityReference xNodeEntityReference(entityReference);
         if (entityReference.unparsed[1] != '#')
         {
-            XMLNodeElement entityElement;
-            BufferSource entitySource(entityReference.parsed);
-            // Parse entity XML
-            while (entitySource.more())
-            {
-                parseElementContents(entitySource, entityElement);
-            }
-            // Does contain start tag ?
-            // XML into entity elements list.
-            if (entityReference.parsed.find("<") == std::string::npos)
-            {
-                for (auto &xmlNodePtr : entityElement.children)
-                {
-                    xNodeEntityReference.children.emplace_back(std::move(xmlNodePtr));
-                }
-                if (!XMLNodeRef<XMLNodeElement>(xmlNode).children.empty())
-                {
-                    if (XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::content)
-                    {
-                        XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = false;
-                    }
-                }
-            }
+            // Does entity contain start tag ?
             // YES then XML into current element list
+            if (entityReference.parsed.find("<") != std::string::npos)
+            {
+                parseEntityContents(xmlNode, entityReference);
+                return;
+            }
+            // NO XML into entity elements list.
             else
             {
-                for (auto &xmlNodePtr : entityElement.children)
-                {
-                    xmlNode.children.emplace_back(std::move(xmlNodePtr));
-                }
-                return;
+                parseEntityContents(xNodeEntityReference, entityReference);
+                resetIsWhiteSpace(xmlNode);
             }
         }
         XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
@@ -253,13 +259,7 @@ namespace XMLLib
         }
         else if (source.match(U"<![CDATA["))
         {
-            if (!XMLNodeRef<XMLNodeElement>(xmlNode).children.empty())
-            {
-                if (XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::content)
-                {
-                    XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = false;
-                }
-            }
+            resetIsWhiteSpace(xmlNode);
             xmlNode.children.emplace_back(parseCDATA(source));
         }
         else if (source.match(U"<"))

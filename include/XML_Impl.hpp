@@ -60,6 +60,8 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
+        void resetIsWhiteSpace(XMLNode &xmlNode);
+        void parseEntityContents(XMLNode &xmlNode, const XMLValue &entityReference);
         void addContentToElement(XMLNode &xmlNode, const std::string &content);
         void parseEntityMappingContents(XMLNode &xmlNode, const XMLValue &entityReference);
         void parseElementContent(ISource &source, XMLNode &xmlNode);
