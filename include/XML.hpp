@@ -23,6 +23,7 @@ namespace XMLLib
     class IXMLEntityMapper;
     class DTD;
     struct XMLNodeElement;
+    struct XMLNodeProlog;
     // ================
     // CLASS DEFINITION
     // ================
@@ -44,7 +45,7 @@ namespace XMLLib
         // PUBLIC METHODS
         // ==============
         DTD &dtd();
-        const XMLNodeElement &prolog();
+        const XMLNodeProlog &prolog();
         const XMLNodeElement &root();
         void parse(ISource &source);
         void stringify(IDestination &destination);

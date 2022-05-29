@@ -54,9 +54,29 @@ namespace XMLLib
         const XMLNode &operator[](int index) const;
         const XMLNode &operator[](const std::string &name) const;
         std::vector<XMLNodePtr> children;
-
     private:
         XMLNodeType xmlNodeType;
+    };
+    //
+    // Prolog XMLNode
+    //
+    struct XMLNodeProlog : XMLNode
+    {
+        explicit XMLNodeProlog(XMLNodeType nodeType = XMLNodeType::prolog) : XMLNode(nodeType)
+        {
+        }
+        void addAttribute(const std::string &name, const XMLValue &value)
+        {
+            attributes.emplace_back(name, value);
+        }
+        [[nodiscard]] const XMLAttribute getAttribute(const std::string &name) const
+        {
+            return (*std::find_if(attributes.rbegin(), attributes.rend(),
+                                  [&name](const XMLAttribute &attr)
+                                  { return (attr.name == name); }));
+        }
+    private:
+       XMLAttributeList attributes;
     };
     //
     // Content XMLNode
@@ -144,7 +164,6 @@ namespace XMLLib
         const XMLNodeElement &operator[](int index) const;
         const XMLNodeElement &operator[](const std::string &name) const;
         std::string elementName;
-
     private:
         XMLAttributeList namespaces;
         XMLAttributeList attributes;

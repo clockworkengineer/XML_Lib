@@ -38,7 +38,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        void validate(XMLNodeElement &prolog) override;
+        void validate(XMLNodeProlog &prolog) override;
         // ================
         // PUBLIC VARIABLES
         // ================
@@ -63,7 +63,7 @@ namespace XMLLib
         void checkAttributeType(XMLNode &xmlNode, const DTDAttribute &attribute);
         bool checkIsPCDATA(const XMLNode &xmlNode);
         bool checkIsEMPTY(const XMLNode &xmlNode);
-        void checkAgainstDTD(XMLNodeElement &prolog);
+        void checkAgainstDTD(XMLNodeProlog &prolog);
         // =================
         // PRIVATE VARIABLES
         // =================

@@ -15,7 +15,7 @@ namespace XMLLib
     {
     public:
         virtual ~IXMLValidator() = default;
-        virtual void validate(XMLNodeElement &prolog) = 0;
+        virtual void validate(XMLNodeProlog &prolog) = 0;
     };
 
 } // namespace XMLLib

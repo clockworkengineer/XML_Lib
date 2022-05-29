@@ -59,9 +59,9 @@ namespace XMLLib
     /// <summary>
     /// Return XML prolog node.
     /// </summary>
-    XMLNodeElement &XML_Impl::prolog()
+    XMLNodeProlog &XML_Impl::prolog()
     {
-        return (XMLNodeRef<XMLNodeElement>(*m_prolog));
+        return (XMLNodeRef<XMLNodeProlog>(*m_prolog));
     };
     /// <summary>
     /// Return XML root element node.

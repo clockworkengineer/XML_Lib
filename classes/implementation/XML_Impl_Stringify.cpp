@@ -48,10 +48,10 @@ namespace XMLLib
         // XML prolog
         case XMLNodeType::prolog:
         {
-            destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("version").value.unparsed + "\"" +
-                            " encoding=\"" + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("encoding").value.unparsed + "\"" +
-                            " standalone=\"" + XMLNodeRef<XMLNodeElement>(xmlNode).getAttribute("standalone").value.unparsed + "\"?>");
-            for (auto &element : XMLNodeRef<XMLNodeElement>((xmlNode)).children)
+            destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("version").value.unparsed + "\"" +
+                            " encoding=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("encoding").value.unparsed + "\"" +
+                            " standalone=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("standalone").value.unparsed + "\"?>");
+            for (auto &element : XMLNodeRef<XMLNodeProlog>((xmlNode)).children)
             {
                 stringifyElements(*element, destination);
             }

@@ -449,14 +449,14 @@ namespace XMLLib
     /// <param name="source">XML source stream.</param>
     XMLNodePtr XML_Impl::parseProlog(ISource &source)
     {
-        XMLNodeElement xmlNode{XMLNodeType::prolog};
+        XMLNodeProlog xmlNodeProlog{XMLNodeType::prolog};
         source.ignoreWS();
         if (source.match(U"<?xml"))
         {
             source.ignoreWS();
             for (const auto &attribute : parseDeclaration(source))
             {
-                xmlNode.addAttribute(attribute.name, attribute.value);
+                xmlNodeProlog.addAttribute(attribute.name, attribute.value);
             }
             if (!source.match(U"?>"))
             {
@@ -467,20 +467,20 @@ namespace XMLLib
         {
             if (source.match(U"<!--"))
             {
-                xmlNode.children.emplace_back(parseComment(source));
+                xmlNodeProlog.children.emplace_back(parseComment(source));
             }
             else if (source.match(U"<?"))
             {
-                xmlNode.children.emplace_back(parsePI(source));
+                xmlNodeProlog.children.emplace_back(parsePI(source));
             }
             else if (source.isWS())
             {
-                addContentToElement(xmlNode, source.current_to_bytes());
+                addContentToElement(xmlNodeProlog, source.current_to_bytes());
                 source.next();
             }
             else if (source.match(U"<!DOCTYPE"))
             {
-                xmlNode.children.emplace_back(parseDTD(source));
+                xmlNodeProlog.children.emplace_back(parseDTD(source));
             }
             else if (source.current() != '<')
             {
@@ -492,7 +492,7 @@ namespace XMLLib
                 break;
             }
         }
-        return (std::make_unique<XMLNodeElement>(std::move(xmlNode)));
+        return (std::make_unique<XMLNodeProlog>(std::move(xmlNodeProlog)));
     }
     /// <summary>
     /// Parse XML from source stream.

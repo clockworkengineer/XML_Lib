@@ -427,7 +427,7 @@ namespace XMLLib
     /// <param name=""></param>
     /// <param name="prolog">Prolog element containing root of XML to
     /// validate.</param>
-    void XML_Validator::checkAgainstDTD(XMLNodeElement &prolog)
+    void XML_Validator::checkAgainstDTD(XMLNodeProlog &prolog)
     {
         m_lineNumber = m_dtdParsed.getLineCount();
         checkElements(prolog);
@@ -447,7 +447,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="prolog">Prolog element containing root of XML to
     /// validate.</param>
-    void XML_Validator::validate(XMLNodeElement &prolog)
+    void XML_Validator::validate(XMLNodeProlog &prolog)
     {
         checkAgainstDTD(prolog);
     }
