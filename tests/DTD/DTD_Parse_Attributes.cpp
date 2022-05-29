@@ -67,7 +67,7 @@ TEST_CASE("Parse XML DTD with atttributes and check values.", "[XML][DTD][Parse]
     DTDParsed &dtdParsed = xml.dtd().parsed();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtdParsed.getType() == DTD::DTDType::internal);
-    REQUIRE(dtdParsed.getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
+    REQUIRE(dtdParsed.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtdParsed.getRootName() == "TVSCHEDULE");
     REQUIRE(dtdParsed.getElement("TVSCHEDULE").name == "TVSCHEDULE");
     REQUIRE(dtdParsed.getElement("CHANNEL").name == "CHANNEL");
@@ -121,7 +121,7 @@ TEST_CASE("Parse XML DTD with atttributes and check values.", "[XML][DTD][Parse]
     DTDParsed &dtdParsed = xml.dtd().parsed();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[0]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtdParsed.getType() == DTD::DTDType::internal);
-    REQUIRE(dtdParsed.getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
+    REQUIRE(dtdParsed.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtdParsed.getRootName() == "CATALOG");
     REQUIRE(dtdParsed.getElement("PRODUCT").name == "PRODUCT");
     REQUIRE(dtdParsed.getElement("PRODUCT").attributes.size() == 5);
@@ -176,14 +176,14 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     REQUIRE(dtdParsed.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(dtdParsed.getElement("person").attributes[0].value.parsed == "F");
     REQUIRE(dtdParsed.getRootName() == "queue");
-    REQUIRE(dtdParsed.getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
-    REQUIRE(xml.prolog()[0][0].elementName == "person");
-    REQUIRE(xml.prolog()[0][0].getAttributeList().size() == 1);
-    XMLAttribute attribute = xml.prolog()[0][0].getAttribute("gender");
+    REQUIRE(dtdParsed.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
+    REQUIRE(xml.root()[0].elementName == "person");
+    REQUIRE(xml.root()[0].getAttributeList().size() == 1);
+    XMLAttribute attribute = xml.root()[0].getAttribute("gender");
     REQUIRE(attribute.name == "gender");
     REQUIRE(attribute.value.parsed == "M");
-    REQUIRE(xml.prolog()[0][1].elementName == "person");
-    REQUIRE(xml.prolog()[0][1].getAttributeList().size() == 0);
+    REQUIRE(xml.root()[1].elementName == "person");
+    REQUIRE(xml.root()[1].getAttributeList().size() == 0);
   }
   SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing enumeration name).", "[XML][DTD][Parse][Error][Attributes]")
   {

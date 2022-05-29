@@ -50,6 +50,36 @@ namespace XMLLib
     {
     }
     /// <summary>
+    /// Return XML DTD.
+    /// </summary>
+    DTD &XML_Impl::dtd()
+    {
+        return (*m_dtd);
+    }
+    /// <summary>
+    /// Return XML prolog node.
+    /// </summary>
+    XMLNodeElement &XML_Impl::prolog()
+    {
+        return (XMLNodeRef<XMLNodeElement>(*m_prolog));
+    };
+    /// <summary>
+    /// Return XML root element node.
+    /// </summary>
+    XMLNodeElement &XML_Impl::root()
+    {
+        // Slow need to speed up.
+        for (auto &element : prolog().children)
+        {
+            if ((element->getNodeType() == XMLNodeType::root) ||
+                (element->getNodeType() == XMLNodeType::self))
+            {
+                return (XMLNodeRef<XMLNodeElement>(*element));
+            }
+        }
+        throw std::runtime_error("Error: No root element found.");
+    }
+    /// <summary>
     /// Parse XML read from source stream into internal object generating an exception
     /// if a syntax error in the XML is found (not well formed).
     /// </summary>

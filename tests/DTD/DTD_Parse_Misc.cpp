@@ -131,7 +131,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     DTD &dtd = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::internal);
-    REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
+    REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtd.parsed().getElement("address").name == "address");
     REQUIRE(dtd.parsed().getElement("address").content.unparsed == "(name,company,phone)");
     REQUIRE(dtd.parsed().getElement("name").name == "name");
@@ -159,7 +159,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     DTD &dtd = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
-    REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
+    REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtd.parsed().getExternalReference().type == "SYSTEM");
     REQUIRE(dtd.parsed().getExternalReference().systemID == "./testData/note001.dtd");
     REQUIRE(dtd.parsed().getElement("note").name == "note");
@@ -177,7 +177,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     DTD &dtd = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
-    REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.prolog()[0]).elementName);
+    REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtd.parsed().getExternalReference().type == "PUBLIC");
     REQUIRE(dtd.parsed().getExternalReference().systemID == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
     REQUIRE(dtd.parsed().getExternalReference().publicID == "-//W3C//DTD XHTML 1.0 Transitional//EN");

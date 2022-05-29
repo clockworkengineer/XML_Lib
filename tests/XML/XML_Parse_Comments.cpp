@@ -54,17 +54,17 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
     REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
     REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
-    REQUIRE(xml.prolog()[0].elementName == "AddressBook");
-    REQUIRE(xml.prolog()[0].children.size() == 13);
-    REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.prolog()[0].children[1]).comment == "Address one ");
-    REQUIRE(xml.prolog()[0][0].elementName == "Address");
-    REQUIRE(xml.prolog()[0][0].getContents() == "    This is some contents 1   ");
-    REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.prolog()[0].children[5]).comment == "Address two ");
-    REQUIRE(xml.prolog()[0][1].elementName == "Address");
-    REQUIRE(xml.prolog()[0][1].getContents() == "    This is some contents 2   ");
-    REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.prolog()[0].children[9]).comment == "Address three ");
-    REQUIRE(xml.prolog()[0][2].elementName == "Address");
-    REQUIRE(xml.prolog()[0][2].getContents() == "    This is some contents 3   ");
+    REQUIRE(xml.root().elementName == "AddressBook");
+    REQUIRE(xml.root().children.size() == 13);
+    REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.root().children[1]).comment == "Address one ");
+    REQUIRE(xml.root()[0].elementName == "Address");
+    REQUIRE(xml.root()[0].getContents() == "    This is some contents 1   ");
+    REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.root().children[5]).comment == "Address two ");
+    REQUIRE(xml.root()[1].elementName == "Address");
+    REQUIRE(xml.root()[1].getContents() == "    This is some contents 2   ");
+    REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.root().children[9]).comment == "Address three ");
+    REQUIRE(xml.root()[2].elementName == "Address");
+    REQUIRE(xml.root()[2].getContents() == "    This is some contents 3   ");
   }
   SECTION("A single comment after root element", "[XML][Parse][Comments]")
   {
@@ -95,7 +95,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.prolog()[0].getContents() == "TestTest");
+    REQUIRE(xml.root().getContents() == "TestTest");
   }
   SECTION("A simple comment within element contents and content remains intact", "[XML][Parse][Comments]")
   {
@@ -105,7 +105,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.prolog()[0].getContents() == "Test    Test");
+    REQUIRE(xml.root().getContents() == "Test    Test");
   }
   SECTION("A simple single line comment containing -- is illegal", "[XML][Parse][Comments]")
   {

@@ -42,8 +42,9 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        DTD &dtd() { return (*m_dtd); }
-        XMLNodeElement &prolog() { return (XMLNodeRef<XMLNodeElement>(*m_prolog)); };
+        DTD &dtd();
+        XMLNodeElement &prolog();
+        XMLNodeElement &root();
         void parse(ISource &source);
         void stringify(IDestination &destination);
         void validate();

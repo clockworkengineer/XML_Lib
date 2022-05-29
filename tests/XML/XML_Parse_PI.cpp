@@ -74,8 +74,8 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog()[0].children[0]).getNodeType() == XMLNodeType::pi);
-    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.prolog()[0].children[0]).name == "xml-stylesheet");
-    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.prolog()[0].children[0]).parameters == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.root().children[0]).getNodeType() == XMLNodeType::pi);
+    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.root().children[0]).name == "xml-stylesheet");
+    REQUIRE(XMLNodeRef<XMLNodePI>(*xml.root().children[0]).parameters == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
   }
 }

@@ -63,7 +63,14 @@ namespace XMLLib
     const XMLNodeElement &XML::prolog()
     {
         return (m_implementation->prolog());
-    };
+    }
+    /// <summary>
+    /// Return root node of parsed XML tree.
+    /// </summary>
+    const XMLNodeElement &XML::root()
+    {
+        return (m_implementation->root());
+    }
     /// <summary>
     /// Parse XML read from source stream into internal object generating an exception
     /// if a syntax error in the XML is found (not well formed).
