@@ -24,9 +24,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).version == "1.0");
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).encoding == "UTF-8");
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).standalone == "no");
+    REQUIRE(xml.declaration().version == "1.0");
+    REQUIRE(xml.declaration().encoding == "UTF-8");
+    REQUIRE(xml.declaration().standalone == "no");
   }
   SECTION("Parse XML declaration with unsupported version. ", "[XML][Parse][Declaration]")
   {
@@ -67,9 +67,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).version == "1.0");
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).encoding == "UTF-16");
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).standalone == "yes");
+    REQUIRE(xml.declaration().version == "1.0");
+    REQUIRE(xml.declaration().encoding == "UTF-16");
+    REQUIRE(xml.declaration().standalone == "yes");
   }
   SECTION("Parse version 1.0, standalone == yes XML declaration. ", "[XML][Parse][Declaration]")
   {
@@ -78,9 +78,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).version == "1.0");
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).encoding == "UTF-8");
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).standalone == "yes");
+    REQUIRE(xml.declaration().version == "1.0");
+    REQUIRE(xml.declaration().encoding == "UTF-8");
+    REQUIRE(xml.declaration().standalone == "yes");
   }
   SECTION("Check declaration contains at least version attribute.", "[XML][Parse][Declaration]")
   {

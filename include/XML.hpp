@@ -24,6 +24,7 @@ namespace XMLLib
     class DTD;
     struct XMLNodeElement;
     struct XMLNodeProlog;
+    struct XMLNodeDeclaration;
     // ================
     // CLASS DEFINITION
     // ================
@@ -45,8 +46,9 @@ namespace XMLLib
         // PUBLIC METHODS
         // ==============
         DTD &dtd();
-        const XMLNodeProlog &prolog();
-        const XMLNodeElement &root();
+        XMLNodeProlog &prolog();
+        XMLNodeDeclaration &declaration();
+        XMLNodeElement &root();
         void parse(ISource &source);
         void stringify(IDestination &destination);
         void validate();

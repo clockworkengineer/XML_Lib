@@ -95,15 +95,14 @@ namespace XMLLib
     /// <returns>true if element contains characters otherwise false.</returns>
     bool XML_Validator::checkIsPCDATA(const XMLNode &xmlNode)
     {
-        for (const auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
+        for (const auto &element : xmlNode.children)
         {
-            const XMLNode &xNode = XMLNodeRef<XMLNode>(*element);
-            if ((xNode.getNodeType() == XMLNodeType::element) || (xNode.getNodeType() == XMLNodeType::self))
+            if (((*element).getNodeType() == XMLNodeType::element) || ((*element).getNodeType() == XMLNodeType::self))
             {
                 return (false);
             }
         }
-        return (!XMLNodeRef<XMLNodeElement>(xmlNode).getContents().empty());
+        return (!xmlNode.getContents().empty());
     }
     /// <summary>
     /// Check whether an element does not contain any content (is empty).
@@ -112,8 +111,7 @@ namespace XMLLib
     /// <returns>true if element empty otherwise false.</returns>
     bool XML_Validator::checkIsEMPTY(const XMLNode &xmlNode)
     {
-        const XMLNode &xNode = XMLNodeRef<XMLNode>(xmlNode);
-        return (xNode.children.empty() || xNode.getNodeType() == XMLNodeType::self);
+        return (xmlNode.children.empty() || xmlNode.getNodeType() == XMLNodeType::self);
     }
     /// <summary>
     ///
@@ -173,8 +171,7 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkAttributeType(XMLNode &xmlNode,
-                                           const DTDAttribute &attribute)
+    void XML_Validator::checkAttributeType(XMLNode &xmlNode, const DTDAttribute &attribute)
     {
         XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
@@ -337,13 +334,12 @@ namespace XMLLib
         std::string elements;
         for (auto &element : xNodeElement.children)
         {
-            if ((XMLNodeRef<XMLNode>(*element).getNodeType() == XMLNodeType::element) ||
-                (XMLNodeRef<XMLNode>(*element).getNodeType() == XMLNodeType::self))
+            if (((*element).getNodeType() == XMLNodeType::element) ||
+                ((*element).getNodeType() == XMLNodeType::self))
             {
                 elements += "<" + XMLNodeRef<XMLNodeElement>(*element).elementName + ">";
             }
-            else if (XMLNodeRef<XMLNode>(*element).getNodeType() ==
-                     XMLNodeType::content)
+            else if ((*element).getNodeType() == XMLNodeType::content)
             {
                 if (!XMLNodeRef<XMLNodeContent>(*element).isWhiteSpace)
                 {
@@ -375,7 +371,7 @@ namespace XMLLib
         switch (xmlNode.getNodeType())
         {
         case XMLNodeType::prolog:
-            for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
+            for (auto &element : xmlNode.children)
             {
                 checkElements(*element);
             }
@@ -394,14 +390,14 @@ namespace XMLLib
                                       XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
                                       " of DTD.");
             }
-            checkElement(XMLNodeRef<XMLNodeElement>(xmlNode));
-            for (auto &element : XMLNodeRef<XMLNodeElement>(xmlNode).children)
+            checkElement(xmlNode);
+            for (auto &element : xmlNode.children)
             {
                 checkElements(*element);
             }
             break;
         case XMLNodeType::self:
-            checkElement(XMLNodeRef<XMLNodeElement>(xmlNode));
+            checkElement(xmlNode);
             break;
         case XMLNodeType::comment:
         case XMLNodeType::entity:

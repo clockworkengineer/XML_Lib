@@ -45,6 +45,7 @@ namespace XMLLib
         DTD &dtd();
         XMLNodeProlog &prolog();
         XMLNodeElement &root();
+        XMLNodeDeclaration &declaration();
         void parse(ISource &source);
         void stringify(IDestination &destination);
         void validate();

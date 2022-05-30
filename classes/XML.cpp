@@ -60,14 +60,21 @@ namespace XMLLib
     /// <summary>
     /// Return prolog node of parsed XML tree.
     /// </summary>
-    const XMLNodeProlog &XML::prolog()
+    XMLNodeProlog &XML::prolog()
     {
         return (m_implementation->prolog());
     }
     /// <summary>
+    /// Return declaration node of parsed XML tree.
+    /// </summary>
+    XMLNodeDeclaration &XML::declaration()
+    {
+        return (m_implementation->declaration());
+    }
+    /// <summary>
     /// Return root node of parsed XML tree.
     /// </summary>
-    const XMLNodeElement &XML::root()
+    XMLNodeElement &XML::root()
     {
         return (m_implementation->root());
     }

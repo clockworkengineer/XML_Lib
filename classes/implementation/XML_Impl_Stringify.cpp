@@ -60,9 +60,9 @@ namespace XMLLib
         // XML declaration
         case XMLNodeType::declaration:
         {
-            destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeDeclaration>(xmlNode).version + "\"" +
-                            " encoding=\"" + XMLNodeRef<XMLNodeDeclaration>(xmlNode).encoding + "\"" +
-                            " standalone=\"" + XMLNodeRef<XMLNodeDeclaration>(xmlNode).standalone + "\"?>");
+            destination.add("<?xml version=\"" + declaration().version + "\"" +
+                            " encoding=\"" + declaration().encoding + "\"" +
+                            " standalone=\"" + declaration().standalone + "\"?>");
             break;
         }
         // XML root or child elements
