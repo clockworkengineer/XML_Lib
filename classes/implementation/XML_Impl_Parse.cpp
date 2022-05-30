@@ -336,71 +336,69 @@ namespace XMLLib
     XMLNodePtr XML_Impl::parseDeclaration(ISource &source)
     {
         XMLNodeDeclaration declaration;
-        std::string value;
-        if (source.match(U"version"))
+        if (source.match(U"<?xml"))
         {
             source.ignoreWS();
-            if (!source.match(U"="))
+            if (source.match(U"version"))
             {
-                throw SyntaxError(source, "Missing '=' after version.");
+                source.ignoreWS();
+                if (!source.match(U"="))
+                {
+                    throw SyntaxError(source, "Missing '=' after version.");
+                }
+                source.ignoreWS();
+                declaration.version = Core::parseValue(source).parsed;
+                // Check valid declaration values
+                std::set<std::string> validVersions{"1.0", "1.1"};
+                if (!validVersions.contains(declaration.version))
+                {
+                    throw SyntaxError(source, "Unsupported version " + declaration.version + ".");
+                }
             }
-            source.ignoreWS();
-            value = Core::parseValue(source).parsed;
-            // Check valid declaration values
-            std::set<std::string> validVersions{"1.0", "1.1"};
-            if (!validVersions.contains(value))
+            else
             {
-                throw SyntaxError(source, "Unsupported version " + value + ".");
+                throw SyntaxError(source, "Version missing from declaration.");
             }
-            declaration.version = value;
-        }
-        else
-        {
-            throw SyntaxError(source, "Version missing from declaration.");
-        }
-        value = "UTF-8"; // Default
-        if (source.match(U"encoding"))
-        {
-            source.ignoreWS();
-            if (!source.match(U"="))
+            if (source.match(U"encoding"))
             {
-                throw SyntaxError(source, "Missing '=' after encoding.");
+                source.ignoreWS();
+                if (!source.match(U"="))
+                {
+                    throw SyntaxError(source, "Missing '=' after encoding.");
+                }
+                source.ignoreWS();
+                // Check valid declaration values
+                declaration.encoding = Core::toUpperString(Core::parseValue(source).parsed);
+                std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
+                if (!validEncodings.contains(declaration.encoding))
+                {
+                    throw SyntaxError(source, "Unsupported encoding " + declaration.encoding + " specified.");
+                }
             }
-            source.ignoreWS();
-            // Check valid declaration values
-            value = Core::toUpperString(Core::parseValue(source).parsed);
-            std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
-            if (!validEncodings.contains(value))
+            if (source.match(U"standalone"))
             {
-                throw SyntaxError(source, "Unsupported encoding " + value + " specified.");
+                source.ignoreWS();
+                if (!source.match(U"="))
+                {
+                    throw SyntaxError(source, "Missing '=' after standalone.");
+                }
+                source.ignoreWS();
+                declaration.standalone = Core::parseValue(source).parsed;
+                // Check valid declaration values
+                std::set<std::string> validStandalone{"yes", "no"};
+                if (!validStandalone.contains(declaration.standalone))
+                {
+                    throw SyntaxError(source, "Invalid standalone value of '" + declaration.standalone + "'.");
+                }
             }
-        }
-        declaration.encoding = value;
-        value = "no"; // Default
-        if (source.match(U"standalone"))
-        {
-            source.ignoreWS();
-            if (!source.match(U"="))
+            if (source.match(U"encoding"))
             {
-                throw SyntaxError(source, "Missing '=' after standalone.");
+                throw SyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
             }
-            source.ignoreWS();
-            value = Core::parseValue(source).parsed;
-            // Check valid declaration values
-            std::set<std::string> validStandalone{"yes", "no"};
-            if (!validStandalone.contains(value))
+            if (!source.match(U"?>"))
             {
-                throw SyntaxError(source, "Invalid standalone value of '" + value + "'.");
+                throw SyntaxError(source, "Declaration end tag not found.");
             }
-        }
-        declaration.standalone = value;
-        if (source.match(U"encoding"))
-        {
-            throw SyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
-        }
-        if (!source.match(U"?>"))
-        {
-            throw SyntaxError(source, "Declaration end tag not found.");
         }
         return (std::make_unique<XMLNodeDeclaration>(std::move(declaration)));
     }
@@ -455,15 +453,7 @@ namespace XMLLib
     {
         XMLNodeProlog xmlNodeProlog{XMLNodeType::prolog};
         source.ignoreWS();
-        if (source.match(U"<?xml"))
-        {
-            source.ignoreWS();
-            xmlNodeProlog.children.emplace_back(parseDeclaration(source));
-        }
-        else
-        {
-            xmlNodeProlog.children.emplace_back(std::make_unique<XMLNodeDeclaration>());
-        }
+        xmlNodeProlog.children.emplace_back(parseDeclaration(source));
         while (source.more())
         {
             if (source.match(U"<!--"))
