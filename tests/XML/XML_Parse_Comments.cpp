@@ -51,9 +51,9 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).version == "1.0");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).encoding == "UTF-8");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).standalone == "no");
     REQUIRE(xml.root().elementName == "AddressBook");
     REQUIRE(xml.root().children.size() == 13);
     REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.root().children[1]).comment == "Address one ");

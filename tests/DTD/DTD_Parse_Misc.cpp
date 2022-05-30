@@ -73,7 +73,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     XML xml;
     xml.parse(source);
     DTD &dtd = xml.dtd();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[0]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().getNotation("GIF").type == "SYSTEM");
     REQUIRE(dtd.parsed().getNotation("GIF").systemID == "GIF");
@@ -129,7 +129,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     XML xml;
     xml.parse(source);
     DTD &dtd = xml.dtd();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::internal);
     REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtd.parsed().getElement("address").name == "address");
@@ -157,7 +157,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     XML xml;
     xml.parse(source);
     DTD &dtd = xml.dtd();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtd.parsed().getExternalReference().type == "SYSTEM");
@@ -175,7 +175,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     XML xml;
     xml.parse(source);
     DTD &dtd = xml.dtd();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtd.parsed().getExternalReference().type == "PUBLIC");

@@ -380,6 +380,9 @@ namespace XMLLib
                 checkElements(*element);
             }
             break;
+        case XMLNodeType::declaration:
+            // Nothing for present
+            break;
         case XMLNodeType::root:
         case XMLNodeType::element:
             if (xmlNode.getNodeType() == XMLNodeType::root &&

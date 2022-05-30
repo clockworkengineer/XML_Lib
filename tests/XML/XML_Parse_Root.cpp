@@ -24,10 +24,10 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
-    REQUIRE(xml.prolog().children.size() == 3);
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).version == "1.0");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).encoding == "UTF-8");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).standalone == "no");
+    REQUIRE(xml.prolog().children.size() == 4);
     REQUIRE(xml.root().elementName == "contact-info");
   }
   SECTION("Empty root element <AddressBook> ", "[XML][Parse][Root]")
@@ -37,10 +37,10 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
-    REQUIRE(xml.prolog().children.size() == 3);
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).version == "1.0");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).encoding == "UTF-8");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).standalone == "no");
+    REQUIRE(xml.prolog().children.size() == 4);
     REQUIRE(xml.root().elementName == "AddressBook");
   }
   SECTION("Root element <AddressBook> and one child <Address> with contents ", "[XML][Parse][Root]")
@@ -52,9 +52,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).version == "1.0");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).encoding == "UTF-8");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).standalone == "no");
     REQUIRE(xml.root().elementName == "AddressBook");
     REQUIRE(xml.root().children.size() == 3);
     REQUIRE(xml.root()[0].elementName == "Address");
@@ -77,9 +77,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.prolog().getAttribute("version").value.parsed == "1.0");
-    REQUIRE(xml.prolog().getAttribute("encoding").value.parsed == "UTF-8");
-    REQUIRE(xml.prolog().getAttribute("standalone").value.parsed == "no");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).version == "1.0");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).encoding == "UTF-8");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.prolog()[0]).standalone == "no");
     REQUIRE(xml.root().elementName == "AddressBook");
     REQUIRE(xml.root().children.size() == 7);
     REQUIRE(xml.root()[0].elementName == "Address");

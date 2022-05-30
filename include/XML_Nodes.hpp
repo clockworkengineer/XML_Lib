@@ -23,16 +23,17 @@ namespace XMLLib
     enum class XMLNodeType
     {
         base = 0,
-        prolog = 1,
-        root = 2,
-        self = 3,
-        element = 4,
-        content = 5,
-        entity = 6,
-        comment = 7,
-        cdata = 8,
-        pi = 9,
-        dtd = 10
+        prolog,
+        declaration,
+        root,
+        self,
+        element,
+        content,
+        entity,
+        comment,
+        cdata,
+        pi,
+        dtd
     };
     //
     // Base XMLNode
@@ -54,6 +55,7 @@ namespace XMLLib
         const XMLNode &operator[](int index) const;
         const XMLNode &operator[](const std::string &name) const;
         std::vector<XMLNodePtr> children;
+
     private:
         XMLNodeType xmlNodeType;
     };
@@ -75,8 +77,21 @@ namespace XMLLib
                                   [&name](const XMLAttribute &attr)
                                   { return (attr.name == name); }));
         }
+
     private:
-       XMLAttributeList attributes;
+        XMLAttributeList attributes;
+    };
+    //
+    // Declaration XMLNode
+    //
+    struct XMLNodeDeclaration : XMLNode
+    {
+        explicit XMLNodeDeclaration(XMLNodeType nodeType = XMLNodeType::declaration) : XMLNode(nodeType)
+        {
+        }
+        std::string version {"1.0"};
+        std::string encoding { "UTF-8"};
+        std::string standalone { "no"};
     };
     //
     // Content XMLNode
@@ -164,6 +179,7 @@ namespace XMLLib
         const XMLNodeElement &operator[](int index) const;
         const XMLNodeElement &operator[](const std::string &name) const;
         std::string elementName;
+
     private:
         XMLAttributeList namespaces;
         XMLAttributeList attributes;

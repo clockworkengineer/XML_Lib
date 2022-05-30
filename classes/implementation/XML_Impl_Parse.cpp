@@ -333,9 +333,9 @@ namespace XMLLib
     /// <summary>
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    XMLAttributeList XML_Impl::parseDeclaration(ISource &source)
+    XMLNodePtr XML_Impl::parseDeclaration(ISource &source)
     {
-        XMLAttributeList declaration;
+        XMLNodeDeclaration declaration;
         std::string value;
         if (source.match(U"version"))
         {
@@ -352,7 +352,7 @@ namespace XMLLib
             {
                 throw SyntaxError(source, "Unsupported version " + value + ".");
             }
-            declaration.emplace_back(XMLAttribute{"version", XMLValue{value, value}});
+            declaration.version = value;
         }
         else
         {
@@ -375,7 +375,7 @@ namespace XMLLib
                 throw SyntaxError(source, "Unsupported encoding " + value + " specified.");
             }
         }
-        declaration.emplace_back(XMLAttribute{"encoding", XMLValue{value, value}});
+        declaration.encoding = value;
         value = "no"; // Default
         if (source.match(U"standalone"))
         {
@@ -393,12 +393,16 @@ namespace XMLLib
                 throw SyntaxError(source, "Invalid standalone value of '" + value + "'.");
             }
         }
-        declaration.emplace_back(XMLAttribute{"standalone", XMLValue{value, value}});
+        declaration.standalone = value;
         if (source.match(U"encoding"))
         {
             throw SyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
         }
-        return (declaration);
+        if (!source.match(U"?>"))
+        {
+            throw SyntaxError(source, "Declaration end tag not found.");
+        }
+        return (std::make_unique<XMLNodeDeclaration>(std::move(declaration)));
     }
     /// <summary>
     /// </summary>
@@ -454,14 +458,11 @@ namespace XMLLib
         if (source.match(U"<?xml"))
         {
             source.ignoreWS();
-            for (const auto &attribute : parseDeclaration(source))
-            {
-                xmlNodeProlog.addAttribute(attribute.name, attribute.value);
-            }
-            if (!source.match(U"?>"))
-            {
-                throw SyntaxError(source, "Declaration end tag not found.");
-            }
+            xmlNodeProlog.children.emplace_back(parseDeclaration(source));
+        }
+        else
+        {
+            xmlNodeProlog.children.emplace_back(std::make_unique<XMLNodeDeclaration>());
         }
         while (source.more())
         {

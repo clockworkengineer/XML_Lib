@@ -65,7 +65,7 @@ TEST_CASE("Parse XML DTD with atttributes and check values.", "[XML][DTD][Parse]
     XML xml;
     xml.parse(source);
     DTDParsed &dtdParsed = xml.dtd().parsed();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtdParsed.getType() == DTD::DTDType::internal);
     REQUIRE(dtdParsed.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtdParsed.getRootName() == "TVSCHEDULE");
@@ -119,7 +119,7 @@ TEST_CASE("Parse XML DTD with atttributes and check values.", "[XML][DTD][Parse]
     XML xml;
     xml.parse(source);
     DTDParsed &dtdParsed = xml.dtd().parsed();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[0]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtdParsed.getType() == DTD::DTDType::internal);
     REQUIRE(dtdParsed.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(dtdParsed.getRootName() == "CATALOG");
@@ -167,7 +167,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     XML xml;
     xml.parse(source);
     DTDParsed &dtdParsed = xml.dtd().parsed();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtdParsed.getType() == DTD::DTDType::internal);
     REQUIRE(dtdParsed.isElementPresent("person") == true);
     REQUIRE(dtdParsed.getElement("person").attributes.size() == 1);
@@ -307,7 +307,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
     DTDParsed &dtdParsed = xml.dtd().parsed();
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
+    REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtdParsed.getType() == DTD::DTDType::internal);
     REQUIRE(dtdParsed.isElementPresent("mountain") == true);
     REQUIRE(dtdParsed.getElement("mountain").attributes.size() == 2);

@@ -48,13 +48,21 @@ namespace XMLLib
         // XML prolog
         case XMLNodeType::prolog:
         {
-            destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("version").value.unparsed + "\"" +
-                            " encoding=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("encoding").value.unparsed + "\"" +
-                            " standalone=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("standalone").value.unparsed + "\"?>");
+            // destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("version").value.unparsed + "\"" +
+            //                 " encoding=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("encoding").value.unparsed + "\"" +
+            //                 " standalone=\"" + XMLNodeRef<XMLNodeProlog>(xmlNode).getAttribute("standalone").value.unparsed + "\"?>");
             for (auto &element : XMLNodeRef<XMLNodeProlog>((xmlNode)).children)
             {
                 stringifyElements(*element, destination);
             }
+            break;
+        }
+        // XML declaration
+        case XMLNodeType::declaration:
+        {
+            destination.add("<?xml version=\"" + XMLNodeRef<XMLNodeDeclaration>(xmlNode).version + "\"" +
+                            " encoding=\"" + XMLNodeRef<XMLNodeDeclaration>(xmlNode).encoding + "\"" +
+                            " standalone=\"" + XMLNodeRef<XMLNodeDeclaration>(xmlNode).standalone + "\"?>");
             break;
         }
         // XML root or child elements
