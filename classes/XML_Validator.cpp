@@ -97,7 +97,7 @@ namespace XMLLib
     {
         for (const auto &element : xmlNode.children)
         {
-            if (((*element).getNodeType() == XMLNodeType::element) || ((*element).getNodeType() == XMLNodeType::self))
+            if ((element->getNodeType() == XMLNodeType::element) || (element->getNodeType() == XMLNodeType::self))
             {
                 return (false);
             }
@@ -334,12 +334,12 @@ namespace XMLLib
         std::string elements;
         for (auto &element : xNodeElement.children)
         {
-            if (((*element).getNodeType() == XMLNodeType::element) ||
-                ((*element).getNodeType() == XMLNodeType::self))
+            if ((element->getNodeType() == XMLNodeType::element) ||
+                (element->getNodeType() == XMLNodeType::self))
             {
                 elements += "<" + XMLNodeRef<XMLNodeElement>(*element).elementName + ">";
             }
-            else if ((*element).getNodeType() == XMLNodeType::content)
+            else if (element->getNodeType() == XMLNodeType::content)
             {
                 if (!XMLNodeRef<XMLNodeContent>(*element).isWhiteSpace)
                 {

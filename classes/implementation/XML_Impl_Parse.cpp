@@ -52,11 +52,11 @@ namespace XMLLib
     }
     void XML_Impl::resetIsWhiteSpace(XMLNode &xmlNode)
     {
-        if (!XMLNodeRef<XMLNodeElement>(xmlNode).children.empty())
+        if (!xmlNode.children.empty())
         {
-            if (XMLNodeRef<XMLNodeElement>(xmlNode).children.back()->getNodeType() == XMLNodeType::content)
+            if (xmlNode.children.back()->getNodeType() == XMLNodeType::content)
             {
-                XMLNodeRef<XMLNodeContent>(*XMLNodeRef<XMLNodeElement>(xmlNode).children.back()).isWhiteSpace = false;
+                XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = false;
             }
         }
     }
@@ -120,7 +120,7 @@ namespace XMLLib
                 resetIsWhiteSpace(xmlNode);
             }
         }
-        XMLNodeRef<XMLNodeElement>(xmlNode).children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
+        xmlNode.children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
     }
     /// <summary>
     /// Parse a element tag name and set its value in current XMLNodeElement.
