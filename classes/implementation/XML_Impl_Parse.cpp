@@ -302,9 +302,9 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="namespaces">Current list of namespaces.</param>
-    XMLNodePtr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces)
+    XMLNodePtr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType)
     {
-        XMLNodeElement xmlNodeElement;
+        XMLNodeElement xmlNodeElement { xmlNodeType };
         for (const auto &ns : namespaces)
         {
             xmlNodeElement.addNameSpace(ns.name, ns.value);
@@ -495,11 +495,7 @@ namespace XMLLib
         m_prolog = parseProlog(source);
         if (source.match(U"<"))
         {
-            prolog().children.emplace_back(parseElement(source, {}));
-            if (prolog().children.back()->getNodeType() != XMLNodeType::self)
-            {
-                prolog().children.back()->setNodeType(XMLNodeType::root);
-            }
+            prolog().children.emplace_back(parseElement(source, {}, XMLNodeType::root));
             parseXMLTail(source);
         }
         else

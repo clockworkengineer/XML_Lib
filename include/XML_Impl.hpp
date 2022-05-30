@@ -74,7 +74,7 @@ namespace XMLLib
         XMLNodePtr parsePI(ISource &source);
         void parseWhiteSpaceToContent(ISource &source, XMLNode &xmlNode);
         void parseElementContents(ISource &source, XMLNode &xmlNode);
-        XMLNodePtr parseElement(ISource &source, const XMLAttributeList &namespaces);
+        XMLNodePtr parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType=XMLNodeType::element);
         XMLNodePtr parseDeclaration(ISource &source);
         XMLNodePtr parseDTD(ISource &source);
         XMLNodePtr parseProlog(ISource &source);
