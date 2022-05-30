@@ -64,7 +64,7 @@ namespace XMLLib
         return (XMLNodeRef<XMLNodeProlog>(*m_prolog));
     }
     /// <summary>
-    /// Return XML delaration node.
+    /// Return XML declaration node.
     /// </summary>
     XMLNodeDeclaration &XML_Impl::declaration()
     {

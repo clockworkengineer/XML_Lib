@@ -220,6 +220,16 @@ namespace XMLLib
         }
         return (attributes);
     }
+    void XML_Impl::parseWhiteSpaceToContent(ISource &source, XMLNode &xmlNode)
+    {
+        std::string whiteSpace;
+        while (source.more() && source.isWS())
+        {
+            whiteSpace += source.current_to_bytes();
+            source.next();
+        }
+        addContentToElement(xmlNode, whiteSpace);
+    }
     /// <summary>
     /// Parse any element content that is found.
     /// </summary>
@@ -413,8 +423,7 @@ namespace XMLLib
             }
             else if (source.isWS())
             {
-                addContentToElement(prolog(), source.current_to_bytes());
-                source.next();
+                parseWhiteSpaceToContent(source, prolog());
             }
             else
             {
@@ -460,8 +469,7 @@ namespace XMLLib
             }
             else if (source.isWS())
             {
-                addContentToElement(xmlNodeProlog, source.current_to_bytes());
-                source.next();
+                parseWhiteSpaceToContent(source, xmlNodeProlog);
             }
             else if (source.match(U"<!DOCTYPE"))
             {
