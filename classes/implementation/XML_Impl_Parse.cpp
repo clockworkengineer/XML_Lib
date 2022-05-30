@@ -348,9 +348,7 @@ namespace XMLLib
                 }
                 source.ignoreWS();
                 declaration.version = Core::parseValue(source).parsed;
-                // Check valid declaration values
-                std::set<std::string> validVersions{"1.0", "1.1"};
-                if (!validVersions.contains(declaration.version))
+                if (!declaration.isValidVersion())
                 {
                     throw SyntaxError(source, "Unsupported version " + declaration.version + ".");
                 }
@@ -367,10 +365,8 @@ namespace XMLLib
                     throw SyntaxError(source, "Missing '=' after encoding.");
                 }
                 source.ignoreWS();
-                // Check valid declaration values
                 declaration.encoding = Core::toUpperString(Core::parseValue(source).parsed);
-                std::set<std::string> validEncodings{"UTF-8", "UTF-16"};
-                if (!validEncodings.contains(declaration.encoding))
+                if (!declaration.isValidEncoding())
                 {
                     throw SyntaxError(source, "Unsupported encoding " + declaration.encoding + " specified.");
                 }
@@ -384,9 +380,7 @@ namespace XMLLib
                 }
                 source.ignoreWS();
                 declaration.standalone = Core::parseValue(source).parsed;
-                // Check valid declaration values
-                std::set<std::string> validStandalone{"yes", "no"};
-                if (!validStandalone.contains(declaration.standalone))
+                if (!declaration.isValidStandalone())
                 {
                     throw SyntaxError(source, "Invalid standalone value of '" + declaration.standalone + "'.");
                 }

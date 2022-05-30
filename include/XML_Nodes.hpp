@@ -67,19 +67,6 @@ namespace XMLLib
         explicit XMLNodeProlog(XMLNodeType nodeType = XMLNodeType::prolog) : XMLNode(nodeType)
         {
         }
-        void addAttribute(const std::string &name, const XMLValue &value)
-        {
-            attributes.emplace_back(name, value);
-        }
-        [[nodiscard]] const XMLAttribute getAttribute(const std::string &name) const
-        {
-            return (*std::find_if(attributes.rbegin(), attributes.rend(),
-                                  [&name](const XMLAttribute &attr)
-                                  { return (attr.name == name); }));
-        }
-
-    private:
-        XMLAttributeList attributes;
     };
     //
     // Declaration XMLNode
@@ -89,9 +76,21 @@ namespace XMLLib
         explicit XMLNodeDeclaration(XMLNodeType nodeType = XMLNodeType::declaration) : XMLNode(nodeType)
         {
         }
-        std::string version {"1.0"};
-        std::string encoding { "UTF-8"};
-        std::string standalone { "no"};
+        [[nodiscard]] bool isValidVersion() const
+        {
+            return (version == "1.0" || version == "1.1");
+        }
+        [[nodiscard]] bool isValidEncoding() const
+        {
+            return (encoding == "UTF-8" || encoding == "UTF-16");
+        }
+        [[nodiscard]] bool isValidStandalone() const
+        {
+            return (standalone == "yes" || standalone == "no");
+        }
+        std::string version{"1.0"};
+        std::string encoding{"UTF-8"};
+        std::string standalone{"no"};
     };
     //
     // Content XMLNode
