@@ -35,93 +35,6 @@ namespace XMLLib
     // ===============
     // PRIVATE METHODS
     // ===============
-    void XML_Impl::parseEntityContents(XMLNode &xmlNode, const XMLValue &entityReference)
-    {
-        XMLNodeElement entityElement;
-        BufferSource entitySource(entityReference.parsed);
-        // Parse entity XML
-        while (entitySource.more())
-        {
-            parseElementContents(entitySource, entityElement);
-        }
-        // Place into node (element) child list
-        for (auto &xmlNodePtr : entityElement.children)
-        {
-            xmlNode.children.emplace_back(std::move(xmlNodePtr));
-        }
-    }
-    void XML_Impl::resetIsWhiteSpace(XMLNode &xmlNode)
-    {
-        if (!xmlNode.children.empty())
-        {
-            if (xmlNode.children.back()->getNodeType() == XMLNodeType::content)
-            {
-                XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = false;
-            }
-        }
-    }
-    /// <summary>
-    /// Add content node to elements child list.
-    /// </summary>
-    /// <param name="xmlNode">Current element node.</param>
-    /// <param name="content">Content to add to new content node (XMLNodeContent).</param>
-    void XML_Impl::addContentToElement(XMLNode &xmlNode, const std::string &content)
-    {
-        // Make sure there is a content node to receive characters
-        if (xmlNode.children.empty() || xmlNode.children.back()->getNodeType() != XMLNodeType::content)
-        {
-            bool isWWhitespace = true;
-            if (!xmlNode.children.empty())
-            {
-                if ((xmlNode.children.back()->getNodeType() == XMLNodeType::cdata) ||
-                    (xmlNode.children.back()->getNodeType() == XMLNodeType::entity))
-                {
-                    isWWhitespace = false;
-                }
-            }
-            xmlNode.children.emplace_back(std::make_unique<XMLNodeContent>());
-            XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = isWWhitespace;
-        }
-        XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*xmlNode.children.back());
-        if (xmlContent.isWhiteSpace)
-        {
-            for (const auto ch : content)
-            {
-                if (!std::iswspace(ch))
-                {
-                    xmlContent.isWhiteSpace = false;
-                    break;
-                }
-            }
-        }
-        xmlContent.content += content;
-    }
-    /// <summary>
-    /// Take an entity reference and parse its contents into XML internal description.
-    /// </summary>
-    /// <param name="xmlNode">Current element node.</param>
-    /// <param name="entityReference">Entity reference to be parsed.</param>
-    void XML_Impl::parseEntityMappingContents(XMLNode &xmlNode, const XMLValue &entityReference)
-    {
-        XMLNodeEntityReference xNodeEntityReference(entityReference);
-        if (entityReference.unparsed[1] != '#')
-        {
-            // Does entity contain start tag ?
-            // YES then XML into current element list
-            if (entityReference.parsed.find("<") != std::string::npos)
-            {
-                parseEntityContents(xmlNode, entityReference);
-                return;
-            }
-            // NO XML into entity elements list.
-            else
-            {
-                parseEntityContents(xNodeEntityReference, entityReference);
-                resetIsWhiteSpace(xmlNode);
-            }
-        }
-        xmlNode.children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
-    }
     /// <summary>
     /// Parse a element tag name and set its value in current XMLNodeElement.
     /// </summary>
@@ -228,7 +141,7 @@ namespace XMLLib
             whiteSpace += source.current_to_bytes();
             source.next();
         }
-        addContentToElement(xmlNode, whiteSpace);
+        addContentToElementChildList(xmlNode, whiteSpace);
     }
     /// <summary>
     /// Parse any element content that is found.
@@ -237,18 +150,35 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML_Impl::parseElementContent(ISource &source, XMLNode &xmlNode)
     {
-        XMLValue entityReference{Core::parseCharacter(source)};
-        if (entityReference.isEntityReference())
+        XMLValue content{Core::parseCharacter(source)};
+        if (content.isReference())
         {
-            parseEntityMappingContents(xmlNode, m_entityMapper->map(entityReference));
-        }
-        else if (entityReference.isCharacterReference())
-        {
-            parseEntityMappingContents(xmlNode, entityReference);
+            if (content.isEntityReference())
+            {
+                content = m_entityMapper->map(content);
+            }
+            XMLNodeEntityReference xNodeEntityReference(content);
+            if (content.isEntityReference())
+            {
+                // Does entity contain start tag ?
+                // YES then XML into current element list
+                if (content.parsed.starts_with("<"))
+                {
+                    processEntityReferenceXML(xmlNode, content);
+                    return;
+                }
+                // NO XML into entity elements list.
+                else
+                {
+                    processEntityReferenceXML(xNodeEntityReference, content);
+                    resetWhiteSpace(xmlNode);
+                }
+            }
+            xmlNode.children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
         }
         else
         {
-            addContentToElement(xmlNode, entityReference.parsed);
+            addContentToElementChildList(xmlNode, content.parsed);
         }
     }
     /// <summary>
@@ -269,7 +199,7 @@ namespace XMLLib
         }
         else if (source.match(U"<![CDATA["))
         {
-            resetIsWhiteSpace(xmlNode);
+            resetWhiteSpace(xmlNode);
             xmlNode.children.emplace_back(parseCDATA(source));
         }
         else if (source.match(U"<"))
@@ -304,7 +234,7 @@ namespace XMLLib
     /// <param name="namespaces">Current list of namespaces.</param>
     XMLNodePtr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType)
     {
-        XMLNodeElement xmlNodeElement { xmlNodeType };
+        XMLNodeElement xmlNodeElement{xmlNodeType};
         for (const auto &ns : namespaces)
         {
             xmlNodeElement.addNameSpace(ns.name, ns.value);
@@ -313,7 +243,7 @@ namespace XMLLib
         for (const auto &attribute : parseAttributes(source))
         {
             xmlNodeElement.addAttribute(attribute.name, attribute.value);
-            if (attribute.name.find("xmlns") == 0)
+            if (attribute.name.starts_with("xmlns"))
             {
                 xmlNodeElement.addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
             }

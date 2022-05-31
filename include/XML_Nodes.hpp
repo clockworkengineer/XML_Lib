@@ -97,11 +97,11 @@ namespace XMLLib
     //
     struct XMLNodeContent : XMLNode
     {
-        explicit XMLNodeContent(XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType)
+        explicit XMLNodeContent(bool isWhiteSpace = true, XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType), isWhiteSpace(isWhiteSpace)
         {
         }
         std::string content;
-        bool isWhiteSpace = true;
+        bool isWhiteSpace;
     };
     //
     // CDATA XMLNode

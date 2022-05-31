@@ -22,6 +22,7 @@ set (XML_SOURCES
     ./classes/XML.cpp
     ./classes/implementation/XML_Impl.cpp
     ./classes/implementation/XML_Impl_Parse.cpp
+    ./classes/implementation/XML_Impl_Misc.cpp
     ./classes/implementation/XML_Impl_Stringify.cpp
     ./classes/implementation/XML_Core.cpp
     ./classes/DTD.cpp
