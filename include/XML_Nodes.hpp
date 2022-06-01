@@ -40,6 +40,7 @@ namespace XMLLib
     //
     struct XMLNode
     {
+        using Ptr = std::unique_ptr<XMLNode>;
         explicit XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType)
         {
         }

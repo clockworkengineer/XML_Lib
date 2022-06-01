@@ -48,7 +48,7 @@ namespace XMLLib
     /// of elements for the current XMLNodeElement.
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    XMLNodePtr XML_Impl::parseComment(ISource &source)
+    XMLNode::Ptr XML_Impl::parseComment(ISource &source)
     {
         XMLNodeComment xmlNodeComment;
         while (source.more() && !source.match(U"--"))
@@ -67,7 +67,7 @@ namespace XMLLib
     /// the list of elements under the current XMLNodeElement.
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    XMLNodePtr XML_Impl::parsePI(ISource &source)
+    XMLNode::Ptr XML_Impl::parsePI(ISource &source)
     {
         XMLNodePI xmlNodePI;
         xmlNodePI.name = Core::parseName(source);
@@ -84,7 +84,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    XMLNodePtr XML_Impl::parseCDATA(ISource &source)
+    XMLNode::Ptr XML_Impl::parseCDATA(ISource &source)
     {
         XMLNodeCDATA xmlNodeCDATA;
         while (source.more() && !source.match(U"]]>"))
@@ -232,7 +232,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="namespaces">Current list of namespaces.</param>
-    XMLNodePtr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType)
+    XMLNode::Ptr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType)
     {
         XMLNodeElement xmlNodeElement{xmlNodeType};
         for (const auto &ns : namespaces)
@@ -273,7 +273,7 @@ namespace XMLLib
     /// <summary>
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    XMLNodePtr XML_Impl::parseDeclaration(ISource &source)
+    XMLNode::Ptr XML_Impl::parseDeclaration(ISource &source)
     {
         XMLNodeDeclaration declaration;
         if (source.match(U"<?xml"))
@@ -361,7 +361,7 @@ namespace XMLLib
             }
         }
     }
-    XMLNodePtr XML_Impl::parseDTD(ISource &source)
+    XMLNode::Ptr XML_Impl::parseDTD(ISource &source)
     {
         if (m_dtd == nullptr)
         {
@@ -382,7 +382,7 @@ namespace XMLLib
     /// Document Type Declaration (DTD).
     /// </summary>
     /// <param name="source">XML source stream.</param>
-    XMLNodePtr XML_Impl::parseProlog(ISource &source)
+    XMLNode::Ptr XML_Impl::parseProlog(ISource &source)
     {
         XMLNodeProlog xmlNodeProlog{XMLNodeType::prolog};
         source.ignoreWS();

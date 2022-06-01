@@ -1,7 +1,7 @@
 //
 // Class: XML_Impl
 //
-// Description: XML class implementation.
+// Description: XML class implementation api layer.
 //
 // Dependencies:   C20++ - Language standard features used.
 //

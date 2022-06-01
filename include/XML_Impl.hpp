@@ -68,15 +68,15 @@ namespace XMLLib
         void parseElementContent(ISource &source, XMLNode &xmlNode);
         std::string parseTagName(ISource &source);
         XMLAttributeList parseAttributes(ISource &source);
-        XMLNodePtr parseComment(ISource &source);
-        XMLNodePtr parseCDATA(ISource &source);
-        XMLNodePtr parsePI(ISource &source);
+        XMLNode::Ptr parseComment(ISource &source);
+        XMLNode::Ptr parseCDATA(ISource &source);
+        XMLNode::Ptr parsePI(ISource &source);
         void parseWhiteSpaceToContent(ISource &source, XMLNode &xmlNode);
         void parseElementContents(ISource &source, XMLNode &xmlNode);
-        XMLNodePtr parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType=XMLNodeType::element);
-        XMLNodePtr parseDeclaration(ISource &source);
-        XMLNodePtr parseDTD(ISource &source);
-        XMLNodePtr parseProlog(ISource &source);
+        XMLNode::Ptr parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType=XMLNodeType::element);
+        XMLNode::Ptr parseDeclaration(ISource &source);
+        XMLNode::Ptr parseDTD(ISource &source);
+        XMLNode::Ptr parseProlog(ISource &source);
         void parseXMLTail(ISource &source);
         void parseXML(ISource &source);
         void stringifyElements(XMLNode &xmlNode, IDestination &destination);
@@ -84,7 +84,7 @@ namespace XMLLib
         // =================
         // PRIVATE VARIABLES
         // =================
-        XMLNodePtr m_prolog;
+        XMLNode::Ptr m_prolog;
         std::unique_ptr<DTD> m_dtd;
         std::unique_ptr<IXMLValidator> m_validator;
         std::unique_ptr<IXMLEntityMapper> m_entityMapper;

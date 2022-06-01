@@ -1,7 +1,7 @@
 //
 // Class: XML_Impl
 //
-// Description: XML parser processing code.
+// Description: Miscellaneous XML class implementation code.
 //
 // Dependencies:   C20++ - Language standard features used.
 //
