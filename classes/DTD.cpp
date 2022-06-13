@@ -38,9 +38,9 @@ namespace XMLLib
     // ==============
     // PUBLIC METHODS
     // ==============
-    DTD::DTD(XMLNodeDTD &xmlNodeDTD, IXMLEntityMapper &entityMapper)
+    DTD::DTD(XMLNodeDTD &xmlNodeDTD)
     {
-        m_implementation = std::make_unique<DTD_Impl>(xmlNodeDTD, entityMapper);
+        m_implementation = std::make_unique<DTD_Impl>(xmlNodeDTD);
     }
     DTD::~DTD()
     {

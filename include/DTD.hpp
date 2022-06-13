@@ -16,13 +16,8 @@ namespace XMLLib
     class DTD_Impl;
     class ISource;
     class IDestination;
-    class IXMLEntityMapper;
-    struct DTDElement;
     struct DTDParsed;
-    struct XMLNodeElement;
     struct XMLNodeDTD;
-    struct XMLEntityMapping;
-    struct XMLExternalReference;
     // ================
     // CLASS DEFINITION
     // ================
@@ -43,7 +38,7 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        DTD(XMLNodeDTD &xmlNodeDTD, IXMLEntityMapper &entityMapper);
+        DTD(XMLNodeDTD &xmlNodeDTD);
         // ==========
         // DESTRUCTOR
         // ==========

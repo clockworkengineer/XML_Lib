@@ -11,7 +11,6 @@
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
-#include "IXMLEntityMapper.hpp"
 //
 // DTD parsed data structure
 //
@@ -33,7 +32,7 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        DTD_Impl(XMLNodeDTD &xmlNodeDTD, IXMLEntityMapper &entityMapper);
+        DTD_Impl(XMLNodeDTD &xmlNodeDTD);
         // ==========
         // DESTRUCTOR
         // ==========
@@ -89,7 +88,5 @@ namespace XMLLib
         // PRIVATE VARIABLES
         // =================
         XMLNodeDTD &m_xmlNodeDTD;
-        //std::unique_ptr<DTDParsed> m_parsed;
-        //std::string m_unparsed;
     };
 } // namespace XMLLib

@@ -366,7 +366,7 @@ namespace XMLLib
         if (m_dtd == nullptr)
         {
             XMLNode::Ptr xmlNode = std::make_unique<XMLNodeDTD>(*m_entityMapper);
-            m_dtd = std::make_unique<DTD>(XMLNodeRef<XMLNodeDTD>(*xmlNode), *m_entityMapper);
+            m_dtd = std::make_unique<DTD>(XMLNodeRef<XMLNodeDTD>(*xmlNode));
             m_dtd->parse(source);
             m_validator = std::make_unique<XML_Validator>(m_dtd->parsed());
             return (xmlNode);
