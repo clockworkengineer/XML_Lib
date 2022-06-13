@@ -5,10 +5,6 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-//
-//
-//
-#include "DTD_Parsed.hpp"
 // =========
 // NAMESPACE
 // =========
@@ -24,6 +20,7 @@ namespace XMLLib
     struct DTDElement;
     struct DTDParsed;
     struct XMLNodeElement;
+    struct XMLNodeDTD;
     struct XMLEntityMapping;
     struct XMLExternalReference;
     // ================
@@ -46,7 +43,7 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        explicit DTD(IXMLEntityMapper &entityMapper);
+        DTD(XMLNodeDTD &xmlNodeDTD, IXMLEntityMapper &entityMapper);
         // ==========
         // DESTRUCTOR
         // ==========

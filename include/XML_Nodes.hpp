@@ -11,7 +11,12 @@
 // NAMESPACE
 // =========
 namespace XMLLib
-{
+{ 
+    // ===================================================
+    // Forward declarations for interfaces/classes/structs
+    // ===================================================
+    class IXMLEntityMapper;
+    struct DTDParsed;
     // ==============
     // XML Node types
     // ==============
@@ -217,9 +222,12 @@ namespace XMLLib
     // ===
     struct XMLNodeDTD : XMLNode
     {
-        explicit XMLNodeDTD(XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType)
+        explicit XMLNodeDTD(IXMLEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType)
         {
+             m_parsed = std::make_unique<DTDParsed>(entityMapper);
         }
+        std::unique_ptr<DTDParsed> m_parsed;
+        std::string m_unparsed;
     };
     // ===========================
     // XMLNode reference converter
@@ -246,9 +254,9 @@ namespace XMLLib
             if ((xmlNode.getNodeType() != XMLNodeType::root) &&
                 (xmlNode.getNodeType() != XMLNodeType::self) &&
                 (xmlNode.getNodeType() != XMLNodeType::element))
-                {
-                    throw XMLNode::Error("Node not a element.");
-                }
+            {
+                throw XMLNode::Error("Node not a element.");
+            }
         }
         else if constexpr (std::is_same_v<T, XMLNodeContent>)
         {

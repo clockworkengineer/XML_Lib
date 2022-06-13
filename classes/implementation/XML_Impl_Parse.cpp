@@ -365,15 +365,14 @@ namespace XMLLib
     {
         if (m_dtd == nullptr)
         {
-            m_dtd = std::make_unique<DTD>(*m_entityMapper);
+            XMLNode::Ptr xmlNode = std::make_unique<XMLNodeDTD>(*m_entityMapper);
+            m_dtd = std::make_unique<DTD>(XMLNodeRef<XMLNodeDTD>(*xmlNode), *m_entityMapper);
             m_dtd->parse(source);
             m_validator = std::make_unique<XML_Validator>(m_dtd->parsed());
+            return (xmlNode);
         }
-        else
-        {
-            throw SyntaxError(source, "More than one DOCTYPE declaration.");
-        }
-        return (std::make_unique<XMLNodeDTD>());
+
+        throw SyntaxError(source, "More than one DOCTYPE declaration.");
     }
     /// <summary>
     /// Parse XML prolog and create the necessary XMLNodeElements for it. Valid

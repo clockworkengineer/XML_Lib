@@ -37,9 +37,9 @@ namespace XMLLib
     // ==============
     // PUBLIC METHODS
     // ==============
-    DTD_Impl::DTD_Impl(IXMLEntityMapper &entityMapper)
+    DTD_Impl::DTD_Impl(XMLNodeDTD &xmlNodeDTD, IXMLEntityMapper &entityMapper) : m_xmlNodeDTD(xmlNodeDTD)
     {
-        m_parsed = std::make_unique<DTDParsed>(entityMapper);
+        //m_parsed = std::make_unique<DTDParsed>(entityMapper);
     }
     DTD_Impl::~DTD_Impl()
     {
@@ -58,6 +58,6 @@ namespace XMLLib
     /// <param name="destination">DTD destination stream.</param>
     void DTD_Impl::stringify(IDestination &destination)
     {
-        destination.add(m_unparsed);
+        destination.add(m_xmlNodeDTD.m_unparsed);
     }
 } // namespace XMLLib

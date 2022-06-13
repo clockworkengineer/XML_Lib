@@ -33,7 +33,7 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        explicit DTD_Impl(IXMLEntityMapper &entityMapper);
+        DTD_Impl(XMLNodeDTD &xmlNodeDTD, IXMLEntityMapper &entityMapper);
         // ==========
         // DESTRUCTOR
         // ==========
@@ -41,7 +41,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        DTDParsed &parsed() { return (*m_parsed); }
+        DTDParsed &parsed() { return (*m_xmlNodeDTD.m_parsed); }
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         // ================
@@ -88,7 +88,8 @@ namespace XMLLib
         // =================
         // PRIVATE VARIABLES
         // =================
-        std::unique_ptr<DTDParsed> m_parsed;
-        std::string m_unparsed;
+        XMLNodeDTD &m_xmlNodeDTD;
+        //std::unique_ptr<DTDParsed> m_parsed;
+        //std::string m_unparsed;
     };
 } // namespace XMLLib
