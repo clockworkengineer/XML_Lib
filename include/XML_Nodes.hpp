@@ -314,7 +314,7 @@ namespace XMLLib
         {
             return (*((XMLNodeRef<XMLNode>(*this).children[index])));
         }
-        throw std::runtime_error("Invalid index used to access array.");
+        throw XMLNode::Error("Invalid index used to access array.");
     }
     // ===================
     // XMLNode name access
@@ -331,7 +331,7 @@ namespace XMLLib
                 }
             }
         }
-        throw std::runtime_error("Invalid index used to access array.");
+        throw XMLNode::Error("Invalid index used to access array.");
     }
     // ===========================
     // XMLNodeElement index access
@@ -353,7 +353,7 @@ namespace XMLLib
                 }
             }
         }
-        throw std::runtime_error("Invalid index used to access array.");
+        throw XMLNode::Error("Invalid index used to access array.");
     }
     // ==========================
     // XMLNodeElement name access
@@ -370,7 +370,7 @@ namespace XMLLib
                 }
             }
         }
-        throw std::runtime_error("Invalid index used to access array.");
+        throw XMLNode::Error("Invalid index used to access array.");
     }
     // ====================
     // XMLNode get contents
