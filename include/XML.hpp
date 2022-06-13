@@ -20,7 +20,6 @@ namespace XMLLib
     class XML_Impl;
     class ISource;
     class IDestination;
-    class IXMLEntityMapper;
     class DTD;
     struct XMLNodeElement;
     struct XMLNodeProlog;

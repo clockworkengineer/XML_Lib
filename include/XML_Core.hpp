@@ -16,6 +16,10 @@
 //
 #include "XML_Types.hpp"
 #include "XML_Nodes.hpp"
+//
+// XML entity mapper interface
+//
+#include "XML_EntityMapper.hpp"
 // =========
 // NAMESPACE
 // =========
