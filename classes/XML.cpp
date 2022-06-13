@@ -42,9 +42,8 @@ namespace XMLLib
     /// <summary>
     /// XML constructor.
     /// </summary>
-    XML::XML()
+    XML::XML() : m_implementation(std::make_unique<XML_Impl>())
     {
-        m_implementation = std::make_unique<XML_Impl>();
     }
     /// <summary>
     /// XML destructor.

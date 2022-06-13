@@ -12,14 +12,9 @@
 // =========
 namespace XMLLib
 {
-    //
-    // Pointer to XMLNode
-    //
-    struct XMLNode;
-    using XMLNodePtr = std::unique_ptr<XMLNode>;
-    //
-    // XML Node structure
-    //
+    // ==============
+    // XML Node types
+    // ==============
     enum class XMLNodeType
     {
         base = 0,
@@ -35,12 +30,24 @@ namespace XMLLib
         pi,
         dtd
     };
-    //
-    // Base XMLNode
-    //
+    // ====
+    // Base
+    // ====
     struct XMLNode
     {
         using Ptr = std::unique_ptr<XMLNode>;
+        struct Error : public std::exception
+        {
+        public:
+            explicit Error(std::string errorMessage = "") : errorMessage(std::string("XMLNode Error: ") + errorMessage) {}
+            [[nodiscard]] const char *what() const noexcept override
+            {
+                return (errorMessage.c_str());
+            }
+
+        private:
+            const std::string errorMessage;
+        };
         explicit XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType)
         {
         }
@@ -55,23 +62,23 @@ namespace XMLLib
         [[nodiscard]] const std::string getContents() const;
         const XMLNode &operator[](int index) const;
         const XMLNode &operator[](const std::string &name) const;
-        std::vector<XMLNodePtr> children;
+        std::vector<XMLNode::Ptr> children;
 
     private:
         XMLNodeType xmlNodeType;
     };
-    //
-    // Prolog XMLNode
-    //
+    // ======
+    // Prolog
+    // ======
     struct XMLNodeProlog : XMLNode
     {
         explicit XMLNodeProlog(XMLNodeType nodeType = XMLNodeType::prolog) : XMLNode(nodeType)
         {
         }
     };
-    //
-    // Declaration XMLNode
-    //
+    // ===========
+    // Declaration
+    // ===========
     struct XMLNodeDeclaration : XMLNode
     {
         explicit XMLNodeDeclaration(XMLNodeType nodeType = XMLNodeType::declaration) : XMLNode(nodeType)
@@ -93,9 +100,9 @@ namespace XMLLib
         std::string encoding{"UTF-8"};
         std::string standalone{"no"};
     };
-    //
-    // Content XMLNode
-    //
+    // =======
+    // Content
+    // =======
     struct XMLNodeContent : XMLNode
     {
         explicit XMLNodeContent(bool isWhiteSpace = true, XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType), isWhiteSpace(isWhiteSpace)
@@ -104,9 +111,9 @@ namespace XMLLib
         std::string content;
         bool isWhiteSpace;
     };
-    //
-    // CDATA XMLNode
-    //
+    // =====
+    // CDATA
+    // =====
     struct XMLNodeCDATA : XMLNode
     {
         explicit XMLNodeCDATA(XMLNodeType nodeType = XMLNodeType::cdata) : XMLNode(nodeType)
@@ -114,9 +121,9 @@ namespace XMLLib
         }
         std::string cdata;
     };
-    //
-    // EntityReference XMLNode
-    //
+    // ===============
+    // EntityReference
+    // ===============
     struct XMLNodeEntityReference : XMLNode
     {
         explicit XMLNodeEntityReference(const XMLValue &value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), value(std::move(value))
@@ -124,9 +131,9 @@ namespace XMLLib
         }
         XMLValue value;
     };
-    //
-    // Element XMLNode
-    //
+    // =======
+    // Element
+    // =======
     struct XMLNodeElement : XMLNode
     {
         explicit XMLNodeElement(XMLNodeType nodeType = XMLNodeType::element) : XMLNode(nodeType)
@@ -184,9 +191,9 @@ namespace XMLLib
         XMLAttributeList namespaces;
         XMLAttributeList attributes;
     };
-    //
-    // Comment XMLNode
-    //
+    // =======
+    // Comment
+    // =======
     struct XMLNodeComment : XMLNode
     {
         explicit XMLNodeComment(XMLNodeType nodeType = XMLNodeType::comment) : XMLNode(nodeType)
@@ -194,9 +201,9 @@ namespace XMLLib
         }
         std::string comment;
     };
-    //
-    // PI XMLNode
-    //
+    // ==
+    // PI
+    // ==
     struct XMLNodePI : XMLNode
     {
         explicit XMLNodePI(XMLNodeType nodeType = XMLNodeType::pi) : XMLNode(nodeType)
@@ -205,31 +212,102 @@ namespace XMLLib
         std::string name;
         std::string parameters;
     };
-    //
-    // DTD XMLNode
-    //
+    // ===
+    // DTD
+    // ===
     struct XMLNodeDTD : XMLNode
     {
         explicit XMLNodeDTD(XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType)
         {
         }
     };
-    //
-    // Convert base XMLNode reference
-    //
+    // ===========================
+    // XMLNode reference converter
+    // ===========================
+    template <typename T>
+    void CheckXMLNodeType(auto &xmlNode)
+    {
+        if constexpr (std::is_same_v<T, XMLNodeProlog>)
+        {
+            if (xmlNode.getNodeType() != XMLNodeType::prolog)
+            {
+                throw XMLNode::Error("Node not a prolog.");
+            }
+        }
+        else if constexpr (std::is_same_v<T, XMLNodeDeclaration>)
+        {
+            if (xmlNode.getNodeType() != XMLNodeType::declaration)
+            {
+                throw XMLNode::Error("Node not a declaration.");
+            }
+        }
+        else if constexpr (std::is_same_v<T, XMLNodeElement>)
+        {
+            if ((xmlNode.getNodeType() != XMLNodeType::root) &&
+                (xmlNode.getNodeType() != XMLNodeType::self) &&
+                (xmlNode.getNodeType() != XMLNodeType::element))
+                {
+                    throw XMLNode::Error("Node not a element.");
+                }
+        }
+        else if constexpr (std::is_same_v<T, XMLNodeContent>)
+        {
+            if (xmlNode.getNodeType() != XMLNodeType::content)
+            {
+                throw XMLNode::Error("Node not content.");
+            }
+        }
+        else if constexpr (std::is_same_v<T, XMLNodeEntityReference>)
+        {
+            if (xmlNode.getNodeType() != XMLNodeType::entity)
+            {
+                throw XMLNode::Error("Node not an entity.");
+            }
+        }
+        else if constexpr (std::is_same_v<T, XMLNodeComment>)
+        {
+            if (xmlNode.getNodeType() != XMLNodeType::comment)
+            {
+                throw XMLNode::Error("Node not a comment.");
+            }
+        }
+        else if constexpr (std::is_same_v<T, XMLNodeCDATA>)
+        {
+            if (xmlNode.getNodeType() != XMLNodeType::cdata)
+            {
+                throw XMLNode::Error("Node not CDATA.");
+            }
+        }
+        else if constexpr (std::is_same_v<T, XMLNodePI>)
+        {
+            if (xmlNode.getNodeType() != XMLNodeType::pi)
+            {
+                throw XMLNode::Error("Node not a PI.");
+            }
+        }
+        else if constexpr (std::is_same_v<T, XMLNodeDTD>)
+        {
+            if (xmlNode.getNodeType() != XMLNodeType::dtd)
+            {
+                throw XMLNode::Error("Node not DTD.");
+            }
+        }
+    }
     template <typename T>
     T &XMLNodeRef(XMLNode &xmlNode)
     {
+        CheckXMLNodeType<T>(xmlNode);
         return (static_cast<T &>(xmlNode));
     }
     template <typename T>
     const T &XMLNodeRef(const XMLNode &xmlNode)
     {
+        CheckXMLNodeType<T>(xmlNode);
         return (static_cast<const T &>(xmlNode));
     }
-    //
+    // ====================
     // XMLNode index access
-    //
+    // ====================
     inline const XMLNode &XMLNode::operator[](int index) const // Array
     {
         if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XMLNode>(*this).children.size()))))
@@ -238,9 +316,9 @@ namespace XMLLib
         }
         throw std::runtime_error("Invalid index used to access array.");
     }
-    //
+    // ===================
     // XMLNode name access
-    //
+    // ===================
     inline const XMLNode &XMLNode::operator[](const std::string &name) const // Array
     {
         if (xmlNodeType <= XMLNodeType::element)
@@ -255,9 +333,9 @@ namespace XMLLib
         }
         throw std::runtime_error("Invalid index used to access array.");
     }
-    //
-    // XNodeElement index access
-    //
+    // ===========================
+    // XMLNodeElement index access
+    // ===========================
     inline const XMLNodeElement &XMLNodeElement::operator[](int index) const // Array
     {
         int number = 0;
@@ -277,9 +355,9 @@ namespace XMLLib
         }
         throw std::runtime_error("Invalid index used to access array.");
     }
-    //
-    // XNodeElement name access
-    //
+    // ==========================
+    // XMLNodeElement name access
+    // ==========================
     inline const XMLNodeElement &XMLNodeElement::operator[](const std::string &name) const // Array
     {
         if (getNodeType() <= XMLNodeType::element)
@@ -294,9 +372,9 @@ namespace XMLLib
         }
         throw std::runtime_error("Invalid index used to access array.");
     }
-    //
+    // ====================
     // XMLNode get contents
-    //
+    // ====================
     inline const std::string XMLNode::getContents() const
     {
         std::string result;

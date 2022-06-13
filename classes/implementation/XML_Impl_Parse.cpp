@@ -384,7 +384,7 @@ namespace XMLLib
     /// <param name="source">XML source stream.</param>
     XMLNode::Ptr XML_Impl::parseProlog(ISource &source)
     {
-        XMLNodeProlog xmlNodeProlog{XMLNodeType::prolog};
+        XMLNodeProlog xmlNodeProlog;
         source.ignoreWS();
         xmlNodeProlog.children.emplace_back(parseDeclaration(source));
         while (source.more())
