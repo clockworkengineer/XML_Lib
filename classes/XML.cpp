@@ -52,7 +52,7 @@ namespace XMLLib
     /// <summary>
     /// Return reference to any internal DTD for parsed XML.
     /// </summary>
-    DTD &XML::dtd()
+    XMLNodeDTD &XML::dtd()
     {
         return (m_implementation->dtd());
     }

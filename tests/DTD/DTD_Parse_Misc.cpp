@@ -34,7 +34,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::internal);
   }
   SECTION("XML with external (SYSTEM) DTD", "[XML][DTD][Parse]")
@@ -48,7 +48,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
   }
   SECTION("XML with external (PUBLIC) DTD", "[XML][DTD][Parse]")
@@ -62,7 +62,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
   }
   SECTION("XML with external DTD with !NOTATION to parse and check values.", "[XML][DTD][Parse]")
@@ -72,7 +72,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().getNotation("GIF").type == "SYSTEM");
@@ -104,7 +104,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::internal);
   }
 }
@@ -128,7 +128,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::internal);
     REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
@@ -156,7 +156,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
@@ -174,7 +174,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
@@ -295,7 +295,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
   }
   SECTION("XML with a DTD with conditional INCLUDE containing an entity.", "[XML][DTD][Parse][Conditional]")
@@ -307,7 +307,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "Joe Smith");
   }
@@ -340,7 +340,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "Joe Smith");
   }
@@ -353,7 +353,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "");
   }
@@ -366,7 +366,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "Joe Smith");
   }
@@ -379,7 +379,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "Joe Smith");
     REQUIRE(dtd.parsed().m_entityMapper.get("&example1;").internal == "Joe Smith 1");
@@ -393,7 +393,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "");
     REQUIRE(dtd.parsed().m_entityMapper.get("&example1;").internal == "Joe Smith 1");
@@ -407,7 +407,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == DTD::DTDType::external);
     REQUIRE(dtd.parsed().m_entityMapper.get("&example1;").internal == "");
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "");
@@ -421,7 +421,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == (DTD::DTDType::internal | DTD::DTDType::external));
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "Joe Smith");
     REQUIRE(dtd.parsed().m_entityMapper.get("&example1;").internal == "Joe Smith 1");
@@ -435,7 +435,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     BufferSource source { xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE(dtd.parsed().getType() == (DTD::DTDType::internal | DTD::DTDType::external));
     REQUIRE(dtd.parsed().m_entityMapper.get("&example;").internal == "");
     REQUIRE(dtd.parsed().m_entityMapper.get("&example1;").internal == "");

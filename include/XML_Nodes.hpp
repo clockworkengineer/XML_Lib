@@ -7,16 +7,17 @@
 #include <string>
 #include <memory>
 #include <algorithm>
+
+#include <DTD_Parsed.hpp>
 // =========
 // NAMESPACE
 // =========
 namespace XMLLib
-{ 
+{
     // ===================================================
     // Forward declarations for interfaces/classes/structs
     // ===================================================
     class IXMLEntityMapper;
-    struct DTDParsed;
     // ==============
     // XML Node types
     // ==============
@@ -224,8 +225,22 @@ namespace XMLLib
     {
         explicit XMLNodeDTD(IXMLEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType)
         {
-             m_parsed = std::make_unique<DTDParsed>(entityMapper);
+            m_parsed = std::make_unique<DTDParsed>(entityMapper);
         }
+        DTDParsed &parsed() const
+        {
+            return (*m_parsed);
+        }
+        const std::string &unparsed()
+        {
+            return (m_unparsed);
+        }
+        void setUnparsed(const std::string &unparsed)
+        {
+            m_unparsed = unparsed;
+        }
+
+    private:
         std::unique_ptr<DTDParsed> m_parsed;
         std::string m_unparsed;
     };

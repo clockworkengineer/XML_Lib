@@ -24,6 +24,7 @@ namespace XMLLib
     struct XMLNodeElement;
     struct XMLNodeProlog;
     struct XMLNodeDeclaration;
+    struct XMLNodeDTD;
     // ================
     // CLASS DEFINITION
     // ================
@@ -44,7 +45,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        DTD &dtd();
+        XMLNodeDTD &dtd();
         XMLNodeProlog &prolog();
         XMLNodeDeclaration &declaration();
         XMLNodeElement &root();

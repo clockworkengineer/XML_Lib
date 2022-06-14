@@ -46,7 +46,7 @@ namespace XMLLib
         {
             if (dtdSource.current() == '%')
             {
-                conditionalValue = m_xmlNodeDTD.m_parsed->m_entityMapper.map(Core::parseEntityReference(dtdSource)).parsed;
+                conditionalValue = m_xmlNodeDTD.parsed().m_entityMapper.map(Core::parseEntityReference(dtdSource)).parsed;
             }
             else if (dtdSource.match(U"INCLUDE"))
             {
@@ -121,22 +121,22 @@ namespace XMLLib
         {
             if (dtdSource.match(U"<!ENTITY"))
             {
-                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_parsed->m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_xmlNodeDTD.parsed().m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseEntity(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!ELEMENT"))
             {
-                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_parsed->m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_xmlNodeDTD.parsed().m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseElement(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!ATTLIST"))
             {
-                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_parsed->m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_xmlNodeDTD.parsed().m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseAttributeList(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!NOTATION"))
             {
-                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_parsed->m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_xmlNodeDTD.parsed().m_entityMapper.translate(Core::parseTagBody(dtdSource)));
                 parseNotation(dtdTranslatedSource);
             }
             else if (dtdSource.match(U"<!--"))
@@ -170,12 +170,12 @@ namespace XMLLib
     /// </summary>
     void DTD_Impl::parseExternalReferenceContent()
     {
-        if (m_xmlNodeDTD.m_parsed->getExternalReference().type == "SYSTEM")
+        if (m_xmlNodeDTD.parsed().getExternalReference().type == "SYSTEM")
         {
-            FileSource dtdFile(m_xmlNodeDTD.m_parsed->getExternalReference().systemID);
+            FileSource dtdFile(m_xmlNodeDTD.parsed().getExternalReference().systemID);
             parseExternalContent(dtdFile);
         }
-        else if (m_xmlNodeDTD.m_parsed->getExternalReference().type == "PUBLIC")
+        else if (m_xmlNodeDTD.parsed().getExternalReference().type == "PUBLIC")
         {
             // Public external DTD currently not supported (Use system id ?)
         }
@@ -190,13 +190,13 @@ namespace XMLLib
         if (dtdSource.match(U"SYSTEM"))
         {
             dtdSource.ignoreWS();
-            return (XMLExternalReference{"SYSTEM", Core::parseValue(dtdSource, m_xmlNodeDTD.m_parsed->m_entityMapper).parsed, ""});
+            return (XMLExternalReference{"SYSTEM", Core::parseValue(dtdSource, m_xmlNodeDTD.parsed().m_entityMapper).parsed, ""});
         }
         else if (dtdSource.match(U"PUBLIC"))
         {
             dtdSource.ignoreWS();
-            std::string publicID{Core::parseValue(dtdSource, m_xmlNodeDTD.m_parsed->m_entityMapper).parsed};
-            std::string systemID{Core::parseValue(dtdSource, m_xmlNodeDTD.m_parsed->m_entityMapper).parsed};
+            std::string publicID{Core::parseValue(dtdSource, m_xmlNodeDTD.parsed().m_entityMapper).parsed};
+            std::string systemID{Core::parseValue(dtdSource, m_xmlNodeDTD.parsed().m_entityMapper).parsed};
             return (XMLExternalReference{"PUBLIC", systemID, publicID});
         }
         throw SyntaxError(dtdSource, "Invalid external DTD specifier.");

@@ -40,7 +40,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        DTDParsed &parsed() { return (*m_xmlNodeDTD.m_parsed); }
+        DTDParsed &parsed() { return (m_xmlNodeDTD.parsed()); }
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         // ================

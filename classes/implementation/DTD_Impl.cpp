@@ -57,6 +57,6 @@ namespace XMLLib
     /// <param name="destination">DTD destination stream.</param>
     void DTD_Impl::stringify(IDestination &destination)
     {
-        destination.add(m_xmlNodeDTD.m_unparsed);
+        destination.add(m_xmlNodeDTD.unparsed());
     }
 } // namespace XMLLib

@@ -169,7 +169,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    DTD &dtd = xml.dtd();
+    XMLNodeDTD &dtd  = xml.dtd();
     REQUIRE_NOTHROW(xml.validate());
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
     REQUIRE(dtd.parsed().isElementPresent("person") == true);

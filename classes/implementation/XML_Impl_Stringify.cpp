@@ -130,7 +130,7 @@ namespace XMLLib
         // XML DTD
         case XMLNodeType::dtd:
         {
-            dtd().stringify(destination);
+            destination.add(dtd().unparsed());
             break;
         }
         default:

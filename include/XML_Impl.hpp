@@ -42,7 +42,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        DTD &dtd();
+        XMLNodeDTD &dtd();
         XMLNodeProlog &prolog();
         XMLNodeElement &root();
         XMLNodeDeclaration &declaration();

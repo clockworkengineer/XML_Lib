@@ -52,9 +52,17 @@ namespace XMLLib
     /// <summary>
     /// Return XML DTD.
     /// </summary>
-    DTD &XML_Impl::dtd()
+    XMLNodeDTD &XML_Impl::dtd()
     {
-        return (*m_dtd);
+        // Slow need to speed up.
+        for (auto &element : prolog().children)
+        {
+            if (element->getNodeType() == XMLNodeType::dtd)
+            {
+                return (XMLNodeRef<XMLNodeDTD>(*element));
+            }
+        }
+        throw std::runtime_error("Error: No root element found.");
     }
     /// <summary>
     /// Return XML prolog node.
