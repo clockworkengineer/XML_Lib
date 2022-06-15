@@ -50,7 +50,7 @@ namespace XMLLib
     {
     }
     /// <summary>
-    /// Return XML DTD.
+    /// Return XML DT node.
     /// </summary>
     XMLNodeDTD &XML_Impl::dtd()
     {
@@ -62,7 +62,7 @@ namespace XMLLib
                 return (XMLNodeRef<XMLNodeDTD>(*element));
             }
         }
-        throw std::runtime_error("Error: No root element found.");
+        throw std::runtime_error("Error: No DTD found.");
     }
     /// <summary>
     /// Return XML prolog node.

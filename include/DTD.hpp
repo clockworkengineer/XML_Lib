@@ -16,7 +16,6 @@ namespace XMLLib
     class DTD_Impl;
     class ISource;
     class IDestination;
-    struct DTDParsed;
     struct XMLNodeDTD;
     // ================
     // CLASS DEFINITION
@@ -45,8 +44,7 @@ namespace XMLLib
         ~DTD();
         // ==============
         // PUBLIC METHODS
-        // ==============
-        DTDParsed &parsed();
+        // ============== 
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         // ================

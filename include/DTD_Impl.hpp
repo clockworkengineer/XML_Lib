@@ -11,10 +11,6 @@
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
-//
-// DTD parsed data structure
-//
-#include "DTD_Parsed.hpp"
 // =========
 // NAMESPACE
 // =========
@@ -40,7 +36,6 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        DTDParsed &parsed() { return (m_xmlNodeDTD.parsed()); }
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         // ================

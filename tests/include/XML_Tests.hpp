@@ -9,9 +9,9 @@
 #include "XML.hpp"
 #include "XML_Types.hpp"
 #include "XML_Nodes.hpp"
+#include "IXMLEntityMapper.hpp"
 #include "DTD.hpp"
 #include "DTD_Element.hpp"
-#include "DTD_Parsed.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
 // ============

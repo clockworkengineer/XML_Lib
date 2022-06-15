@@ -7,8 +7,11 @@
 #include <string>
 #include <memory>
 #include <algorithm>
-
-#include <DTD_Parsed.hpp>
+#include <unordered_map>
+//
+// DTD element
+//
+#include "DTD_Element.hpp"
 // =========
 // NAMESPACE
 // =========
@@ -223,13 +226,8 @@ namespace XMLLib
     // ===
     struct XMLNodeDTD : XMLNode
     {
-        explicit XMLNodeDTD(IXMLEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType)
+        explicit XMLNodeDTD(IXMLEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType), m_entityMapper(entityMapper)
         {
-            m_parsed = std::make_unique<DTDParsed>(entityMapper);
-        }
-        DTDParsed &parsed() const
-        {
-            return (*m_parsed);
         }
         const std::string &unparsed()
         {
@@ -239,9 +237,80 @@ namespace XMLLib
         {
             m_unparsed = unparsed;
         }
+        uint16_t getType() const
+        {
+            return (m_type);
+        }
+        void setType(uint16_t type)
+        {
+            m_type = type;
+        }
+        const std::string getRootName() const
+        {
+            return (m_name);
+        }
+        void setRootName(const std::string &name)
+        {
+            m_name = name;
+        }
+        XMLExternalReference getExternalReference() const
+        {
+            return (m_external);
+        }
+        void setExternalReference(const XMLExternalReference &reference)
+        {
+            m_external = reference;
+        }
+        bool isElementPresent(const std::string &elementName) const
+        {
+            return (m_elements.find(elementName) != m_elements.end());
+        }
+        DTDElement &getElement(const std::string &elementName)
+        {
+            return (m_elements[elementName]);
+        }
+        void addElement(const std::string &elementName, const DTDElement &element)
+        {
+            m_elements.emplace(elementName, element);
+        }
+        [[nodiscard]] long getElementCount() const
+        {
+            return (static_cast<long>(m_elements.size()));
+        }
+        XMLExternalReference &getNotation(const std::string &notationName)
+        {
+            auto notation = m_notations.find(notationName);
+            if (notation != m_notations.end())
+            {
+                return (notation->second);
+            }
+            throw std::runtime_error("Error: Could not find notation name.");
+        }
+        void addNotation(const std::string &notationName, const XMLExternalReference &notation)
+        {
+            m_notations.emplace(notationName, notation);
+        }
+        [[nodiscard]] long getNotationCount(const std::string &notationName) const
+        {
+            return (static_cast<long>(m_notations.count(notationName)));
+        }
+        long getLineCount() const
+        {
+            return (m_lineCount);
+        }
+        void setLineCount(long lineCount)
+        {
+            m_lineCount = lineCount;
+        }
+        IXMLEntityMapper &m_entityMapper;
 
     private:
-        std::unique_ptr<DTDParsed> m_parsed;
+        uint16_t m_type{};
+        long m_lineCount{};
+        std::string m_name;
+        XMLExternalReference m_external{""};
+        std::unordered_map<std::string, DTDElement> m_elements;
+        std::unordered_map<std::string, XMLExternalReference> m_notations;
         std::string m_unparsed;
     };
     // ===========================

@@ -4,12 +4,12 @@
 //
 #include <string>
 #include <set>
+#include <regex>
 //
 // XML DTD
 //
 #include "DTD.hpp"
 #include "DTD_Element.hpp"
-#include "DTD_Parsed.hpp"
 //
 // XML Validator interface
 //
@@ -31,7 +31,7 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        explicit XML_Validator(DTDParsed &dtdParsed) : m_dtdParsed(dtdParsed) {}
+        explicit XML_Validator( XMLNodeDTD &xmlNodeDTD) : m_xmlNodeDTD(xmlNodeDTD) {}
         // ==========
         // DESTRUCTOR
         // ==========
@@ -70,6 +70,6 @@ namespace XMLLib
         std::set<std::string> m_assignedIDValues;
         std::set<std::string> m_assignedIDREFValues;
         long m_lineNumber = 1;
-        DTDParsed &m_dtdParsed;
+        XMLNodeDTD &m_xmlNodeDTD;
     };
 } // namespace XMLLib

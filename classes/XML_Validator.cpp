@@ -16,13 +16,10 @@
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
+#include "IXMLEntityMapper.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================
-//
-// C++ STL
-//
-#include <regex>
 // =========
 // NAMESPACE
 // =========
@@ -235,7 +232,7 @@ namespace XMLLib
         }
         else if ((attribute.type & DTDAttributeType::entity) != 0)
         {
-            if (!m_dtdParsed.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";"))
+            if (!m_xmlNodeDTD.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";"))
             {
                 elementError(xNodeElement, "ENTITY attribute '" + attribute.name + "' value '" +
                                                elementAttribute.value.parsed + "' is not defined.");
@@ -245,7 +242,7 @@ namespace XMLLib
         {
             for (auto &entity : Core::splitString(elementAttribute.value.parsed, ' '))
             {
-                if (!m_dtdParsed.m_entityMapper.isPresent("&" + entity + ";"))
+                if (!m_xmlNodeDTD.m_entityMapper.isPresent("&" + entity + ";"))
                 {
                     elementError(xNodeElement, "ENTITIES attribute '" + attribute.name +
                                                    "' value '" + entity + "' is not defined.");
@@ -290,7 +287,7 @@ namespace XMLLib
     void XML_Validator::checkAttributes(XMLNode &xmlNode)
     {
         XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
-        for (auto &attribute : m_dtdParsed.getElement(xNodeElement.elementName).attributes)
+        for (auto &attribute : m_xmlNodeDTD.getElement(xNodeElement.elementName).attributes)
         {
             if (xNodeElement.isAttributePresent(attribute.name))
             {
@@ -306,11 +303,11 @@ namespace XMLLib
     void XML_Validator::checkContentSpecification(XMLNode &xmlNode)
     {
         XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
-        if (m_dtdParsed.getElementCount() == 0)
+        if (m_xmlNodeDTD.getElementCount() == 0)
         {
             return;
         }
-        if (m_dtdParsed.getElement(xNodeElement.elementName).content.parsed == "((<#PCDATA>))")
+        if (m_xmlNodeDTD.getElement(xNodeElement.elementName).content.parsed == "((<#PCDATA>))")
         {
             if (!checkIsPCDATA(xmlNode))
             {
@@ -318,7 +315,7 @@ namespace XMLLib
             }
             return;
         }
-        if (m_dtdParsed.getElement(xNodeElement.elementName).content.parsed == "EMPTY")
+        if (m_xmlNodeDTD.getElement(xNodeElement.elementName).content.parsed == "EMPTY")
         {
             if (!checkIsEMPTY(xmlNode))
             {
@@ -326,11 +323,11 @@ namespace XMLLib
             }
             return;
         }
-        if (m_dtdParsed.getElement(xNodeElement.elementName).content.parsed == "ANY")
+        if (m_xmlNodeDTD.getElement(xNodeElement.elementName).content.parsed == "ANY")
         {
             return;
         }
-        std::regex match{m_dtdParsed.getElement(xNodeElement.elementName).content.parsed};
+        std::regex match{m_xmlNodeDTD.getElement(xNodeElement.elementName).content.parsed};
         std::string elements;
         for (auto &element : xNodeElement.children)
         {
@@ -350,7 +347,7 @@ namespace XMLLib
         if (!std::regex_match(elements, match))
         {
             elementError(xNodeElement, "does not conform to the content specification " +
-                                           m_dtdParsed.getElement(xNodeElement.elementName).content.unparsed + ".");
+                                           m_xmlNodeDTD.getElement(xNodeElement.elementName).content.unparsed + ".");
         }
     }
     /// <summary>
@@ -383,7 +380,7 @@ namespace XMLLib
         case XMLNodeType::element:
             if (xmlNode.getNodeType() == XMLNodeType::root &&
                 XMLNodeRef<XMLNodeElement>(xmlNode).elementName !=
-                    m_dtdParsed.getRootName())
+                    m_xmlNodeDTD.getRootName())
             {
                 throw ValidationError(
                     m_lineNumber, "DOCTYPE name does not match that of root element " +
@@ -428,7 +425,7 @@ namespace XMLLib
     /// validate.</param>
     void XML_Validator::checkAgainstDTD(XMLNodeProlog &prolog)
     {
-        m_lineNumber = m_dtdParsed.getLineCount();
+        m_lineNumber = m_xmlNodeDTD.getLineCount();
         checkElements(prolog);
         for (auto &idref : m_assignedIDREFValues)
         {

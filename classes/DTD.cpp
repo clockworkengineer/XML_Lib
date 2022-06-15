@@ -46,14 +46,6 @@ namespace XMLLib
     {
     }
     /// <summary>
-    ///
-    /// </summary>
-    /// <param name=""></param>
-    DTDParsed &DTD::parsed()
-    {
-        return (m_implementation->parsed());
-    }
-    /// <summary>
     /// Parse DTD read from source stream.
     /// </summary>
     /// <param name="dtdSource">DTD source stream.</param>

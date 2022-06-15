@@ -50,7 +50,7 @@ set (XML_INCLUDES
     ./include/XML_Types.hpp
     ./include/DTD.hpp
     ./include/DTD_Impl.hpp
-    ./include/DTD_ELement.hpp
+    ./include/DTD_Element.hpp
     ./include/XML_Validator.hpp
     ./include/XML_EntityMapper.hpp
 )

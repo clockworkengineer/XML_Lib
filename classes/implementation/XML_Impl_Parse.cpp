@@ -365,11 +365,11 @@ namespace XMLLib
     {
         if (m_dtd == nullptr)
         {
-            XMLNode::Ptr xmlNode = std::make_unique<XMLNodeDTD>(*m_entityMapper);
-            m_dtd = std::make_unique<DTD>(XMLNodeRef<XMLNodeDTD>(*xmlNode));
+            XMLNode::Ptr xmlNodeDTD = std::make_unique<XMLNodeDTD>(*m_entityMapper);
+            m_dtd = std::make_unique<DTD>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD));
             m_dtd->parse(source);
-            m_validator = std::make_unique<XML_Validator>(m_dtd->parsed());
-            return (xmlNode);
+            m_validator = std::make_unique<XML_Validator>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD));
+            return (xmlNodeDTD);
         }
 
         throw SyntaxError(source, "More than one DOCTYPE declaration.");
