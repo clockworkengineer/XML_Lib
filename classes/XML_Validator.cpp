@@ -121,18 +121,18 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkAttributeValue(XMLNode &xmlNode, const DTDAttribute &attribute)
+    void XML_Validator::checkAttributeValue(XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute)
     {
         XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         bool attributePresent = xNodeElement.isAttributePresent(attribute.name);
-        if ((attribute.type & DTDAttributeType::required) != 0)
+        if ((attribute.type & XMLNodeDTD::AttributeType::required) != 0)
         {
             if (!attributePresent)
             {
                 elementError(xNodeElement, "is missing required attribute '" + attribute.name + "'.");
             }
         }
-        else if ((attribute.type & DTDAttributeType::fixed) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::fixed) != 0)
         {
             if (attributePresent)
             {
@@ -168,11 +168,11 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkAttributeType(XMLNode &xmlNode, const DTDAttribute &attribute)
+    void XML_Validator::checkAttributeType(XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute)
     {
         XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
-        if ((attribute.type & DTDAttributeType::cdata) != 0)
+        if ((attribute.type & XMLNodeDTD::AttributeType::cdata) != 0)
         {
             if (elementAttribute.value.parsed.empty()) // No character data present.
             {
@@ -180,7 +180,7 @@ namespace XMLLib
                                                "' does not contain character data.");
             }
         }
-        else if ((attribute.type & DTDAttributeType::id) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::id) != 0)
         {
             if (!checkIsIDOK(elementAttribute.value.parsed))
             {
@@ -192,7 +192,7 @@ namespace XMLLib
             }
             m_assignedIDValues.insert(elementAttribute.value.parsed);
         }
-        else if ((attribute.type & DTDAttributeType::idref) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::idref) != 0)
         {
             if (!checkIsIDOK(elementAttribute.value.parsed))
             {
@@ -200,7 +200,7 @@ namespace XMLLib
             }
             m_assignedIDREFValues.insert(elementAttribute.value.parsed);
         }
-        else if ((attribute.type & DTDAttributeType::idrefs) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::idrefs) != 0)
         {
             for (auto &id : Core::splitString(elementAttribute.value.parsed, ' '))
             {
@@ -212,14 +212,14 @@ namespace XMLLib
                 m_assignedIDREFValues.insert(id);
             }
         }
-        else if ((attribute.type & DTDAttributeType::nmtoken) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::nmtoken) != 0)
         {
             if (!checkIsNMTOKENOK(elementAttribute.value.parsed))
             {
                 elementError(xNodeElement, "NMTOKEN attribute '" + attribute.name + "' is invalid.");
             }
         }
-        else if ((attribute.type & DTDAttributeType::nmtokens) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::nmtokens) != 0)
         {
             for (auto &nmtoken :
                  Core::splitString(elementAttribute.value.parsed, ' '))
@@ -230,7 +230,7 @@ namespace XMLLib
                 }
             }
         }
-        else if ((attribute.type & DTDAttributeType::entity) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::entity) != 0)
         {
             if (!m_xmlNodeDTD.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";"))
             {
@@ -238,7 +238,7 @@ namespace XMLLib
                                                elementAttribute.value.parsed + "' is not defined.");
             }
         }
-        else if ((attribute.type & DTDAttributeType::entities) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::entities) != 0)
         {
             for (auto &entity : Core::splitString(elementAttribute.value.parsed, ' '))
             {
@@ -249,7 +249,7 @@ namespace XMLLib
                 }
             }
         }
-        else if ((attribute.type & DTDAttributeType::notation) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::notation) != 0)
         {
             std::set<std::string> notations;
             for (auto &notation : Core::splitString(
@@ -263,7 +263,7 @@ namespace XMLLib
                                                elementAttribute.value.parsed + "' is not defined.");
             }
         }
-        else if ((attribute.type & DTDAttributeType::enumeration) != 0)
+        else if ((attribute.type & XMLNodeDTD::AttributeType::enumeration) != 0)
         {
             std::set<std::string> enumeration;
             for (auto &option : Core::splitString(

@@ -8,15 +8,12 @@
 #include <memory>
 #include <algorithm>
 #include <unordered_map>
-//
-// DTD element
-//
-#include "DTD_Element.hpp"
 // =========
 // NAMESPACE
 // =========
 namespace XMLLib
 {
+
     // ===================================================
     // Forward declarations for interfaces/classes/structs
     // ===================================================
@@ -226,6 +223,53 @@ namespace XMLLib
     // ===
     struct XMLNodeDTD : XMLNode
     {
+        //
+        // XML DTD attribute types. Note only one type bit and
+        // value bit should be set for each attribute and that
+        // some combinations like id and fixed are illegal and
+        // are reported as so by the parser.
+        //
+        enum AttributeType : uint16_t
+        {
+            // Types bits 0 - 9
+            cdata = (0x1 << 0),
+            enumeration = (0x1 << 1),
+            id = (0x1 << 2),
+            idref = (0x1 << 3),
+            idrefs = (0x1 << 4),
+            nmtoken = (0x1 << 5),
+            nmtokens = (0x1 << 6),
+            entity = (0x1 << 7),
+            entities = (0x1 << 8),
+            notation = (0x1 << 9),
+            // Value bits 10 - 13
+            normal = (0x1 << 10),
+            required = (0x1 << 11),
+            implied = (0x1 << 12),
+            fixed = (0x1 << 13)
+        };
+        //
+        // XML DTD attribute definition
+        //
+        struct Attribute
+        {
+            std::string name;
+            uint16_t type;
+            std::string enumeration;
+            XMLValue value{"", ""};
+        };
+        //
+        // XML DTD element definition
+        //
+        struct Element
+        {
+            Element() = default;
+            Element(const std::string &name, const XMLValue &content) : name(name), content(content) {}
+            std::string name;
+            bool idAttributePresent = false;
+            XMLValue content{"", ""};
+            std::vector<Attribute> attributes;
+        };
         explicit XMLNodeDTD(IXMLEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType), m_entityMapper(entityMapper)
         {
         }
@@ -265,11 +309,11 @@ namespace XMLLib
         {
             return (m_elements.find(elementName) != m_elements.end());
         }
-        DTDElement &getElement(const std::string &elementName)
+        XMLNodeDTD::Element &getElement(const std::string &elementName)
         {
             return (m_elements[elementName]);
         }
-        void addElement(const std::string &elementName, const DTDElement &element)
+        void addElement(const std::string &elementName, const XMLNodeDTD::Element &element)
         {
             m_elements.emplace(elementName, element);
         }
@@ -309,7 +353,7 @@ namespace XMLLib
         long m_lineCount{};
         std::string m_name;
         XMLExternalReference m_external{""};
-        std::unordered_map<std::string, DTDElement> m_elements;
+        std::unordered_map<std::string, XMLNodeDTD::Element> m_elements;
         std::unordered_map<std::string, XMLExternalReference> m_notations;
         std::string m_unparsed;
     };

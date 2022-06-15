@@ -368,7 +368,7 @@ namespace XMLLib
             XMLNode::Ptr xmlNodeDTD = std::make_unique<XMLNodeDTD>(*m_entityMapper);
             m_dtd = std::make_unique<DTD>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD));
             m_dtd->parse(source);
-            m_validator = std::make_unique<XML_Validator>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD));
+            m_validator = std::make_unique<XML_Validator>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD)) ;
             return (xmlNodeDTD);
         }
 

@@ -175,7 +175,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE(xmlNodeDTD.isElementPresent("person") == true);
     REQUIRE(xmlNodeDTD.getElement("person").attributes.size() == 1);
     REQUIRE(xmlNodeDTD.getElement("person").attributes[0].name == "gender");
-    REQUIRE(xmlNodeDTD.getElement("person").attributes[0].type == (DTDAttributeType::enumeration | DTDAttributeType::normal));
+    REQUIRE(xmlNodeDTD.getElement("person").attributes[0].type == (XMLNodeDTD::AttributeType::enumeration | XMLNodeDTD::AttributeType::normal));
     REQUIRE(xmlNodeDTD.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(xmlNodeDTD.getElement("person").attributes[0].value.parsed == "F");
     REQUIRE(xmlNodeDTD.getRootName() == "queue");

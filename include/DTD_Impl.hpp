@@ -53,7 +53,7 @@ namespace XMLLib
         // ===============
 
         void parseValidNotations(const std::string &notations);
-        void parseValidateAttribute(const std::string &elementName, const DTDAttribute &dtdAttribute);
+        void parseValidateAttribute(const std::string &elementName, const XMLNodeDTD::Attribute &dtdAttribute);
         void parseConditional(ISource &dtdSource, bool includeOff = true);
         void parseParameterEntities(ISource &dtdSource);
         void parseExternalContent(ISource &dtdSource);
@@ -72,8 +72,8 @@ namespace XMLLib
         void parseEntity(ISource &dtdSource);
         void parseElement(ISource &dtdSource);
         XMLExternalReference parseExternalReference(ISource &dtdSource);
-        void parseAttributeType(ISource &dtdSource, DTDAttribute &attribute);
-        void parseAttributeValue(ISource &dtdSource, DTDAttribute &attribute);
+        void parseAttributeType(ISource &dtdSource, XMLNodeDTD::Attribute &attribute);
+        void parseAttributeValue(ISource &dtdSource, XMLNodeDTD::Attribute &attribute);
         void parseComment(ISource &dtdSource);
         void parseParameterEntityReference(ISource &dtdSource);
         void parseExternal(ISource &dtdSource);
