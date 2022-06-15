@@ -66,7 +66,7 @@ TEST_CASE("Parse XML DTD with atttributes and check values.", "[XML][DTD][Parse]
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(xmlNodeDTD.getRootName() == "TVSCHEDULE");
     REQUIRE(xmlNodeDTD.getElement("TVSCHEDULE").name == "TVSCHEDULE");
@@ -120,7 +120,7 @@ TEST_CASE("Parse XML DTD with atttributes and check values.", "[XML][DTD][Parse]
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(xmlNodeDTD.getRootName() == "CATALOG");
     REQUIRE(xmlNodeDTD.getElement("PRODUCT").name == "PRODUCT");
@@ -168,7 +168,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.isElementPresent("person") == true);
     REQUIRE(xmlNodeDTD.getElement("person").attributes.size() == 1);
     REQUIRE(xmlNodeDTD.getElement("person").attributes[0].name == "gender");
@@ -308,7 +308,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     REQUIRE_NOTHROW(xml.parse(source));
     XMLNodeDTD &xmlNodeDTD = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.isElementPresent("mountain") == true);
     REQUIRE(xmlNodeDTD.getElement("mountain").attributes.size() == 2);
     REQUIRE(xmlNodeDTD.getElement("mountain").attributes[0].name == "photo");

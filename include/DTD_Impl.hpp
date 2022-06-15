@@ -51,7 +51,6 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
-
         void parseValidNotations(const std::string &notations);
         void parseValidateAttribute(const std::string &elementName, const XMLNodeDTD::Attribute &dtdAttribute);
         void parseConditional(ISource &dtdSource, bool includeOff = true);

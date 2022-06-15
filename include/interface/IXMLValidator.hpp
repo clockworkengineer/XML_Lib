@@ -8,9 +8,9 @@
 // =========
 namespace XMLLib
 {
-    //
+    // =======================
     // XML validator interface
-    //
+    // =======================
     class IXMLValidator
     {
     public:

@@ -38,13 +38,16 @@ namespace XMLLib
     // ==============
     // PUBLIC METHODS
     // ==============
-    DTD::DTD(XMLNodeDTD &xmlNodeDTD)
+    /// <summary>
+    /// DTD constructor.
+    /// </summary>
+    DTD::DTD(XMLNodeDTD &xmlNodeDTD) : m_implementation(std::make_unique<DTD_Impl>(xmlNodeDTD))
     {
-        m_implementation = std::make_unique<DTD_Impl>(xmlNodeDTD);
     }
-    DTD::~DTD()
-    {
-    }
+    /// <summary>
+    /// DTD constructor.
+    /// </summary>
+    DTD::~DTD() = default;
     /// <summary>
     /// Parse DTD read from source stream.
     /// </summary>

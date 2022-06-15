@@ -18,9 +18,9 @@
 namespace XMLLib
 {
 
-    //
+    // ===========================
     // XML Entity mapper interface
-    //
+    // ===========================
     class IXMLEntityMapper
     {
     public:

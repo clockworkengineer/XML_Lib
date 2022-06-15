@@ -10,9 +10,9 @@
 // =========
 namespace XMLLib
 {
-    //
-    // Interface for writing destination stream during XML/DTD stringification.
-    //
+    // =======================================================================
+    // Interface for writing destination stream during XML/DTD stringification
+    // =======================================================================
     class IDestination
     {
     public:

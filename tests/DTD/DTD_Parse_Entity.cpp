@@ -48,7 +48,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(XMLNodeRef<XMLNode>(xml.root()).getNodeType() == XMLNodeType::root);
     REQUIRE(xml.root()[4].elementName == "footer");
     REQUIRE(xml.root()[4].getContents() == reinterpret_cast<const char *>(u8"Writer: Donald Duck.\u00A0Copyright: W3Schools."));
@@ -64,7 +64,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.m_entityMapper.get("&example;").internal == "<p>An ampersand (&#38;) may be escaped numerically (&#38;#38;) or with a general entity (&amp;amp;).</p>");
     REQUIRE(xml.root()[0].elementName == "p");
     REQUIRE(xml.root()[0].getContents() == "An ampersand (&) may be escaped numerically (&#38;) or with a general entity (&amp;).");
@@ -84,7 +84,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.m_entityMapper.get("%xx;").internal == "%zz;");
     REQUIRE(xmlNodeDTD.m_entityMapper.get("%zz;").internal == "<!ENTITY tricky \"error-prone\" >");
     REQUIRE(xml.root().elementName == "test");
@@ -102,7 +102,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.m_entityMapper.get("&x;").internal == "&lt;");
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getAttributeList().size() == 1);
     XMLAttribute attribute = xml.root().getAttribute("attr");
@@ -138,7 +138,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.m_entityMapper.get("&js;").internal == "Jo Smith &email;");
     REQUIRE(xml.root().elementName == "author");
     REQUIRE(XMLNodeRef<XMLNode>(*xml.root().children[0]).getNodeType() == XMLNodeType::entity);
@@ -175,7 +175,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.m_entityMapper.get("&email;").internal == "josmith@theworldaccordingtojosmith.com");
   }
   SECTION("XML DTD with entity that is defined externally (file name.txt).", "[XML][DTD][Parse][Entity]")
@@ -191,7 +191,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(xml.root().elementName == "foo");
     REQUIRE(xml.root().getContents() == "Hello John Joe Doe");
@@ -231,7 +231,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::internal);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::internal);
     REQUIRE(xmlNodeDTD.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(xmlNodeDTD.getRootName() == "REPORT");
     REQUIRE(xmlNodeDTD.m_entityMapper.get("%empty_report;").internal == "<!ELEMENT REPORT EMPTY>");
@@ -246,7 +246,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::external);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::external);
   }
 
   SECTION("XML with external DTD with both types of entities to parse an check values", "[XML][DTD][Parse][Entity]")
@@ -258,7 +258,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[1]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::external);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::external);
     REQUIRE(xmlNodeDTD.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
     REQUIRE(xmlNodeDTD.getRootName() == "REPORT");
     REQUIRE(xmlNodeDTD.m_entityMapper.get("%contact;").internal == "phone");
@@ -286,7 +286,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     xml.parse(source);
     XMLNodeDTD &xmlNodeDTD  = xml.dtd();
     REQUIRE(XMLNodeRef<XMLNode>(*xml.prolog().children[2]).getNodeType() == XMLNodeType::dtd);
-    REQUIRE(xmlNodeDTD.getType() == DTD::DTDType::external);
+    REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::external);
     REQUIRE(XMLNodeRef<XMLNode>(xml.root()).getNodeType() == XMLNodeType::root);
     REQUIRE(xmlNodeDTD.m_entityMapper.get("&signature;").internal == "© 1999 Yoyodyne, Inc. &legal;");
     REQUIRE(xml.root().getContents() == "© 1999 Yoyodyne, Inc. All Rights Reserved.");

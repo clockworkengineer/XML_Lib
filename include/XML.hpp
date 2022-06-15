@@ -2,8 +2,6 @@
 //
 // C++ STL
 //
-#include <string>
-#include <stdexcept>
 #include <memory>
 //
 // XML version
@@ -20,7 +18,6 @@ namespace XMLLib
     class XML_Impl;
     class ISource;
     class IDestination;
-    class DTD;
     struct XMLNodeElement;
     struct XMLNodeProlog;
     struct XMLNodeDeclaration;

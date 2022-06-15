@@ -26,14 +26,6 @@ namespace XMLLib
         // ==========================
         // PUBLIC TYPES AND CONSTANTS
         // ==========================
-        //
-        // DTD Type
-        //
-        enum DTDType : uint8_t
-        {
-            internal = (0x1 << 0),
-            external = (0x1 << 1)
-        };
         // ============
         // CONSTRUCTORS
         // ============

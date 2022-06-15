@@ -11,9 +11,9 @@
 // =========
 namespace XMLLib
 {
-    //
-    // Interface for reading source stream during XML/DTD parsing.
-    //
+    // ==========================================================
+    // Interface for reading source stream during XML/DTD parsing
+    // ==========================================================
     class ISource
     {
     public:

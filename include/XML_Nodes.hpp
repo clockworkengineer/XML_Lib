@@ -224,6 +224,14 @@ namespace XMLLib
     struct XMLNodeDTD : XMLNode
     {
         //
+        // DTD Type
+        //
+        enum Type : uint8_t
+        {
+            internal = (0x1 << 0),
+            external = (0x1 << 1)
+        };
+        //
         // XML DTD attribute types. Note only one type bit and
         // value bit should be set for each attribute and that
         // some combinations like id and fixed are illegal and
@@ -273,7 +281,7 @@ namespace XMLLib
         explicit XMLNodeDTD(IXMLEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd) : XMLNode(nodeType), m_entityMapper(entityMapper)
         {
         }
-        const std::string &unparsed()
+        const std::string &unparsed() const
         {
             return (m_unparsed);
         }
@@ -328,7 +336,7 @@ namespace XMLLib
             {
                 return (notation->second);
             }
-            throw std::runtime_error("Error: Could not find notation name.");
+            throw XMLNode::Error("Could not find notation name.");
         }
         void addNotation(const std::string &notationName, const XMLExternalReference &notation)
         {

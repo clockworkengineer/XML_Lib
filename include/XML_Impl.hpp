@@ -17,6 +17,10 @@
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
 #include "XML_EntityMapper.hpp"
+//
+// DTD
+//
+#include "DTD.hpp"
 // =========
 // NAMESPACE
 // =========

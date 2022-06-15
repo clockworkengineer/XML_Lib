@@ -403,7 +403,7 @@ namespace XMLLib
             dtdSource.next();
             dtdSource.ignoreWS();
             parseInternal(dtdSource);
-            m_xmlNodeDTD.setType(DTD::DTDType::internal);
+            m_xmlNodeDTD.setType(XMLNodeDTD::Type::internal);
         }
         // Missing '>' after external DTD reference
         else if (dtdSource.current() != '>')
@@ -420,7 +420,7 @@ namespace XMLLib
         if (!m_xmlNodeDTD.getExternalReference().type.empty())
         {
             parseExternal(dtdSource);
-            m_xmlNodeDTD.setType(m_xmlNodeDTD.getType() | DTD::DTDType::external);
+            m_xmlNodeDTD.setType(m_xmlNodeDTD.getType() | XMLNodeDTD::Type::external);
         }
         // Save away unparsed form of DTD
         m_xmlNodeDTD.setUnparsed(std::string("<!DOCTYPE") + dtdSource.getRange(start, dtdSource.position()));

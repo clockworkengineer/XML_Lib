@@ -90,7 +90,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <returns>true if element contains characters otherwise false.</returns>
-    bool XML_Validator::checkIsPCDATA(const XMLNode &xmlNode)
+    bool XML_Validator::checkIsPCDATA(XMLNode &xmlNode)
     {
         for (const auto &element : xmlNode.children)
         {
@@ -106,7 +106,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <returns>true if element empty otherwise false.</returns>
-    bool XML_Validator::checkIsEMPTY(const XMLNode &xmlNode)
+    bool XML_Validator::checkIsEMPTY(XMLNode &xmlNode)
     {
         return (xmlNode.children.empty() || xmlNode.getNodeType() == XMLNodeType::self);
     }

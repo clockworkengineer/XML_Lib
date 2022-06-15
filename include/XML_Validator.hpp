@@ -6,10 +6,6 @@
 #include <set>
 #include <regex>
 //
-// XML DTD
-//
-#include "DTD.hpp"
-//
 // XML Validator interface
 //
 #include "IXMLValidator.hpp"
@@ -30,7 +26,7 @@ namespace XMLLib
         // ============
         // CONSTRUCTORS
         // ============
-        explicit XML_Validator( XMLNodeDTD &xmlNodeDTD) : m_xmlNodeDTD(xmlNodeDTD) {}
+        explicit XML_Validator(XMLNodeDTD &xmlNodeDTD) : m_xmlNodeDTD(xmlNodeDTD) {}
         // ==========
         // DESTRUCTOR
         // ==========
@@ -60,8 +56,8 @@ namespace XMLLib
         bool checkIsIDOK(const std::string &idValue);
         void checkAttributeValue(XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
         void checkAttributeType(XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
-        bool checkIsPCDATA(const XMLNode &xmlNode);
-        bool checkIsEMPTY(const XMLNode &xmlNode);
+        bool checkIsPCDATA(XMLNode &xmlNode);
+        bool checkIsEMPTY(XMLNode &xmlNode);
         void checkAgainstDTD(XMLNodeProlog &prolog);
         // =================
         // PRIVATE VARIABLES
