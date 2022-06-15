@@ -9,7 +9,6 @@
 // XML DTD
 //
 #include "DTD.hpp"
-#include "DTD_Element.hpp"
 //
 // XML Validator interface
 //

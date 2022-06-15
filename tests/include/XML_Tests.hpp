@@ -11,7 +11,6 @@
 #include "XML_Nodes.hpp"
 #include "IXMLEntityMapper.hpp"
 #include "DTD.hpp"
-#include "DTD_Element.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
 // ============
