@@ -49,6 +49,7 @@ namespace XMLLib
             {
                 return (errorMessage.c_str());
             }
+
         private:
             const std::string errorMessage;
         };
@@ -67,6 +68,7 @@ namespace XMLLib
         const XMLNode &operator[](int index) const;
         const XMLNode &operator[](const std::string &name) const;
         std::vector<XMLNode::Ptr> children;
+
     private:
         XMLNodeType xmlNodeType;
     };
@@ -123,6 +125,7 @@ namespace XMLLib
         {
             m_standalone = standalone;
         }
+
     private:
         std::string m_version{"1.0"};
         std::string m_encoding{"UTF-8"};
@@ -165,7 +168,17 @@ namespace XMLLib
         explicit XMLNodeCDATA(XMLNodeType nodeType = XMLNodeType::cdata) : XMLNode(nodeType)
         {
         }
-        std::string cdata;
+        std::string CDATA()
+        {
+            return (m_cdata);
+        }
+        void setCDATA(const std::string &cdata)
+        {
+            m_cdata = cdata;
+        }
+
+    private:
+        std::string m_cdata;
     };
     // ===============
     // EntityReference
@@ -232,6 +245,7 @@ namespace XMLLib
         const XMLNodeElement &operator[](int index) const;
         const XMLNodeElement &operator[](const std::string &name) const;
         std::string elementName;
+
     private:
         XMLAttributeList namespaces;
         XMLAttributeList attributes;
@@ -394,6 +408,7 @@ namespace XMLLib
             m_lineCount = lineCount;
         }
         IXMLEntityMapper &m_entityMapper;
+
     private:
         uint16_t m_type{};
         long m_lineCount{};
@@ -579,7 +594,7 @@ namespace XMLLib
             }
             else if (node->getNodeType() == XMLNodeType::cdata)
             {
-                result += XMLNodeRef<XMLNodeCDATA>(*node).cdata;
+                result += XMLNodeRef<XMLNodeCDATA>(*node).CDATA();
             }
         }
         return (result);

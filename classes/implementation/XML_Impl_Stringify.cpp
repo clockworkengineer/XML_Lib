@@ -125,7 +125,7 @@ namespace XMLLib
         case XMLNodeType::cdata:
         {
             XMLNodeCDATA &xmlNodeCDATA = XMLNodeRef<XMLNodeCDATA>(xmlNode);
-            destination.add("<![CDATA[" + xmlNodeCDATA.cdata + "]]>");
+            destination.add("<![CDATA[" + xmlNodeCDATA.CDATA() + "]]>");
             break;
         }
         // XML DTD

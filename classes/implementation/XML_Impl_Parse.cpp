@@ -87,15 +87,17 @@ namespace XMLLib
     XMLNode::Ptr XML_Impl::parseCDATA(ISource &source)
     {
         XMLNodeCDATA xmlNodeCDATA;
+        std::string cdata;
         while (source.more() && !source.match(U"]]>"))
         {
             if (source.match(U"<![CDATA["))
             {
                 throw SyntaxError(source, "Nesting of CDATA sections is not allowed.");
             }
-            xmlNodeCDATA.cdata += source.current_to_bytes();
+            cdata += source.current_to_bytes();
             source.next();
         }
+        xmlNodeCDATA.setCDATA(cdata);
         return (std::make_unique<XMLNodeCDATA>(std::move(xmlNodeCDATA)));
     }
     /// <summary>
