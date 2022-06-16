@@ -20,8 +20,7 @@ namespace XMLLib
     class BufferDestination : public IDestination
     {
     public:
-        BufferDestination()
-        = default;
+        BufferDestination() = default;
         void add(const std::string &bytes) override
         {
             for (auto b : bytes)

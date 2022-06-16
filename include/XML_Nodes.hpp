@@ -180,7 +180,7 @@ namespace XMLLib
     // ===============
     struct XMLNodeEntityReference : XMLNode
     {
-        explicit XMLNodeEntityReference(const XMLValue &value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), m_value(std::move(value))
+        explicit XMLNodeEntityReference(const XMLValue &value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), m_value(value)
         {
         }
         const XMLValue value() const

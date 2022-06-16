@@ -25,13 +25,14 @@ namespace XMLLib
         // ==========================
         // PUBLIC TYPES AND CONSTANTS
         // ==========================
-        // ============
-        // CONSTRUCTORS
-        // ============
-        DTD_Impl(XMLNodeDTD &xmlNodeDTD);
-        // ==========
-        // DESTRUCTOR
-        // ==========
+        // ======================
+        // CONSTRUCTOR/DESTRUCTOR
+        // ======================
+        explicit DTD_Impl(XMLNodeDTD &xmlNodeDTD);
+        DTD_Impl(const DTD_Impl &other) = delete;
+        DTD_Impl &operator=(const DTD_Impl &other) = delete;
+        DTD_Impl(DTD_Impl&& other) = delete;
+        DTD_Impl& operator=(DTD_Impl&& other) = delete;
         ~DTD_Impl();
         // ==============
         // PUBLIC METHODS

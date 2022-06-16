@@ -28,13 +28,14 @@ namespace XMLLib
         // ==========================
         // PUBLIC TYPES AND CONSTANTS
         // ==========================
-        // ============
-        // CONSTRUCTORS
-        // ============
+        // ======================
+        // CONSTRUCTOR/DESTRUCTOR
+        // ======================
         XML_EntityMapper();
-        // ==========
-        // DESTRUCTOR
-        // ==========
+        XML_EntityMapper(const XML_EntityMapper &other) = delete;
+        XML_EntityMapper &operator=(const XML_EntityMapper &other) = delete;
+        XML_EntityMapper(XML_EntityMapper &&other) = delete;
+        XML_EntityMapper &operator=(XML_EntityMapper &&other) = delete;
         ~XML_EntityMapper() override;
         // ==============
         // PUBLIC METHODS
@@ -44,7 +45,7 @@ namespace XMLLib
         void remove(const std::string &entityName) override;
         [[nodiscard]] bool isPresent(const std::string &entityName) const override;
         std::map<std::string, XMLEntityMapping> &getList() override;
-        XMLValue  map(const XMLValue &entityReference) override;
+        XMLValue map(const XMLValue &entityReference) override;
         [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
         void recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities) override;
         // ================

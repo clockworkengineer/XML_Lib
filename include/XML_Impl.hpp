@@ -35,13 +35,14 @@ namespace XMLLib
         // ==========================
         // PUBLIC TYPES AND CONSTANTS
         // ==========================
-        // ============
-        // CONSTRUCTORS
-        // ============
+        // ======================
+        // CONSTRUCTOR/DESTRUCTOR
+        // ======================
         XML_Impl();
-        // ==========
-        // DESTRUCTOR
-        // ==========
+        XML_Impl(const XML_Impl &other) = delete;
+        XML_Impl &operator=(const XML_Impl &other) = delete;
+        XML_Impl(XML_Impl &&other) = delete;
+        XML_Impl &operator=(XML_Impl &&other) = delete;
         ~XML_Impl();
         // ==============
         // PUBLIC METHODS
@@ -77,7 +78,7 @@ namespace XMLLib
         XMLNode::Ptr parsePI(ISource &source);
         void parseWhiteSpaceToContent(ISource &source, XMLNode &xmlNode);
         void parseElementContents(ISource &source, XMLNode &xmlNode);
-        XMLNode::Ptr parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType=XMLNodeType::element);
+        XMLNode::Ptr parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType = XMLNodeType::element);
         XMLNode::Ptr parseDeclaration(ISource &source);
         XMLNode::Ptr parseDTD(ISource &source);
         XMLNode::Ptr parseProlog(ISource &source);

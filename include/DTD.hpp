@@ -26,17 +26,18 @@ namespace XMLLib
         // ==========================
         // PUBLIC TYPES AND CONSTANTS
         // ==========================
-        // ============
-        // CONSTRUCTORS
-        // ============
-        DTD(XMLNodeDTD &xmlNodeDTD);
-        // ==========
-        // DESTRUCTOR
-        // ==========
+        // ======================
+        // CONSTRUCTOR/DESTRUCTOR
+        // ======================
+        explicit DTD(XMLNodeDTD &xmlNodeDTD);
+        DTD(const DTD &other) = delete;
+        DTD &operator=(const DTD &other) = delete;
+        DTD(DTD &&other) = delete;
+        DTD &operator=(DTD &&other) = delete;
         ~DTD();
         // ==============
         // PUBLIC METHODS
-        // ============== 
+        // ==============
         void parse(ISource &dtdSource);
         void stringify(IDestination &destination);
         // ================

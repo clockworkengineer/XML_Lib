@@ -31,13 +31,14 @@ namespace XMLLib
         // ==========================
         // PUBLIC TYPES AND CONSTANTS
         // ==========================
-        // ============
-        // CONSTRUCTORS
-        // ============
+        // ======================
+        // CONSTRUCTOR/DESTRUCTOR
+        // ======================
         XML();
-        // ==========
-        // DESTRUCTOR
-        // ==========
+        XML(const XML &other) = delete;
+        XML &operator=(const XML &other) = delete;
+        XML(XML&& other) = delete;
+        XML& operator=(XML&& other) = delete;
         ~XML();
         // ==============
         // PUBLIC METHODS
