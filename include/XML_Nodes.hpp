@@ -438,10 +438,10 @@ namespace XMLLib
         std::string m_unparsed;
     };
     // ===========================
-    // XMLNode reference converter
+    // XMLNode reference converted
     // ===========================
     template <typename T>
-    void CheckXMLNodeType(auto &xmlNode)
+    void CheckXMLNodeType(const XMLNode &xmlNode)
     {
         if constexpr (std::is_same_v<T, XMLNodeProlog>)
         {
