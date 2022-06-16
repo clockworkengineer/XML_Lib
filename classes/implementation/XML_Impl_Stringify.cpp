@@ -97,7 +97,7 @@ namespace XMLLib
         case XMLNodeType::comment:
         {
             XMLNodeComment &xmlNodeComment = XMLNodeRef<XMLNodeComment>(xmlNode);
-            destination.add("<!--" + xmlNodeComment.comment + "-->");
+            destination.add("<!--" + xmlNodeComment.comment() + "-->");
             break;
         }
         // XML element content

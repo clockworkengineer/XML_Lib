@@ -99,7 +99,7 @@ namespace XMLLib
         {
             return (m_standalone == "yes" || m_standalone == "no");
         }
-        const  std::string version() const
+        const std::string version() const
         {
             return (m_version);
         }
@@ -107,7 +107,7 @@ namespace XMLLib
         {
             m_version = version;
         }
-        const std::string encoding() const 
+        const std::string encoding() const
         {
             return (m_encoding);
         }
@@ -266,10 +266,19 @@ namespace XMLLib
     // =======
     struct XMLNodeComment : XMLNode
     {
-        explicit XMLNodeComment(XMLNodeType nodeType = XMLNodeType::comment) : XMLNode(nodeType)
+        explicit XMLNodeComment(const std::string &comment = "", XMLNodeType nodeType = XMLNodeType::comment) : XMLNode(nodeType), m_comment(comment)
         {
         }
-        std::string comment;
+        const std::string comment() const
+        {
+            return (m_comment);
+        }
+        void setComment(const std::string &comment)
+        {
+            m_comment = comment;
+        }
+    private:
+        std::string m_comment;
     };
     // ==
     // PI

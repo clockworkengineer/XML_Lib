@@ -50,17 +50,17 @@ namespace XMLLib
     /// <param name="source">XML source stream.</param>
     XMLNode::Ptr XML_Impl::parseComment(ISource &source)
     {
-        XMLNodeComment xmlNodeComment;
+        std::string comment;
         while (source.more() && !source.match(U"--"))
         {
-            xmlNodeComment.comment += source.current_to_bytes();
+            comment += source.current_to_bytes();
             source.next();
         }
         if (!source.match(U">"))
         {
             throw SyntaxError(source, "Missing closing '>' for comment line.");
         }
-        return (std::make_unique<XMLNodeComment>(std::move(xmlNodeComment)));
+        return (std::make_unique<XMLNodeComment>(XMLNodeComment{comment}));
     }
     /// <summary>
     /// Parse a XML process instruction, create an XMLNodePI for it and add it to
@@ -370,7 +370,7 @@ namespace XMLLib
             XMLNode::Ptr xmlNodeDTD = std::make_unique<XMLNodeDTD>(*m_entityMapper);
             m_dtd = std::make_unique<DTD>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD));
             m_dtd->parse(source);
-            m_validator = std::make_unique<XML_Validator>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD)) ;
+            m_validator = std::make_unique<XML_Validator>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD));
             return (xmlNodeDTD);
         }
 
