@@ -287,10 +287,10 @@ namespace XMLLib
                     throw SyntaxError(source, "Missing '=' after version.");
                 }
                 source.ignoreWS();
-                declaration.version = Core::parseValue(source).parsed;
+                declaration.setVersion(Core::parseValue(source).parsed);
                 if (!declaration.isValidVersion())
                 {
-                    throw SyntaxError(source, "Unsupported version " + declaration.version + ".");
+                    throw SyntaxError(source, "Unsupported version " + declaration.version() + ".");
                 }
             }
             else
@@ -305,10 +305,10 @@ namespace XMLLib
                     throw SyntaxError(source, "Missing '=' after encoding.");
                 }
                 source.ignoreWS();
-                declaration.encoding = Core::toUpperString(Core::parseValue(source).parsed);
+                declaration.setEncoding(Core::toUpperString(Core::parseValue(source).parsed));
                 if (!declaration.isValidEncoding())
                 {
-                    throw SyntaxError(source, "Unsupported encoding " + declaration.encoding + " specified.");
+                    throw SyntaxError(source, "Unsupported encoding " + declaration.encoding() + " specified.");
                 }
             }
             if (source.match(U"standalone"))
@@ -319,10 +319,10 @@ namespace XMLLib
                     throw SyntaxError(source, "Missing '=' after standalone.");
                 }
                 source.ignoreWS();
-                declaration.standalone = Core::parseValue(source).parsed;
+                declaration.setStandalone(Core::parseValue(source).parsed);
                 if (!declaration.isValidStandalone())
                 {
-                    throw SyntaxError(source, "Invalid standalone value of '" + declaration.standalone + "'.");
+                    throw SyntaxError(source, "Invalid standalone value of '" + declaration.standalone() + "'.");
                 }
             }
             if (source.match(U"encoding"))

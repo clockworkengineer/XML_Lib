@@ -13,7 +13,6 @@
 // =========
 namespace XMLLib
 {
-
     // ===================================================
     // Forward declarations for interfaces/classes/structs
     // ===================================================
@@ -50,7 +49,6 @@ namespace XMLLib
             {
                 return (errorMessage.c_str());
             }
-
         private:
             const std::string errorMessage;
         };
@@ -69,7 +67,6 @@ namespace XMLLib
         const XMLNode &operator[](int index) const;
         const XMLNode &operator[](const std::string &name) const;
         std::vector<XMLNode::Ptr> children;
-
     private:
         XMLNodeType xmlNodeType;
     };
@@ -92,19 +89,44 @@ namespace XMLLib
         }
         [[nodiscard]] bool isValidVersion() const
         {
-            return (version == "1.0" || version == "1.1");
+            return (m_version == "1.0" || m_version == "1.1");
         }
         [[nodiscard]] bool isValidEncoding() const
         {
-            return (encoding == "UTF-8" || encoding == "UTF-16");
+            return (m_encoding == "UTF-8" || m_encoding == "UTF-16");
         }
         [[nodiscard]] bool isValidStandalone() const
         {
-            return (standalone == "yes" || standalone == "no");
+            return (m_standalone == "yes" || m_standalone == "no");
         }
-        std::string version{"1.0"};
-        std::string encoding{"UTF-8"};
-        std::string standalone{"no"};
+        std::string version()
+        {
+            return (m_version);
+        }
+        void setVersion(const std::string &version)
+        {
+            m_version = version;
+        }
+        std::string encoding()
+        {
+            return (m_encoding);
+        }
+        void setEncoding(const std::string &encoding)
+        {
+            m_encoding = encoding;
+        }
+        std::string standalone()
+        {
+            return (m_standalone);
+        }
+        void setStandalone(const std::string &standalone)
+        {
+            m_standalone = standalone;
+        }
+    private:
+        std::string m_version{"1.0"};
+        std::string m_encoding{"UTF-8"};
+        std::string m_standalone{"no"};
     };
     // =======
     // Content
@@ -192,7 +214,6 @@ namespace XMLLib
         const XMLNodeElement &operator[](int index) const;
         const XMLNodeElement &operator[](const std::string &name) const;
         std::string elementName;
-
     private:
         XMLAttributeList namespaces;
         XMLAttributeList attributes;
@@ -355,7 +376,6 @@ namespace XMLLib
             m_lineCount = lineCount;
         }
         IXMLEntityMapper &m_entityMapper;
-
     private:
         uint16_t m_type{};
         long m_lineCount{};

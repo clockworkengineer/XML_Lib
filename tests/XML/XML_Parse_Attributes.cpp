@@ -25,9 +25,9 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version == "1.0");
-    REQUIRE(xml.declaration().encoding == "UTF-8");
-    REQUIRE(xml.declaration().standalone == "no");
+    REQUIRE(xml.declaration().version() == "1.0");
+    REQUIRE(xml.declaration().encoding() == "UTF-8");
+    REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
     REQUIRE(xml.root().elementName == "AddressBook");
     REQUIRE(xml.root().getAttributeList().size() == 1);
@@ -41,9 +41,9 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version == "1.0");
-    REQUIRE(xml.declaration().encoding == "UTF-8");
-    REQUIRE(xml.declaration().standalone == "no");
+    REQUIRE(xml.declaration().version() == "1.0");
+    REQUIRE(xml.declaration().encoding() == "UTF-8");
+    REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
     REQUIRE(xml.root().elementName == "AddressBook");
     REQUIRE(xml.root().getAttributeList().size() == 3);

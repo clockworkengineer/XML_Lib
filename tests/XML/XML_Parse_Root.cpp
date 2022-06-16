@@ -24,9 +24,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version == "1.0");
-    REQUIRE(xml.declaration().encoding == "UTF-8");
-    REQUIRE(xml.declaration().standalone == "no");
+    REQUIRE(xml.declaration().version() == "1.0");
+    REQUIRE(xml.declaration().encoding() == "UTF-8");
+    REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
     REQUIRE(xml.root().elementName == "contact-info");
   }
@@ -37,9 +37,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version == "1.0");
-    REQUIRE(xml.declaration().encoding == "UTF-8");
-    REQUIRE(xml.declaration().standalone == "no");
+    REQUIRE(xml.declaration().version() == "1.0");
+    REQUIRE(xml.declaration().encoding() == "UTF-8");
+    REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
     REQUIRE(xml.root().elementName == "AddressBook");
   }
@@ -52,9 +52,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version == "1.0");
-    REQUIRE(xml.declaration().encoding == "UTF-8");
-    REQUIRE(xml.declaration().standalone == "no");
+    REQUIRE(xml.declaration().version() == "1.0");
+    REQUIRE(xml.declaration().encoding() == "UTF-8");
+    REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.root().elementName == "AddressBook");
     REQUIRE(xml.root().children.size() == 3);
     REQUIRE(xml.root()[0].elementName == "Address");
@@ -77,9 +77,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version == "1.0");
-    REQUIRE(xml.declaration().encoding == "UTF-8");
-    REQUIRE(xml.declaration().standalone == "no");
+    REQUIRE(xml.declaration().version() == "1.0");
+    REQUIRE(xml.declaration().encoding() == "UTF-8");
+    REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.root().elementName == "AddressBook");
     REQUIRE(xml.root().children.size() == 7);
     REQUIRE(xml.root()[0].elementName == "Address");

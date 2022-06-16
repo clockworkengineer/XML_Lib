@@ -51,9 +51,9 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source { xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version == "1.0");
-    REQUIRE(xml.declaration().encoding == "UTF-8");
-    REQUIRE(xml.declaration().standalone == "no");
+    REQUIRE(xml.declaration().version() == "1.0");
+    REQUIRE(xml.declaration().encoding() == "UTF-8");
+    REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.root().elementName == "AddressBook");
     REQUIRE(xml.root().children.size() == 13);
     REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.root().children[1]).comment == "Address one ");
