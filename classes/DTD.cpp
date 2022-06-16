@@ -45,9 +45,11 @@ namespace XMLLib
     {
     }
     /// <summary>
-    /// DTD constructor.
+    /// DTD destructor.
     /// </summary>
-    DTD::~DTD() = default;
+    DTD::~DTD()
+    {
+    }
     /// <summary>
     /// Parse DTD read from source stream.
     /// </summary>

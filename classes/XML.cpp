@@ -48,7 +48,9 @@ namespace XMLLib
     /// <summary>
     /// XML destructor.
     /// </summary>
-    XML::~XML() = default;
+    XML::~XML()
+    {
+    }
     /// <summary>
     /// Return reference to any internal DTD for parsed XML.
     /// </summary>

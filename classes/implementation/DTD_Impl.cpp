@@ -37,9 +37,15 @@ namespace XMLLib
     // ==============
     // PUBLIC METHODS
     // ==============
+    /// <summary>
+    /// DTD_Impl constructor.
+    /// </summary>
     DTD_Impl::DTD_Impl(XMLNodeDTD &xmlNodeDTD) : m_xmlNodeDTD(xmlNodeDTD)
     {
     }
+    /// <summary>
+    /// DTD_Impl destructor.
+    /// </summary>
     DTD_Impl::~DTD_Impl()
     {
     }
