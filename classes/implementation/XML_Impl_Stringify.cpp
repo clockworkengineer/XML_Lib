@@ -111,7 +111,7 @@ namespace XMLLib
         case XMLNodeType::entity:
         {
             XMLNodeEntityReference &xmlNodeEntity = XMLNodeRef<XMLNodeEntityReference>(xmlNode);
-            destination.add(xmlNodeEntity.value.unparsed);
+            destination.add(xmlNodeEntity.value().unparsed);
             break;
         }
         // XML processing instruction
