@@ -68,7 +68,7 @@ namespace XMLLib
         case XMLNodeType::element:
         {
             XMLNodeElement &xmlNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
-            destination.add("<" + xmlNodeElement.elementName);
+            destination.add("<" + xmlNodeElement.name());
             for (auto attr : xmlNodeElement.getAttributeList())
             {
                 destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");
@@ -78,14 +78,14 @@ namespace XMLLib
             {
                 stringifyElements(*element, destination);
             }
-            destination.add("</" + xmlNodeElement.elementName + ">");
+            destination.add("</" + xmlNodeElement.name() + ">");
             break;
         }
         // Self closing element
         case XMLNodeType::self:
         {
             XMLNodeElement &xmlNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
-            destination.add("<" + xmlNodeElement.elementName);
+            destination.add("<" + xmlNodeElement.name());
             for (auto attr : xmlNodeElement.getAttributeList())
             {
                 destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");

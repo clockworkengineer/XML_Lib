@@ -179,11 +179,11 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE(xmlNodeDTD.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(xmlNodeDTD.getElement("person").attributes[0].value.parsed == "F");
     REQUIRE(xmlNodeDTD.getRootName() == "queue");
-    REQUIRE(xmlNodeDTD.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).elementName);
-    REQUIRE(xml.root()[0].elementName == "person");
+    REQUIRE(xmlNodeDTD.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).name());
+    REQUIRE(xml.root()[0].name() == "person");
     REQUIRE(xml.root()[0].getAttributeList().size() == 1);
     REQUIRE(xml.root()[0].getAttribute("gender").value.parsed == "M");
-    REQUIRE(xml.root()[1].elementName == "person");
+    REQUIRE(xml.root()[1].name() == "person");
     REQUIRE(xml.root()[1].getAttributeList().size() == 1);
     REQUIRE(xml.root()[1].getAttribute("gender").value.parsed == "F");
   }

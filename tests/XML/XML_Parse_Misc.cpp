@@ -44,8 +44,8 @@ TEST_CASE("Use name for accessing elements", "[XML][Access][ByName]")
     BufferSource source{xmlString};
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).elementName == "AddressBook");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).elementName == "Address");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).name() == "Address");
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }

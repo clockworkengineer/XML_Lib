@@ -54,16 +54,16 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     REQUIRE(xml.declaration().version() == "1.0");
     REQUIRE(xml.declaration().encoding() == "UTF-8");
     REQUIRE(xml.declaration().standalone() == "no");
-    REQUIRE(xml.root().elementName == "AddressBook");
+    REQUIRE(xml.root().name() == "AddressBook");
     REQUIRE(xml.root().children.size() == 13);
     REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.root().children[1]).comment == "Address one ");
-    REQUIRE(xml.root()[0].elementName == "Address");
+    REQUIRE(xml.root()[0].name() == "Address");
     REQUIRE(xml.root()[0].getContents() == "    This is some contents 1   ");
     REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.root().children[5]).comment == "Address two ");
-    REQUIRE(xml.root()[1].elementName == "Address");
+    REQUIRE(xml.root()[1].name() == "Address");
     REQUIRE(xml.root()[1].getContents() == "    This is some contents 2   ");
     REQUIRE(XMLNodeRef<XMLNodeComment>(*xml.root().children[9]).comment == "Address three ");
-    REQUIRE(xml.root()[2].elementName == "Address");
+    REQUIRE(xml.root()[2].name() == "Address");
     REQUIRE(xml.root()[2].getContents() == "    This is some contents 3   ");
   }
   SECTION("A single comment after root element", "[XML][Parse][Comments]")

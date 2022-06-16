@@ -47,7 +47,7 @@ namespace XMLLib
     /// <param name="error">Error text string.</param>
     void XML_Validator::elementError(const XMLNodeElement &xNodeElement, const std::string &error)
     {
-        throw ValidationError(m_lineNumber, "Element <" + xNodeElement.elementName + "> " + error);
+        throw ValidationError(m_lineNumber, "Element <" + xNodeElement.name() + "> " + error);
     }
     /// <summary>
     /// Check whether a token value is valid.
@@ -287,7 +287,7 @@ namespace XMLLib
     void XML_Validator::checkAttributes(XMLNode &xmlNode)
     {
         XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
-        for (auto &attribute : m_xmlNodeDTD.getElement(xNodeElement.elementName).attributes)
+        for (auto &attribute : m_xmlNodeDTD.getElement(xNodeElement.name()).attributes)
         {
             if (xNodeElement.isAttributePresent(attribute.name))
             {
@@ -307,7 +307,7 @@ namespace XMLLib
         {
             return;
         }
-        if (m_xmlNodeDTD.getElement(xNodeElement.elementName).content.parsed == "((<#PCDATA>))")
+        if (m_xmlNodeDTD.getElement(xNodeElement.name()).content.parsed == "((<#PCDATA>))")
         {
             if (!checkIsPCDATA(xmlNode))
             {
@@ -315,7 +315,7 @@ namespace XMLLib
             }
             return;
         }
-        if (m_xmlNodeDTD.getElement(xNodeElement.elementName).content.parsed == "EMPTY")
+        if (m_xmlNodeDTD.getElement(xNodeElement.name()).content.parsed == "EMPTY")
         {
             if (!checkIsEMPTY(xmlNode))
             {
@@ -323,18 +323,18 @@ namespace XMLLib
             }
             return;
         }
-        if (m_xmlNodeDTD.getElement(xNodeElement.elementName).content.parsed == "ANY")
+        if (m_xmlNodeDTD.getElement(xNodeElement.name()).content.parsed == "ANY")
         {
             return;
         }
-        std::regex match{m_xmlNodeDTD.getElement(xNodeElement.elementName).content.parsed};
+        std::regex match{m_xmlNodeDTD.getElement(xNodeElement.name()).content.parsed};
         std::string elements;
         for (auto &element : xNodeElement.children)
         {
             if ((element->getNodeType() == XMLNodeType::element) ||
                 (element->getNodeType() == XMLNodeType::self))
             {
-                elements += "<" + XMLNodeRef<XMLNodeElement>(*element).elementName + ">";
+                elements += "<" + XMLNodeRef<XMLNodeElement>(*element).name() + ">";
             }
             else if (element->getNodeType() == XMLNodeType::content)
             {
@@ -347,7 +347,7 @@ namespace XMLLib
         if (!std::regex_match(elements, match))
         {
             elementError(xNodeElement, "does not conform to the content specification " +
-                                           m_xmlNodeDTD.getElement(xNodeElement.elementName).content.unparsed + ".");
+                                           m_xmlNodeDTD.getElement(xNodeElement.name()).content.unparsed + ".");
         }
     }
     /// <summary>
@@ -379,12 +379,12 @@ namespace XMLLib
         case XMLNodeType::root:
         case XMLNodeType::element:
             if (xmlNode.getNodeType() == XMLNodeType::root &&
-                XMLNodeRef<XMLNodeElement>(xmlNode).elementName !=
+                XMLNodeRef<XMLNodeElement>(xmlNode).name() !=
                     m_xmlNodeDTD.getRootName())
             {
                 throw ValidationError(
                     m_lineNumber, "DOCTYPE name does not match that of root element " +
-                                      XMLNodeRef<XMLNodeElement>(xmlNode).elementName +
+                                      XMLNodeRef<XMLNodeElement>(xmlNode).name() +
                                       " of DTD.");
             }
             checkElement(xmlNode);

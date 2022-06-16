@@ -29,7 +29,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(xml.declaration().encoding() == "UTF-8");
     REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
-    REQUIRE(xml.root().elementName == "AddressBook");
+    REQUIRE(xml.root().name() == "AddressBook");
     REQUIRE(xml.root().getAttributeList().size() == 1);
     REQUIRE(xml.root().getAttribute("number").value.parsed == "15");
   }
@@ -45,7 +45,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(xml.declaration().encoding() == "UTF-8");
     REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
-    REQUIRE(xml.root().elementName == "AddressBook");
+    REQUIRE(xml.root().name() == "AddressBook");
     REQUIRE(xml.root().getAttributeList().size() == 3);
     REQUIRE(xml.root().getAttribute("number").value.parsed == "15");
     REQUIRE(xml.root().getAttribute("away").value.parsed == "yes");

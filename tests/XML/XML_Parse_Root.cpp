@@ -28,7 +28,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(xml.declaration().encoding() == "UTF-8");
     REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
-    REQUIRE(xml.root().elementName == "contact-info");
+    REQUIRE(xml.root().name() == "contact-info");
   }
   SECTION("Empty root element <AddressBook> ", "[XML][Parse][Root]")
   {
@@ -41,7 +41,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(xml.declaration().encoding() == "UTF-8");
     REQUIRE(xml.declaration().standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
-    REQUIRE(xml.root().elementName == "AddressBook");
+    REQUIRE(xml.root().name() == "AddressBook");
   }
   SECTION("Root element <AddressBook> and one child <Address> with contents ", "[XML][Parse][Root]")
   {
@@ -55,9 +55,9 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(xml.declaration().version() == "1.0");
     REQUIRE(xml.declaration().encoding() == "UTF-8");
     REQUIRE(xml.declaration().standalone() == "no");
-    REQUIRE(xml.root().elementName == "AddressBook");
+    REQUIRE(xml.root().name() == "AddressBook");
     REQUIRE(xml.root().children.size() == 3);
-    REQUIRE(xml.root()[0].elementName == "Address");
+    REQUIRE(xml.root()[0].name() == "Address");
     REQUIRE(xml.root()[0].getContents() == "    This is some contents    ");
   }
   SECTION("Root element <AddressBook> with multiple sibling <Address> elements and contents ", "[XML][Parse][Root]")
@@ -80,13 +80,13 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(xml.declaration().version() == "1.0");
     REQUIRE(xml.declaration().encoding() == "UTF-8");
     REQUIRE(xml.declaration().standalone() == "no");
-    REQUIRE(xml.root().elementName == "AddressBook");
+    REQUIRE(xml.root().name() == "AddressBook");
     REQUIRE(xml.root().children.size() == 7);
-    REQUIRE(xml.root()[0].elementName == "Address");
+    REQUIRE(xml.root()[0].name() == "Address");
     REQUIRE(xml.root()[0].getContents() == "\n    This is some contents 1   ");
-    REQUIRE(xml.root()[1].elementName == "Address");
+    REQUIRE(xml.root()[1].name() == "Address");
     REQUIRE(xml.root()[1].getContents() == "\n    This is some contents 2   ");
-    REQUIRE(xml.root()[2].elementName == "Address");
+    REQUIRE(xml.root()[2].name() == "Address");
     REQUIRE(xml.root()[2].getContents() == "\n    This is some contents 3   ");
   }
 }

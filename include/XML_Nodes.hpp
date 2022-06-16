@@ -55,7 +55,7 @@ namespace XMLLib
         explicit XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType)
         {
         }
-        [[nodiscard]] XMLNodeType getNodeType() const
+        [[nodiscard]] const XMLNodeType getNodeType() const
         {
             return (xmlNodeType);
         }
@@ -99,7 +99,7 @@ namespace XMLLib
         {
             return (m_standalone == "yes" || m_standalone == "no");
         }
-        std::string version()
+        const  std::string version() const
         {
             return (m_version);
         }
@@ -107,7 +107,7 @@ namespace XMLLib
         {
             m_version = version;
         }
-        std::string encoding()
+        const std::string encoding() const 
         {
             return (m_encoding);
         }
@@ -115,7 +115,7 @@ namespace XMLLib
         {
             m_encoding = encoding;
         }
-        std::string standalone()
+        const std::string standalone() const
         {
             return (m_standalone);
         }
@@ -136,7 +136,7 @@ namespace XMLLib
         explicit XMLNodeContent(bool isWhiteSpace = true, XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType), m_isWhiteSpace(isWhiteSpace)
         {
         }
-        std::string content() const
+        const std::string content() const
         {
             return (m_content);
         }
@@ -164,7 +164,7 @@ namespace XMLLib
         explicit XMLNodeCDATA(XMLNodeType nodeType = XMLNodeType::cdata) : XMLNode(nodeType)
         {
         }
-        std::string CDATA() const
+        const std::string CDATA() const
         {
             return (m_cdata);
         }
@@ -183,7 +183,7 @@ namespace XMLLib
         explicit XMLNodeEntityReference(const XMLValue &value, XMLNodeType nodeType = XMLNodeType::entity) : XMLNode(nodeType), m_value(std::move(value))
         {
         }
-        XMLValue value() const 
+        const XMLValue value() const
         {
             return (m_value);
         }
@@ -204,54 +204,62 @@ namespace XMLLib
         }
         explicit XMLNodeElement(const std::string &name) : XMLNodeElement()
         {
-            this->elementName = name;
+            m_name = name;
         }
         [[nodiscard]] bool isAttributePresent(const std::string &name) const
         {
-            return (std::find_if(attributes.rbegin(), attributes.rend(),
+            return (std::find_if(m_attributes.rbegin(), m_attributes.rend(),
                                  [&name](const XMLAttribute &attr)
-                                 { return (attr.name == name); }) != attributes.rend());
+                                 { return (attr.name == name); }) != m_attributes.rend());
         }
         void addAttribute(const std::string &name, const XMLValue &value)
         {
-            attributes.emplace_back(name, value);
+            m_attributes.emplace_back(name, value);
         }
         [[nodiscard]] const XMLAttribute getAttribute(const std::string &name) const
         {
-            return (*std::find_if(attributes.rbegin(), attributes.rend(),
+            return (*std::find_if(m_attributes.rbegin(), m_attributes.rend(),
                                   [&name](const XMLAttribute &attr)
                                   { return (attr.name == name); }));
         }
         [[nodiscard]] const XMLAttributeList &getAttributeList() const
         {
-            return (attributes);
+            return (m_attributes);
         }
         [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
         {
-            return (std::find_if(namespaces.rbegin(), namespaces.rend(),
+            return (std::find_if(m_namespaces.rbegin(), m_namespaces.rend(),
                                  [&name](const XMLAttribute &attr)
-                                 { return (attr.name == name); }) != namespaces.rend());
+                                 { return (attr.name == name); }) != m_namespaces.rend());
         }
         void addNameSpace(const std::string &name, const XMLValue &value)
         {
-            namespaces.emplace_back(name, value);
+            m_namespaces.emplace_back(name, value);
         }
         [[nodiscard]] const XMLAttribute getNameSpace(const std::string &name) const
         {
-            return (*std::find_if(namespaces.rbegin(), namespaces.rend(),
+            return (*std::find_if(m_namespaces.rbegin(), m_namespaces.rend(),
                                   [&name](const XMLAttribute &ns)
                                   { return (ns.name == name); }));
         }
         [[nodiscard]] const XMLAttributeList &getNameSpaceList() const
         {
-            return (namespaces);
+            return (m_namespaces);
+        }
+        const std::string name() const
+        {
+            return (m_name);
+        }
+        void setName(const std::string &name)
+        {
+            m_name = name;
         }
         const XMLNodeElement &operator[](int index) const;
         const XMLNodeElement &operator[](const std::string &name) const;
-        std::string elementName;
     private:
-        XMLAttributeList namespaces;
-        XMLAttributeList attributes;
+        std::string m_name;
+        XMLAttributeList m_namespaces;
+        XMLAttributeList m_attributes;
     };
     // =======
     // Comment
@@ -524,7 +532,7 @@ namespace XMLLib
         {
             for (const auto &element : XMLNodeRef<XMLNodeElement>(*this).children)
             {
-                if (XMLNodeRef<XMLNodeElement>(*element).elementName == name)
+                if (XMLNodeRef<XMLNodeElement>(*element).name() == name)
                 {
                     return (*element);
                 }
@@ -563,7 +571,7 @@ namespace XMLLib
         {
             for (const auto &element : XMLNodeRef<XMLNodeElement>(*this).children)
             {
-                if (XMLNodeRef<XMLNodeElement>(*element).elementName == name)
+                if (XMLNodeRef<XMLNodeElement>(*element).m_name == name)
                 {
                     return (XMLNodeRef<XMLNodeElement>(*element));
                 }

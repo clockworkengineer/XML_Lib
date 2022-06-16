@@ -208,9 +208,9 @@ namespace XMLLib
         {
             xmlNode.children.emplace_back(parseElement(source, XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList()));
             XMLNodeElement &xmlNodeChildElement = XMLNodeRef<XMLNodeElement>(*xmlNode.children.back());
-            if (auto pos = xmlNodeChildElement.elementName.find(':'); pos != std::string::npos)
+            if (auto pos = xmlNodeChildElement.name().find(':'); pos != std::string::npos)
             {
-                if (!xmlNodeChildElement.isNameSpacePresent(xmlNodeChildElement.elementName.substr(0, pos)))
+                if (!xmlNodeChildElement.isNameSpacePresent(xmlNodeChildElement.name().substr(0, pos)))
                 {
                     throw SyntaxError(source, "Namespace used but not defined.");
                 }
@@ -241,7 +241,7 @@ namespace XMLLib
         {
             xmlNodeElement.addNameSpace(ns.name, ns.value);
         }
-        xmlNodeElement.elementName = parseTagName(source);
+        xmlNodeElement.setName(parseTagName(source));
         for (const auto &attribute : parseAttributes(source))
         {
             xmlNodeElement.addAttribute(attribute.name, attribute.value);
@@ -256,7 +256,7 @@ namespace XMLLib
             {
                 parseElementContents(source, xmlNodeElement);
             }
-            if (!source.match(source.from_bytes(xmlNodeElement.elementName) + U">"))
+            if (!source.match(source.from_bytes(xmlNodeElement.name()) + U">"))
             {
                 throw SyntaxError(source, "Missing closing tag.");
             }
