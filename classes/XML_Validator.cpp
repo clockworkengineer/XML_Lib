@@ -338,7 +338,7 @@ namespace XMLLib
             }
             else if (element->getNodeType() == XMLNodeType::content)
             {
-                if (!XMLNodeRef<XMLNodeContent>(*element).isWhiteSpace)
+                if (!XMLNodeRef<XMLNodeContent>(*element).isWhiteSpace())
                 {
                     elements += "<#PCDATA>";
                 }
@@ -403,7 +403,7 @@ namespace XMLLib
         case XMLNodeType::dtd:
             break;
         case XMLNodeType::content:
-            for (auto &ch : XMLNodeRef<XMLNodeContent>(xmlNode).content)
+            for (auto &ch : XMLNodeRef<XMLNodeContent>(xmlNode).content())
             {
                 if (ch == kLineFeed)
                 {

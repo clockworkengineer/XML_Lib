@@ -104,7 +104,7 @@ namespace XMLLib
         case XMLNodeType::content:
         {
             XMLNodeContent &xmlNodeContent = XMLNodeRef<XMLNodeContent>(xmlNode);
-            destination.add(xmlNodeContent.content);
+            destination.add(xmlNodeContent.content());
             break;
         }
         // XML character entity

@@ -133,11 +133,29 @@ namespace XMLLib
     // =======
     struct XMLNodeContent : XMLNode
     {
-        explicit XMLNodeContent(bool isWhiteSpace = true, XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType), isWhiteSpace(isWhiteSpace)
+        explicit XMLNodeContent(bool isWhiteSpace = true, XMLNodeType nodeType = XMLNodeType::content) : XMLNode(nodeType), m_isWhiteSpace(isWhiteSpace)
         {
         }
-        std::string content;
-        bool isWhiteSpace;
+        std::string content() const
+        {
+            return (m_content);
+        }
+        void addContent(const std::string &content)
+        {
+            m_content += content;
+        }
+        bool isWhiteSpace() const
+        {
+            return (m_isWhiteSpace);
+        }
+        void setIsWhiteSpace(bool isWhiteSpace)
+        {
+            m_isWhiteSpace = isWhiteSpace;
+        }
+
+    private:
+        std::string m_content;
+        bool m_isWhiteSpace;
     };
     // =====
     // CDATA
@@ -546,7 +564,7 @@ namespace XMLLib
         {
             if (node->getNodeType() == XMLNodeType::content)
             {
-                result += XMLNodeRef<XMLNodeContent>(*node).content;
+                result += XMLNodeRef<XMLNodeContent>(*node).content();
             }
             else if (node->getNodeType() == XMLNodeType::entity)
             {

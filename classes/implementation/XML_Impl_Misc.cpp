@@ -60,7 +60,7 @@ namespace XMLLib
         {
             if (xmlNode.children.back()->getNodeType() == XMLNodeType::content)
             {
-                XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).isWhiteSpace = false;
+                XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).setIsWhiteSpace(false);
             }
         }
     }
@@ -86,17 +86,17 @@ namespace XMLLib
             xmlNode.children.emplace_back(std::make_unique<XMLNodeContent>(isWhiteSpace));
         }
         XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*xmlNode.children.back());
-        if (xmlContent.isWhiteSpace)
+        if (xmlContent.isWhiteSpace())
         {
             for (const auto ch : content)
             {
                 if (!std::iswspace(ch))
                 {
-                    xmlContent.isWhiteSpace = false;
+                    xmlContent.setIsWhiteSpace(false);
                     break;
                 }
             }
         }
-        xmlContent.content += content;
+        xmlContent.addContent(content);
     }
 } // namespace XMLLib
