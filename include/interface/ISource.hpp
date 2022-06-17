@@ -20,7 +20,12 @@ namespace XMLLib
         // 32 bit characters internally
         using String = std::u32string;
         using Char = String::value_type;
-        // Virtual destructor
+        // Contructors/destructors
+        ISource() = default;
+        ISource(const ISource& other) = delete;
+        ISource& operator=(const ISource& other) = delete;
+        ISource(ISource&& other) = delete;
+        ISource& operator=(ISource&& other) = delete;
         virtual ~ISource() = default;
         // Current character
         [[nodiscard]] virtual Char current() const = 0;

@@ -57,7 +57,7 @@ namespace XMLLib
         }
         void add(const std::string &bytes) override
         {
-            m_destination.write(bytes.c_str(), bytes.length());
+            m_destination.write(bytes.c_str(), static_cast<std::streamsize>( bytes.length()));
             m_destination.flush();
         }
 

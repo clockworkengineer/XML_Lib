@@ -430,6 +430,7 @@ namespace XMLLib
             m_xmlNodeDTD.m_entityMapper.recursive(entityName.first, entityName.first[0]);
         }
         // Count lines in DTD
-        m_xmlNodeDTD.setLineCount(static_cast<long>(std::count(m_xmlNodeDTD.unparsed().begin(), m_xmlNodeDTD.unparsed().end(), kLineFeed)) + 1);
+        std::string unparsedDTD = m_xmlNodeDTD.unparsed();
+        m_xmlNodeDTD.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);
     }
 } // namespace XMLLib

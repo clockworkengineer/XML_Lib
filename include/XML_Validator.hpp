@@ -31,7 +31,7 @@ namespace XMLLib
         XML_Validator &operator=(const XML_Validator &other) = delete;
         XML_Validator(XML_Validator &&other) = delete;
         XML_Validator &operator=(XML_Validator &&other) = delete;
-        ~XML_Validator() = default;
+        ~XML_Validator() override = default;
         // ==========
         // DESTRUCTOR
         // ==========

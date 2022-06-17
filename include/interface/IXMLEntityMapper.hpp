@@ -24,6 +24,12 @@ namespace XMLLib
     class IXMLEntityMapper
     {
     public:
+        // Contructors/destructors
+        IXMLEntityMapper() = default;
+        IXMLEntityMapper(const IXMLEntityMapper& other) = delete;
+        IXMLEntityMapper& operator=(const IXMLEntityMapper& other) = delete;
+        IXMLEntityMapper(IXMLEntityMapper&& other) = delete;
+        IXMLEntityMapper& operator=(IXMLEntityMapper&& other) = delete;
         virtual ~IXMLEntityMapper() = default;
         virtual void add(const std::string &entityName, const XMLEntityMapping &entityMapping) = 0;
         virtual XMLEntityMapping &get(const std::string &entityName) = 0;

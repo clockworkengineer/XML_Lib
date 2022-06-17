@@ -92,7 +92,7 @@ namespace XMLLib
         }
         std::string getRange(long start, long end) override
         {
-            return (m_UTF8.to_bytes(m_parseBuffer.substr(start, end - start)));
+            return (m_UTF8.to_bytes(m_parseBuffer.substr(start, static_cast<std::size_t>(end) - start)));
         }
         void reset() override
         {
@@ -188,10 +188,10 @@ namespace XMLLib
         }
         std::string getRange(long start, long end) override
         {
-            std::string rangeBuffer(end - start, ' ');
+            std::string rangeBuffer(static_cast<std::size_t>(end) - start, ' ');
             long currentPosition = (long)m_source.tellg();
             m_source.seekg(start, std::ios_base::beg);
-            m_source.read(&rangeBuffer[0], end - start);
+            m_source.read(&rangeBuffer[0], static_cast<std::streamsize> (end )- start);
             m_source.seekg(currentPosition, std::ios_base::beg);
             return (rangeBuffer);
         }

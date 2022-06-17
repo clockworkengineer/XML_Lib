@@ -16,7 +16,12 @@ namespace XMLLib
     class IDestination
     {
     public:
-        // Virtual destructor
+        // Constructors/destructors
+        IDestination() = default;
+        IDestination(const IDestination& other) = delete;
+        IDestination& operator=(const IDestination& other) = delete;
+        IDestination(IDestination&& other) = delete;
+        IDestination& operator=(IDestination&& other) = delete;
         virtual ~IDestination() = default;
         // Add bytes to destination
         virtual void add(const std::string &bytes) = 0;

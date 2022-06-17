@@ -15,7 +15,10 @@ namespace XMLLib
     //
     struct XMLValue
     {
-        XMLValue(const std::string &unparsed, const std::string &parsed = "") : unparsed(unparsed), parsed(parsed)
+        explicit XMLValue(std::string unparsed) : unparsed(std::move(unparsed))
+        {
+        }
+        XMLValue(std::string unparsed, std::string parsed) : unparsed(std::move(unparsed)), parsed(std::move(parsed))
         {
         }
         [[nodiscard]] bool isReference() const
@@ -30,15 +33,15 @@ namespace XMLLib
         {
             return (unparsed[0] == '&' && unparsed[1] == '#' && unparsed.back() == ';');
         }
-        std::string unparsed;
-        std::string parsed;
+        std::string unparsed{};
+        std::string parsed{};
     };
     //
     // XML Attribute
     //
     struct XMLAttribute
     {
-        XMLAttribute(const std::string &name, const XMLValue &value) : name(name), value(value)
+        XMLAttribute(std::string name, XMLValue value) : name(std::move(name)), value(std::move(value))
         {
         }
         std::string name;
@@ -50,23 +53,29 @@ namespace XMLLib
     //
     struct XMLExternalReference
     {
-        XMLExternalReference(const std::string &type, const std::string &systemID = "", const std::string &publicID = "") : type(type), systemID(systemID), publicID(publicID)
+        explicit XMLExternalReference(std::string type) : type(std::move(type))
         {
         }
-        std::string type;
-        std::string systemID;
-        std::string publicID;
+        XMLExternalReference(std::string type, std::string systemID, std::string publicID) : type(std::move(type)), systemID(std::move(systemID)), publicID(std::move(publicID))
+        {
+        }
+        std::string type{};
+        std::string systemID{};
+        std::string publicID{};
     };
     //
     // XML Entity mapping
     //
     struct XMLEntityMapping
     {
-        XMLEntityMapping(const std::string &internal, const XMLExternalReference &external = {""}, std::string notation = "") : internal(internal), external(external), notation(notation)
+        explicit XMLEntityMapping(std::string internal) : internal(std::move(internal))
         {
         }
-        std::string internal;
+         XMLEntityMapping(std::string internal, XMLExternalReference external, std::string notation) : internal(std::move(internal)), external(std::move(external)), notation(std::move(notation))
+        {
+        }
+         std::string internal{};
         XMLExternalReference external{""};
-        std::string notation;
+        std::string notation{};
     };
 } // namespace XMLLib
