@@ -36,23 +36,23 @@ namespace XMLLib
     /// <summary>
     /// Parse conditional DTD (recursively if necessary).
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
+    /// <param name="source">DTD source stream.</param>
     /// <param name="includeOn">If set to false then enclosing conditionals treated as ignored.</param>
-    void DTD_Impl::parseConditional(ISource &dtdSource, bool includeOn)
+    void DTD_Impl::parseConditional(ISource &source, bool includeOn)
     {
         std::string conditionalValue;
-        dtdSource.ignoreWS();
+        source.ignoreWS();
         if (includeOn)
         {
-            if (dtdSource.current() == '%')
+            if (source.current() == '%')
             {
-                conditionalValue = m_xmlNodeDTD.m_entityMapper.map(Core::parseEntityReference(dtdSource)).parsed;
+                conditionalValue = m_xmlNodeDTD.m_entityMapper.map(Core::parseEntityReference(source)).parsed;
             }
-            else if (dtdSource.match(U"INCLUDE"))
+            else if (source.match(U"INCLUDE"))
             {
                 conditionalValue = "INCLUDE";
             }
-            else if (dtdSource.match(U"IGNORE"))
+            else if (source.match(U"IGNORE"))
             {
                 conditionalValue = "IGNORE";
             }
@@ -61,26 +61,26 @@ namespace XMLLib
         {
             conditionalValue = "IGNORE";
         }
-        dtdSource.ignoreWS();
+        source.ignoreWS();
         if (conditionalValue == "INCLUDE")
         {
-            if (dtdSource.current() != '[')
+            if (source.current() != '[')
             {
-                throw SyntaxError(dtdSource, "Missing opening '[' from conditional.");
+                throw SyntaxError(source, "Missing opening '[' from conditional.");
             }
-            dtdSource.next();
-            dtdSource.ignoreWS();
+            source.next();
+            source.ignoreWS();
             std::string conditionalDTD;
-            while (dtdSource.more() && !dtdSource.match(U"]]"))
+            while (source.more() && !source.match(U"]]"))
             {
-                if (dtdSource.match(U"<!["))
+                if (source.match(U"<!["))
                 {
-                    parseConditional(dtdSource);
+                    parseConditional(source);
                 }
                 else
                 {
-                    conditionalDTD += dtdSource.current_to_bytes();
-                    dtdSource.next();
+                    conditionalDTD += source.current_to_bytes();
+                    source.next();
                 }
             }
             BufferSource conditionalDTDSource(conditionalDTD);
@@ -88,81 +88,81 @@ namespace XMLLib
         }
         else if (conditionalValue == "IGNORE")
         {
-            while (dtdSource.more() && !dtdSource.match(U"]]"))
+            while (source.more() && !source.match(U"]]"))
             {
-                if (dtdSource.match(U"<!["))
+                if (source.match(U"<!["))
                 {
-                    parseConditional(dtdSource, false);
+                    parseConditional(source, false);
                 }
                 else
                 {
-                    dtdSource.next();
+                    source.next();
                 }
             }
         }
         else
         {
-            throw SyntaxError(dtdSource, "Conditional value not INCLUDE or IGNORE.");
+            throw SyntaxError(source, "Conditional value not INCLUDE or IGNORE.");
         }
-        if (dtdSource.current() != '>')
+        if (source.current() != '>')
         {
-            throw SyntaxError(dtdSource, "Missing '>' terminator.");
+            throw SyntaxError(source, "Missing '>' terminator.");
         }
-        dtdSource.next();
-        dtdSource.ignoreWS();
+        source.next();
+        source.ignoreWS();
     }
     /// <summary>
     /// Parse external DTD.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseExternalContent(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseExternalContent(ISource &source)
     {
-        while (dtdSource.more())
+        while (source.more())
         {
-            if (dtdSource.match(U"<!ENTITY"))
+            if (source.match(U"<!ENTITY"))
             {
-                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_entityMapper.translate(Core::parseTagBody(source)));
                 parseEntity(dtdTranslatedSource);
             }
-            else if (dtdSource.match(U"<!ELEMENT"))
+            else if (source.match(U"<!ELEMENT"))
             {
-                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_entityMapper.translate(Core::parseTagBody(source)));
                 parseElement(dtdTranslatedSource);
             }
-            else if (dtdSource.match(U"<!ATTLIST"))
+            else if (source.match(U"<!ATTLIST"))
             {
-                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_entityMapper.translate(Core::parseTagBody(source)));
                 parseAttributeList(dtdTranslatedSource);
             }
-            else if (dtdSource.match(U"<!NOTATION"))
+            else if (source.match(U"<!NOTATION"))
             {
-                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_entityMapper.translate(Core::parseTagBody(dtdSource)));
+                BufferSource dtdTranslatedSource(m_xmlNodeDTD.m_entityMapper.translate(Core::parseTagBody(source)));
                 parseNotation(dtdTranslatedSource);
             }
-            else if (dtdSource.match(U"<!--"))
+            else if (source.match(U"<!--"))
             {
-                parseComment(dtdSource);
+                parseComment(source);
             }
-            else if (dtdSource.current() == '%')
+            else if (source.current() == '%')
             {
-                parseParameterEntityReference(dtdSource);
+                parseParameterEntityReference(source);
                 continue;
             }
-            else if (dtdSource.match(U"<!["))
+            else if (source.match(U"<!["))
             {
-                parseConditional(dtdSource);
+                parseConditional(source);
                 continue;
             }
             else
             {
-                throw SyntaxError(dtdSource, "Invalid DTD tag.");
+                throw SyntaxError(source, "Invalid DTD tag.");
             }
-            if (dtdSource.current() != '>')
+            if (source.current() != '>')
             {
-                throw SyntaxError(dtdSource, "Missing '>' terminator.");
+                throw SyntaxError(source, "Missing '>' terminator.");
             }
-            dtdSource.next();
-            dtdSource.ignoreWS();
+            source.next();
+            source.ignoreWS();
         }
     }
     /// <summary>
@@ -183,29 +183,29 @@ namespace XMLLib
     /// <summary>
     /// Parse an external reference.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
+    /// <param name="source">DTD source stream.</param>
     /// <returns>External reference.</returns>
-    XMLExternalReference DTD_Impl::parseExternalReference(ISource &dtdSource)
+    XMLExternalReference DTD_Impl::parseExternalReference(ISource &source)
     {
-        if (dtdSource.match(U"SYSTEM"))
+        if (source.match(U"SYSTEM"))
         {
-            dtdSource.ignoreWS();
-            return (XMLExternalReference{"SYSTEM", Core::parseValue(dtdSource, m_xmlNodeDTD.m_entityMapper).parsed, ""});
+            source.ignoreWS();
+            return (XMLExternalReference{"SYSTEM", Core::parseValue(source, m_xmlNodeDTD.m_entityMapper).parsed, ""});
         }
-        else if (dtdSource.match(U"PUBLIC"))
+        else if (source.match(U"PUBLIC"))
         {
-            dtdSource.ignoreWS();
-            std::string publicID{Core::parseValue(dtdSource, m_xmlNodeDTD.m_entityMapper).parsed};
-            std::string systemID{Core::parseValue(dtdSource, m_xmlNodeDTD.m_entityMapper).parsed};
+            source.ignoreWS();
+            std::string publicID{Core::parseValue(source, m_xmlNodeDTD.m_entityMapper).parsed};
+            std::string systemID{Core::parseValue(source, m_xmlNodeDTD.m_entityMapper).parsed};
             return (XMLExternalReference{"PUBLIC", systemID, publicID});
         }
-        throw SyntaxError(dtdSource, "Invalid external DTD specifier.");
+        throw SyntaxError(source, "Invalid external DTD specifier.");
     }
     /// <summary>
     /// Parse externally defined DTD.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseExternal(ISource & /*dtdSource*/)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseExternal(ISource & /*source*/)
     {
         parseExternalReferenceContent();
     }

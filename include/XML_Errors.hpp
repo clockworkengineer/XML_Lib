@@ -13,9 +13,9 @@
 // =========
 namespace XMLLib
 {
-    //
+    // ================
     // XML syntax error
-    //
+    // ================
     struct SyntaxError : public std::exception
     {
         explicit SyntaxError(const std::string &description = "")
@@ -34,9 +34,9 @@ namespace XMLLib
     private:
         std::string errorMessage;
     };
-    //
+    // ====================
     // XML validation error
-    //
+    // ====================
     struct ValidationError : public std::exception
     {
         explicit ValidationError(long lineNumber, const std::string &description = "")

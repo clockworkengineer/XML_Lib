@@ -53,10 +53,10 @@ namespace XMLLib
     /// <summary>
     /// Parse DTD read from source stream.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD::parse(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD::parse(ISource &source)
     {
-        m_implementation->parse(dtdSource);
+        m_implementation->parse(source);
     }
     /// <summary>
     /// Create DTD text from an DTD object.

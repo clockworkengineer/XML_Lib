@@ -14,7 +14,7 @@ namespace XMLLib
     class IXMLValidator
     {
     public:
-        // Contructors/destructors
+        // Constructors/destructors
         IXMLValidator() = default;
         IXMLValidator(const IXMLValidator& other) = delete;
         IXMLValidator& operator=(const IXMLValidator& other) = delete;

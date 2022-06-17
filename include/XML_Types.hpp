@@ -71,10 +71,10 @@ namespace XMLLib
         explicit XMLEntityMapping(std::string internal) : internal(std::move(internal))
         {
         }
-         XMLEntityMapping(std::string internal, XMLExternalReference external, std::string notation) : internal(std::move(internal)), external(std::move(external)), notation(std::move(notation))
+        XMLEntityMapping(std::string internal, XMLExternalReference external, std::string notation) : internal(std::move(internal)), external(std::move(external)), notation(std::move(notation))
         {
         }
-         std::string internal{};
+        std::string internal{};
         XMLExternalReference external{""};
         std::string notation{};
     };

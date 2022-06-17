@@ -28,9 +28,7 @@ namespace XMLLib
     //
     class BufferSource : public ISource
     {
-      
     public:
-
         BufferSource() = default;
         explicit BufferSource(const std::u16string &sourceBuffer)
         {
@@ -106,7 +104,6 @@ namespace XMLLib
             m_column = 1;
             m_bufferPosition = 0;
         }
-
     private:
         void convertCRLFToLF(ISource::String &xmlString)
         {
@@ -201,7 +198,6 @@ namespace XMLLib
             m_source.seekg(currentPosition, std::ios_base::beg);
             return (rangeBuffer);
         }
-
     private:
         mutable std::ifstream m_source;
     };

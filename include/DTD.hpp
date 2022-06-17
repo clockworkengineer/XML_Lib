@@ -38,7 +38,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        void parse(ISource &dtdSource);
+        void parse(ISource &source);
         void stringify(IDestination &destination);
         // ================
         // PUBLIC VARIABLES

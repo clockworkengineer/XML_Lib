@@ -93,94 +93,94 @@ namespace XMLLib
     /// <summary>
     /// Parse attribute of type enumeration.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
+    /// <param name="source">DTD source stream.</param>
     /// <returns>Enumeration string.</returns>
-    std::string DTD_Impl::parseAttributeEnumerationType(ISource &dtdSource)
+    std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
     {
-        std::string enumerationType(dtdSource.current_to_bytes());
-        dtdSource.next();
-        dtdSource.ignoreWS();
-        enumerationType += Core::parseName(dtdSource);
-        while (dtdSource.more() && dtdSource.current() == '|')
+        std::string enumerationType(source.current_to_bytes());
+        source.next();
+        source.ignoreWS();
+        enumerationType += Core::parseName(source);
+        while (source.more() && source.current() == '|')
         {
-            enumerationType += dtdSource.current_to_bytes();
-            dtdSource.next();
-            dtdSource.ignoreWS();
-            enumerationType += Core::parseName(dtdSource);
+            enumerationType += source.current_to_bytes();
+            source.next();
+            source.ignoreWS();
+            enumerationType += Core::parseName(source);
         }
-        if (dtdSource.current() != ')')
+        if (source.current() != ')')
         {
-            throw SyntaxError(dtdSource, "Missing closing ')' on enumeration attribute type.");
+            throw SyntaxError(source, "Missing closing ')' on enumeration attribute type.");
         }
-        enumerationType += dtdSource.current_to_bytes();
-        dtdSource.next();
-        dtdSource.ignoreWS();
+        enumerationType += source.current_to_bytes();
+        source.next();
+        source.ignoreWS();
         return (enumerationType);
     }
     /// <summary>
     /// Parse DTD attribute type field.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    /// <param name="dtdattribute">Attribute description.</param>
+    /// <param name="source">DTD source stream.</param>
+    /// <param name="attribute">Attribute description.</param>
     /// <returns>Attribute type as string (UTF-8 encoded).</returns>
-    void DTD_Impl::parseAttributeType(ISource &dtdSource, XMLNodeDTD::Attribute &attribute)
+    void DTD_Impl::parseAttributeType(ISource &source, XMLNodeDTD::Attribute &attribute)
     {
-        if (dtdSource.match(U"CDATA"))
+        if (source.match(U"CDATA"))
         {
             attribute.type = XMLNodeDTD::AttributeType::cdata;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
             return;
         }
-        else if (dtdSource.match(U"IDREFS"))
+        else if (source.match(U"IDREFS"))
         {
             attribute.type = XMLNodeDTD::AttributeType::idrefs;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
             return;
         }
-        else if (dtdSource.match(U"IDREF"))
+        else if (source.match(U"IDREF"))
         {
             attribute.type = XMLNodeDTD::AttributeType::idref;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
             return;
         }
-        else if (dtdSource.match(U"ID"))
+        else if (source.match(U"ID"))
         {
             attribute.type = XMLNodeDTD::AttributeType::id;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
             return;
         }
-        else if (dtdSource.match(U"NMTOKENS"))
+        else if (source.match(U"NMTOKENS"))
         {
             attribute.type = XMLNodeDTD::AttributeType::nmtokens;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
             return;
         }
-        else if (dtdSource.match(U"NMTOKEN"))
+        else if (source.match(U"NMTOKEN"))
         {
             attribute.type = XMLNodeDTD::AttributeType::nmtoken;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
             return;
         }
-        else if (dtdSource.match(U"ENTITY"))
+        else if (source.match(U"ENTITY"))
         {
             attribute.type = XMLNodeDTD::AttributeType::entity;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
             return;
         }
-        else if (dtdSource.match(U"ENTITIES"))
+        else if (source.match(U"ENTITIES"))
         {
             attribute.type = XMLNodeDTD::AttributeType::entities;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
             return;
         }
-        else if (dtdSource.match(U"NOTATION"))
+        else if (source.match(U"NOTATION"))
         {
             attribute.type = XMLNodeDTD::AttributeType::notation;
-            dtdSource.ignoreWS();
+            source.ignoreWS();
         }
-        if (dtdSource.current() == '(')
+        if (source.current() == '(')
         {
-            attribute.enumeration = parseAttributeEnumerationType(dtdSource);
+            attribute.enumeration = parseAttributeEnumerationType(source);
             if (attribute.type == XMLNodeDTD::AttributeType::notation)
             {
                 parseValidNotations(attribute.enumeration);
@@ -191,191 +191,191 @@ namespace XMLLib
             }
             return;
         }
-        throw SyntaxError(dtdSource, "Invalid attribute type specified.");
+        throw SyntaxError(source, "Invalid attribute type specified.");
     }
     /// <summary>
     /// Parse DTD attribute value.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
+    /// <param name="source">DTD source stream.</param>
     /// <param name="attribute">Attribute description.</param>
-    void DTD_Impl::parseAttributeValue(ISource &dtdSource, XMLNodeDTD::Attribute &attribute)
+    void DTD_Impl::parseAttributeValue(ISource &source, XMLNodeDTD::Attribute &attribute)
     {
-        if (dtdSource.match(U"#REQUIRED"))
+        if (source.match(U"#REQUIRED"))
         {
             attribute.type |= XMLNodeDTD::AttributeType::required;
         }
-        else if (dtdSource.match(U"#IMPLIED"))
+        else if (source.match(U"#IMPLIED"))
         {
             attribute.type |= XMLNodeDTD::AttributeType::implied;
         }
-        else if (dtdSource.match(U"#FIXED"))
+        else if (source.match(U"#FIXED"))
         {
-            dtdSource.ignoreWS();
-            attribute.value = Core::parseValue(dtdSource, m_xmlNodeDTD.m_entityMapper);
+            source.ignoreWS();
+            attribute.value = Core::parseValue(source, m_xmlNodeDTD.m_entityMapper);
             attribute.type |= XMLNodeDTD::AttributeType::fixed;
         }
         else
         {
-            dtdSource.ignoreWS();
-            attribute.value = Core::parseValue(dtdSource, m_xmlNodeDTD.m_entityMapper);
+            source.ignoreWS();
+            attribute.value = Core::parseValue(source, m_xmlNodeDTD.m_entityMapper);
             attribute.type |= XMLNodeDTD::AttributeType::normal;
         }
     }
     /// <summary>
     /// Parse DTD attribute list.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseAttributeList(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseAttributeList(ISource &source)
     {
-        dtdSource.ignoreWS();
-        std::string elementName = Core::parseName(dtdSource);
-        while (dtdSource.more() && Core::validNameStartChar(dtdSource.current()))
+        source.ignoreWS();
+        std::string elementName = Core::parseName(source);
+        while (source.more() && Core::validNameStartChar(source.current()))
         {
             XMLNodeDTD::Attribute dtdAttribute;
-            dtdAttribute.name = Core::parseName(dtdSource);
-            parseAttributeType(dtdSource, dtdAttribute);
-            parseAttributeValue(dtdSource, dtdAttribute);
+            dtdAttribute.name = Core::parseName(source);
+            parseAttributeType(source, dtdAttribute);
+            parseAttributeValue(source, dtdAttribute);
             parseValidateAttribute(elementName, dtdAttribute);
             m_xmlNodeDTD.getElement(elementName).attributes.emplace_back(dtdAttribute);
-            dtdSource.ignoreWS();
+            source.ignoreWS();
         }
     }
     /// <summary>
     /// Parse DTD notation.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseNotation(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseNotation(ISource &source)
     {
-        dtdSource.ignoreWS();
-        std::string name = Core::parseName(dtdSource);
-        m_xmlNodeDTD.addNotation(name, parseExternalReference(dtdSource));
-        dtdSource.ignoreWS();
+        source.ignoreWS();
+        std::string name = Core::parseName(source);
+        m_xmlNodeDTD.addNotation(name, parseExternalReference(source));
+        source.ignoreWS();
     }
     /// <summary>
     /// Parse DTD entity.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseEntity(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseEntity(ISource &source)
     {
         std::string entityName = "&";
-        dtdSource.ignoreWS();
-        if (dtdSource.current() == '%')
+        source.ignoreWS();
+        if (source.current() == '%')
         {
             entityName = "%";
-            dtdSource.next();
-            dtdSource.ignoreWS();
+            source.next();
+            source.ignoreWS();
         }
-        entityName += Core::parseName(dtdSource) + ";";
-        if (dtdSource.current() == '\'' || dtdSource.current() == '"')
+        entityName += Core::parseName(source) + ";";
+        if (source.current() == '\'' || source.current() == '"')
         {
-            XMLValue entityValue = Core::parseValue(dtdSource);
+            XMLValue entityValue = Core::parseValue(source);
             m_xmlNodeDTD.m_entityMapper.get(entityName).internal = entityValue.parsed;
         }
         else
         {
-            m_xmlNodeDTD.m_entityMapper.get(entityName).external = parseExternalReference(dtdSource);
-            if (dtdSource.match(U"NDATA"))
+            m_xmlNodeDTD.m_entityMapper.get(entityName).external = parseExternalReference(source);
+            if (source.match(U"NDATA"))
             {
-                dtdSource.ignoreWS();
-                m_xmlNodeDTD.m_entityMapper.get(entityName).notation = Core::parseName(dtdSource);
+                source.ignoreWS();
+                m_xmlNodeDTD.m_entityMapper.get(entityName).notation = Core::parseName(source);
             }
         }
     }
     /// <summary>
     /// Parse an DTD element.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseElement(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseElement(ISource &source)
     {
-        dtdSource.ignoreWS();
-        std::string elementName = Core::parseName(dtdSource);
-        if (dtdSource.match(U"EMPTY"))
+        source.ignoreWS();
+        std::string elementName = Core::parseName(source);
+        if (source.match(U"EMPTY"))
         {
             m_xmlNodeDTD.addElement(elementName, XMLNodeDTD::Element(elementName, XMLValue{"EMPTY", "EMPTY"}));
         }
-        else if (dtdSource.match(U"ANY"))
+        else if (source.match(U"ANY"))
         {
             m_xmlNodeDTD.addElement(elementName, XMLNodeDTD::Element(elementName, XMLValue{"ANY", "ANY"}));
         }
         else
         {
             std::string unparsed;
-            while (dtdSource.more() &&
-                   (dtdSource.current() != '<') &&
-                   (dtdSource.current() != '>'))
+            while (source.more() &&
+                   (source.current() != '<') &&
+                   (source.current() != '>'))
             {
-                unparsed += dtdSource.current_to_bytes();
-                dtdSource.next();
+                unparsed += source.current_to_bytes();
+                source.next();
             }
             m_xmlNodeDTD.addElement(elementName, XMLNodeDTD::Element(elementName, parseElementContentSpecification(elementName, XMLValue{unparsed, ""})));
         }
-        dtdSource.ignoreWS();
+        source.ignoreWS();
     }
     /// <summary>
     /// Parse DTD comment.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseComment(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseComment(ISource &source)
     {
-        while (dtdSource.more() && !dtdSource.match(U"--"))
+        while (source.more() && !source.match(U"--"))
         {
-            dtdSource.next();
+            source.next();
         }
     }
     /// <summary>
     /// Parse DTD parameter entity reference.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseParameterEntityReference(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseParameterEntityReference(ISource &source)
     {
-        XMLValue parameterEntity = Core::parseEntityReference(dtdSource);
+        XMLValue parameterEntity = Core::parseEntityReference(source);
         BufferSource entitySource(m_xmlNodeDTD.m_entityMapper.translate(parameterEntity.unparsed));
         parseInternal(entitySource);
-        dtdSource.ignoreWS();
+        source.ignoreWS();
     }
     /// <summary>
     /// Parse internally defined DTD.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseInternal(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseInternal(ISource &source)
     {
-        while (dtdSource.more() && !dtdSource.match(U"]>"))
+        while (source.more() && !source.match(U"]>"))
         {
-            if (dtdSource.match(U"<!ENTITY"))
+            if (source.match(U"<!ENTITY"))
             {
-                parseEntity(dtdSource);
+                parseEntity(source);
             }
-            else if (dtdSource.match(U"<!ELEMENT"))
+            else if (source.match(U"<!ELEMENT"))
             {
-                parseElement(dtdSource);
+                parseElement(source);
             }
-            else if (dtdSource.match(U"<!ATTLIST"))
+            else if (source.match(U"<!ATTLIST"))
             {
-                parseAttributeList(dtdSource);
+                parseAttributeList(source);
             }
-            else if (dtdSource.match(U"<!NOTATION"))
+            else if (source.match(U"<!NOTATION"))
             {
-                parseNotation(dtdSource);
+                parseNotation(source);
             }
-            else if (dtdSource.match(U"<!--"))
+            else if (source.match(U"<!--"))
             {
-                parseComment(dtdSource);
+                parseComment(source);
             }
-            else if (dtdSource.current() == '%')
+            else if (source.current() == '%')
             {
-                parseParameterEntityReference(dtdSource);
+                parseParameterEntityReference(source);
                 continue;
             }
             else
             {
-                throw SyntaxError(dtdSource, "Invalid DTD tag.");
+                throw SyntaxError(source, "Invalid DTD tag.");
             }
-            if (dtdSource.current() != '>')
+            if (source.current() != '>')
             {
-                throw SyntaxError(dtdSource, "Missing '>' terminator.");
+                throw SyntaxError(source, "Missing '>' terminator.");
             }
-            dtdSource.next();
-            dtdSource.ignoreWS();
+            source.next();
+            source.ignoreWS();
         }
     }
     /// <summary>
@@ -383,47 +383,47 @@ namespace XMLLib
     /// that points to is parsed after any internal DTD that may be specified
     /// after it.
     /// </summary>
-    /// <param name="dtdSource">DTD source stream.</param>
-    void DTD_Impl::parseDTD(ISource &dtdSource)
+    /// <param name="source">DTD source stream.</param>
+    void DTD_Impl::parseDTD(ISource &source)
     {
         // We take the easy option for allowing a DTD to be stringified
         // and keeping the correct order for its components by storing it
         // in its raw unparsed form.
-        long start = dtdSource.position();
-        dtdSource.ignoreWS();
-        m_xmlNodeDTD.setRootName(Core::parseName(dtdSource));
+        long start = source.position();
+        source.ignoreWS();
+        m_xmlNodeDTD.setRootName(Core::parseName(source));
         // Parse in external DTD reference
-        if (dtdSource.current() != '[')
+        if (source.current() != '[')
         {
-            m_xmlNodeDTD.setExternalReference(parseExternalReference(dtdSource));
+            m_xmlNodeDTD.setExternalReference(parseExternalReference(source));
         }
         // We have internal DTD so parse that first
-        if (dtdSource.current() == '[')
+        if (source.current() == '[')
         {
-            dtdSource.next();
-            dtdSource.ignoreWS();
-            parseInternal(dtdSource);
+            source.next();
+            source.ignoreWS();
+            parseInternal(source);
             m_xmlNodeDTD.setType(XMLNodeDTD::Type::internal);
         }
         // Missing '>' after external DTD reference
-        else if (dtdSource.current() != '>')
+        else if (source.current() != '>')
         {
-            throw SyntaxError(dtdSource, "Missing '>' terminator.");
+            throw SyntaxError(source, "Missing '>' terminator.");
         }
         // Move to the next component in XML prolog
         else
         {
-            dtdSource.next();
-            dtdSource.ignoreWS();
+            source.next();
+            source.ignoreWS();
         }
         // Parse any DTD in external reference found
         if (!m_xmlNodeDTD.getExternalReference().type.empty())
         {
-            parseExternal(dtdSource);
+            parseExternal(source);
             m_xmlNodeDTD.setType(m_xmlNodeDTD.getType() | XMLNodeDTD::Type::external);
         }
         // Save away unparsed form of DTD
-        m_xmlNodeDTD.setUnparsed(std::string("<!DOCTYPE") + dtdSource.getRange(start, dtdSource.position()));
+        m_xmlNodeDTD.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
         // Make sure no defined entity contains recursion
         for (auto &entityName : m_xmlNodeDTD.m_entityMapper.getList())
         {
