@@ -51,9 +51,9 @@ namespace XMLLib
                 throw std::runtime_error("XML file output stream failed to open or could not be created.");
             }
         }
-        void add(const ISource::Char ch) override
+        void add(ISource::Char c) override
         {
-            add(m_UTF8.to_bytes(ch));
+            add(m_UTF8.to_bytes(c));
         }
         void add(const std::string &bytes) override
         {

@@ -24,7 +24,7 @@ namespace XMLLib
     class IXMLEntityMapper
     {
     public:
-        // Contructors/destructors
+        // Constructors/destructors
         IXMLEntityMapper() = default;
         IXMLEntityMapper(const IXMLEntityMapper& other) = delete;
         IXMLEntityMapper& operator=(const IXMLEntityMapper& other) = delete;

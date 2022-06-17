@@ -37,7 +37,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        void parse(ISource &dtdSource);
+        void parse(ISource &source);
         void stringify(IDestination &destination);
         // ================
         // PUBLIC VARIABLES
@@ -54,9 +54,9 @@ namespace XMLLib
         // ===============
         void parseValidNotations(const std::string &notations);
         void parseValidateAttribute(const std::string &elementName, const XMLNodeDTD::Attribute &dtdAttribute);
-        void parseConditional(ISource &dtdSource, bool includeOff = true);
-        void parseParameterEntities(ISource &dtdSource);
-        void parseExternalContent(ISource &dtdSource);
+        void parseConditional(ISource &source, bool includeOff = true);
+        void parseParameterEntities(ISource &source);
+        void parseExternalContent(ISource &source);
         std::string parseAttributeEnumerationType(ISource &source);
         bool parseIsChoiceOrSequence(ISource &contentSpecSource);
         void parseElementCP(ISource &contentSpecSource, IDestination &contentSpec);
@@ -67,18 +67,18 @@ namespace XMLLib
         void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpec);
         XMLValue parseElementContentSpecification(const std::string &elementName, const XMLValue &contentSpec);
         void parseExternalReferenceContent();
-        void parseAttributeList(ISource &dtdSource);
-        void parseNotation(ISource &dtdSource);
-        void parseEntity(ISource &dtdSource);
-        void parseElement(ISource &dtdSource);
-        XMLExternalReference parseExternalReference(ISource &dtdSource);
-        void parseAttributeType(ISource &dtdSource, XMLNodeDTD::Attribute &attribute);
-        void parseAttributeValue(ISource &dtdSource, XMLNodeDTD::Attribute &attribute);
-        void parseComment(ISource &dtdSource);
-        void parseParameterEntityReference(ISource &dtdSource);
-        void parseExternal(ISource &dtdSource);
-        void parseInternal(ISource &dtdSource);
-        void parseDTD(ISource &dtdSource);
+        void parseAttributeList(ISource &source);
+        void parseNotation(ISource &source);
+        void parseEntity(ISource &source);
+        void parseElement(ISource &source);
+        XMLExternalReference parseExternalReference(ISource &source);
+        void parseAttributeType(ISource &source, XMLNodeDTD::Attribute &attribute);
+        void parseAttributeValue(ISource &source, XMLNodeDTD::Attribute &attribute);
+        void parseComment(ISource &source);
+        void parseParameterEntityReference(ISource &source);
+        void parseExternal(ISource &source);
+        void parseInternal(ISource &source);
+        void parseDTD(ISource &source);
         // =================
         // PRIVATE VARIABLES
         // =================

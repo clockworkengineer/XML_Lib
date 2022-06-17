@@ -30,34 +30,34 @@ set (XML_SOURCES
     ./classes/implementation/DTD_Impl_Parse.cpp
     ./classes/implementation/DTD_Impl_Parse_Content.cpp
     ./classes/implementation/DTD_Impl_Parse_External.cpp
-    ./classes/XML_Validator.cpp
-    ./classes/XML_EntityMapper.cpp
+    ./classes/implementation/XML_Validator.cpp
+    ./classes/implementation/XML_EntityMapper.cpp
 )
  
 set (XML_INCLUDES
     XML_Config.hpp
+    ./include/XML.hpp
+    ./include/XML_Nodes.hpp
+    ./include/XML_Errors.hpp
+    ./include/XML_Types.hpp
+    ./include/DTD.hpp
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp
     ./include/interface/IXMLEntityMapper.hpp
     ./include/interface/IXMLValidator.hpp
-    ./include/XML.hpp
-    ./include/XML_Impl.hpp
-    ./include/XML_Sources.hpp
-    ./include/XML_Destinations.hpp
-    ./include/XML_Nodes.hpp
-    ./include/XML_Core.hpp
-    ./include/XML_Errors.hpp
-    ./include/XML_Types.hpp
-    ./include/DTD.hpp
-    ./include/DTD_Impl.hpp
-    ./include/XML_Validator.hpp
-    ./include/XML_EntityMapper.hpp
+    ./include/implementation/XML_Impl.hpp
+    ./include/implementation/XML_Sources.hpp
+    ./include/implementation/XML_Destinations.hpp
+    ./include/implementation/XML_Core.hpp
+    ./include/implementation/DTD_Impl.hpp
+    ./include/implementation/XML_Validator.hpp
+    ./include/implementation/XML_EntityMapper.hpp
 )
 
 # XML library
 
 add_library(${XML_LIBRARY_NAME} ${XML_SOURCES})
-target_include_directories(${XML_LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/include/interface ${PROJECT_BINARY_DIR} )
+target_include_directories(${XML_LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/include/interface ${PROJECT_SOURCE_DIR}/include/implementation ${PROJECT_BINARY_DIR} )
 
 # Add tests
 
