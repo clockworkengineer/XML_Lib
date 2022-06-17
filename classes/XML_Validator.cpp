@@ -90,7 +90,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <returns>true if element contains characters otherwise false.</returns>
-    bool XML_Validator::checkIsPCDATA(XMLNode &xmlNode)
+    bool XML_Validator::checkIsPCDATA(const XMLNode &xmlNode)
     {
         for (const auto &element : xmlNode.children)
         {
@@ -106,7 +106,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     /// <returns>true if element empty otherwise false.</returns>
-    bool XML_Validator::checkIsEMPTY(XMLNode &xmlNode)
+    bool XML_Validator::checkIsEMPTY(const XMLNode &xmlNode)
     {
         return (xmlNode.children.empty() || xmlNode.getNodeType() == XMLNodeType::self);
     }
@@ -121,9 +121,9 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkAttributeValue(XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute)
+    void XML_Validator::checkAttributeValue(const XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute)
     {
-        XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
+        const XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         bool attributePresent = xNodeElement.isAttributePresent(attribute.name);
         if ((attribute.type & XMLNodeDTD::AttributeType::required) != 0)
         {
@@ -168,9 +168,9 @@ namespace XMLLib
     ///
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkAttributeType(XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute)
+    void XML_Validator::checkAttributeType(const XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute)
     {
-        XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
+        const XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
         if ((attribute.type & XMLNodeDTD::AttributeType::cdata) != 0)
         {
@@ -284,9 +284,9 @@ namespace XMLLib
     /// it.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkAttributes(XMLNode &xmlNode)
+    void XML_Validator::checkAttributes(const XMLNode &xmlNode)
     {
-        XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
+        const XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         for (auto &attribute : m_xmlNodeDTD.getElement(xNodeElement.name()).attributes)
         {
             if (xNodeElement.isAttributePresent(attribute.name))
@@ -300,9 +300,9 @@ namespace XMLLib
     /// Check elements structure.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkContentSpecification(XMLNode &xmlNode)
+    void XML_Validator::checkContentSpecification(const XMLNode &xmlNode)
     {
-        XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
+        const XMLNodeElement &xNodeElement = XMLNodeRef<XMLNodeElement>(xmlNode);
         if (m_xmlNodeDTD.getElementCount() == 0)
         {
             return;
@@ -354,7 +354,7 @@ namespace XMLLib
     /// Check elements content and associated attributes.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkElement(XMLNode &xmlNode)
+    void XML_Validator::checkElement(const XMLNode &xmlNode)
     {
         checkContentSpecification(xmlNode);
         checkAttributes(xmlNode);
@@ -363,7 +363,7 @@ namespace XMLLib
     /// Recursively check elements of XML document.
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
-    void XML_Validator::checkElements(XMLNode &xmlNode)
+    void XML_Validator::checkElements(const XMLNode &xmlNode)
     {
         switch (xmlNode.getNodeType())
         {
@@ -423,7 +423,7 @@ namespace XMLLib
     /// <param name=""></param>
     /// <param name="prolog">Prolog element containing root of XML to
     /// validate.</param>
-    void XML_Validator::checkAgainstDTD(XMLNodeProlog &prolog)
+    void XML_Validator::checkAgainstDTD(const XMLNodeProlog &prolog)
     {
         m_lineNumber = m_xmlNodeDTD.getLineCount();
         checkElements(prolog);
@@ -443,7 +443,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="prolog">Prolog element containing root of XML to
     /// validate.</param>
-    void XML_Validator::validate(XMLNodeProlog &prolog)
+    void XML_Validator::validate(const XMLNodeProlog &prolog)
     {
         checkAgainstDTD(prolog);
     }

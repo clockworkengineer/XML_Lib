@@ -43,7 +43,6 @@ namespace XMLLib
         using Ptr = std::unique_ptr<XMLNode>;
         struct Error : public std::exception
         {
-         
         public:
             explicit Error(std::string message) : m_message(std::move(message))
             {
@@ -70,7 +69,6 @@ namespace XMLLib
         XMLNode &operator[](int index) const;
         XMLNode &operator[](const std::string &name) const;
         std::vector<XMLNode::Ptr> children;
-
     private:
         XMLNodeType xmlNodeType;
     };
@@ -127,7 +125,6 @@ namespace XMLLib
         {
             m_standalone = standalone;
         }
-
     private:
         std::string m_version{"1.0"};
         std::string m_encoding{"UTF-8"};
@@ -157,7 +154,6 @@ namespace XMLLib
         {
             m_isWhiteSpace = isWhiteSpace;
         }
-
     private:
         std::string m_content;
         bool m_isWhiteSpace;
@@ -178,7 +174,6 @@ namespace XMLLib
         {
             m_cdata = cdata;
         }
-
     private:
         std::string m_cdata;
     };
@@ -198,7 +193,6 @@ namespace XMLLib
         {
             m_value = value;
         }
-
     private:
         XMLValue m_value;
     };
@@ -220,7 +214,7 @@ namespace XMLLib
                                  [&name](const XMLAttribute &attr)
                                  { return (attr.name == name); }) != m_attributes.rend());
         }
-        void addAttribute(const std::string &name, const XMLValue &value)
+        void addAttribute(const std::string &name, const XMLValue &value) const
         {
             m_attributes.emplace_back(name, value);
         }
@@ -264,11 +258,10 @@ namespace XMLLib
         }
         XMLNodeElement &operator[](int index) const;
         XMLNodeElement &operator[](const std::string &name) const;
-
     private:
         std::string m_name;
         XMLAttributeList m_namespaces;
-        XMLAttributeList m_attributes;
+        mutable XMLAttributeList m_attributes;
     };
     // =======
     // Comment
@@ -286,7 +279,6 @@ namespace XMLLib
         {
             m_comment = comment;
         }
-
     private:
         std::string m_comment;
     };
@@ -438,7 +430,6 @@ namespace XMLLib
             m_lineCount = lineCount;
         }
         IXMLEntityMapper &m_entityMapper;
-
     private:
         uint16_t m_type{};
         long m_lineCount{};

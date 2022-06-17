@@ -21,7 +21,7 @@ namespace XMLLib
         IXMLValidator(IXMLValidator&& other) = delete;
         IXMLValidator& operator=(IXMLValidator&& other) = delete;
         virtual ~IXMLValidator() = default;
-        virtual void validate(XMLNodeProlog &prolog) = 0;
+        virtual void validate(const XMLNodeProlog &prolog) = 0;
     };
 
 } // namespace XMLLib

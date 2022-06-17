@@ -38,7 +38,7 @@ namespace XMLLib
         // ==============
         // PUBLIC METHODS
         // ==============
-        void validate(XMLNodeProlog &prolog) override;
+        void validate(const XMLNodeProlog &prolog) override;
         // ================
         // PUBLIC VARIABLES
         // ================
@@ -53,17 +53,17 @@ namespace XMLLib
         // PRIVATE METHODS
         // ===============
         void elementError(const XMLNodeElement &xNodeElement, const std::string &error);
-        void checkAttributes(XMLNode &xmlNode);
-        void checkContentSpecification(XMLNode &xmlNode);
-        void checkElement(XMLNode &xmlNode);
-        void checkElements(XMLNode &xmlNode);
+        void checkAttributes(const XMLNode &xmlNode);
+        void checkContentSpecification(const XMLNode &xmlNode);
+        void checkElement(const XMLNode &xmlNode);
+        void checkElements(const XMLNode &xmlNode);
         bool checkIsNMTOKENOK(const std::string &nmTokenValue);
         bool checkIsIDOK(const std::string &idValue);
-        void checkAttributeValue(XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
-        void checkAttributeType(XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
-        bool checkIsPCDATA(XMLNode &xmlNode);
-        bool checkIsEMPTY(XMLNode &xmlNode);
-        void checkAgainstDTD(XMLNodeProlog &prolog);
+        void checkAttributeValue(const XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
+        void checkAttributeType(const XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
+        bool checkIsPCDATA(const XMLNode &xmlNode);
+        bool checkIsEMPTY(const XMLNode &xmlNode);
+        void checkAgainstDTD(const XMLNodeProlog &prolog);
         // =================
         // PRIVATE VARIABLES
         // =================
