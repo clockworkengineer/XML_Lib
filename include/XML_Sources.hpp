@@ -20,11 +20,17 @@ namespace XMLLib
     constexpr char kCarriageReturn{0x0D};
     constexpr char kLineFeed{0x0A};
     //
+    // Bits per byte
+    //
+    constexpr int kBitsPerByte{ 8 };
+    //
     // Source classes for parsers.
     //
     class BufferSource : public ISource
     {
+      
     public:
+
         BufferSource() = default;
         explicit BufferSource(const std::u16string &sourceBuffer)
         {
@@ -37,7 +43,7 @@ namespace XMLLib
             {
                 for (char16_t &ch : utf16xml)
                 {
-                    ch = (static_cast<uint16_t>(ch) >> 8) | (static_cast<uint16_t>(ch) << 8);
+                    ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
                 }
             }
             m_parseBuffer = m_UTF8.from_bytes(m_UTF16.to_bytes(utf16xml));
