@@ -224,7 +224,7 @@ namespace XMLLib
                                   [&name](const XMLAttribute &attr)
                                   { return (attr.name == name); }));
         }
-        [[nodiscard]] const XMLAttributeList &getAttributeList() const
+        [[nodiscard]] const  XMLAttribute::List &getAttributeList() const
         {
             return (m_attributes);
         }
@@ -244,7 +244,7 @@ namespace XMLLib
                                   [&name](const XMLAttribute &ns)
                                   { return (ns.name == name); }));
         }
-        [[nodiscard]] const XMLAttributeList &getNameSpaceList() const
+        [[nodiscard]] const  XMLAttribute::List &getNameSpaceList() const
         {
             return (m_namespaces);
         }
@@ -260,8 +260,8 @@ namespace XMLLib
         XMLNodeElement &operator[](const std::string &name) const;
     private:
         std::string m_name;
-        XMLAttributeList m_namespaces;
-        mutable XMLAttributeList m_attributes;
+         XMLAttribute::List m_namespaces;
+        mutable  XMLAttribute::List m_attributes;
     };
     // =======
     // Comment

@@ -36,21 +36,21 @@ namespace XMLLib
         std::string unparsed{};
         std::string parsed{};
     };
-    //
+    // =============
     // XML Attribute
-    //
+    // =============
     struct XMLAttribute
     {
+        using List = std::vector<XMLAttribute>;
         XMLAttribute(std::string name, XMLValue value) : name(std::move(name)), value(std::move(value))
         {
         }
         std::string name;
         XMLValue value;
     };
-    using XMLAttributeList = std::vector<XMLAttribute>;
-    //
+    // ======================
     // XML External reference
-    //
+    // ======================
     struct XMLExternalReference
     {
         explicit XMLExternalReference(std::string type) : type(std::move(type))
@@ -63,9 +63,9 @@ namespace XMLLib
         std::string systemID{};
         std::string publicID{};
     };
-    //
+    // ==================
     // XML Entity mapping
-    //
+    // ==================
     struct XMLEntityMapping
     {
         explicit XMLEntityMapping(std::string internal) : internal(std::move(internal))

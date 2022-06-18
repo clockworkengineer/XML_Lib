@@ -55,10 +55,10 @@ namespace XMLLib
     /// <returns>true then token is valid otherwise false.</returns>
     bool XML_Validator::checkIsNMTOKENOK(const std::string &nmTokenValue)
     {
-        BufferSource nmTokenValueSource(Core::trimmString(nmTokenValue));
+        BufferSource nmTokenValueSource(trimmString(nmTokenValue));
         while (nmTokenValueSource.more())
         {
-            if (!Core::validNameChar(nmTokenValueSource.current()))
+            if (!validNameChar(nmTokenValueSource.current()))
             {
                 return (false);
             }
@@ -76,7 +76,7 @@ namespace XMLLib
         try
         {
             BufferSource idSource(idValue);
-            Core::parseName(idSource);
+            parseName(idSource);
         }
         catch (std::exception &)
         {
@@ -201,7 +201,7 @@ namespace XMLLib
         }
         else if ((attribute.type & XMLNodeDTD::AttributeType::idrefs) != 0)
         {
-            for (auto &id : Core::splitString(elementAttribute.value.parsed, ' '))
+            for (auto &id : splitString(elementAttribute.value.parsed, ' '))
             {
                 if (!checkIsIDOK(id))
                 {
@@ -221,7 +221,7 @@ namespace XMLLib
         else if ((attribute.type & XMLNodeDTD::AttributeType::nmtokens) != 0)
         {
             for (auto &nmtoken :
-                 Core::splitString(elementAttribute.value.parsed, ' '))
+                 splitString(elementAttribute.value.parsed, ' '))
             {
                 if (!checkIsNMTOKENOK(nmtoken))
                 {
@@ -239,7 +239,7 @@ namespace XMLLib
         }
         else if ((attribute.type & XMLNodeDTD::AttributeType::entities) != 0)
         {
-            for (auto &entity : Core::splitString(elementAttribute.value.parsed, ' '))
+            for (auto &entity : splitString(elementAttribute.value.parsed, ' '))
             {
                 if (!m_xmlNodeDTD.m_entityMapper.isPresent("&" + entity + ";"))
                 {
@@ -251,7 +251,7 @@ namespace XMLLib
         else if ((attribute.type & XMLNodeDTD::AttributeType::notation) != 0)
         {
             std::set<std::string> notations;
-            for (auto &notation : Core::splitString(
+            for (auto &notation : splitString(
                      attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|'))
             {
                 notations.insert(notation);
@@ -265,7 +265,7 @@ namespace XMLLib
         else if ((attribute.type & XMLNodeDTD::AttributeType::enumeration) != 0)
         {
             std::set<std::string> enumeration;
-            for (auto &option : Core::splitString(
+            for (auto &option : splitString(
                      attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|'))
             {
                 enumeration.insert(option);

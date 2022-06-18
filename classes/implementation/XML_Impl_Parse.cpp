@@ -41,7 +41,7 @@ namespace XMLLib
     /// <param name="source">XML source stream.</param>
     std::string XML_Impl::parseTagName(ISource &source)
     {
-        return (Core::parseName(source));
+        return (parseName(source));
     }
     /// <summary>
     /// Parse a XML comment, create a XMLNodeComment for it and add to list
@@ -70,7 +70,7 @@ namespace XMLLib
     XMLNode::Ptr XML_Impl::parsePI(ISource &source)
     {
         XMLNodePI xmlNodePI;
-        xmlNodePI.setName(Core::parseName(source));
+        xmlNodePI.setName(parseName(source));
         std::string parameters;
         while (source.more() && !source.match(U"?>"))
         {
@@ -108,20 +108,20 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="xmlNode">Current element node.</param>
-    XMLAttributeList XML_Impl::parseAttributes(ISource &source)
+     XMLAttribute::List XML_Impl::parseAttributes(ISource &source)
     {
-        XMLAttributeList attributes;
+         XMLAttribute::List attributes;
         std::set<std::string> attributeNames;
         while (source.more() && source.current() != '?' && source.current() != '/' && source.current() != '>')
         {
-            std::string attributeName = Core::parseName(source);
+            std::string attributeName = parseName(source);
             if (!source.match(U"="))
             {
                 throw SyntaxError(source, "Missing '=' between attribute name and value.");
             }
             source.ignoreWS();
-            XMLValue attributeValue = Core::parseValue(source, *m_entityMapper);
-            if (!Core::validAttributeValue(attributeValue))
+            XMLValue attributeValue = parseValue(source, *m_entityMapper);
+            if (!validAttributeValue(attributeValue))
             {
                 throw SyntaxError(source, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
             }
@@ -154,7 +154,7 @@ namespace XMLLib
     /// <param name="xmlNode">Current element node.</param>
     void XML_Impl::parseElementContent(ISource &source, XMLNode &xmlNode)
     {
-        XMLValue content{Core::parseCharacter(source)};
+        XMLValue content{parseCharacter(source)};
         if (content.isReference())
         {
             if (content.isEntityReference())
@@ -236,7 +236,7 @@ namespace XMLLib
     /// </summary>
     /// <param name="source">XML source stream.</param>
     /// <param name="namespaces">Current list of namespaces.</param>
-    XMLNode::Ptr XML_Impl::parseElement(ISource &source, const XMLAttributeList &namespaces, XMLNodeType xmlNodeType)
+    XMLNode::Ptr XML_Impl::parseElement(ISource &source, const  XMLAttribute::List &namespaces, XMLNodeType xmlNodeType)
     {
         XMLNodeElement xmlNodeElement{xmlNodeType};
         for (const auto &ns : namespaces)
@@ -291,7 +291,7 @@ namespace XMLLib
                     throw SyntaxError(source, "Missing '=' after version.");
                 }
                 source.ignoreWS();
-                declaration.setVersion(Core::parseValue(source).parsed);
+                declaration.setVersion(parseValue(source).parsed);
                 if (!declaration.isValidVersion())
                 {
                     throw SyntaxError(source, "Unsupported version " + declaration.version() + ".");
@@ -309,7 +309,7 @@ namespace XMLLib
                     throw SyntaxError(source, "Missing '=' after encoding.");
                 }
                 source.ignoreWS();
-                declaration.setEncoding(Core::toUpperString(Core::parseValue(source).parsed));
+                declaration.setEncoding(toUpperString(parseValue(source).parsed));
                 if (!declaration.isValidEncoding())
                 {
                     throw SyntaxError(source, "Unsupported encoding " + declaration.encoding() + " specified.");
@@ -323,7 +323,7 @@ namespace XMLLib
                     throw SyntaxError(source, "Missing '=' after standalone.");
                 }
                 source.ignoreWS();
-                declaration.setStandalone(Core::parseValue(source).parsed);
+                declaration.setStandalone(parseValue(source).parsed);
                 if (!declaration.isValidStandalone())
                 {
                     throw SyntaxError(source, "Invalid standalone value of '" + declaration.standalone() + "'.");

@@ -40,7 +40,7 @@ namespace XMLLib
     /// <returns></returns>
     void DTD_Impl::parseValidNotations(const std::string &notations)
     {
-        for (auto &notation : Core::splitString(notations.substr(1, notations.size() - 2), '|'))
+        for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|'))
         {
             if (m_xmlNodeDTD.getNotationCount(notation) == 0)
             {
@@ -73,7 +73,7 @@ namespace XMLLib
         else if (dtdAttribute.type == (XMLNodeDTD::AttributeType::enumeration | XMLNodeDTD::AttributeType::normal))
         {
             std::set<std::string> options;
-            for (auto &option : Core::splitString(dtdAttribute.enumeration.substr(1, dtdAttribute.enumeration.size() - 2), '|'))
+            for (auto &option : splitString(dtdAttribute.enumeration.substr(1, dtdAttribute.enumeration.size() - 2), '|'))
             {
                 if (options.find(option) == options.end())
                 {
@@ -100,13 +100,13 @@ namespace XMLLib
         std::string enumerationType(source.current_to_bytes());
         source.next();
         source.ignoreWS();
-        enumerationType += Core::parseName(source);
+        enumerationType += parseName(source);
         while (source.more() && source.current() == '|')
         {
             enumerationType += source.current_to_bytes();
             source.next();
             source.ignoreWS();
-            enumerationType += Core::parseName(source);
+            enumerationType += parseName(source);
         }
         if (source.current() != ')')
         {
@@ -211,13 +211,13 @@ namespace XMLLib
         else if (source.match(U"#FIXED"))
         {
             source.ignoreWS();
-            attribute.value = Core::parseValue(source, m_xmlNodeDTD.m_entityMapper);
+            attribute.value = parseValue(source, m_xmlNodeDTD.m_entityMapper);
             attribute.type |= XMLNodeDTD::AttributeType::fixed;
         }
         else
         {
             source.ignoreWS();
-            attribute.value = Core::parseValue(source, m_xmlNodeDTD.m_entityMapper);
+            attribute.value = parseValue(source, m_xmlNodeDTD.m_entityMapper);
             attribute.type |= XMLNodeDTD::AttributeType::normal;
         }
     }
@@ -228,11 +228,11 @@ namespace XMLLib
     void DTD_Impl::parseAttributeList(ISource &source)
     {
         source.ignoreWS();
-        std::string elementName = Core::parseName(source);
-        while (source.more() && Core::validNameStartChar(source.current()))
+        std::string elementName = parseName(source);
+        while (source.more() && validNameStartChar(source.current()))
         {
             XMLNodeDTD::Attribute dtdAttribute;
-            dtdAttribute.name = Core::parseName(source);
+            dtdAttribute.name = parseName(source);
             parseAttributeType(source, dtdAttribute);
             parseAttributeValue(source, dtdAttribute);
             parseValidateAttribute(elementName, dtdAttribute);
@@ -247,7 +247,7 @@ namespace XMLLib
     void DTD_Impl::parseNotation(ISource &source)
     {
         source.ignoreWS();
-        std::string name = Core::parseName(source);
+        std::string name = parseName(source);
         m_xmlNodeDTD.addNotation(name, parseExternalReference(source));
         source.ignoreWS();
     }
@@ -265,10 +265,10 @@ namespace XMLLib
             source.next();
             source.ignoreWS();
         }
-        entityName += Core::parseName(source) + ";";
+        entityName += parseName(source) + ";";
         if (source.current() == '\'' || source.current() == '"')
         {
-            XMLValue entityValue = Core::parseValue(source);
+            XMLValue entityValue = parseValue(source);
             m_xmlNodeDTD.m_entityMapper.get(entityName).internal = entityValue.parsed;
         }
         else
@@ -277,7 +277,7 @@ namespace XMLLib
             if (source.match(U"NDATA"))
             {
                 source.ignoreWS();
-                m_xmlNodeDTD.m_entityMapper.get(entityName).notation = Core::parseName(source);
+                m_xmlNodeDTD.m_entityMapper.get(entityName).notation = parseName(source);
             }
         }
     }
@@ -288,7 +288,7 @@ namespace XMLLib
     void DTD_Impl::parseElement(ISource &source)
     {
         source.ignoreWS();
-        std::string elementName = Core::parseName(source);
+        std::string elementName = parseName(source);
         if (source.match(U"EMPTY"))
         {
             m_xmlNodeDTD.addElement(elementName, XMLNodeDTD::Element(elementName, XMLValue{"EMPTY", "EMPTY"}));
@@ -328,7 +328,7 @@ namespace XMLLib
     /// <param name="source">DTD source stream.</param>
     void DTD_Impl::parseParameterEntityReference(ISource &source)
     {
-        XMLValue parameterEntity = Core::parseEntityReference(source);
+        XMLValue parameterEntity = parseEntityReference(source);
         BufferSource entitySource(m_xmlNodeDTD.m_entityMapper.translate(parameterEntity.unparsed));
         parseInternal(entitySource);
         source.ignoreWS();
@@ -391,7 +391,7 @@ namespace XMLLib
         // in its raw unparsed form.
         long start = source.position();
         source.ignoreWS();
-        m_xmlNodeDTD.setRootName(Core::parseName(source));
+        m_xmlNodeDTD.setRootName(parseName(source));
         // Parse in external DTD reference
         if (source.current() != '[')
         {
