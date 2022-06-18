@@ -17,15 +17,32 @@ namespace XMLLib
     class ISource
     {
     public:
+        // =============
+        // ISource Error
+        // =============
+        struct Error : public std::exception
+        {
+            explicit Error(const std::string &description = "")
+            {
+                errorMessage = "ISource Error: " + description;
+            }
+            [[nodiscard]] const char *what() const noexcept override
+            {
+                return (errorMessage.c_str());
+            }
+
+        private:
+            std::string errorMessage;
+        };
         // 32 bit characters internally
         using String = std::u32string;
         using Char = String::value_type;
         // Contructors/destructors
         ISource() = default;
-        ISource(const ISource& other) = delete;
-        ISource& operator=(const ISource& other) = delete;
-        ISource(ISource&& other) = delete;
-        ISource& operator=(ISource&& other) = delete;
+        ISource(const ISource &other) = delete;
+        ISource &operator=(const ISource &other) = delete;
+        ISource(ISource &&other) = delete;
+        ISource &operator=(ISource &&other) = delete;
         virtual ~ISource() = default;
         // Current character
         [[nodiscard]] virtual Char current() const = 0;

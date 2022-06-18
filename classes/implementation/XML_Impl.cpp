@@ -62,7 +62,7 @@ namespace XMLLib
                 return (XMLNodeRef<XMLNodeDTD>(*element));
             }
         }
-        throw std::runtime_error("Error: No DTD found.");
+        throw XMLLib::Error("No DTD found.");
     }
     /// <summary>
     /// Return XML prolog node.
@@ -92,7 +92,7 @@ namespace XMLLib
                 return (XMLNodeRef<XMLNodeElement>(*element));
             }
         }
-        throw std::runtime_error("Error: No root element found.");
+        throw XMLLib::Error("No root element found.");
     }
     /// <summary>
     /// Parse XML read from source stream into internal object generating an exception

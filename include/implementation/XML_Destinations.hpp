@@ -48,7 +48,7 @@ namespace XMLLib
             m_destination.open(destinationFileName.c_str(), std::ios_base::binary);
             if (!m_destination.is_open())
             {
-                throw std::runtime_error("XML file output stream failed to open or could not be created.");
+                throw Error("File output stream failed to open or could not be created.");
             }
         }
         void add(ISource::Char c) override

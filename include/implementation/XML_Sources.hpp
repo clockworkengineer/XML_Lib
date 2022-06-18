@@ -34,7 +34,7 @@ namespace XMLLib
         {
             if (sourceBuffer.empty())
             {
-                throw std::invalid_argument("Empty source buffer passed to be parsed.");
+                throw Error("Empty source buffer passed to be parsed.");
             }
             std::u16string utf16xml{sourceBuffer};
             if (utf16xml.find(u"<?xml") != 0)
@@ -51,7 +51,7 @@ namespace XMLLib
         {
             if (sourceBuffer.empty())
             {
-                throw std::invalid_argument("Empty source buffer passed to be parsed.");
+                throw Error("Empty source buffer passed to be parsed.");
             }
             m_parseBuffer = m_UTF8.from_bytes(sourceBuffer);
             convertCRLFToLF(m_parseBuffer);
@@ -68,7 +68,7 @@ namespace XMLLib
         {
             if (!more())
             {
-                throw std::runtime_error("Parse buffer empty before parse complete.");
+                throw Error("Parse buffer empty before parse complete.");
             }
             m_bufferPosition++;
             m_column++;
@@ -125,7 +125,7 @@ namespace XMLLib
             m_source.open(sourceFileName.c_str(), std::ios_base::binary);
             if (!m_source.is_open())
             {
-                throw std::runtime_error("XML file input stream failed to open or does not exist.");
+                throw Error("File input stream failed to open or does not exist.");
             }
             if (current() == kCarriageReturn)
             {
@@ -144,7 +144,7 @@ namespace XMLLib
         {
             if (!more())
             {
-                throw std::runtime_error("Parse buffer empty before parse complete.");
+                throw Error("Parse buffer empty before parse complete.");
             }
             m_source.get();
             if (current() == kCarriageReturn)

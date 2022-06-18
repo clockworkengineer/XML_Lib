@@ -63,7 +63,7 @@ namespace XMLLib
         {
             return (entity->second);
         }
-        throw std::runtime_error("Error: Could not insert mapping name.");
+        throw XMLLib::Error("Could not insert mapping name.");
     }
     void XML_EntityMapper::remove(const std::string &entityName)
     {

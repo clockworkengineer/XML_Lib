@@ -13,8 +13,24 @@
 // =========
 namespace XMLLib
 {
+    // =========
+    // XML Error
+    // =========
+    struct Error : public std::exception
+    {
+        explicit Error(const std::string &description = "")
+        {
+            errorMessage = "XML Error: " + description;
+        }
+        [[nodiscard]] const char *what() const noexcept override
+        {
+            return (errorMessage.c_str());
+        }
+    private:
+        std::string errorMessage;
+    };
     // ================
-    // XML syntax error
+    // XML Syntax Error
     // ================
     struct SyntaxError : public std::exception
     {
@@ -35,7 +51,7 @@ namespace XMLLib
         std::string errorMessage;
     };
     // ====================
-    // XML validation error
+    // XML Validation Error
     // ====================
     struct ValidationError : public std::exception
     {

@@ -16,12 +16,29 @@ namespace XMLLib
     class IDestination
     {
     public:
+        // ==================
+        // IDestination Error
+        // ==================
+        struct Error : public std::exception
+        {
+            explicit Error(const std::string &description = "")
+            {
+                errorMessage = "IDestination Error: " + description;
+            }
+            [[nodiscard]] const char *what() const noexcept override
+            {
+                return (errorMessage.c_str());
+            }
+
+        private:
+            std::string errorMessage;
+        };
         // Constructors/destructors
         IDestination() = default;
-        IDestination(const IDestination& other) = delete;
-        IDestination& operator=(const IDestination& other) = delete;
-        IDestination(IDestination&& other) = delete;
-        IDestination& operator=(IDestination&& other) = delete;
+        IDestination(const IDestination &other) = delete;
+        IDestination &operator=(const IDestination &other) = delete;
+        IDestination(IDestination &&other) = delete;
+        IDestination &operator=(IDestination &&other) = delete;
         virtual ~IDestination() = default;
         // Add bytes to destination
         virtual void add(const std::string &bytes) = 0;

@@ -135,7 +135,7 @@ namespace XMLLib
             break;
         }
         default:
-            throw std::runtime_error("Invalid XMLNode encountered during stringify.");
+            throw XMLLib::Error("Invalid XMLNode encountered during stringify.");
         }
     }
     /// <summary>
