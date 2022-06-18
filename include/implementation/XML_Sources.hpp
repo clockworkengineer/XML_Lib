@@ -6,7 +6,7 @@
 #include <string>
 #include <stdexcept>
 //
-// ISource interface
+// Source interface
 //
 #include "ISource.hpp"
 // =========

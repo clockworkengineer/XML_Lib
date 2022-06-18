@@ -7,12 +7,9 @@
 #include <filesystem>
 #include <set>
 //
-// XML
+// Source / XML Entity Mapper interfaces
 //
-#include "XML_Sources.hpp"
-//
-// XML Entity Mapper interface
-//
+#include "ISource.hpp"
 #include "IXMLEntityMapper.hpp"
 // =========
 // NAMESPACE

@@ -9,6 +9,7 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML_EntityMapper.hpp"
+#include "XML_Sources.hpp"
 #include "XML_Errors.hpp"
 // ====================
 // CLASS IMPLEMENTATION

@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <fstream>
 //
-// IDestination interface
+// Destination interface
 //
 #include "IDestination.hpp"
 // =========

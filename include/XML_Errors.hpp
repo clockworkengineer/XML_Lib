@@ -5,7 +5,7 @@
 #include <string>
 #include <stdexcept>
 //
-// ISource inteface
+// Source inteface
 //
 #include "ISource.hpp"
 // =========

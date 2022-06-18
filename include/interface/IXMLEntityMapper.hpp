@@ -5,7 +5,7 @@
 #include <set>
 #include <map>
 //
-// ISource interface
+// Source interface
 //
 #include "ISource.hpp"
 //
