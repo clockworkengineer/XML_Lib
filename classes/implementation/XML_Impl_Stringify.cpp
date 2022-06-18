@@ -118,7 +118,7 @@ namespace XMLLib
         case XMLNodeType::pi:
         {
             XMLNodePI &xmlNodePI = XMLNodeRef<XMLNodePI>(xmlNode);
-            destination.add("<?" + xmlNodePI.name + " " + xmlNodePI.parameters + "?>");
+            destination.add("<?" + xmlNodePI.name() + " " + xmlNodePI.parameters() + "?>");
             break;
         }
         // XML CDATA section

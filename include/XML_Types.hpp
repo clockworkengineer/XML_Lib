@@ -10,9 +10,9 @@
 // =========
 namespace XMLLib
 {
-    //
+    // =========
     // XML value
-    //
+    // =========
     struct XMLValue
     {
         explicit XMLValue(std::string unparsed) : unparsed(std::move(unparsed))

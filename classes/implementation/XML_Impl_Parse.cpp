@@ -70,12 +70,14 @@ namespace XMLLib
     XMLNode::Ptr XML_Impl::parsePI(ISource &source)
     {
         XMLNodePI xmlNodePI;
-        xmlNodePI.name = Core::parseName(source);
+        xmlNodePI.setName(Core::parseName(source));
+        std::string parameters;
         while (source.more() && !source.match(U"?>"))
         {
-            xmlNodePI.parameters += source.current_to_bytes();
+            parameters += source.current_to_bytes();
             source.next();
         }
+        xmlNodePI.setParameters(parameters);
         return (std::make_unique<XMLNodePI>(std::move(xmlNodePI)));
     }
     /// <summary>

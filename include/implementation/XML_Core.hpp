@@ -28,9 +28,9 @@ namespace XMLLib::Core
     //
     // XML validation
     //
-    bool validChar(ISource::Char ch);
-    bool validNameStartChar(ISource::Char ch);
-    bool validNameChar(ISource::Char ch);
+    bool validChar(ISource::Char c);
+    bool validNameStartChar(ISource::Char c);
+    bool validNameChar(ISource::Char c);
     bool validReservedName(const ISource::String &name);
     bool validName(ISource::String name);
     bool validAttributeValue(const XMLValue &value);

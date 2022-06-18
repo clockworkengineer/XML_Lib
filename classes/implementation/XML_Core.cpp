@@ -37,55 +37,55 @@ namespace XMLLib::Core
     /// <summary>
     /// Check whether a character is valid for XML.
     /// </summary>
-    /// <param name="ch">Character to validate.</param>
+    /// <param name="c">Character to validate.</param>
     /// <returns>true then valid otherwise false.</returns>
-    bool validChar(ISource::Char ch)
+    bool validChar(ISource::Char c)
     {
-        return ((ch == 0x09) ||
-                (ch == kLineFeed) ||
-                (ch == kCarriageReturn) ||
-                (ch >= 0x20 && ch <= 0xD7FF) ||
-                (ch >= 0xE000 && ch <= 0xFFFD) ||
-                (ch >= 0x10000 && ch <= 0x10FFFF));
+        return ((c == 0x09) ||
+                (c == kLineFeed) ||
+                (c == kCarriageReturn) ||
+                (c >= 0x20 && c <= 0xD7FF) ||
+                (c >= 0xE000 && c <= 0xFFFD) ||
+                (c >= 0x10000 && c <= 0x10FFFF));
     }
     /// <summary>
     /// Check whether character is a valid to start an XML name with.
     /// </summary>
-    /// <param name="ch">Character value to validate.</param>
+    /// <param name="c">Character value to validate.</param>
     /// <returns>true then valid otherwise false.</returns>
-    bool validNameStartChar(ISource::Char ch)
+    bool validNameStartChar(ISource::Char c)
     {
-        return ((ch == ':') ||
-                (ch == '_') ||
-                (ch >= 'A' && ch <= 'Z') ||
-                (ch >= 'a' && ch <= 'z') ||
-                (ch >= 0xC0 && ch <= 0xD6) ||
-                (ch >= 0xD8 && ch <= 0xF6) ||
-                (ch >= 0xF8 && ch <= 0x2FF) ||
-                (ch >= 0x370 && ch <= 0x37D) ||
-                (ch >= 0x37F && ch <= 0x1FFF) ||
-                (ch >= 0x200C && ch <= 0x200D) ||
-                (ch >= 0x2070 && ch <= 0x218F) ||
-                (ch >= 0x2C00 && ch <= 0x2FEF) ||
-                (ch >= 0x3001 && ch <= 0xD7FF) ||
-                (ch >= 0xF900 && ch <= 0xFDCF) ||
-                (ch >= 0xFDF0 && ch <= 0xFFFD) ||
-                (ch >= 0x10000 && ch <= 0xEFFFF));
+        return ((c == ':') ||
+                (c == '_') ||
+                (c >= 'A' && c <= 'Z') ||
+                (c >= 'a' && c <= 'z') ||
+                (c >= 0xC0 && c <= 0xD6) ||
+                (c >= 0xD8 && c <= 0xF6) ||
+                (c >= 0xF8 && c <= 0x2FF) ||
+                (c >= 0x370 && c <= 0x37D) ||
+                (c >= 0x37F && c <= 0x1FFF) ||
+                (c >= 0x200C && c <= 0x200D) ||
+                (c >= 0x2070 && c <= 0x218F) ||
+                (c >= 0x2C00 && c <= 0x2FEF) ||
+                (c >= 0x3001 && c <= 0xD7FF) ||
+                (c >= 0xF900 && c <= 0xFDCF) ||
+                (c >= 0xFDF0 && c <= 0xFFFD) ||
+                (c >= 0x10000 && c <= 0xEFFFF));
     }
     /// <summary>
     /// Check whether a character is valid for an XML name.
     /// </summary>
-    /// <param name="ch">Name to validate.</param>
+    /// <param name="c">Name to validate.</param>
     /// <returns>true then valid otherwise false.</returns>
-    bool validNameChar(ISource::Char ch)
+    bool validNameChar(ISource::Char c)
     {
-        return (validNameStartChar(ch) ||
-                (ch == '-') ||
-                (ch == '.') ||
-                (ch >= '0' && ch <= '9') ||
-                (ch == 0xB7) ||
-                (ch >= 0x0300 && ch <= 0x036F) ||
-                (ch >= 0x203F && ch <= 0x2040));
+        return (validNameStartChar(c) ||
+                (c == '-') ||
+                (c == '.') ||
+                (c >= '0' && c <= '9') ||
+                (c == 0xB7) ||
+                (c >= 0x0300 && c <= 0x036F) ||
+                (c >= 0x203F && c <= 0x2040));
     }
     /// <summary>
     /// Check name that starts with xml is a valid reserved name.

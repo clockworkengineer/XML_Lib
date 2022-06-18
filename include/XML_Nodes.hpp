@@ -48,11 +48,11 @@ namespace XMLLib
             {
             }
             [[nodiscard]] const char *what() const noexcept override
-            {         
+            {
                 return (m_message.c_str());
             }
         private:
-              const std::string m_message;
+            const std::string m_message;
         };
         explicit XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType)
         {
@@ -290,8 +290,25 @@ namespace XMLLib
         explicit XMLNodePI(XMLNodeType nodeType = XMLNodeType::pi) : XMLNode(nodeType)
         {
         }
-        std::string name;
-        std::string parameters;
+        [[nodiscard]] std::string name() const
+        {
+            return (m_name);
+        }
+        void setName(const std::string &name)
+        {
+            m_name = name;
+        }
+        [[nodiscard]] std::string parameters() const
+        {
+            return (m_parameters);
+        }
+        void setParameters(const std::string &parameters)
+        {
+            m_parameters = parameters;
+        }
+    private:
+        std::string m_name;
+        std::string m_parameters;
     };
     // ===
     // DTD
@@ -440,7 +457,7 @@ namespace XMLLib
         std::string m_unparsed;
     };
     // ===========================
-    // XMLNode reference converted
+    // XMLNode reference converter
     // ===========================
     template <typename T>
     void CheckXMLNodeType(const XMLNode &xmlNode)
