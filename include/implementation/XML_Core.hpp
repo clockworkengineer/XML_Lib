@@ -11,20 +11,16 @@
 // Source interface
 //
 #include "ISource.hpp"
-//
-// XML types/nodes
-//
-#include "XML_Types.hpp"
-#include "XML_Nodes.hpp"
-//
-// XML entity mapper interface
-//
-#include "XML_EntityMapper.hpp"
 // =========
 // NAMESPACE
 // =========
 namespace XMLLib
 {
+    // ===================================================
+    // Forward declarations for interfaces/classes/structs
+    // ===================================================
+    class IXMLEntityMapper;
+    struct XMLValue;
     //
     // XML validation
     //
