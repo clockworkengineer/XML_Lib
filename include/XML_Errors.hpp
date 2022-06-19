@@ -16,54 +16,35 @@ namespace XMLLib
     // =========
     // XML Error
     // =========
-    struct Error : public std::exception
+    struct Error : public std::runtime_error
     {
-        explicit Error(const std::string &description = "")
+        Error(std::string const &message) : std::runtime_error("XML Error: " + message)
         {
-            errorMessage = "XML Error: " + description;
         }
-        [[nodiscard]] const char *what() const noexcept override
-        {
-            return (errorMessage.c_str());
-        }
-    private:
-        std::string errorMessage;
     };
     // ================
     // XML Syntax Error
     // ================
-    struct SyntaxError : public std::exception
+    struct SyntaxError : public std::runtime_error
     {
-        explicit SyntaxError(const std::string &description = "")
+        SyntaxError(const std::string &message)
+            : std::runtime_error("XML Syntax Error: " + message)
         {
-            errorMessage = "XML Syntax Error: " + description;
         }
-        explicit SyntaxError(ISource &source, const std::string &description = "")
+        explicit SyntaxError(ISource &source, const std::string &message = "")
+            : std::runtime_error("XML Syntax Error [Line: " + std::to_string(source.getLineNo()) +
+                                 " Column: " + std::to_string(source.getColumnNo()) + "] " + message)
         {
-            errorMessage = "XML Syntax Error [Line: " + std::to_string(source.getLineNo()) +
-                           " Column: " + std::to_string(source.getColumnNo()) + "] " + description;
         }
-        [[nodiscard]] const char *what() const noexcept override
-        {
-            return (errorMessage.c_str());
-        }
-    private:
-        std::string errorMessage;
     };
     // ====================
     // XML Validation Error
     // ====================
-    struct ValidationError : public std::exception
+    struct ValidationError : public std::runtime_error
     {
-        explicit ValidationError(long lineNumber, const std::string &description = "")
+        explicit ValidationError(long lineNumber, const std::string &message = "")
+            : std::runtime_error("XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + message)
         {
-            errorMessage = "XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + description;
         }
-        [[nodiscard]] const char *what() const noexcept override
-        {
-            return (errorMessage.c_str());
-        }
-    private:
-        std::string errorMessage;
     };
 } // namespace XMLLib
