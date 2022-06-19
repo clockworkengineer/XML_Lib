@@ -24,12 +24,12 @@ set (XML_SOURCES
     ./classes/implementation/XML_Impl_Parse.cpp
     ./classes/implementation/XML_Impl_Misc.cpp
     ./classes/implementation/XML_Impl_Stringify.cpp
-    ./classes/implementation/XML_Core.cpp
     ./classes/DTD.cpp
     ./classes/implementation/DTD_Impl.cpp
     ./classes/implementation/DTD_Impl_Parse.cpp
     ./classes/implementation/DTD_Impl_Parse_Content.cpp
     ./classes/implementation/DTD_Impl_Parse_External.cpp
+    ./classes/implementation/XML_Core.cpp
     ./classes/implementation/XML_Validator.cpp
     ./classes/implementation/XML_EntityMapper.cpp
 )
@@ -37,7 +37,6 @@ set (XML_SOURCES
 set (XML_INCLUDES
     XML_Config.hpp
     ./include/XML.hpp
-    ./include/XML_Nodes.hpp
     ./include/XML_Errors.hpp
     ./include/XML_Types.hpp
     ./include/DTD.hpp

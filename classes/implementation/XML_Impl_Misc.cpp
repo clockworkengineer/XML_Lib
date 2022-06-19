@@ -51,7 +51,8 @@ namespace XMLLib
         {
             xmlNode.children.emplace_back(std::move(xmlNodePtr));
         }
-    } /// <summary>
+    } 
+    /// <summary>
     /// </summary>
     /// <param name="xmlNode">Current element node.</param>
     void XML_Impl::resetWhiteSpace(XMLNode &xmlNode)

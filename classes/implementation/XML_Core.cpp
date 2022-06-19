@@ -10,7 +10,6 @@
 // =================
 #include "XML.hpp"
 #include "XML_Types.hpp"
-#include "XML_Nodes.hpp"
 #include "XML_Core.hpp"
 #include "XML_Errors.hpp"
 #include "XML_Sources.hpp"
