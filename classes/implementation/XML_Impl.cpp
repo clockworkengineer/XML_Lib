@@ -54,8 +54,7 @@ namespace XMLLib
     /// </summary>
     std::string XML_Impl::version()
     {
-        //return (std::to_string(XML_VERSION_MAJOR) + "." + std::to_string(XML_VERSION_MINOR));
-        return (std::to_string(0) + "." + std::to_string(1));
+        return (std::format("XMLLib Version {}.{}", XML_VERSION_MAJOR, XML_VERSION_MINOR));
     }
     /// <summary>
     /// Return XML DT node.
