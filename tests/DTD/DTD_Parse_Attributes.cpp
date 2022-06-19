@@ -14,7 +14,7 @@ using namespace XMLLib;
 // ==========
 // Test cases
 // ==========
-TEST_CASE("Parse XML DTD with atttributes and check values.", "[XML][DTD][Parse][Attributes]")
+TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][Attributes]")
 {
   std::string xmlString;
   SECTION("XML with internal DTD with attributes to parse ", "[XML][DTD][Parse][Attributes]")
@@ -271,11 +271,11 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
                 "<!ATTLIST item itemID2 ID #REQUIRED >\n"
                 "]>\n"
                 "<collection>\n"
-                "<item itemID1=\"i001\" itemID2=\"id001\">item descripton</item>\n"
-                "<item itemID1=\"i002\" itemID2=\"id002\">item descripton</item>\n"
-                "<item itemID1=\"i003\" itemID2=\"id003\">item descripton</item>\n"
-                "<item itemID1=\"i004\" itemID2=\"id004\">item descripton</item>\n"
-                "<item itemID1=\"i005\" itemID2=\"id005\">item descripton</item>\n"
+                "<item itemID1=\"i001\" itemID2=\"id001\">item description</item>\n"
+                "<item itemID1=\"i002\" itemID2=\"id002\">item description</item>\n"
+                "<item itemID1=\"i003\" itemID2=\"id003\">item description</item>\n"
+                "<item itemID1=\"i004\" itemID2=\"id004\">item description</item>\n"
+                "<item itemID1=\"i005\" itemID2=\"id005\">item description</item>\n"
                 "</collection>\n";
     BufferSource source { xmlString };
     XML xml;
