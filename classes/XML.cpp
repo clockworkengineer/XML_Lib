@@ -87,14 +87,6 @@ namespace XMLLib
         return (m_implementation->root());
     }
     /// <summary>
-    /// Parse XML read from source stream into internal object generating an exception
-    /// if a syntax error in the XML is found (not well formed).
-    /// </summary>
-    void XML::parse(ISource &source)
-    {
-        m_implementation->parse(source);
-    }
-    /// <summary>
     /// Validate XML against any DTD provided to see whether it is valid. If an
     /// exception is thrown then there is a validation issue and the XML is not valid.
     /// </summary>
@@ -103,10 +95,26 @@ namespace XMLLib
         m_implementation->validate();
     }
     /// <summary>
+    /// Parse XML read from source stream into internal object generating an exception
+    /// if a syntax error in the XML is found (not well formed).
+    /// </summary>
+    void XML::parse(ISource &source)
+    {
+        m_implementation->parse(source);
+    }
+    void XML::parse(ISource &&source)
+    {
+        m_implementation->parse(source);
+    }
+    /// <summary>
     /// Create XML text from an XML object.
     /// </summary>
     /// <param name="destination">XML destination stream.</param>
     void XML::stringify(IDestination &destination)
+    {
+        m_implementation->stringify(destination);
+    }
+    void XML::stringify(IDestination &&destination)
     {
         m_implementation->stringify(destination);
     }

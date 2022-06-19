@@ -34,8 +34,8 @@ namespace XMLLib
         XML();
         XML(const XML &other) = delete;
         XML &operator=(const XML &other) = delete;
-        XML(XML&& other) = delete;
-        XML& operator=(XML&& other) = delete;
+        XML(XML &&other) = delete;
+        XML &operator=(XML &&other) = delete;
         ~XML();
         // ==============
         // PUBLIC METHODS
@@ -44,10 +44,12 @@ namespace XMLLib
         XMLNodeProlog &prolog();
         XMLNodeDeclaration &declaration();
         XMLNodeElement &root();
-        void parse(ISource &source);
-        void stringify(IDestination &destination);
         void validate();
         std::string version();
+        void parse(ISource &source);
+        void parse(ISource &&source);
+        void stringify(IDestination &destination);
+        void stringify(IDestination &&destination);
         // ================
         // PUBLIC VARIABLES
         // ================
