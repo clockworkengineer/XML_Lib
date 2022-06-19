@@ -17,9 +17,7 @@ namespace XMLLib
     class ISource
     {
     public:
-        // =============
         // ISource Error
-        // =============
         struct Error : public std::exception
         {
             explicit Error(const std::string &description = "")
@@ -37,7 +35,7 @@ namespace XMLLib
         // 32 bit characters internally
         using String = std::u32string;
         using Char = String::value_type;
-        // Contructors/destructors
+        // Constructors/destructors
         ISource() = default;
         ISource(const ISource &other) = delete;
         ISource &operator=(const ISource &other) = delete;
@@ -63,7 +61,7 @@ namespace XMLLib
         {
             return (std::iswspace(static_cast<wint_t>(current()))) != 0;
         }
-        // Ignore shitespace on source stream
+        // Ignore whitespace on source stream
         void ignoreWS()
         {
             while (more() && isWS())

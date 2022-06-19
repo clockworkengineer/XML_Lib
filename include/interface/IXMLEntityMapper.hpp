@@ -8,16 +8,16 @@
 // Source interface
 //
 #include "ISource.hpp"
-//
-// XML types
-//
-#include "XML_Types.hpp"
 // =========
 // NAMESPACE
 // =========
 namespace XMLLib
 {
-
+    // ===================================================
+    // Forward declarations for interfaces/classes/structs
+    // ===================================================
+    struct XMLEntityMapping;
+    struct XMLValue;
     // ===========================
     // XML Entity mapper interface
     // ===========================

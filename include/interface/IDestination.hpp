@@ -16,9 +16,7 @@ namespace XMLLib
     class IDestination
     {
     public:
-        // ==================
         // IDestination Error
-        // ==================
         struct Error : public std::exception
         {
             explicit Error(const std::string &description = "")
@@ -29,7 +27,6 @@ namespace XMLLib
             {
                 return (errorMessage.c_str());
             }
-
         private:
             std::string errorMessage;
         };
@@ -43,7 +40,6 @@ namespace XMLLib
         // Add bytes to destination
         virtual void add(const std::string &bytes) = 0;
         virtual void add(ISource::Char c) = 0;
-
     protected:
         std::wstring_convert<std::codecvt_utf8_utf16<ISource::String::value_type>, ISource::String::value_type> m_UTF8;
     };
