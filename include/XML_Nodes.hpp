@@ -411,7 +411,12 @@ namespace XMLLib
         }
         XMLNodeDTD::Element &getElement(const std::string &elementName)
         {
-            return (m_elements[elementName]);
+            auto element = m_elements.find(elementName);
+            if (element != m_elements.end())
+            {
+                return (element->second);
+            }
+            throw XMLNode::Error("XMLNode Error: Could not find notation name.");
         }
         void addElement(const std::string &elementName, const XMLNodeDTD::Element &element)
         {
