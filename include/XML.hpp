@@ -3,10 +3,7 @@
 // C++ STL
 //
 #include <memory>
-//
-// XML version
-//
-#include "XML_Config.hpp"
+#include <string>
 // =========
 // NAMESPACE
 // =========
@@ -50,6 +47,7 @@ namespace XMLLib
         void parse(ISource &source);
         void stringify(IDestination &destination);
         void validate();
+        std::string version();
         // ================
         // PUBLIC VARIABLES
         // ================

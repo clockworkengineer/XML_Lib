@@ -50,6 +50,14 @@ namespace XMLLib
     {
     }
     /// <summary>
+    ///  Get XMLLib version.
+    /// </summary>
+    std::string XML_Impl::version()
+    {
+        //return (std::to_string(XML_VERSION_MAJOR) + "." + std::to_string(XML_VERSION_MINOR));
+        return (std::to_string(0) + "." + std::to_string(1));
+    }
+    /// <summary>
     /// Return XML DT node.
     /// </summary>
     XMLNodeDTD &XML_Impl::dtd()

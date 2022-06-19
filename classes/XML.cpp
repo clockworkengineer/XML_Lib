@@ -52,6 +52,13 @@ namespace XMLLib
     {
     }
     /// <summary>
+    /// Get XMLLib version.
+    /// </summary>
+    std::string XML::version()
+    {
+        return (m_implementation->version());
+    }
+    /// <summary>
     /// Return reference to any internal DTD for parsed XML.
     /// </summary>
     XMLNodeDTD &XML::dtd()

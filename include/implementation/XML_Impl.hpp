@@ -54,6 +54,7 @@ namespace XMLLib
         void parse(ISource &source);
         void stringify(IDestination &destination);
         void validate();
+        std::string version();
         // ================
         // PUBLIC VARIABLES
         // ================
@@ -72,13 +73,13 @@ namespace XMLLib
         void addContentToElementChildList(XMLNode &xmlNode, const std::string &content);
         void parseElementContent(ISource &source, XMLNode &xmlNode);
         std::string parseTagName(ISource &source);
-         XMLAttribute::List parseAttributes(ISource &source);
+        XMLAttribute::List parseAttributes(ISource &source);
         XMLNode::Ptr parseComment(ISource &source);
         XMLNode::Ptr parseCDATA(ISource &source);
         XMLNode::Ptr parsePI(ISource &source);
         void parseWhiteSpaceToContent(ISource &source, XMLNode &xmlNode);
         void parseElementContents(ISource &source, XMLNode &xmlNode);
-        XMLNode::Ptr parseElement(ISource &source, const  XMLAttribute::List &namespaces, XMLNodeType xmlNodeType = XMLNodeType::element);
+        XMLNode::Ptr parseElement(ISource &source, const XMLAttribute::List &namespaces, XMLNodeType xmlNodeType = XMLNodeType::element);
         XMLNode::Ptr parseDeclaration(ISource &source);
         XMLNode::Ptr parseDTD(ISource &source);
         XMLNode::Ptr parseProlog(ISource &source);
