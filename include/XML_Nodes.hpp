@@ -8,6 +8,7 @@
 #include <memory>
 #include <algorithm>
 #include <unordered_map>
+#include <stdexcept>
 // =========
 // NAMESPACE
 // =========
@@ -41,18 +42,11 @@ namespace XMLLib
     struct XMLNode
     {
         using Ptr = std::unique_ptr<XMLNode>;
-        struct Error : public std::exception
+        struct Error : public std::runtime_error
         {
-        public:
-            explicit Error(std::string message) : m_message(std::move(message))
+            Error(const std::string &message) : std::runtime_error("XMLNode Error: " + message)
             {
             }
-            [[nodiscard]] const char *what() const noexcept override
-            {
-                return (m_message.c_str());
-            }
-        private:
-            const std::string m_message;
         };
         explicit XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType)
         {
@@ -69,6 +63,7 @@ namespace XMLLib
         XMLNode &operator[](int index) const;
         XMLNode &operator[](const std::string &name) const;
         std::vector<XMLNode::Ptr> children;
+
     private:
         XMLNodeType xmlNodeType;
     };
@@ -125,6 +120,7 @@ namespace XMLLib
         {
             m_standalone = standalone;
         }
+
     private:
         std::string m_version{"1.0"};
         std::string m_encoding{"UTF-8"};
@@ -154,6 +150,7 @@ namespace XMLLib
         {
             m_isWhiteSpace = isWhiteSpace;
         }
+
     private:
         std::string m_content;
         bool m_isWhiteSpace;
@@ -174,6 +171,7 @@ namespace XMLLib
         {
             m_cdata = cdata;
         }
+
     private:
         std::string m_cdata;
     };
@@ -193,6 +191,7 @@ namespace XMLLib
         {
             m_value = value;
         }
+
     private:
         XMLValue m_value;
     };
@@ -224,7 +223,7 @@ namespace XMLLib
                                   [&name](const XMLAttribute &attr)
                                   { return (attr.name == name); }));
         }
-        [[nodiscard]] const  XMLAttribute::List &getAttributeList() const
+        [[nodiscard]] const XMLAttribute::List &getAttributeList() const
         {
             return (m_attributes);
         }
@@ -244,7 +243,7 @@ namespace XMLLib
                                   [&name](const XMLAttribute &ns)
                                   { return (ns.name == name); }));
         }
-        [[nodiscard]] const  XMLAttribute::List &getNameSpaceList() const
+        [[nodiscard]] const XMLAttribute::List &getNameSpaceList() const
         {
             return (m_namespaces);
         }
@@ -258,10 +257,11 @@ namespace XMLLib
         }
         XMLNodeElement &operator[](int index) const;
         XMLNodeElement &operator[](const std::string &name) const;
+
     private:
         std::string m_name;
-         XMLAttribute::List m_namespaces;
-        mutable  XMLAttribute::List m_attributes;
+        XMLAttribute::List m_namespaces;
+        mutable XMLAttribute::List m_attributes;
     };
     // =======
     // Comment
@@ -279,6 +279,7 @@ namespace XMLLib
         {
             m_comment = comment;
         }
+
     private:
         std::string m_comment;
     };
@@ -306,6 +307,7 @@ namespace XMLLib
         {
             m_parameters = parameters;
         }
+
     private:
         std::string m_name;
         std::string m_parameters;
@@ -416,7 +418,7 @@ namespace XMLLib
             {
                 return (element->second);
             }
-            throw XMLNode::Error("XMLNode Error: Could not find notation name.");
+            throw XMLNode::Error("Could not find notation name.");
         }
         void addElement(const std::string &elementName, const XMLNodeDTD::Element &element)
         {
@@ -433,7 +435,7 @@ namespace XMLLib
             {
                 return (notation->second);
             }
-            throw XMLNode::Error("XMLNode Error: Could not find notation name.");
+            throw XMLNode::Error("Could not find notation name.");
         }
         void addNotation(const std::string &notationName, const XMLExternalReference &notation)
         {
@@ -452,6 +454,7 @@ namespace XMLLib
             m_lineCount = lineCount;
         }
         IXMLEntityMapper &m_entityMapper;
+
     private:
         uint16_t m_type{};
         long m_lineCount{};
@@ -471,14 +474,14 @@ namespace XMLLib
         {
             if (xmlNode.getNodeType() != XMLNodeType::prolog)
             {
-                throw XMLNode::Error("XMLNode Error: Node not a prolog.");
+                throw XMLNode::Error("Node not a prolog.");
             }
         }
         else if constexpr (std::is_same_v<T, XMLNodeDeclaration>)
         {
             if (xmlNode.getNodeType() != XMLNodeType::declaration)
             {
-                throw XMLNode::Error("XMLNode Error: Node not a declaration.");
+                throw XMLNode::Error("Node not a declaration.");
             }
         }
         else if constexpr (std::is_same_v<T, XMLNodeElement>)
@@ -487,49 +490,49 @@ namespace XMLLib
                 (xmlNode.getNodeType() != XMLNodeType::self) &&
                 (xmlNode.getNodeType() != XMLNodeType::element))
             {
-                throw XMLNode::Error("XMLNode Error: Node not a element.");
+                throw XMLNode::Error("Node not a element.");
             }
         }
         else if constexpr (std::is_same_v<T, XMLNodeContent>)
         {
             if (xmlNode.getNodeType() != XMLNodeType::content)
             {
-                throw XMLNode::Error("XMLNode Error: Node not content.");
+                throw XMLNode::Error("Node not content.");
             }
         }
         else if constexpr (std::is_same_v<T, XMLNodeEntityReference>)
         {
             if (xmlNode.getNodeType() != XMLNodeType::entity)
             {
-                throw XMLNode::Error("XMLNode Error: Node not an entity.");
+                throw XMLNode::Error("Node not an entity.");
             }
         }
         else if constexpr (std::is_same_v<T, XMLNodeComment>)
         {
             if (xmlNode.getNodeType() != XMLNodeType::comment)
             {
-                throw XMLNode::Error("XMLNode Error: Node not a comment.");
+                throw XMLNode::Error("Node not a comment.");
             }
         }
         else if constexpr (std::is_same_v<T, XMLNodeCDATA>)
         {
             if (xmlNode.getNodeType() != XMLNodeType::cdata)
             {
-                throw XMLNode::Error("XMLNode Error: Node not CDATA.");
+                throw XMLNode::Error("Node not CDATA.");
             }
         }
         else if constexpr (std::is_same_v<T, XMLNodePI>)
         {
             if (xmlNode.getNodeType() != XMLNodeType::pi)
             {
-                throw XMLNode::Error("XMLNode Error: Node not a PI.");
+                throw XMLNode::Error("Node not a PI.");
             }
         }
         else if constexpr (std::is_same_v<T, XMLNodeDTD>)
         {
             if (xmlNode.getNodeType() != XMLNodeType::dtd)
             {
-                throw XMLNode::Error("XMLNode Error: Node not DTD.");
+                throw XMLNode::Error("Node not DTD.");
             }
         }
     }
@@ -554,7 +557,7 @@ namespace XMLLib
         {
             return (*((XMLNodeRef<XMLNode>(*this).children[index])));
         }
-        throw XMLNode::Error("XMLNode Error: Invalid index used to access array.");
+        throw XMLNode::Error("Invalid index used to access array.");
     }
     // ===================
     // XMLNode name access
@@ -571,7 +574,7 @@ namespace XMLLib
                 }
             }
         }
-        throw XMLNode::Error("XMLNode Error: Invalid index used to access array.");
+        throw XMLNode::Error("Invalid index used to access array.");
     }
     // ===========================
     // XMLNodeElement index access
@@ -593,7 +596,7 @@ namespace XMLLib
                 }
             }
         }
-        throw XMLNode::Error("XMLNode Error: Invalid index used to access array.");
+        throw XMLNode::Error("Invalid index used to access array.");
     }
     // ==========================
     // XMLNodeElement name access
@@ -610,7 +613,7 @@ namespace XMLLib
                 }
             }
         }
-        throw XMLNode::Error("XMLNode Error: Invalid index used to access array.");
+        throw XMLNode::Error("Invalid index used to access array.");
     }
     // ====================
     // XMLNode get contents
