@@ -1,13 +1,13 @@
 #pragma once
-//
+// =======
 // C++ STL
-//
+// =======
 #include <string>
 #include <stdexcept>
 #include <fstream>
-//
+// =====================
 // Destination interface
-//
+// =====================
 #include "IDestination.hpp"
 // =========
 // NAMESPACE

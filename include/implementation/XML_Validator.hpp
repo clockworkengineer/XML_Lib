@@ -1,14 +1,21 @@
 #pragma once
-//
+// =======
 // C++ STL
-//
+// =======
 #include <string>
 #include <set>
 #include <regex>
-//
-// XML Validator interface
-//
+// ===
+// XML
+// ===
+#include "XML_Types.hpp"
+#include "XML_Core.hpp"
+#include "XML_Sources.hpp"
+// ========================================
+// XML Validator / Entity Mapper interfaces
+// ========================================
 #include "IXMLValidator.hpp"
+#include "IXMLEntityMapper.hpp"
 // =========
 // NAMESPACE
 // =========

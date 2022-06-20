@@ -1,15 +1,19 @@
 #pragma once
-//
+// =======
 // C++ STL
-//
+// =======
 #include <string>
 #include <map>
 #include <filesystem>
 #include <set>
-//
-// Source / XML Entity Mapper interfaces
-//
-#include "ISource.hpp"
+// ===
+// XML
+// ===
+#include "XML_Types.hpp"
+#include "XML_Sources.hpp"
+// ===========================
+// XML Entity Mapper interface
+// ===========================
 #include "IXMLEntityMapper.hpp"
 // =========
 // NAMESPACE

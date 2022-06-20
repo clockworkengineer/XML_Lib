@@ -1,7 +1,7 @@
 #pragma once
-//
+// =======
 // C++ STL
-//
+// =======
 #include <string>
 #include <codecvt>
 #include <locale>

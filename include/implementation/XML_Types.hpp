@@ -1,7 +1,7 @@
 #pragma once
-//
+// =======
 // C++ STL
-//
+// =======
 #include <utility>
 #include <vector>
 #include <string>
@@ -9,9 +9,9 @@
 #include <algorithm>
 #include <unordered_map>
 #include <stdexcept>
-//
+// ===============
 // Source inteface
-//
+// ===============
 #include "ISource.hpp"
 // =========
 // NAMESPACE

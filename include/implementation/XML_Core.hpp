@@ -1,15 +1,15 @@
 #pragma once
-//
+// =======
 // C++ STL
-//
+// =======
 #include <stdexcept>
 #include <filesystem>
 #include <map>
 #include <set>
 #include <sstream>
-//
+// ================
 // Source interface
-//
+// ================
 #include "ISource.hpp"
 // =========
 // NAMESPACE

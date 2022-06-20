@@ -1,13 +1,13 @@
 #pragma once
-//
+// =======
 // C++ STL
-//
+// =======
 #include <fstream>
 #include <string>
 #include <stdexcept>
-//
+// ================
 // Source interface
-//
+// ================
 #include "ISource.hpp"
 // =========
 // NAMESPACE

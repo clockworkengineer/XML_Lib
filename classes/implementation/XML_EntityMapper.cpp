@@ -8,9 +8,7 @@
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XML_Types.hpp"
 #include "XML_EntityMapper.hpp"
-#include "XML_Sources.hpp"
 // ====================
 // CLASS IMPLEMENTATION
 // ====================
@@ -56,13 +54,13 @@ namespace XMLLib
                 mappedEntityName += entitySource.current_to_bytes();
                 if (m_currentEntities.count(mappedEntityName) > 0)
                 {
-                    throw SyntaxError("Entity '" + mappedEntityName +
-                                      "' contains recursive definition which is not allowed.");
+                    throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
                 }
-                if (!get(mappedEntityName).internal.empty())
+                auto nextMappedName = get(mappedEntityName).internal;
+                if (!nextMappedName.empty())
                 {
                     m_currentEntities.emplace(mappedEntityName);
-                    recurseOverEntityReference(get(mappedEntityName).internal, type);
+                    recurseOverEntityReference(nextMappedName, type);
                     m_currentEntities.erase(mappedEntityName);
                 }
             }
@@ -199,11 +197,11 @@ namespace XMLLib
             {
                 if (entity.first[0] == type)
                 {
-                    size_t pos = translated.find(entity.first);
-                    if (pos != std::string::npos)
+                    if (size_t position = translated.find(entity.first); position != std::string::npos)
                     {
-                        translated.replace(pos, entity.first.length(), entity.second.internal);
+                        translated.replace(position, entity.first.length(), entity.second.internal);
                         matchFound = true;
+                        break;
                     }
                 }
             }
@@ -221,7 +219,10 @@ namespace XMLLib
     /// <param name="type"></param>
     void XML_EntityMapper::checkForRecursion(const std::string &entityReference)
     {
-        m_currentEntities.clear();
+        if (!m_currentEntities.empty())
+        {
+            throw Error("EntityMapper internal error.");
+        }
         recurseOverEntityReference(entityReference, entityReference[0]);
     }
 } // namespace XMLLib
