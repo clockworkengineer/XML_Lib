@@ -34,7 +34,6 @@ namespace XMLLib
     // ===============
     // PRIVATE METHODS
     // ===============
-
     /// <summary>
     ///
     /// </summary>
@@ -70,10 +69,25 @@ namespace XMLLib
             entitySource.next();
         }
     }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName)
+    {
+        std::string content;
+        FileSource entitySource{fileName};
+        while (entitySource.more())
+        {
+            content += entitySource.current_to_bytes();
+            entitySource.next();
+        }
+        return (content);
+    }
     // ==============
     // PUBLIC METHODS
     // ==============
-
     /// <summary>
     ///
     /// </summary>
@@ -145,34 +159,28 @@ namespace XMLLib
     /// <returns></returns>
     XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
     {
-        std::string unparsed{entityReference.unparsed}, parsed{entityReference.unparsed};
+        std::string parsed{entityReference.unparsed};
         if (isPresent(entityReference.unparsed))
         {
-            if (!get(entityReference.unparsed).internal.empty())
+            auto entityMapping = get(entityReference.unparsed);
+            if (!entityMapping.internal.empty())
             {
-                parsed = get(entityReference.unparsed).internal;
+                parsed = entityMapping.internal;
             }
             else
             {
-                if (std::filesystem::exists(get(entityReference.unparsed).external.systemID))
+                if (std::filesystem::exists(entityMapping.external.systemID))
                 {
-                    FileSource entitySource{get(entityReference.unparsed).external.systemID};
-                    parsed = "";
-                    while (entitySource.more())
-                    {
-                        parsed += entitySource.current_to_bytes();
-                        entitySource.next();
-                    }
+                    parsed = getFileMappingContents(entityMapping.external.systemID);
                 }
                 else
                 {
-                    throw SyntaxError("Entity '" + entityReference.unparsed + "' source file '" +
-                                      get(entityReference.unparsed).external.systemID +
-                                      "' does not exist.");
+                    throw SyntaxError("Entity '" + entityReference.unparsed + "' source file '" + entityMapping.external.systemID + "' does not exist.");
                 }
             }
+            return (XMLValue{entityReference.unparsed, parsed});
         }
-        return (XMLValue{unparsed, parsed});
+        return (entityReference);
     }
     /// <summary>
     ///
@@ -180,15 +188,14 @@ namespace XMLLib
     /// <param name="toTranslate"></param>
     /// <param name="type"></param>
     /// <returns></returns>
-    std::string XML_EntityMapper::translate(const std::string &toTranslate,
-                                            char type) const
+    std::string XML_EntityMapper::translate(const std::string &toTranslate, char type) const
     {
         std::string translated = toTranslate;
         bool matchFound;
         do
         {
             matchFound = false;
-            for (auto entity : m_entityMappings)
+            for (auto &entity : m_entityMappings)
             {
                 if (entity.first[0] == type)
                 {
@@ -203,7 +210,6 @@ namespace XMLLib
         } while (matchFound);
         return (translated);
     }
-
     /// <summary>
     /// Take an entity reference string, check whether it contains any infinitely
     /// recursive definition and throw an exception if so. This is done by
