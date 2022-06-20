@@ -58,7 +58,7 @@ namespace XMLLib
         }
         if (!source.match(U">"))
         {
-            throw SyntaxError(source, "Missing closing '>' for comment line.");
+            throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line.");
         }
         return (std::make_unique<XMLNodeComment>(XMLNodeComment{comment}));
     }
@@ -94,7 +94,7 @@ namespace XMLLib
         {
             if (source.match(U"<![CDATA["))
             {
-                throw SyntaxError(source, "Nesting of CDATA sections is not allowed.");
+                throw SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed.");
             }
             cdata += source.current_to_bytes();
             source.next();
@@ -117,13 +117,13 @@ namespace XMLLib
             std::string attributeName = parseName(source);
             if (!source.match(U"="))
             {
-                throw SyntaxError(source, "Missing '=' between attribute name and value.");
+                throw SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
             }
             source.ignoreWS();
             XMLValue attributeValue = parseValue(source, *m_entityMapper);
             if (!validAttributeValue(attributeValue))
             {
-                throw SyntaxError(source, "Attribute value contains invalid character '<', '\"', ''' or '&'.");
+                throw SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
             }
             if (!attributeNames.contains(attributeName))
             {
@@ -132,7 +132,7 @@ namespace XMLLib
             }
             else
             {
-                throw SyntaxError(source, "Attribute defined more than once within start tag.");
+                throw SyntaxError(source.getPosition(), "Attribute defined more than once within start tag.");
             }
         }
         return (attributes);
@@ -214,7 +214,7 @@ namespace XMLLib
             {
                 if (!xmlNodeChildElement.isNameSpacePresent(xmlNodeChildElement.name().substr(0, pos)))
                 {
-                    throw SyntaxError(source, "Namespace used but not defined.");
+                    throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
                 }
             }
         }
@@ -222,11 +222,11 @@ namespace XMLLib
         {
             if (source.match(U"</"))
             {
-                throw SyntaxError(source, "Missing closing tag.");
+                throw SyntaxError(source.getPosition(), "Missing closing tag.");
             }
             else if (source.match(U"]]>"))
             {
-                throw SyntaxError(source, "']]>' invalid in element content area.");
+                throw SyntaxError(source.getPosition(), "']]>' invalid in element content area.");
             }
             parseElementContent(source, xmlNode);
         }
@@ -260,7 +260,7 @@ namespace XMLLib
             }
             if (!source.match(source.from_bytes(xmlNodeElement.name()) + U">"))
             {
-                throw SyntaxError(source, "Missing closing tag.");
+                throw SyntaxError(source.getPosition(), "Missing closing tag.");
             }
         }
         else if (source.match(U"/>"))
@@ -270,7 +270,7 @@ namespace XMLLib
         }
         else
         {
-            throw SyntaxError(source, "Missing closing tag.");
+            throw SyntaxError(source.getPosition(), "Missing closing tag.");
         }
         return (std::make_unique<XMLNodeElement>(std::move(xmlNodeElement)));
     }
@@ -288,31 +288,31 @@ namespace XMLLib
                 source.ignoreWS();
                 if (!source.match(U"="))
                 {
-                    throw SyntaxError(source, "Missing '=' after version.");
+                    throw SyntaxError(source.getPosition(), "Missing '=' after version.");
                 }
                 source.ignoreWS();
                 declaration.setVersion(parseValue(source).parsed);
                 if (!declaration.isValidVersion())
                 {
-                    throw SyntaxError(source, "Unsupported version " + declaration.version() + ".");
+                    throw SyntaxError(source.getPosition(), "Unsupported version " + declaration.version() + ".");
                 }
             }
             else
             {
-                throw SyntaxError(source, "Version missing from declaration.");
+                throw SyntaxError(source.getPosition(), "Version missing from declaration.");
             }
             if (source.match(U"encoding"))
             {
                 source.ignoreWS();
                 if (!source.match(U"="))
                 {
-                    throw SyntaxError(source, "Missing '=' after encoding.");
+                    throw SyntaxError(source.getPosition(), "Missing '=' after encoding.");
                 }
                 source.ignoreWS();
                 declaration.setEncoding(toUpperString(parseValue(source).parsed));
                 if (!declaration.isValidEncoding())
                 {
-                    throw SyntaxError(source, "Unsupported encoding " + declaration.encoding() + " specified.");
+                    throw SyntaxError(source.getPosition(), "Unsupported encoding " + declaration.encoding() + " specified.");
                 }
             }
             if (source.match(U"standalone"))
@@ -320,22 +320,22 @@ namespace XMLLib
                 source.ignoreWS();
                 if (!source.match(U"="))
                 {
-                    throw SyntaxError(source, "Missing '=' after standalone.");
+                    throw SyntaxError(source.getPosition(), "Missing '=' after standalone.");
                 }
                 source.ignoreWS();
                 declaration.setStandalone(parseValue(source).parsed);
                 if (!declaration.isValidStandalone())
                 {
-                    throw SyntaxError(source, "Invalid standalone value of '" + declaration.standalone() + "'.");
+                    throw SyntaxError(source.getPosition(), "Invalid standalone value of '" + declaration.standalone() + "'.");
                 }
             }
             if (source.match(U"encoding"))
             {
-                throw SyntaxError(source, "Incorrect order for version, encoding and standalone attributes.");
+                throw SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes.");
             }
             if (!source.match(U"?>"))
             {
-                throw SyntaxError(source, "Declaration end tag not found.");
+                throw SyntaxError(source.getPosition(), "Declaration end tag not found.");
             }
         }
         return (std::make_unique<XMLNodeDeclaration>(std::move(declaration)));
@@ -361,7 +361,7 @@ namespace XMLLib
             }
             else
             {
-                throw SyntaxError(source, "Extra content at the end of document.");
+                throw SyntaxError(source.getPosition(), "Extra content at the end of document.");
             }
         }
     }
@@ -376,7 +376,7 @@ namespace XMLLib
             return (xmlNodeDTD);
         }
 
-        throw SyntaxError(source, "More than one DOCTYPE declaration.");
+        throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
     }
     /// <summary>
     /// Parse XML prolog and create the necessary XMLNodeElements for it. Valid
@@ -410,7 +410,7 @@ namespace XMLLib
             }
             else if (source.current() != '<')
             {
-                throw SyntaxError(source, "Content detected before root element.");
+                throw SyntaxError(source.getPosition(), "Content detected before root element.");
             }
             else
             {
@@ -433,7 +433,7 @@ namespace XMLLib
         }
         else
         {
-            throw SyntaxError(source, "Missing root element.");
+            throw SyntaxError(source.getPosition(), "Missing root element.");
         }
     }
 } // namespace XMLLib

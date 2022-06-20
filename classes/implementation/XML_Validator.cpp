@@ -178,7 +178,7 @@ namespace XMLLib
             {
                 elementError(xNodeElement, "ID attribute '" + attribute.name + "' is invalid.");
             }
-            if (m_assignedIDValues.find(elementAttribute.value.parsed) != m_assignedIDValues.end())
+            if (m_assignedIDValues.count(elementAttribute.value.parsed) > 0)
             {
                 elementError(xNodeElement, "ID attribute '" + attribute.name + "' is not unique.");
             }
@@ -413,15 +413,14 @@ namespace XMLLib
     /// element.
     /// </summary>
     /// <param name=""></param>
-    /// <param name="prolog">Prolog element containing root of XML to
-    /// validate.</param>
+    /// <param name="prolog">Prolog element containing root of XML to validate.</param>
     void XML_Validator::checkAgainstDTD(const XMLNodeProlog &prolog)
     {
         m_lineNumber = m_xmlNodeDTD.getLineCount();
         checkElements(prolog);
         for (auto &idref : m_assignedIDREFValues)
         {
-            if (m_assignedIDValues.find(idref) == m_assignedIDValues.end())
+            if (m_assignedIDValues.count(idref) == 0)
             {
                 throw ValidationError(
                     m_lineNumber, "IDREF attribute '" + idref +
@@ -433,8 +432,7 @@ namespace XMLLib
     /// Validate XML against its DTD. Throwing an exception if there is a
     /// issue with the XML that is being validated.
     /// </summary>
-    /// <param name="prolog">Prolog element containing root of XML to
-    /// validate.</param>
+    /// <param name="prolog">Prolog element containing root of XML to validate.</param>
     void XML_Validator::validate(const XMLNodeProlog &prolog)
     {
         checkAgainstDTD(prolog);

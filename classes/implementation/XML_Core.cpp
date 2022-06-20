@@ -167,7 +167,7 @@ namespace XMLLib
         source.ignoreWS();
         if (!validName(name))
         {
-            throw SyntaxError(source, "Invalid name '" + source.to_bytes(name) + "' encountered.");
+            throw SyntaxError(source.getPosition(), "Invalid name '" + source.to_bytes(name) + "' encountered.");
         }
         return (source.to_bytes(name));
     }
@@ -183,7 +183,7 @@ namespace XMLLib
         unparsed += parseName(source);
         if (source.current() != ';')
         {
-            throw SyntaxError(source, "Invalidly formed entity reference.");
+            throw SyntaxError(source.getPosition(), "Invalidly formed entity reference.");
         }
         unparsed += ';';
         source.next();
@@ -204,7 +204,7 @@ namespace XMLLib
         }
         if (source.current() != ';')
         {
-            throw SyntaxError(source, "Invalidly formed  character reference.");
+            throw SyntaxError(source.getPosition(), "Invalidly formed  character reference.");
         }
         source.next();
         unparsed += ';';
@@ -225,11 +225,11 @@ namespace XMLLib
         {
             if (!validChar(result))
             {
-                throw SyntaxError(source, "Character reference invalid character.");
+                throw SyntaxError(source.getPosition(), "Character reference invalid character.");
             }
             return (XMLValue{unparsed, source.to_bytes(result)});
         }
-        throw SyntaxError(source, "Cannot convert character reference.");
+        throw SyntaxError(source.getPosition(), "Cannot convert character reference.");
     }
     /// <summary>
     /// Parse character value which can be either be a plain character,
@@ -254,7 +254,7 @@ namespace XMLLib
             source.next();
             return (XMLValue{character, character});
         }
-        throw SyntaxError(source, "Invalid character value encountered.");
+        throw SyntaxError(source.getPosition(), "Invalid character value encountered.");
     }
     /// <summary>
     /// Parse literal string value and return it.
@@ -288,7 +288,7 @@ namespace XMLLib
             source.ignoreWS();
             return (XMLValue{unparsed, parsed});
         }
-        throw SyntaxError(source, "Invalid attribute value.");
+        throw SyntaxError(source.getPosition(), "Invalid attribute value.");
     }
     /// <summary>
     /// Parse literal string value and return it.
@@ -312,7 +312,7 @@ namespace XMLLib
             source.ignoreWS();
             return (XMLValue{unparsed, parsed});
         }
-        throw SyntaxError(source, "Invalid attribute value.");
+        throw SyntaxError(source.getPosition(), "Invalid attribute value.");
     }
     /// <summary>
     /// Extract body of tag up until '>'.

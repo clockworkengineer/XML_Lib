@@ -9,10 +9,6 @@
 #include <algorithm>
 #include <unordered_map>
 #include <stdexcept>
-// ===============
-// Source inteface
-// ===============
-#include "ISource.hpp"
 // =========
 // NAMESPACE
 // =========
@@ -40,9 +36,9 @@ namespace XMLLib
             : std::runtime_error("XML Syntax Error: " + message)
         {
         }
-        explicit SyntaxError(ISource &source, const std::string &message = "")
-            : std::runtime_error("XML Syntax Error [Line: " + std::to_string(source.getLineNo()) +
-                                 " Column: " + std::to_string(source.getColumnNo()) + "] " + message)
+        explicit SyntaxError(const std::pair<long, long> &position, const std::string &message = "")
+            : std::runtime_error("XML Syntax Error [Line: " + std::to_string(position.first) +
+                                 " Column: " + std::to_string(position.second) + "] " + message)
         {
         }
     };

@@ -19,18 +19,11 @@ namespace XMLLib
         // ==================
         // IDestination Error
         // ==================
-        struct Error : public std::exception
+        struct Error : public std::runtime_error
         {
-            explicit Error(const std::string &description = "")
+            Error(std::string const &message) : std::runtime_error("IDestination Error: " + message)
             {
-                errorMessage = "IDestination Error: " + description;
             }
-            [[nodiscard]] const char *what() const noexcept override
-            {
-                return (errorMessage.c_str());
-            }
-        private:
-            std::string errorMessage;
         };
         // ========================
         // Constructors/destructors
@@ -46,6 +39,7 @@ namespace XMLLib
         // ========================
         virtual void add(const std::string &bytes) = 0;
         virtual void add(ISource::Char c) = 0;
+
     protected:
         std::wstring_convert<std::codecvt_utf8_utf16<ISource::String::value_type>, ISource::String::value_type> m_UTF8;
     };

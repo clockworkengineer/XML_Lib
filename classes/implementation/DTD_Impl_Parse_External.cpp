@@ -66,7 +66,7 @@ namespace XMLLib
         {
             if (source.current() != '[')
             {
-                throw SyntaxError(source, "Missing opening '[' from conditional.");
+                throw SyntaxError(source.getPosition(), "Missing opening '[' from conditional.");
             }
             source.next();
             source.ignoreWS();
@@ -102,11 +102,11 @@ namespace XMLLib
         }
         else
         {
-            throw SyntaxError(source, "Conditional value not INCLUDE or IGNORE.");
+            throw SyntaxError(source.getPosition(), "Conditional value not INCLUDE or IGNORE.");
         }
         if (source.current() != '>')
         {
-            throw SyntaxError(source, "Missing '>' terminator.");
+            throw SyntaxError(source.getPosition(), "Missing '>' terminator.");
         }
         source.next();
         source.ignoreWS();
@@ -155,11 +155,11 @@ namespace XMLLib
             }
             else
             {
-                throw SyntaxError(source, "Invalid DTD tag.");
+                throw SyntaxError(source.getPosition(), "Invalid DTD tag.");
             }
             if (source.current() != '>')
             {
-                throw SyntaxError(source, "Missing '>' terminator.");
+                throw SyntaxError(source.getPosition(), "Missing '>' terminator.");
             }
             source.next();
             source.ignoreWS();
@@ -199,7 +199,7 @@ namespace XMLLib
             std::string systemID{parseValue(source, m_xmlNodeDTD.m_entityMapper).parsed};
             return (XMLExternalReference{"PUBLIC", systemID, publicID});
         }
-        throw SyntaxError(source, "Invalid external DTD specifier.");
+        throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
     }
     /// <summary>
     /// Parse externally defined DTD.

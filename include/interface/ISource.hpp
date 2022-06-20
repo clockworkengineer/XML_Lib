@@ -25,18 +25,11 @@ namespace XMLLib
         // =============
         // ISource Error
         // =============
-        struct Error : public std::exception
+        struct Error : public std::runtime_error
         {
-            explicit Error(const std::string &description = "")
+            Error(std::string const &message) : std::runtime_error("ISource Error: " + message)
             {
-                errorMessage = "ISource Error: " + description;
             }
-            [[nodiscard]] const char *what() const noexcept override
-            {
-                return (errorMessage.c_str());
-            }
-        private:
-            std::string errorMessage;
         };
         // ========================
         // Constructors/destructors
@@ -109,19 +102,12 @@ namespace XMLLib
             backup(index);
             return (false);
         }
-        // ====================================
-        // Current line number in source stream
-        // ====================================
-        [[nodiscard]] long getLineNo() const
+        // ==================================
+        // Get current source stream position
+        // ==================================
+        std::pair<long, long> getPosition() const
         {
-            return (m_lineNo);
-        }
-        // ======================================
-        // Current column number in source stream
-        // ======================================
-        [[nodiscard]] long getColumnNo() const
-        {
-            return (m_column);
+            return (std::make_pair(m_lineNo, m_column));
         }
         // =============================================
         // Read bytes representing the current character
@@ -151,6 +137,7 @@ namespace XMLLib
         {
             return (m_UTF8.from_bytes(from));
         }
+
     protected:
         long m_lineNo = 1;
         long m_column = 1;

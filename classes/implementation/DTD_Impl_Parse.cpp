@@ -110,7 +110,7 @@ namespace XMLLib
         }
         if (source.current() != ')')
         {
-            throw SyntaxError(source, "Missing closing ')' on enumeration attribute type.");
+            throw SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type.");
         }
         enumerationType += source.current_to_bytes();
         source.next();
@@ -191,7 +191,7 @@ namespace XMLLib
             }
             return;
         }
-        throw SyntaxError(source, "Invalid attribute type specified.");
+        throw SyntaxError(source.getPosition(), "Invalid attribute type specified.");
     }
     /// <summary>
     /// Parse DTD attribute value.
@@ -368,11 +368,11 @@ namespace XMLLib
             }
             else
             {
-                throw SyntaxError(source, "Invalid DTD tag.");
+                throw SyntaxError(source.getPosition(), "Invalid DTD tag.");
             }
             if (source.current() != '>')
             {
-                throw SyntaxError(source, "Missing '>' terminator.");
+                throw SyntaxError(source.getPosition(), "Missing '>' terminator.");
             }
             source.next();
             source.ignoreWS();
@@ -408,7 +408,7 @@ namespace XMLLib
         // Missing '>' after external DTD reference
         else if (source.current() != '>')
         {
-            throw SyntaxError(source, "Missing '>' terminator.");
+            throw SyntaxError(source.getPosition(), "Missing '>' terminator.");
         }
         // Move to the next component in XML prolog
         else
