@@ -427,7 +427,7 @@ namespace XMLLib
         // Make sure no defined entity contains recursion
         for (auto &entityName : m_xmlNodeDTD.m_entityMapper.getList())
         {
-            m_xmlNodeDTD.m_entityMapper.recursive(entityName.first, entityName.first[0]);
+            m_xmlNodeDTD.m_entityMapper.checkForRecursion(entityName.first);
         }
         // Count lines in DTD
         std::string unparsedDTD = m_xmlNodeDTD.unparsed();

@@ -44,7 +44,7 @@ namespace XMLLib
         std::map<std::string, XMLEntityMapping> &getList() override;
         XMLValue map(const XMLValue &entityReference) override;
         [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
-        void recursive(const std::string &entityReference, ISource::Char type, std::set<std::string> currentEntities) override;
+        void checkForRecursion(const std::string &entityReference) override;
         // ================
         // PUBLIC VARIABLES
         // ================
@@ -58,9 +58,11 @@ namespace XMLLib
         // ===============
         // PRIVATE METHODS
         // ===============
+        void recurseOverEntityReference(const std::string &entityReference, ISource::Char type);
         // =================
         // PRIVATE VARIABLES
         // =================
+        std::set<std::string> m_currentEntities;
         std::map<std::string, XMLEntityMapping> m_entityMappings;
     };
 } // namespace XMLLib

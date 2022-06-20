@@ -34,9 +34,49 @@ namespace XMLLib
     // ===============
     // PRIVATE METHODS
     // ===============
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="entityReference"></param>
+    /// <param name="type"></param>
+    void XML_EntityMapper::recurseOverEntityReference(const std::string &entityReference, ISource::Char type)
+    {
+        BufferSource entitySource(entityReference);
+        while (entitySource.more())
+        {
+            if (entitySource.current() == type)
+            {
+                std::string mappedEntityName = entitySource.current_to_bytes();
+                entitySource.next();
+                while (entitySource.more() && entitySource.current() != ';')
+                {
+                    mappedEntityName += entitySource.current_to_bytes();
+                    entitySource.next();
+                }
+                mappedEntityName += entitySource.current_to_bytes();
+                if (m_currentEntities.count(mappedEntityName) > 0)
+                {
+                    throw SyntaxError("Entity '" + mappedEntityName +
+                                      "' contains recursive definition which is not allowed.");
+                }
+                if (!get(mappedEntityName).internal.empty())
+                {
+                    m_currentEntities.emplace(mappedEntityName);
+                    recurseOverEntityReference(get(mappedEntityName).internal, type);
+                    m_currentEntities.erase(mappedEntityName);
+                }
+            }
+            entitySource.next();
+        }
+    }
     // ==============
     // PUBLIC METHODS
     // ==============
+
+    /// <summary>
+    ///
+    /// </summary>
     XML_EntityMapper::XML_EntityMapper()
     {
         add("&amp;", XMLEntityMapping{"&#x26;"});
@@ -45,6 +85,9 @@ namespace XMLLib
         add("&lt;", XMLEntityMapping{"&#x3C;"});
         add("&gt;", XMLEntityMapping{"&#x3E;"});
     }
+    /// <summary>
+    ///
+    /// </summary>
     XML_EntityMapper::~XML_EntityMapper()
     {
     }
@@ -52,6 +95,11 @@ namespace XMLLib
     {
         m_entityMappings.emplace(std::make_pair(entityName, entityMapping));
     }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="entityName"></param>
+    /// <returns></returns>
     XMLEntityMapping &XML_EntityMapper::get(const std::string &entityName)
     {
         if (!isPresent(entityName))
@@ -65,18 +113,36 @@ namespace XMLLib
         }
         throw XMLLib::Error("Could not insert mapping name.");
     }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="entityName"></param>
     void XML_EntityMapper::remove(const std::string &entityName)
     {
         m_entityMappings.erase(entityName);
     }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="entityName"></param>
+    /// <returns></returns>
     bool XML_EntityMapper::isPresent(const std::string &entityName) const
     {
         return (m_entityMappings.count(entityName) != 0);
     }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
     std::map<std::string, XMLEntityMapping> &XML_EntityMapper::getList()
     {
         return (m_entityMappings);
     }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="entityReference"></param>
+    /// <returns></returns>
     XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
     {
         std::string unparsed{entityReference.unparsed}, parsed{entityReference.unparsed};
@@ -108,6 +174,12 @@ namespace XMLLib
         }
         return (XMLValue{unparsed, parsed});
     }
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="toTranslate"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
     std::string XML_EntityMapper::translate(const std::string &toTranslate,
                                             char type) const
     {
@@ -131,44 +203,19 @@ namespace XMLLib
         } while (matchFound);
         return (translated);
     }
+
     /// <summary>
     /// Take an entity reference string, check whether it contains any infinitely
     /// recursive definition and throw an exception if so. This is done by
     /// recursively parsing any entities found in a entity mapping and adding it to
-    /// a current stack of used entities; throwing an exception if it is already
-    /// being used (recursive).
+    /// a current set of used entities; throwing an exception if it is already
+    /// being used.
     /// </summary>
-    void XML_EntityMapper::recursive(const std::string &entityReference,
-                                     ISource::Char type,
-                                     std::set<std::string> currentEntities)
+    /// <param name="entityReference"></param>
+    /// <param name="type"></param>
+    void XML_EntityMapper::checkForRecursion(const std::string &entityReference)
     {
-        BufferSource entitySource(entityReference);
-        while (entitySource.more())
-        {
-            if (entitySource.current() == type)
-            {
-                std::string mappedEntityName = entitySource.current_to_bytes();
-                entitySource.next();
-                while (entitySource.more() && entitySource.current() != ';')
-                {
-                    mappedEntityName += entitySource.current_to_bytes();
-                    entitySource.next();
-                }
-                mappedEntityName += entitySource.current_to_bytes();
-                if (currentEntities.find(mappedEntityName) != currentEntities.end())
-                {
-                    throw SyntaxError(
-                        "Entity '" + mappedEntityName +
-                        "' contains recursive definition which is not allowed.");
-                }
-                if (!get(mappedEntityName).internal.empty())
-                {
-                    currentEntities.emplace(mappedEntityName);
-                    recursive(get(mappedEntityName).internal, type, currentEntities);
-                    currentEntities.erase(mappedEntityName);
-                }
-            }
-            entitySource.next();
-        }
+        m_currentEntities.clear();
+        recurseOverEntityReference(entityReference, entityReference[0]);
     }
 } // namespace XMLLib

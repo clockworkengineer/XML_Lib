@@ -4,10 +4,7 @@
 //
 #include <set>
 #include <map>
-//
-// Source interface
-//
-#include "ISource.hpp"
+
 // =========
 // NAMESPACE
 // =========
@@ -28,10 +25,10 @@ namespace XMLLib
         // Constructors/destructors
         // ========================
         IXMLEntityMapper() = default;
-        IXMLEntityMapper(const IXMLEntityMapper& other) = delete;
-        IXMLEntityMapper& operator=(const IXMLEntityMapper& other) = delete;
-        IXMLEntityMapper(IXMLEntityMapper&& other) = delete;
-        IXMLEntityMapper& operator=(IXMLEntityMapper&& other) = delete;
+        IXMLEntityMapper(const IXMLEntityMapper &other) = delete;
+        IXMLEntityMapper &operator=(const IXMLEntityMapper &other) = delete;
+        IXMLEntityMapper(IXMLEntityMapper &&other) = delete;
+        IXMLEntityMapper &operator=(IXMLEntityMapper &&other) = delete;
         virtual ~IXMLEntityMapper() = default;
         // ============================
         // Add entity reference mapping
@@ -64,7 +61,7 @@ namespace XMLLib
         // ==============================================
         // Check for a recursive entity reference mapping
         // ==============================================
-        virtual void recursive(const std::string &entityName, ISource::Char type, std::set<std::string> names = {}) = 0;
+        virtual void checkForRecursion(const std::string &entityName) = 0;
     };
     //
 } // namespace XMLLib
