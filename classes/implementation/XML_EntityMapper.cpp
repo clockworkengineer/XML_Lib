@@ -33,7 +33,10 @@ namespace XMLLib
     // PRIVATE METHODS
     // ===============
     /// <summary>
-    ///
+    /// Take an entity reference mapping and make sure it is not recursive by calling 
+    /// recurseOverEntityReference() repeatedly on any mapping found at the next level
+    /// until no more more are found it or the entity reference repeats in which case 
+    /// it will cause and infinite loop when decoding and is an error.
     /// </summary>
     /// <param name="entityReference"></param>
     /// <param name="type"></param>
@@ -68,7 +71,7 @@ namespace XMLLib
         }
     }
     /// <summary>
-    ///
+    /// Grab an entity reference mapping from an external file.
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
@@ -87,7 +90,8 @@ namespace XMLLib
     // PUBLIC METHODS
     // ==============
     /// <summary>
-    ///
+    /// Entity mapper constructor.
+    /// Initialise entity mapping table with defaults.
     /// </summary>
     XML_EntityMapper::XML_EntityMapper()
     {
@@ -98,17 +102,23 @@ namespace XMLLib
         add("&gt;", XMLEntityMapping{"&#x3E;"});
     }
     /// <summary>
-    ///
+    /// Entity mapper destructor.
     /// </summary>
     XML_EntityMapper::~XML_EntityMapper()
     {
     }
+    /// <summary>
+    /// Place entity reference into map.
+    /// </summary>
+    /// <param name="entityName"></param>
+    /// <param name="entityMapping"></param>
+    /// <returns></returns>
     void XML_EntityMapper::add(const std::string &entityName, const XMLEntityMapping &entityMapping)
     {
         m_entityMappings.emplace(std::make_pair(entityName, entityMapping));
     }
     /// <summary>
-    ///
+    /// Get entity reference from map.
     /// </summary>
     /// <param name="entityName"></param>
     /// <returns></returns>
@@ -123,10 +133,10 @@ namespace XMLLib
         {
             return (entity->second);
         }
-        throw XMLLib::Error("Could not insert mapping name.");
+        throw XMLLib::Error("Could not find entity reference in map.");
     }
     /// <summary>
-    ///
+    /// Remove entity reference from map.
     /// </summary>
     /// <param name="entityName"></param>
     void XML_EntityMapper::remove(const std::string &entityName)
@@ -134,7 +144,7 @@ namespace XMLLib
         m_entityMappings.erase(entityName);
     }
     /// <summary>
-    ///
+    /// Is an entry for an entity reference present in map.
     /// </summary>
     /// <param name="entityName"></param>
     /// <returns></returns>
@@ -143,7 +153,7 @@ namespace XMLLib
         return (m_entityMappings.count(entityName) != 0);
     }
     /// <summary>
-    ///
+    /// Get a traversal list of entity reference map.
     /// </summary>
     /// <returns></returns>
     std::map<std::string, XMLEntityMapping> &XML_EntityMapper::getList()
@@ -151,7 +161,7 @@ namespace XMLLib
         return (m_entityMappings);
     }
     /// <summary>
-    ///
+    /// Get mapping for an entity reference.
     /// </summary>
     /// <param name="entityReference"></param>
     /// <returns></returns>
@@ -160,12 +170,15 @@ namespace XMLLib
         std::string parsed{entityReference.unparsed};
         if (isPresent(entityReference.unparsed))
         {
+            // Internal so from memory.
             auto entityMapping = get(entityReference.unparsed);
             if (!entityMapping.internal.empty())
             {
                 parsed = entityMapping.internal;
             }
             else
+            // External so from a file.
+            // *** TODO Need to add support for external other than file ***
             {
                 if (std::filesystem::exists(entityMapping.external.systemID))
                 {
@@ -176,12 +189,13 @@ namespace XMLLib
                     throw SyntaxError("Entity '" + entityReference.unparsed + "' source file '" + entityMapping.external.systemID + "' does not exist.");
                 }
             }
+
             return (XMLValue{entityReference.unparsed, parsed});
         }
         return (entityReference);
     }
     /// <summary>
-    ///
+    /// Translate any entity reference found in a string.
     /// </summary>
     /// <param name="toTranslate"></param>
     /// <param name="type"></param>
