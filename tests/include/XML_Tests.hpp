@@ -2,7 +2,7 @@
 // ======================
 // Test framework include
 // ======================
-#include "catch2/catch.hpp"
+#include "catch2/catch_all.hpp"
 // =========================
 // Class under test includes
 // =========================
