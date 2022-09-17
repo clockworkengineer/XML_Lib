@@ -8,7 +8,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===================================================
     // Forward declarations for interfaces/classes/structs
@@ -64,4 +64,4 @@ namespace XMLLib
         virtual void checkForRecursion(const std::string &entityName) = 0;
     };
     //
-} // namespace XMLLib
+} // namespace XML_Lib

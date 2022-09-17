@@ -12,7 +12,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     //
     // XML character constants
@@ -201,4 +201,4 @@ namespace XMLLib
     private:
         mutable std::ifstream m_source;
     };
-} // namespace XMLLib
+} // namespace XML_Lib

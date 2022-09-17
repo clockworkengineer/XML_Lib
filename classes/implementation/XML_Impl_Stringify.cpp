@@ -18,7 +18,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -135,7 +135,7 @@ namespace XMLLib
             break;
         }
         default:
-            throw XMLLib::Error("Invalid XMLNode encountered during stringify.");
+            throw XML_Lib::Error("Invalid XMLNode encountered during stringify.");
         }
     }
     /// <summary>
@@ -147,4 +147,4 @@ namespace XMLLib
     {
         stringifyElements(*m_prolog, destination);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

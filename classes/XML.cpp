@@ -19,7 +19,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -52,7 +52,7 @@ namespace XMLLib
     {
     }
     /// <summary>
-    /// Get XMLLib version.
+    /// Get XML_Lib version.
     /// </summary>
     std::string XML::version()
     {
@@ -118,4 +118,4 @@ namespace XMLLib
     {
         m_implementation->stringify(destination);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23.1)
 
-project("XMLLib Unit Tests" VERSION 0.0.1 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
+project("XML_Lib Unit Tests" VERSION 0.0.1 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 
 include(FetchContent)
 

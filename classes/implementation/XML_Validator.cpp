@@ -15,7 +15,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -437,4 +437,4 @@ namespace XMLLib
     {
         checkAgainstDTD(prolog);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

@@ -18,7 +18,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -66,4 +66,4 @@ namespace XMLLib
     {
         m_implementation->stringify(destination);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

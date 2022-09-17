@@ -12,7 +12,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     //
     // Destination classes for stringification.
@@ -64,4 +64,4 @@ namespace XMLLib
     private:
         std::ofstream m_destination;
     };
-} // namespace XMLLib
+} // namespace XML_Lib

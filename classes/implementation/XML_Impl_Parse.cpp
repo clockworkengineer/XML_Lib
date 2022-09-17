@@ -18,7 +18,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -436,4 +436,4 @@ namespace XMLLib
             throw SyntaxError(source.getPosition(), "Missing root element.");
         }
     }
-} // namespace XMLLib
+} // namespace XML_Lib

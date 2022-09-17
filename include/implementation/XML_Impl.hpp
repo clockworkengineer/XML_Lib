@@ -23,7 +23,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ================
     // CLASS DEFINITION
@@ -94,4 +94,4 @@ namespace XMLLib
         std::unique_ptr<IXMLValidator> m_validator;
         std::unique_ptr<IXMLEntityMapper> m_entityMapper;
     };
-} // namespace XMLLib
+} // namespace XML_Lib

@@ -16,7 +16,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -100,4 +100,4 @@ namespace XMLLib
         }
         xmlContent.addContent(content);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

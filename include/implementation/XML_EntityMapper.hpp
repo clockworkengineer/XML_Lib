@@ -18,7 +18,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ================
     // CLASS DEFINITION
@@ -70,4 +70,4 @@ namespace XMLLib
         std::set<std::string> m_currentEntities;
         std::map<std::string, XMLEntityMapping> m_entityMappings;
     };
-} // namespace XMLLib
+} // namespace XML_Lib

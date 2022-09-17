@@ -16,7 +16,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -433,4 +433,4 @@ namespace XMLLib
         std::string unparsedDTD = m_xmlNodeDTD.unparsed();
         m_xmlNodeDTD.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

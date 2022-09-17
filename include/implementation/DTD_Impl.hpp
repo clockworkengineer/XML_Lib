@@ -18,7 +18,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ================
     // CLASS DEFINITION
@@ -88,4 +88,4 @@ namespace XMLLib
         // =================
         XMLNodeDTD &m_xmlNodeDTD;
     };
-} // namespace XMLLib
+} // namespace XML_Lib

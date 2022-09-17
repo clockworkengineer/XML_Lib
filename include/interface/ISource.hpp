@@ -9,7 +9,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ==========================================================
     // Interface for reading source stream during XML/DTD parsing
@@ -144,4 +144,4 @@ namespace XMLLib
         std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> m_UTF16;
         std::wstring_convert<std::codecvt_utf8_utf16<Char>, Char> m_UTF8;
     };
-} // namespace XMLLib
+} // namespace XML_Lib

@@ -16,7 +16,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -50,11 +50,11 @@ namespace XMLLib
     {
     }
     /// <summary>
-    ///  Get XMLLib version.
+    ///  Get XML_Lib version.
     /// </summary>
     std::string XML_Impl::version()
     {
-        return (std::format("XMLLib Version {}.{}", XML_VERSION_MAJOR, XML_VERSION_MINOR));
+        return (std::format("XML_Lib Version {}.{}", XML_VERSION_MAJOR, XML_VERSION_MINOR));
     }
     /// <summary>
     /// Return XML DT node.
@@ -69,7 +69,7 @@ namespace XMLLib
                 return (XMLNodeRef<XMLNodeDTD>(*element));
             }
         }
-        throw XMLLib::Error("No DTD found.");
+        throw XML_Lib::Error("No DTD found.");
     }
     /// <summary>
     /// Return XML prolog node.
@@ -99,7 +99,7 @@ namespace XMLLib
                 return (XMLNodeRef<XMLNodeElement>(*element));
             }
         }
-        throw XMLLib::Error("No root element found.");
+        throw XML_Lib::Error("No root element found.");
     }
     /// <summary>
     /// Parse XML read from source stream into internal object generating an exception
@@ -128,4 +128,4 @@ namespace XMLLib
     {
         stringifyXML(destination);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

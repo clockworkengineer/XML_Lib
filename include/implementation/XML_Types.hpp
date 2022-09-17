@@ -12,7 +12,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===================================================
     // Forward declarations for interfaces/classes/structs
@@ -748,4 +748,4 @@ namespace XMLLib
         }
         return (result);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

@@ -16,7 +16,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -280,4 +280,4 @@ namespace XMLLib
             }
         }
     }
-} // namespace XMLLib
+} // namespace XML_Lib

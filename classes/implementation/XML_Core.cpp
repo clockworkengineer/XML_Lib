@@ -12,7 +12,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -374,4 +374,4 @@ namespace XMLLib
                        { return static_cast<char>(std::toupper(c)); });
         return (upperCaseString);
     }
-} // namespace  XMLLib
+} // namespace  XML_Lib

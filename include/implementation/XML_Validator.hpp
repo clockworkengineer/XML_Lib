@@ -19,7 +19,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ================
     // CLASS DEFINITION
@@ -79,4 +79,4 @@ namespace XMLLib
         long m_lineNumber = 1;
         XMLNodeDTD &m_xmlNodeDTD;
     };
-} // namespace XMLLib
+} // namespace XML_Lib

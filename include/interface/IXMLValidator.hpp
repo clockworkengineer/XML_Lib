@@ -2,7 +2,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===================================================
     // Forward declarations for interfaces/classes/structs
@@ -29,4 +29,4 @@ namespace XMLLib
         virtual void validate(const XMLNodeProlog &prolog) = 0;
     };
 
-} // namespace XMLLib
+} // namespace XML_Lib

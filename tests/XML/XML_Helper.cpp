@@ -10,7 +10,7 @@
 // =======================
 // XML class namespace
 // =======================
-using namespace XMLLib;
+using namespace XML_Lib;
 // ==========================
 // Unit test helper functions
 // ==========================

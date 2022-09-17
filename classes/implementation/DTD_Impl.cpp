@@ -16,7 +16,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -64,4 +64,4 @@ namespace XMLLib
     {
         destination.add(m_xmlNodeDTD.unparsed());
     }
-} // namespace XMLLib
+} // namespace XML_Lib

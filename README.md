@@ -1,4 +1,4 @@
-# XMLLib
+# XML_Lib
 Parse XML into an internal XML Object (generating an exception
 if it is found not to be syntactically correct "well formed") so that it can
 be manipulated, interrogated and saved back to a text form (stringify). For more

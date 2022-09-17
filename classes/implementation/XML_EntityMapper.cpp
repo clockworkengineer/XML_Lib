@@ -15,7 +15,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -133,7 +133,7 @@ namespace XMLLib
         {
             return (entity->second);
         }
-        throw XMLLib::Error("Could not find entity reference in map.");
+        throw XML_Lib::Error("Could not find entity reference in map.");
     }
     /// <summary>
     /// Remove entity reference from map.
@@ -239,4 +239,4 @@ namespace XMLLib
         }
         recurseOverEntityReference(entityReference, entityReference[0]);
     }
-} // namespace XMLLib
+} // namespace XML_Lib

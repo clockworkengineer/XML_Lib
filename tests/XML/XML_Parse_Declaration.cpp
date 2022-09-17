@@ -10,7 +10,7 @@
 // =======================
 // JSON class namespace
 // =======================
-using namespace XMLLib;
+using namespace XML_Lib;
 // ==========
 // Test cases
 // ==========

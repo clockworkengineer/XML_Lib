@@ -16,7 +16,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===========================
     // PRIVATE TYPES AND CONSTANTS
@@ -209,4 +209,4 @@ namespace XMLLib
     {
         parseExternalReferenceContent();
     }
-} // namespace XMLLib
+} // namespace XML_Lib

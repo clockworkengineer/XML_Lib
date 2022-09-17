@@ -8,7 +8,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // =======================================================================
     // Interface for writing destination stream during XML/DTD stringification
@@ -43,4 +43,4 @@ namespace XMLLib
     protected:
         std::wstring_convert<std::codecvt_utf8_utf16<ISource::String::value_type>, ISource::String::value_type> m_UTF8;
     };
-} // namespace XMLLib
+} // namespace XML_Lib

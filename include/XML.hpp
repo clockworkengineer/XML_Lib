@@ -7,7 +7,7 @@
 // =========
 // NAMESPACE
 // =========
-namespace XMLLib
+namespace XML_Lib
 {
     // ===================================================
     // Forward declarations for interfaces/classes/structs
@@ -68,4 +68,4 @@ namespace XMLLib
         // =================
         const std::unique_ptr<XML_Impl> m_implementation;
     };
-} // namespace XMLLib
+} // namespace XML_Lib
