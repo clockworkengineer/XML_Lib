@@ -37,7 +37,6 @@ set (XML_SOURCES
 set (XML_INCLUDES
     XML_Config.hpp
     ./include/XML.hpp
-
     ./include/DTD.hpp
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp

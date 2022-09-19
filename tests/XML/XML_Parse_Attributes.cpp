@@ -19,10 +19,11 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
   std::string xmlString;
   SECTION("Root attribute with one attached attribute number", "[XML][Parse][[Attributes]")
   {
-    xmlString = "<?xml version=\"1.0\"?>\n"
-                "<AddressBook number='15'>\n"
-                "</AddressBook>\n";
-    BufferSource source { xmlString };
+    xmlString =
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook number='15'>\n"
+      "</AddressBook>\n";
+    BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
     REQUIRE(xml.declaration().version() == "1.0");
@@ -35,10 +36,11 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
   }
   SECTION("Root attribute with 3 attached attributes number, away, flat", "[XML][Parse][[Attributes]")
   {
-    xmlString = "<?xml version=\"1.0\"?>\n"
-                " <AddressBook number='15' away=\"yes\" flat='no'>\n"
-                " </AddressBook>\n";
-    BufferSource source { xmlString };
+    xmlString =
+      "<?xml version=\"1.0\"?>\n"
+      " <AddressBook number='15' away=\"yes\" flat='no'>\n"
+      " </AddressBook>\n";
+    BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
     REQUIRE(xml.declaration().version() == "1.0");
@@ -53,20 +55,23 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
   }
   SECTION("Empty elements with attributes are allowed.", "[XML][Parse][[Attributes]")
   {
-    xmlString = "<?xml version=\"1.0\"?>\n"
-                "<AddressBook number='15'>\n"
-                "</AddressBook>\n";
-    BufferSource source { xmlString };
+    xmlString =
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook number='15'>\n"
+      "</AddressBook>\n";
+    BufferSource source{ xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Element with duplicate attributes not allowed.", "[XML][Parse][[Attributes]")
   {
-    xmlString = "<?xml version=\"1.0\"?>\n"
-                "<AddressBook number='15' colour='red' number='16'>\n"
-                " </AddressBook>\n";
-    BufferSource source { xmlString };
+    xmlString =
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook number='15' colour='red' number='16'>\n"
+      " </AddressBook>\n";
+    BufferSource source{ xmlString };
     XML xml;
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 54] Attribute defined more than once within start tag.");
+    REQUIRE_THROWS_WITH(
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 54] Attribute defined more than once within start tag.");
   }
 }

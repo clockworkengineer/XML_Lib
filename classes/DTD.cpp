@@ -18,52 +18,41 @@
 // =========
 // NAMESPACE
 // =========
-namespace XML_Lib
-{
-    // ===========================
-    // PRIVATE TYPES AND CONSTANTS
-    // ===========================
-    // ==========================
-    // PUBLIC TYPES AND CONSTANTS
-    // ==========================
-    // ========================
-    // PRIVATE STATIC VARIABLES
-    // ========================
-    // =======================
-    // PUBLIC STATIC VARIABLES
-    // =======================
-    // ===============
-    // PRIVATE METHODS
-    // ===============
-    // ==============
-    // PUBLIC METHODS
-    // ==============
-    /// <summary>
-    /// DTD constructor.
-    /// </summary>
-    DTD::DTD(XMLNodeDTD &xmlNodeDTD) : m_implementation(std::make_unique<DTD_Impl>(xmlNodeDTD))
-    {
-    }
-    /// <summary>
-    /// DTD destructor.
-    /// </summary>
-    DTD::~DTD()
-    {
-    }
-    /// <summary>
-    /// Parse DTD read from source stream.
-    /// </summary>
-    /// <param name="source">DTD source stream.</param>
-    void DTD::parse(ISource &source)
-    {
-        m_implementation->parse(source);
-    }
-    /// <summary>
-    /// Create DTD text from an DTD object.
-    /// </summary>
-    /// <param name="destination">DTD destination stream.</param>
-    void DTD::stringify(IDestination &destination)
-    {
-        m_implementation->stringify(destination);
-    }
-} // namespace XML_Lib
+namespace XML_Lib {
+// ===========================
+// PRIVATE TYPES AND CONSTANTS
+// ===========================
+// ==========================
+// PUBLIC TYPES AND CONSTANTS
+// ==========================
+// ========================
+// PRIVATE STATIC VARIABLES
+// ========================
+// =======================
+// PUBLIC STATIC VARIABLES
+// =======================
+// ===============
+// PRIVATE METHODS
+// ===============
+// ==============
+// PUBLIC METHODS
+// ==============
+/// <summary>
+/// DTD constructor.
+/// </summary>
+DTD::DTD(XMLNodeDTD &xmlNodeDTD) : m_implementation(std::make_unique<DTD_Impl>(xmlNodeDTD)) {}
+/// <summary>
+/// DTD destructor.
+/// </summary>
+DTD::~DTD() {}
+/// <summary>
+/// Parse DTD read from source stream.
+/// </summary>
+/// <param name="source">DTD source stream.</param>
+void DTD::parse(ISource &source) { m_implementation->parse(source); }
+/// <summary>
+/// Create DTD text from an DTD object.
+/// </summary>
+/// <param name="destination">DTD destination stream.</param>
+void DTD::stringify(IDestination &destination) { m_implementation->stringify(destination); }
+}// namespace XML_Lib

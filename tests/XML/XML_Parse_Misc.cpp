@@ -35,18 +35,20 @@ TEST_CASE("Use name for accessing elements", "[XML][Access][ByName]")
   std::string xmlString;
   SECTION("Address book access", "[XML][Access][ByName]")
   {
-    xmlString = "<?xml version=\"1.0\"?>"
-                "<AddressBook>"
-                "<Address>"
-                "Flat A, West Road, Wolverhampton, W1SSX9"
-                "</Address>"
-                "</AddressBook>";
-    BufferSource source{xmlString};
+    xmlString =
+      "<?xml version=\"1.0\"?>"
+      "<AddressBook>"
+      "<Address>"
+      "Flat A, West Road, Wolverhampton, W1SSX9"
+      "</Address>"
+      "</AddressBook>";
+    BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).name() == "AddressBook");
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(
+      XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }
 TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
@@ -54,25 +56,26 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
   std::string xmlString;
   SECTION("Content node only whitespace if it contains ONLY whitespace.", "[XML][Parse][Whitespace]")
   {
-    xmlString = "<?xml version=\"1.0\"?>\n"
-                "<AddressBook>\n"
-                "<Address>\n  \n"
-                "Flat A, West Road, Wolverhampton, W1SSX9"
-                "</Address>"
-                "<Address>\n"
-                "        "
-                "</Address>"
-                "<Address>\n"
-                "&amp;        "
-                "</Address>"
-                "<Address>\n"
-                "<![CDATA[<message> Welcome to TutorialsPoint </message>   ]]>        "
-                "</Address>"
-                "<Address>\n"
-                "&amp;        "
-                "</Address>"
-                "</AddressBook>";
-    BufferSource source{xmlString};
+    xmlString =
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook>\n"
+      "<Address>\n  \n"
+      "Flat A, West Road, Wolverhampton, W1SSX9"
+      "</Address>"
+      "<Address>\n"
+      "        "
+      "</Address>"
+      "<Address>\n"
+      "&amp;        "
+      "</Address>"
+      "<Address>\n"
+      "<![CDATA[<message> Welcome to TutorialsPoint </message>   ]]>        "
+      "</Address>"
+      "<Address>\n"
+      "&amp;        "
+      "</Address>"
+      "</AddressBook>";
+    BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
     REQUIRE(XMLNodeRef<XMLNode>(*xml.root().children[0]).getNodeType() == XMLNodeType::content);
@@ -98,21 +101,24 @@ TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XMLNode][R-Value Re
   XML xml;
   SECTION("Parse with R-Value reference (Buffer).", "[XML][XMLNode][R-Value Reference]")
   {
-    xml.parse(BufferSource{"<?xml version=\"1.0\"?>"
-                           "<AddressBook>"
-                           "<Address>"
-                           "Flat A, West Road, Wolverhampton, W1SSX9"
-                           "</Address>"
-                           "</AddressBook>"});
+    xml.parse(
+      BufferSource{ "<?xml version=\"1.0\"?>"
+                    "<AddressBook>"
+                    "<Address>"
+                    "Flat A, West Road, Wolverhampton, W1SSX9"
+                    "</Address>"
+                    "</AddressBook>" });
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).name() == "AddressBook");
     REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(
+      XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
   SECTION("Parse/Stringify both with R-Value reference (File).", "[XML][MLNode][R-Value Reference]")
   {
     std::filesystem::remove(prefixTestDataPath(kGeneratedXMLFile));
-    xml.parse(FileSource{prefixTestDataPath(kSingleXMLFile)});
-    xml.stringify(FileDestination{prefixTestDataPath(kGeneratedXMLFile)});
-    REQUIRE(readXMLFromFileUTF8(prefixTestDataPath(kGeneratedXMLFile)) == readXMLFromFileUTF8(prefixTestDataPath(kSingleXMLFile)));
+    xml.parse(FileSource{ prefixTestDataPath(kSingleXMLFile) });
+    xml.stringify(FileDestination{ prefixTestDataPath(kGeneratedXMLFile) });
+    REQUIRE(readXMLFromFileUTF8(prefixTestDataPath(kGeneratedXMLFile))
+            == readXMLFromFileUTF8(prefixTestDataPath(kSingleXMLFile)));
   }
 }

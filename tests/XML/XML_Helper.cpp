@@ -55,8 +55,7 @@ std::u16string readXMLFromFileUTF16(const std::string &xmlFileName)
   fin.seekg(0, std::ios::beg);
   std::u16string u16;
   char ch[2];
-  for (int index = 0; index < (int)size / 2; index++)
-  {
+  for (int index = 0; index < (int)size / 2; index++) {
     fin.read(ch, 2);
     u16 += ((char16_t)(ch[0]) << 8) | ch[1];
   }
@@ -88,15 +87,11 @@ void writeXMLToFileUTF16(const std::string &xmlFileName, const std::u16string &x
   std::ofstream xmlFile;
   char ch[2];
   xmlFile.open(xmlFileName);
-  for (unsigned short u16 : xmlString)
-  {
-    if (be)
-    {
+  for (unsigned short u16 : xmlString) {
+    if (be) {
       ch[0] = u16 >> 8;
       ch[1] = u16 & 0xFF;
-    }
-    else
-    {
+    } else {
       ch[0] = u16 & 0xFF;
       ch[1] = u16 >> 8;
     }
@@ -116,10 +111,8 @@ void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
 {
   long crCount = 0;
   long lfCount = 0;
-  while (source.more())
-  {
-    switch (source.current())
-    {
+  while (source.more()) {
+    switch (source.current()) {
     case kLineFeed:
       lfCount++;
       break;
@@ -141,7 +134,7 @@ void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
 /// <returns></returns>
 void checkStringify(const std::string &xmlString)
 {
-  BufferSource source { xmlString };
+  BufferSource source{ xmlString };
   XML xml;
   xml.parse(source);
   BufferDestination destination;

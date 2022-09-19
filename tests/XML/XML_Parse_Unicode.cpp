@@ -20,15 +20,16 @@ TEST_CASE("Parse XML with Unicode characters. ", "[XML][Parse][Unicode]")
   SECTION("Japanese characters", "[XML][Parse][[Unicode]")
   {
     xmlString = "<?xml version=\"1.0\" encoding=\"utf-8\"?><config><start_text>転送</start_text></config>\n";
-    BufferSource source { xmlString };
+    BufferSource source{ xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Well-formed XML document including Chinese, Armenian and Cyrillic characters", "[XML][Parse][[Unicode]")
   {
-    xmlString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                "<俄语 լեզու=\"ռուսերեն\">данные</俄语>\n";
-    BufferSource source { xmlString };
+    xmlString =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<俄语 լեզու=\"ռուսերեն\">данные</俄语>\n";
+    BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
     REQUIRE(xml.root().name() == "俄语");
