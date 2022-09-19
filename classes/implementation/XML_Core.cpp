@@ -9,9 +9,9 @@
 // CLASS DEFINITIONS
 // =================
 #include "XML_Core.hpp"
-// =========
-// NAMESPACE
-// =========
+// =================
+// LIBRARY NAMESPACE
+// =================
 namespace XML_Lib {
 // ===========================
 // PRIVATE TYPES AND CONSTANTS

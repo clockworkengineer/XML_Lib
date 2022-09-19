@@ -22,9 +22,9 @@ using namespace XML_Lib;
 /// </summary>
 /// <param name="name">Test data file name</param>
 /// <returns>Full path to test data file</returns>
-std::string prefixTestDataPath(const std::string &file)
+std::string prefixPath(const std::string &file)
 {
-  std::filesystem::path currentPath = std::filesystem::current_path() / "testData" / file;
+  std::filesystem::path currentPath = std::filesystem::current_path() / "files" / file;
   return (currentPath.string());
 }
 /// <summary>

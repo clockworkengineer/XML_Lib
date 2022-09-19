@@ -4,9 +4,9 @@
 // =======
 #include <memory>
 #include <string>
-// =========
-// NAMESPACE
-// =========
+// =================
+// LIBRARY NAMESPACE
+// =================
 namespace XML_Lib {
 // ===================================================
 // Forward declarations for interfaces/classes/structs

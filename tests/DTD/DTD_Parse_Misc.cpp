@@ -42,7 +42,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
   {
     xmlString =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<!DOCTYPE note SYSTEM \"./testData/note001.dtd\">\n"
+      "<!DOCTYPE note SYSTEM \"./files/note001.dtd\">\n"
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend!</body>\n"
@@ -72,7 +72,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
   SECTION("XML with external DTD with !NOTATION to parse and check values.", "[XML][DTD][Parse]")
   {
     xmlString =
-      "<!DOCTYPE REPORT SYSTEM \"./testData/report02.dtd\">"
+      "<!DOCTYPE REPORT SYSTEM \"./files/report02.dtd\">"
       "<REPORT></REPORT>\n";
     BufferSource source{ xmlString };
     XML xml;
@@ -156,7 +156,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
   {
     xmlString =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<!DOCTYPE note SYSTEM \"./testData/note001.dtd\">\n"
+      "<!DOCTYPE note SYSTEM \"./files/note001.dtd\">\n"
       "<note>\n"
       "<to>Tove"
       "</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body>\n"
@@ -169,7 +169,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     REQUIRE(xmlNodeDTD.getType() == XMLNodeDTD::Type::external);
     REQUIRE(xmlNodeDTD.getRootName() == XMLNodeRef<XMLNodeElement>(xml.root()).name());
     REQUIRE(xmlNodeDTD.getExternalReference().type == "SYSTEM");
-    REQUIRE(xmlNodeDTD.getExternalReference().systemID == "./testData/note001.dtd");
+    REQUIRE(xmlNodeDTD.getExternalReference().systemID == "./files/note001.dtd");
     REQUIRE(xmlNodeDTD.getElement("note").name == "note");
     REQUIRE(xmlNodeDTD.getElement("note").content.unparsed == "(to,from,heading,body)");
   }
@@ -308,7 +308,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional001.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional001.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -321,7 +321,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional001.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional001.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -335,7 +335,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional002.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional002.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -347,7 +347,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional003.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional003.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -362,7 +362,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional004.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional004.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -377,7 +377,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional005.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional005.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -391,7 +391,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional006.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional006.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -406,7 +406,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional007.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional007.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -422,7 +422,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional008.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional008.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -438,7 +438,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional009.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional009.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -455,7 +455,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional010.dtd\" [ <!ENTITY % debug \"INCLUDE\"> ]>\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional010.dtd\" [ <!ENTITY % debug \"INCLUDE\"> ]>\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -472,7 +472,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional010.dtd\" [ <!ENTITY % debug \"IGNORE\"> ]>\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional010.dtd\" [ <!ENTITY % debug \"IGNORE\"> ]>\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -490,7 +490,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional010.dtd\" [ <!ENTITY % debug \"IGNOE\"> ]>\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional010.dtd\" [ <!ENTITY % debug \"IGNOE\"> ]>\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };
@@ -504,7 +504,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root SYSTEM \"./testData/conditional010.dtd\">\n"
+      "<!DOCTYPE root SYSTEM \"./files/conditional010.dtd\">\n"
       "<root>\n"
       "</root>";
     BufferSource source{ xmlString };

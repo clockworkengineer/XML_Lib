@@ -17,9 +17,9 @@
 // XML Entity Mapper interface
 // ===========================
 #include "IXMLEntityMapper.hpp"
-// =========
-// NAMESPACE
-// =========
+// =================
+// LIBRARY NAMESPACE
+// =================
 namespace XML_Lib {
 // ==============
 // XML validation

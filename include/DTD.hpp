@@ -3,9 +3,9 @@
 // C++ STL
 // =======
 #include <memory>
-// =========
-// NAMESPACE
-// =========
+// =================
+// LIBRARY NAMESPACE
+// =================
 namespace XML_Lib {
 // ===================================================
 // Forward declarations for interfaces/classes/structs

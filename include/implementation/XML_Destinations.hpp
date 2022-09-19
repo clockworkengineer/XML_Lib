@@ -9,9 +9,9 @@
 // Destination interface
 // =====================
 #include "IDestination.hpp"
-// =========
-// NAMESPACE
-// =========
+// =================
+// LIBRARY NAMESPACE
+// =================
 namespace XML_Lib {
 //
 // Destination classes for stringification.

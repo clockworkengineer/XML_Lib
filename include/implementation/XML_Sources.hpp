@@ -9,9 +9,9 @@
 // Source interface
 // ================
 #include "ISource.hpp"
-// =========
-// NAMESPACE
-// =========
+// =================
+// LIBRARY NAMESPACE
+// =================
 namespace XML_Lib {
 //
 // XML character constants

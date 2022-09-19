@@ -16,9 +16,9 @@
 // ========================================
 #include "IXMLValidator.hpp"
 #include "IXMLEntityMapper.hpp"
-// =========
-// NAMESPACE
-// =========
+// =================
+// LIBRARY NAMESPACE
+// =================
 namespace XML_Lib {
 // ================
 // CLASS DEFINITION
