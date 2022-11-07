@@ -43,8 +43,12 @@ set (XML_INCLUDES
     ./include/interface/IXMLEntityMapper.hpp
     ./include/interface/IXMLValidator.hpp
     ./include/implementation/XML_Impl.hpp
-    ./include/implementation/XML_Sources.hpp
-    ./include/implementation/XML_Destinations.hpp
+    ./include/implementation/io/XML_Sources.hpp
+    ./include/implementation/io/XML_BufferSource.hpp
+    ./include/implementation/io/XML_FileSource.hpp
+    ./include/implementation/io/XML_Destinations.hpp
+    ./include/implementation/io/XML_BufferDestination.hpp
+    ./include/implementation/io/XML_FileDestination.hpp
     ./include/implementation/XML_Types.hpp
     ./include/implementation/XML_Core.hpp
     ./include/implementation/DTD_Impl.hpp
@@ -55,7 +59,7 @@ set (XML_INCLUDES
 # XML library
 
 add_library(${XML_LIBRARY_NAME} ${XML_SOURCES} ${XML_INCLUDES})
-target_include_directories(${XML_LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/include/interface ${PROJECT_SOURCE_DIR}/include/implementation ${PROJECT_BINARY_DIR} )
+target_include_directories(${XML_LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/include/interface ${PROJECT_SOURCE_DIR}/include/implementation ${PROJECT_SOURCE_DIR}/include/implementation/io ${PROJECT_BINARY_DIR} )
 
 # Add tests
 
