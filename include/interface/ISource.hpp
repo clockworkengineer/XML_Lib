@@ -22,9 +22,9 @@ class ISource
 {
 public:
   // ============================
-  // 32 bit characters internally
+  // 16 bit characters internally
   // ============================
-  using String = std::u32string;
+  using String = std::u16string;
   using Char = String::value_type;
   // =============
   // ISource Error
