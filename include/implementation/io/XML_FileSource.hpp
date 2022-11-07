@@ -43,7 +43,7 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  ISource::Char current() const override { return (static_cast<ISource::Char>(m_source.peek())); }
+  ISource::Char current() const override { return (m_source.peek()); }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }

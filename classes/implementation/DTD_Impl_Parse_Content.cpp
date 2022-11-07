@@ -198,7 +198,7 @@ XMLValue DTD_Impl::parseElementContentSpecification(const std::string &elementNa
     if (contentSpecSource.current() == '(') {
       contentSpecSource.next();
       contentSpecSource.ignoreWS();
-      if (contentSpecSource.match(u"#PCDATA")) {
+      if (contentSpecSource.match(U"#PCDATA")) {
         parseElementMixedContent(contentSpecSource, contentSpecDestination);
       } else {
         contentSpecSource.backup(contentSpecSource.position());

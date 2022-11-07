@@ -27,15 +27,16 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit BufferSource(const std::u16string &sourceBuffer) 
+  explicit BufferSource(const std::u16string &sourceBuffer)
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
-    m_parseBuffer = sourceBuffer;
-    if (m_parseBuffer.find(u"<?xml") != 0) {
-      for (char16_t &ch : m_parseBuffer) {
+    std::u16string utf16xml{ sourceBuffer };
+    if (utf16xml.find(u"<?xml") != 0) {
+      for (char16_t &ch : utf16xml) {
         ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
       }
     }
+    m_parseBuffer = m_UTF8.from_bytes(m_UTF16.to_bytes(utf16xml));
     convertCRLFToLF(m_parseBuffer);
   }
   explicit BufferSource(const std::string &sourceBuffer)
@@ -97,10 +98,10 @@ private:
   // ===============
   void convertCRLFToLF(ISource::String &xmlString)
   {
-    size_t pos = xmlString.find(u"\x0D\x0A");
+    size_t pos = xmlString.find(U"\x0D\x0A");
     while (pos != std::string::npos) {
-      xmlString.replace(pos, 2, u"\x0A");
-      pos = xmlString.find(u"\x0D\x0A", pos + 1);
+      xmlString.replace(pos, 2, U"\x0A");
+      pos = xmlString.find(U"\x0D\x0A", pos + 1);
     }
   }
   // =================

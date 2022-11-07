@@ -68,7 +68,7 @@ bool validNameChar(ISource::Char c)
 /// <returns>true then valid otherwise false.</returns>
 bool validReservedName(const ISource::String &name)
 {
-  return ((name.find(u"xmlns") == 0) || (name.find(u"xml-stylesheet") == 0) || (name == u"xml"));
+  return ((name.find(U"xmlns") == 0) || (name.find(U"xml-stylesheet") == 0) || (name == U"xml"));
 }
 /// <summary>
 /// Validate XML tag/attribute names.
@@ -78,9 +78,8 @@ bool validReservedName(const ISource::String &name)
 bool validName(ISource::String name)
 {
   if (name.empty()) { return (false); }
-  std::transform(
-    name.begin(), name.end(), name.begin(), [](unsigned int c) { return static_cast<char>(std::tolower(c)); });
-  if (name.find(u"xml") == 0 && !(validReservedName(name))) { return (false); }
+  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+  if (name.find(U"xml") == 0 && !(validReservedName(name))) { return (false); }
   if (!validNameStartChar(name[0])) { return (false); }
   for (auto it = name.begin() + 1; it != name.end(); it++) {
     if (!validNameChar(*it)) { return (false); }
@@ -96,7 +95,7 @@ bool validAttributeValue(const XMLValue &value)
 {
   BufferSource valueSource(value.parsed);
   while (valueSource.more()) {
-    if (valueSource.match(u"&#")) {
+    if (valueSource.match(U"&#")) {
       parseCharacterReference(valueSource);
     } else if (valueSource.current() == '&') {
       parseEntityReference(valueSource);
@@ -158,14 +157,14 @@ XMLValue parseCharacterReference(ISource &source)
   unparsed += ';';
   std::string reference{ unparsed };
   char *end;
-  long radix = 10;
+  long result = 10;
   if (reference[2] == 'x') {
     reference = reference.substr(3, reference.size() - 4);
-    radix = 16;
+    result = 16;
   } else {
     reference = reference.substr(2, reference.size() - 3);
   }
-  ISource::Char result = static_cast<ISource::Char>(std::strtol(reference.c_str(), &end, radix));
+  result = std::strtol(reference.c_str(), &end, result);
   if (*end == '\0') {
     if (!validChar(result)) { throw SyntaxError(source.getPosition(), "Character reference invalid character."); }
     return (XMLValue{ unparsed, source.to_bytes(result) });
@@ -181,7 +180,7 @@ XMLValue parseCharacterReference(ISource &source)
 /// <returns>Character value.</returns>
 XMLValue parseCharacter(ISource &source)
 {
-  if (source.match(u"&#")) {
+  if (source.match(U"&#")) {
     return (parseCharacterReference(source));
   } else if (source.current() == '&') {
     return (parseEntityReference(source));
