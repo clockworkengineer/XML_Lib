@@ -8,16 +8,10 @@
 // LIBRARY NAMESPACE
 // =================
 namespace XML_Lib {
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
-class XML_Impl;
-class ISource;
-class IDestination;
-struct XMLNodeElement;
-struct XMLNodeProlog;
-struct XMLNodeDeclaration;
-struct XMLNodeDTD;
+// ====================
+// FORWARD DECLARATIONS
+// ====================
+#include "XML_Forward.hpp"
 // ================
 // CLASS DEFINITION
 // ================
