@@ -42,6 +42,8 @@ set (XML_INCLUDES
     ./include/interface/IDestination.hpp
     ./include/interface/IXMLEntityMapper.hpp
     ./include/interface/IXMLValidator.hpp
+    ./include/implementation/core/DTD_Forward.hpp
+    ./include/implementation/core/XML_Forward.hpp
     ./include/implementation/core/XML_Impl.hpp
     ./include/implementation/core/XML_Types.hpp
     ./include/implementation/core/XML_Core.hpp

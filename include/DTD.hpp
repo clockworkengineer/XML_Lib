@@ -7,13 +7,10 @@
 // LIBRARY NAMESPACE
 // =================
 namespace XML_Lib {
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
-class DTD_Impl;
-class ISource;
-class IDestination;
-struct XMLNodeDTD;
+// ====================
+// FORWARD DECLARATIONS
+// ====================
+#include "DTD_Forward.hpp"
 // ================
 // CLASS DEFINITION
 // ================
