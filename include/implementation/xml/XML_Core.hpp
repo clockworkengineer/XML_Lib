@@ -16,7 +16,7 @@
 // ===========================
 // XML Entity Mapper interface
 // ===========================
-#include "IXMLEntityMapper.hpp"
+#include "IEntityMapper.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================
@@ -38,7 +38,7 @@ std::string parseName(ISource &source);
 XMLValue parseCharacterReference(ISource &source);
 XMLValue parseCharacter(ISource &source);
 XMLValue parseValue(ISource &source);
-XMLValue parseValue(ISource &source, IXMLEntityMapper &entityMapper);
+XMLValue parseValue(ISource &source, IEntityMapper &entityMapper);
 std::string parseTagBody(ISource &source);
 // ===========
 // XML utility

@@ -16,7 +16,7 @@ namespace XML_Lib {
 // ===================================================
 // Forward declarations for interfaces/classes/structs
 // ===================================================
-class IXMLEntityMapper;
+class IEntityMapper;
 // =========
 // XML Error
 // =========
@@ -323,7 +323,7 @@ struct XMLNodeDTD : XMLNode
     XMLValue content{ "", "" };
     std::vector<Attribute> attributes;
   };
-  explicit XMLNodeDTD(IXMLEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd)
+  explicit XMLNodeDTD(IEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd)
     : XMLNode(nodeType), m_entityMapper(entityMapper)
   {}
   [[nodiscard]] std::string unparsed() const { return (m_unparsed); }
@@ -365,7 +365,7 @@ struct XMLNodeDTD : XMLNode
   }
   [[nodiscard]] long getLineCount() const { return (m_lineCount); }
   void setLineCount(long lineCount) { m_lineCount = lineCount; }
-  IXMLEntityMapper &m_entityMapper;
+  IEntityMapper &m_entityMapper;
 
 private:
   uint16_t m_type{};

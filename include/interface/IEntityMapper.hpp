@@ -17,18 +17,18 @@ struct XMLValue;
 // ===========================
 // XML Entity mapper interface
 // ===========================
-class IXMLEntityMapper
+class IEntityMapper
 {
 public:
   // ========================
   // Constructors/destructors
   // ========================
-  IXMLEntityMapper() = default;
-  IXMLEntityMapper(const IXMLEntityMapper &other) = delete;
-  IXMLEntityMapper &operator=(const IXMLEntityMapper &other) = delete;
-  IXMLEntityMapper(IXMLEntityMapper &&other) = delete;
-  IXMLEntityMapper &operator=(IXMLEntityMapper &&other) = delete;
-  virtual ~IXMLEntityMapper() = default;
+  IEntityMapper() = default;
+  IEntityMapper(const IEntityMapper &other) = delete;
+  IEntityMapper &operator=(const IEntityMapper &other) = delete;
+  IEntityMapper(IEntityMapper &&other) = delete;
+  IEntityMapper &operator=(IEntityMapper &&other) = delete;
+  virtual ~IEntityMapper() = default;
   // ============================
   // Add entity reference mapping
   // ============================

@@ -14,7 +14,7 @@
 // ===========================
 // XML Entity Mapper interface
 // ===========================
-#include "IXMLEntityMapper.hpp"
+#include "IEntityMapper.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================

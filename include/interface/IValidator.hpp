@@ -10,18 +10,18 @@ struct XMLNodeProlog;
 // =======================
 // XML validator interface
 // =======================
-class IXMLValidator
+class IValidator
 {
 public:
   // ========================
   // Constructors/destructors
   // ========================
-  IXMLValidator() = default;
-  IXMLValidator(const IXMLValidator &other) = delete;
-  IXMLValidator &operator=(const IXMLValidator &other) = delete;
-  IXMLValidator(IXMLValidator &&other) = delete;
-  IXMLValidator &operator=(IXMLValidator &&other) = delete;
-  virtual ~IXMLValidator() = default;
+  IValidator() = default;
+  IValidator(const IValidator &other) = delete;
+  IValidator &operator=(const IValidator &other) = delete;
+  IValidator(IValidator &&other) = delete;
+  IValidator &operator=(IValidator &&other) = delete;
+  virtual ~IValidator() = default;
   // ========================
   // Validate XML against DTD
   // ========================

@@ -8,7 +8,7 @@
 // =========================
 #include "XML.hpp"
 #include "XML_Types.hpp"
-#include "IXMLEntityMapper.hpp"
+#include "IEntityMapper.hpp"
 #include "DTD.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"

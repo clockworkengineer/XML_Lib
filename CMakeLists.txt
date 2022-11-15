@@ -40,17 +40,17 @@ set (XML_INCLUDES
     ./include/DTD.hpp
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp
-    ./include/interface/IXMLEntityMapper.hpp
-    ./include/interface/IXMLValidator.hpp
+    ./include/interface/IEntityMapper.hpp
+    ./include/interface/IValidator.hpp
     ./include/implementation/dtd/DTD_Forward.hpp
     ./include/implementation/dtd/DTD_Impl.hpp
-    ./include/implementation/dtd/XML_Validator.hpp
     ./include/implementation/io/XML_Sources.hpp
     ./include/implementation/io/XML_BufferSource.hpp
     ./include/implementation/io/XML_FileSource.hpp
     ./include/implementation/io/XML_Destinations.hpp
     ./include/implementation/io/XML_BufferDestination.hpp
     ./include/implementation/io/XML_FileDestination.hpp
+    ./include/implementation/validator/XML_Validator.hpp
     ./include/implementation/xml/XML_Forward.hpp
     ./include/implementation/xml/XML_Impl.hpp
     ./include/implementation/xml/XML_Types.hpp
@@ -61,12 +61,14 @@ set (XML_INCLUDES
 # XML library
 
 add_library(${XML_LIBRARY_NAME} ${XML_SOURCES} ${XML_INCLUDES})
-target_include_directories(${XML_LIBRARY_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/include
+target_include_directories(${XML_LIBRARY_NAME} PUBLIC 
+    ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/include/interface
     ${PROJECT_SOURCE_DIR}/include/implementation
-    ${PROJECT_SOURCE_DIR}/include/implementation/xml
     ${PROJECT_SOURCE_DIR}/include/implementation/dtd
     ${PROJECT_SOURCE_DIR}/include/implementation/io
+    ${PROJECT_SOURCE_DIR}/include/implementation/validator
+    ${PROJECT_SOURCE_DIR}/include/implementation/xml
     ${PROJECT_BINARY_DIR} )
 
 # Add tests

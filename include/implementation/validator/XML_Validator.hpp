@@ -14,8 +14,8 @@
 // ========================================
 // XML Validator / Entity Mapper interfaces
 // ========================================
-#include "IXMLValidator.hpp"
-#include "IXMLEntityMapper.hpp"
+#include "IValidator.hpp"
+#include "IEntityMapper.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================
@@ -23,7 +23,7 @@ namespace XML_Lib {
 // ================
 // CLASS DEFINITION
 // ================
-class XML_Validator : public IXMLValidator
+class XML_Validator : public IValidator
 {
 public:
   // ==========================

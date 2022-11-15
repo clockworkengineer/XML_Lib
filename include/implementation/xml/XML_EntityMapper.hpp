@@ -14,7 +14,7 @@
 // ===========================
 // XML Entity Mapper interface
 // ===========================
-#include "IXMLEntityMapper.hpp"
+#include "IEntityMapper.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================
@@ -22,7 +22,7 @@ namespace XML_Lib {
 // ================
 // CLASS DEFINITION
 // ================
-class XML_EntityMapper : public IXMLEntityMapper
+class XML_EntityMapper : public IEntityMapper
 {
 public:
   // ==========================

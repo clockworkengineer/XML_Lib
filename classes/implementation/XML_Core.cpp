@@ -197,7 +197,7 @@ XMLValue parseCharacter(ISource &source)
 /// <param name="source">XML source stream.</param>
 /// <param name="entityMapper">Entity mapper.</param>
 /// <returns>Literal string value.</returns>
-XMLValue parseValue(ISource &source, IXMLEntityMapper &entityMapper)
+XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 {
   if ((source.current() == '\'') || ((source.current() == '"'))) {
     std::string unparsed, parsed;

@@ -90,7 +90,7 @@ private:
   // =================
   XMLNode::Ptr m_prolog;
   std::unique_ptr<DTD> m_dtd;
-  std::unique_ptr<IXMLValidator> m_validator;
-  std::unique_ptr<IXMLEntityMapper> m_entityMapper;
+  std::unique_ptr<IValidator> m_validator;
+  std::unique_ptr<IEntityMapper> m_entityMapper;
 };
 }// namespace XML_Lib
