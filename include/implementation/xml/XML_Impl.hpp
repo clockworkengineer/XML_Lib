@@ -44,10 +44,10 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  XMLNode &dtd();
-  XMLNode &prolog();
-  XMLNode &root();
-  XMLNode &declaration();
+  XNode &dtd();
+  XNode &prolog();
+  XNode &root();
+  XNode &declaration();
   void parse(ISource &source);
   void stringify(IDestination &destination);
   void validate();
@@ -65,30 +65,30 @@ private:
   // ===============
   // PRIVATE METHODS
   // ===============
-  void resetWhiteSpace(XMLNode &xmlNode);
-  void processEntityReferenceXML(XMLNode &xmlNode, const XMLValue &entityReference);
-  void addContentToElementChildList(XMLNode &xmlNode, const std::string &content);
-  void parseElementContent(ISource &source, XMLNode &xmlNode);
+  void resetWhiteSpace(XNode &xNode);
+  void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
+  void addContentToElementChildList(XNode &xNode, const std::string &content);
+  void parseElementContent(ISource &source, XNode &xNode);
   std::string parseTagName(ISource &source);
   XMLAttribute::List parseAttributes(ISource &source);
-  XMLNode::Ptr parseComment(ISource &source);
-  XMLNode::Ptr parseCDATA(ISource &source);
-  XMLNode::Ptr parsePI(ISource &source);
-  void parseWhiteSpaceToContent(ISource &source, XMLNode &xmlNode);
-  void parseElementContents(ISource &source, XMLNode &xmlNode);
-  XMLNode::Ptr
-    parseElement(ISource &source, const XMLAttribute::List &namespaces, XMLNodeType xmlNodeType = XMLNodeType::element);
-  XMLNode::Ptr parseDeclaration(ISource &source);
-  XMLNode::Ptr parseDTD(ISource &source);
-  XMLNode::Ptr parseProlog(ISource &source);
+  XNode::Ptr parseComment(ISource &source);
+  XNode::Ptr parseCDATA(ISource &source);
+  XNode::Ptr parsePI(ISource &source);
+  void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
+  void parseElementContents(ISource &source, XNode &xNode);
+  XNode::Ptr
+    parseElement(ISource &source, const XMLAttribute::List &namespaces, XNodeType xNodeType = XNodeType::element);
+  XNode::Ptr parseDeclaration(ISource &source);
+  XNode::Ptr parseDTD(ISource &source);
+  XNode::Ptr parseProlog(ISource &source);
   void parseXMLTail(ISource &source);
   void parseXML(ISource &source);
-  void stringifyElements(XMLNode &xmlNode, IDestination &destination);
+  void stringifyElements(XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
   // =================
   // PRIVATE VARIABLES
   // =================
-  XMLNode::Ptr m_prolog;
+  XNode::Ptr m_prolog;
   std::unique_ptr<DTD> m_dtd;
   std::unique_ptr<IValidator> m_validator;
   std::unique_ptr<IEntityMapper> m_entityMapper;

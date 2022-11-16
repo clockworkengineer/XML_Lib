@@ -54,20 +54,20 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).standalone() == "no");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).children.size() == 13);
-    REQUIRE(XMLNodeRef<XMLNodeComment>(*XMLNodeRef<XMLNodeElement>(xml.root()).children[1]).comment() == "Address one ");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].name() == "Address");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].getContents() == "    This is some contents 1   ");
-    REQUIRE(XMLNodeRef<XMLNodeComment>(*XMLNodeRef<XMLNodeElement>(xml.root()).children[5]).comment() == "Address two ");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].name() == "Address");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].getContents() == "    This is some contents 2   ");
-    REQUIRE(XMLNodeRef<XMLNodeComment>(*XMLNodeRef<XMLNodeElement>(xml.root()).children[9]).comment() == "Address three ");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[2].name() == "Address");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[2].getContents() == "    This is some contents 3   ");
+    REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).version() == "1.0");
+    REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
+    REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).children.size() == 13);
+    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).children[1]).comment() == "Address one ");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "Address");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getContents() == "    This is some contents 1   ");
+    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).children[5]).comment() == "Address two ");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].name() == "Address");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getContents() == "    This is some contents 2   ");
+    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).children[9]).comment() == "Address three ");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[2].name() == "Address");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[2].getContents() == "    This is some contents 3   ");
   }
   SECTION("A single comment after root element", "[XML][Parse][Comments]")
   {
@@ -101,7 +101,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getContents() == "TestTest");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getContents() == "TestTest");
   }
   SECTION("A simple comment within element contents and content remains intact", "[XML][Parse][Comments]")
   {
@@ -112,7 +112,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getContents() == "Test    Test");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getContents() == "Test    Test");
   }
   SECTION("A simple single line comment containing -- is illegal", "[XML][Parse][Comments]")
   {

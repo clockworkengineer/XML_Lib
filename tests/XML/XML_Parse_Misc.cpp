@@ -45,10 +45,9 @@ TEST_CASE("Use name for accessing elements", "[XML][Access][ByName]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(
-      XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()["Address"]).name() == "Address");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }
 TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
@@ -78,22 +77,22 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNode>(*xml.root().children[0]).getNodeType() == XMLNodeType::content);
-    REQUIRE(XMLNodeRef<XMLNodeContent>(*xml.root().children[0]).isWhiteSpace() == true);
-    REQUIRE(XMLNodeRef<XMLNode>((*xml.root().children[1])[0]).getNodeType() == XMLNodeType::content);
-    REQUIRE(XMLNodeRef<XMLNodeContent>((*xml.root().children[1])[0]).isWhiteSpace() == false);
-    REQUIRE(XMLNodeRef<XMLNode>((*xml.root().children[2])[0]).getNodeType() == XMLNodeType::content);
-    REQUIRE(XMLNodeRef<XMLNodeContent>((*xml.root().children[2])[0]).isWhiteSpace() == true);
-    REQUIRE(XMLNodeRef<XMLNode>((*xml.root().children[3])[0]).getNodeType() == XMLNodeType::content);
-    REQUIRE(XMLNodeRef<XMLNodeContent>((*xml.root().children[3])[0]).isWhiteSpace() == false);
-    REQUIRE(XMLNodeRef<XMLNode>((*xml.root().children[3])[1]).getNodeType() == XMLNodeType::entity);
-    REQUIRE(XMLNodeRef<XMLNode>((*xml.root().children[3])[2]).getNodeType() == XMLNodeType::content);
-    REQUIRE(XMLNodeRef<XMLNodeContent>((*xml.root().children[3])[2]).isWhiteSpace() == false);
-    REQUIRE(XMLNodeRef<XMLNode>((*xml.root().children[4])[0]).getNodeType() == XMLNodeType::content);
-    REQUIRE(XMLNodeRef<XMLNodeContent>((*xml.root().children[4])[0]).isWhiteSpace() == false);
-    REQUIRE(XMLNodeRef<XMLNode>((*xml.root().children[4])[1]).getNodeType() == XMLNodeType::cdata);
-    REQUIRE(XMLNodeRef<XMLNode>((*xml.root().children[4])[2]).getNodeType() == XMLNodeType::content);
-    REQUIRE(XMLNodeRef<XMLNodeContent>((*xml.root().children[4])[2]).isWhiteSpace() == false);
+    REQUIRE(XNodeRef<XNode>(*xml.root().children[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNodeContent>(*xml.root().children[0]).isWhiteSpace() == true);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[1])[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[1])[0]).isWhiteSpace() == false);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[2])[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[2])[0]).isWhiteSpace() == true);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[3])[0]).isWhiteSpace() == false);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[1]).getNodeType() == XNodeType::entity);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[2]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[3])[2]).isWhiteSpace() == false);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[4])[0]).isWhiteSpace() == false);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[1]).getNodeType() == XNodeType::cdata);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[2]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[4])[2]).isWhiteSpace() == false);
   }
 }
 TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XMLNode][R-Value Reference]")
@@ -108,10 +107,9 @@ TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XMLNode][R-Value Re
                     "Flat A, West Road, Wolverhampton, W1SSX9"
                     "</Address>"
                     "</AddressBook>" });
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(
-      XMLNodeRef<XMLNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()["Address"]).name() == "Address");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
   SECTION("Parse/Stringify both with R-Value reference (File).", "[XML][MLNode][R-Value Reference]")
   {

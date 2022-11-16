@@ -34,47 +34,47 @@ namespace XML_Lib {
 // ===============
 /// <summary>
 /// </summary>
-/// <param name="xmlNode">Current element node.</param>
+/// <param name="xNode">Current element node.</param>
 /// <param name="entityReference">Entity reference to be parsed fro XML.</param>
-void XML_Impl::processEntityReferenceXML(XMLNode &xmlNode, const XMLValue &entityReference)
+void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference)
 {
-  XMLNodeElement entityElement;
+  XNodeElement entityElement;
   BufferSource entitySource(entityReference.parsed);
   // Parse entity XML
   while (entitySource.more()) { parseElementContents(entitySource, entityElement); }
   // Place into node (element) child list
-  for (auto &xmlNodePtr : entityElement.children) { xmlNode.children.emplace_back(std::move(xmlNodePtr)); }
+  for (auto &xNodePtr : entityElement.children) { xNode.children.emplace_back(std::move(xNodePtr)); }
 }
 /// <summary>
 /// </summary>
-/// <param name="xmlNode">Current element node.</param>
-void XML_Impl::resetWhiteSpace(XMLNode &xmlNode)
+/// <param name="xNode">Current element node.</param>
+void XML_Impl::resetWhiteSpace(XNode &xNode)
 {
-  if (!xmlNode.children.empty()) {
-    if (xmlNode.children.back()->getNodeType() == XMLNodeType::content) {
-      XMLNodeRef<XMLNodeContent>(*xmlNode.children.back()).setIsWhiteSpace(false);
+  if (!xNode.children.empty()) {
+    if (xNode.children.back()->getNodeType() == XNodeType::content) {
+      XNodeRef<XNodeContent>(*xNode.children.back()).setIsWhiteSpace(false);
     }
   }
 }
 /// <summary>
 /// Add content node to elements child list.
 /// </summary>
-/// <param name="xmlNode">Current element node.</param>
+/// <param name="xNode">Current element node.</param>
 /// <param name="content">Content to add to new content node (XMLNodeContent).</param>
-void XML_Impl::addContentToElementChildList(XMLNode &xmlNode, const std::string &content)
+void XML_Impl::addContentToElementChildList(XNode &xNode, const std::string &content)
 {
   // Make sure there is a content node to receive characters
-  if (xmlNode.children.empty() || xmlNode.children.back()->getNodeType() != XMLNodeType::content) {
+  if (xNode.children.empty() || xNode.children.back()->getNodeType() != XNodeType::content) {
     bool isWhiteSpace = true;
-    if (!xmlNode.children.empty()) {
-      if ((xmlNode.children.back()->getNodeType() == XMLNodeType::cdata)
-          || (xmlNode.children.back()->getNodeType() == XMLNodeType::entity)) {
+    if (!xNode.children.empty()) {
+      if ((xNode.children.back()->getNodeType() == XNodeType::cdata)
+          || (xNode.children.back()->getNodeType() == XNodeType::entity)) {
         isWhiteSpace = false;
       }
     }
-    xmlNode.children.emplace_back(std::make_unique<XMLNodeContent>(isWhiteSpace));
+    xNode.children.emplace_back(std::make_unique<XNodeContent>(isWhiteSpace));
   }
-  XMLNodeContent &xmlContent = XMLNodeRef<XMLNodeContent>(*xmlNode.children.back());
+  XNodeContent &xmlContent = XNodeRef<XNodeContent>(*xNode.children.back());
   if (xmlContent.isWhiteSpace()) {
     for (const auto ch : content) {
       if (!std::iswspace(ch)) {

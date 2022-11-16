@@ -40,7 +40,7 @@ namespace XML_Lib {
 /// <summary>
 /// DTD constructor.
 /// </summary>
-DTD::DTD(XMLNodeDTD &xmlNodeDTD) : m_implementation(std::make_unique<DTD_Impl>(xmlNodeDTD)) {}
+DTD::DTD(XNodeDTD &xNodeDTD) : m_implementation(std::make_unique<DTD_Impl>(xNodeDTD)) {}
 /// <summary>
 /// DTD destructor.
 /// </summary>

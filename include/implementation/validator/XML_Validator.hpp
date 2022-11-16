@@ -32,7 +32,7 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit XML_Validator(XMLNodeDTD &xmlNodeDTD) : m_xmlNodeDTD(xmlNodeDTD) {}
+  explicit XML_Validator(XNodeDTD &xNodeDTD) : m_xNodeDTD(xNodeDTD) {}
   XML_Validator(const XML_Validator &other) = delete;
   XML_Validator &operator=(const XML_Validator &other) = delete;
   XML_Validator(XML_Validator &&other) = delete;
@@ -44,7 +44,7 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  void validate(const XMLNode &prolog) override;
+  void validate(const XNode &prolog) override;
   // ================
   // PUBLIC VARIABLES
   // ================
@@ -58,24 +58,24 @@ private:
   // ===============
   // PRIVATE METHODS
   // ===============
-  void elementError(const XMLNodeElement &xNodeElement, const std::string &error);
-  void checkAttributes(const XMLNode &xmlNode);
-  void checkContentSpecification(const XMLNode &xmlNode);
-  void checkElement(const XMLNode &xmlNode);
-  void checkElements(const XMLNode &xmlNode);
+  void elementError(const XNodeElement &xNodeElement, const std::string &error);
+  void checkAttributes(const XNode &xNode);
+  void checkContentSpecification(const XNode &xNode);
+  void checkElement(const XNode &xNode);
+  void checkElements(const XNode &xNode);
   bool checkIsNMTOKENOK(const std::string &nmTokenValue);
   bool checkIsIDOK(const std::string &idValue);
-  void checkAttributeValue(const XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
-  void checkAttributeType(const XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
-  bool checkIsPCDATA(const XMLNode &xmlNode);
-  bool checkIsEMPTY(const XMLNode &xmlNode);
-  void checkAgainstDTD(const XMLNode &prolog);
+  void checkAttributeValue(const XNode &xNode, const XNodeDTD::Attribute &attribute);
+  void checkAttributeType(const XNode &xNode, const XNodeDTD::Attribute &attribute);
+  bool checkIsPCDATA(const XNode &xNode);
+  bool checkIsEMPTY(const XNode &xNode);
+  void checkAgainstDTD(const XNode &prolog);
   // =================
   // PRIVATE VARIABLES
   // =================
   std::set<std::string> m_assignedIDValues;
   std::set<std::string> m_assignedIDREFValues;
   long m_lineNumber = 1;
-  XMLNodeDTD &m_xmlNodeDTD;
+  XNodeDTD &m_xNodeDTD;
 };
 }// namespace XML_Lib

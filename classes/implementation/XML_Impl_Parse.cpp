@@ -44,7 +44,7 @@ std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source))
 /// of elements for the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-XMLNode::Ptr XML_Impl::parseComment(ISource &source)
+XNode::Ptr XML_Impl::parseComment(ISource &source)
 {
   std::string comment;
   while (source.more() && !source.match(U"--")) {
@@ -52,34 +52,34 @@ XMLNode::Ptr XML_Impl::parseComment(ISource &source)
     source.next();
   }
   if (!source.match(U">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
-  return (std::make_unique<XMLNodeComment>(XMLNodeComment{ comment }));
+  return (std::make_unique<XNodeComment>(XNodeComment{ comment }));
 }
 /// <summary>
 /// Parse a XML process instruction, create an XMLNodePI for it and add it to
 /// the list of elements under the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-XMLNode::Ptr XML_Impl::parsePI(ISource &source)
+XNode::Ptr XML_Impl::parsePI(ISource &source)
 {
-  XMLNodePI xmlNodePI;
-  xmlNodePI.setName(parseName(source));
+  XNodePI xNodePI;
+  xNodePI.setName(parseName(source));
   std::string parameters;
   while (source.more() && !source.match(U"?>")) {
     parameters += source.current_to_bytes();
     source.next();
   }
-  xmlNodePI.setParameters(parameters);
-  return (std::make_unique<XMLNodePI>(std::move(xmlNodePI)));
+  xNodePI.setParameters(parameters);
+  return (std::make_unique<XNodePI>(std::move(xNodePI)));
 }
 /// <summary>
 /// Parse an XML CDATA section, create an XNodeCDATA for it and add it to
 /// the list of elements under the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="xmlNode">Current element node.</param>
-XMLNode::Ptr XML_Impl::parseCDATA(ISource &source)
+/// <param name="xNode">Current element node.</param>
+XNode::Ptr XML_Impl::parseCDATA(ISource &source)
 {
-  XMLNodeCDATA xmlNodeCDATA;
+  XNodeCDATA xNodeCDATA;
   std::string cdata;
   while (source.more() && !source.match(U"]]>")) {
     if (source.match(U"<![CDATA[")) {
@@ -88,15 +88,15 @@ XMLNode::Ptr XML_Impl::parseCDATA(ISource &source)
     cdata += source.current_to_bytes();
     source.next();
   }
-  xmlNodeCDATA.setCDATA(cdata);
-  return (std::make_unique<XMLNodeCDATA>(std::move(xmlNodeCDATA)));
+  xNodeCDATA.setCDATA(cdata);
+  return (std::make_unique<XNodeCDATA>(std::move(xNodeCDATA)));
 }
 /// <summary>
 /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
 /// the list of attributes associated with the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="xmlNode">Current element node.</param>
+/// <param name="xNode">Current element node.</param>
 XMLAttribute::List XML_Impl::parseAttributes(ISource &source)
 {
   XMLAttribute::List attributes;
@@ -120,42 +120,42 @@ XMLAttribute::List XML_Impl::parseAttributes(ISource &source)
   }
   return (attributes);
 }
-void XML_Impl::parseWhiteSpaceToContent(ISource &source, XMLNode &xmlNode)
+void XML_Impl::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 {
   std::string whiteSpace;
   while (source.more() && source.isWS()) {
     whiteSpace += source.current_to_bytes();
     source.next();
   }
-  addContentToElementChildList(xmlNode, whiteSpace);
+  addContentToElementChildList(xNode, whiteSpace);
 }
 /// <summary>
 /// Parse any element content that is found.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="xmlNode">Current element node.</param>
-void XML_Impl::parseElementContent(ISource &source, XMLNode &xmlNode)
+/// <param name="xNode">Current element node.</param>
+void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
 {
   XMLValue content{ parseCharacter(source) };
   if (content.isReference()) {
     if (content.isEntityReference()) { content = m_entityMapper->map(content); }
-    XMLNodeEntityReference xNodeEntityReference(content);
+    XNodeEntityReference xNodeEntityReference(content);
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
       // YES then XML into current element list
       if (content.parsed.starts_with("<")) {
-        processEntityReferenceXML(xmlNode, content);
+        processEntityReferenceXML(xNode, content);
         return;
       }
       // NO XML into entity elements list.
       else {
         processEntityReferenceXML(xNodeEntityReference, content);
-        resetWhiteSpace(xmlNode);
+        resetWhiteSpace(xNode);
       }
     }
-    xmlNode.children.emplace_back(std::make_unique<XMLNodeEntityReference>(std::move(xNodeEntityReference)));
+    xNode.children.emplace_back(std::make_unique<XNodeEntityReference>(std::move(xNodeEntityReference)));
   } else {
-    addContentToElementChildList(xmlNode, content.parsed);
+    addContentToElementChildList(xNode, content.parsed);
   }
 }
 /// <summary>
@@ -163,21 +163,21 @@ void XML_Impl::parseElementContent(ISource &source, XMLNode &xmlNode)
 /// to the list of the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XMl source stream.</param>
-/// <param name="xmlNode">Current element node.</param>
-void XML_Impl::parseElementContents(ISource &source, XMLNode &xmlNode)
+/// <param name="xNode">Current element node.</param>
+void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 {
   if (source.match(U"<!--")) {
-    xmlNode.children.emplace_back(parseComment(source));
+    xNode.children.emplace_back(parseComment(source));
   } else if (source.match(U"<?")) {
-    xmlNode.children.emplace_back(parsePI(source));
+    xNode.children.emplace_back(parsePI(source));
   } else if (source.match(U"<![CDATA[")) {
-    resetWhiteSpace(xmlNode);
-    xmlNode.children.emplace_back(parseCDATA(source));
+    resetWhiteSpace(xNode);
+    xNode.children.emplace_back(parseCDATA(source));
   } else if (source.match(U"<")) {
-    xmlNode.children.emplace_back(parseElement(source, XMLNodeRef<XMLNodeElement>(xmlNode).getNameSpaceList()));
-    XMLNodeElement &xmlNodeChildElement = XMLNodeRef<XMLNodeElement>(*xmlNode.children.back());
-    if (auto pos = xmlNodeChildElement.name().find(':'); pos != std::string::npos) {
-      if (!xmlNodeChildElement.isNameSpacePresent(xmlNodeChildElement.name().substr(0, pos))) {
+    xNode.children.emplace_back(parseElement(source, XNodeRef<XNodeElement>(xNode).getNameSpaceList()));
+    XNodeElement &xNodeChildElement = XNodeRef<XNodeElement>(*xNode.children.back());
+    if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
+      if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
       }
     }
@@ -187,7 +187,7 @@ void XML_Impl::parseElementContents(ISource &source, XMLNode &xmlNode)
     } else if (source.match(U"]]>")) {
       throw SyntaxError(source.getPosition(), "']]>' invalid in element content area.");
     }
-    parseElementContent(source, xmlNode);
+    parseElementContent(source, xNode);
   }
 }
 /// <summary>
@@ -195,36 +195,36 @@ void XML_Impl::parseElementContents(ISource &source, XMLNode &xmlNode)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="namespaces">Current list of namespaces.</param>
-XMLNode::Ptr XML_Impl::parseElement(ISource &source, const XMLAttribute::List &namespaces, XMLNodeType xmlNodeType)
+XNode::Ptr XML_Impl::parseElement(ISource &source, const XMLAttribute::List &namespaces, XNodeType xNodeType)
 {
-  XMLNodeElement xmlNodeElement{ xmlNodeType };
-  for (const auto &ns : namespaces) { xmlNodeElement.addNameSpace(ns.name, ns.value); }
-  xmlNodeElement.setName(parseTagName(source));
+  XNodeElement xNodeElement{ xNodeType };
+  for (const auto &ns : namespaces) { xNodeElement.addNameSpace(ns.name, ns.value); }
+  xNodeElement.setName(parseTagName(source));
   for (const auto &attribute : parseAttributes(source)) {
-    xmlNodeElement.addAttribute(attribute.name, attribute.value);
+    xNodeElement.addAttribute(attribute.name, attribute.value);
     if (attribute.name.starts_with("xmlns")) {
-      xmlNodeElement.addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
+      xNodeElement.addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
     }
   }
   if (source.match(U">")) {
-    while (source.more() && !source.match(U"</")) { parseElementContents(source, xmlNodeElement); }
-    if (!source.match(source.from_bytes(xmlNodeElement.name()) + U">")) {
+    while (source.more() && !source.match(U"</")) { parseElementContents(source, xNodeElement); }
+    if (!source.match(source.from_bytes(xNodeElement.name()) + U">")) {
       throw SyntaxError(source.getPosition(), "Missing closing tag.");
     }
   } else if (source.match(U"/>")) {
     // Self closing element tag
-    xmlNodeElement.setNodeType(XMLNodeType::self);
+    xNodeElement.setNodeType(XNodeType::self);
   } else {
     throw SyntaxError(source.getPosition(), "Missing closing tag.");
   }
-  return (std::make_unique<XMLNodeElement>(std::move(xmlNodeElement)));
+  return (std::make_unique<XNodeElement>(std::move(xNodeElement)));
 }
 /// <summary>
 /// </summary>
 /// <param name="source">XML source stream.</param>
-XMLNode::Ptr XML_Impl::parseDeclaration(ISource &source)
+XNode::Ptr XML_Impl::parseDeclaration(ISource &source)
 {
-  XMLNodeDeclaration declaration;
+  XNodeDeclaration declaration;
   if (source.match(U"<?xml")) {
     source.ignoreWS();
     if (source.match(U"version")) {
@@ -261,7 +261,7 @@ XMLNode::Ptr XML_Impl::parseDeclaration(ISource &source)
     }
     if (!source.match(U"?>")) { throw SyntaxError(source.getPosition(), "Declaration end tag not found."); }
   }
-  return (std::make_unique<XMLNodeDeclaration>(std::move(declaration)));
+  return (std::make_unique<XNodeDeclaration>(std::move(declaration)));
 }
 /// <summary>
 /// </summary>
@@ -280,14 +280,14 @@ void XML_Impl::parseXMLTail(ISource &source)
     }
   }
 }
-XMLNode::Ptr XML_Impl::parseDTD(ISource &source)
+XNode::Ptr XML_Impl::parseDTD(ISource &source)
 {
   if (m_dtd == nullptr) {
-    XMLNode::Ptr xmlNodeDTD = std::make_unique<XMLNodeDTD>(*m_entityMapper);
-    m_dtd = std::make_unique<DTD>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD));
+    XNode::Ptr xNodeDTD = std::make_unique<XNodeDTD>(*m_entityMapper);
+    m_dtd = std::make_unique<DTD>(XNodeRef<XNodeDTD>(*xNodeDTD));
     m_dtd->parse(source);
-    m_validator = std::make_unique<XML_Validator>(XMLNodeRef<XMLNodeDTD>(*xmlNodeDTD));
-    return (xmlNodeDTD);
+    m_validator = std::make_unique<XML_Validator>(XNodeRef<XNodeDTD>(*xNodeDTD));
+    return (xNodeDTD);
   }
 
   throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
@@ -299,20 +299,20 @@ XMLNode::Ptr XML_Impl::parseDTD(ISource &source)
 /// Document Type Declaration (DTD).
 /// </summary>
 /// <param name="source">XML source stream.</param>
-XMLNode::Ptr XML_Impl::parseProlog(ISource &source)
+XNode::Ptr XML_Impl::parseProlog(ISource &source)
 {
-  XMLNodeProlog xmlNodeProlog;
+  XNodeProlog xNodeProlog;
   source.ignoreWS();
-  xmlNodeProlog.children.emplace_back(parseDeclaration(source));
+  xNodeProlog.children.emplace_back(parseDeclaration(source));
   while (source.more()) {
     if (source.match(U"<!--")) {
-      xmlNodeProlog.children.emplace_back(parseComment(source));
+      xNodeProlog.children.emplace_back(parseComment(source));
     } else if (source.match(U"<?")) {
-      xmlNodeProlog.children.emplace_back(parsePI(source));
+      xNodeProlog.children.emplace_back(parsePI(source));
     } else if (source.isWS()) {
-      parseWhiteSpaceToContent(source, xmlNodeProlog);
+      parseWhiteSpaceToContent(source, xNodeProlog);
     } else if (source.match(U"<!DOCTYPE")) {
-      xmlNodeProlog.children.emplace_back(parseDTD(source));
+      xNodeProlog.children.emplace_back(parseDTD(source));
     } else if (source.current() != '<') {
       throw SyntaxError(source.getPosition(), "Content detected before root element.");
     } else {
@@ -320,7 +320,7 @@ XMLNode::Ptr XML_Impl::parseProlog(ISource &source)
       break;
     }
   }
-  return (std::make_unique<XMLNodeProlog>(std::move(xmlNodeProlog)));
+  return (std::make_unique<XNodeProlog>(std::move(xNodeProlog)));
 }
 /// <summary>
 /// Parse XML from source stream.
@@ -329,7 +329,7 @@ void XML_Impl::parseXML(ISource &source)
 {
   m_prolog = parseProlog(source);
   if (source.match(U"<")) {
-    prolog().children.emplace_back(parseElement(source, {}, XMLNodeType::root));
+    prolog().children.emplace_back(parseElement(source, {}, XNodeType::root));
     parseXMLTail(source);
   } else {
     throw SyntaxError(source.getPosition(), "Missing root element.");

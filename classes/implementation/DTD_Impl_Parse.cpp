@@ -40,9 +40,7 @@ namespace XML_Lib {
 void DTD_Impl::parseValidNotations(const std::string &notations)
 {
   for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|')) {
-    if (m_xmlNodeDTD.getNotationCount(notation) == 0) {
-      throw SyntaxError("NOTATION " + notation + " is not defined.");
-    }
+    if (m_xNodeDTD.getNotationCount(notation) == 0) { throw SyntaxError("NOTATION " + notation + " is not defined."); }
   }
 }
 /// <summary>
@@ -50,21 +48,21 @@ void DTD_Impl::parseValidNotations(const std::string &notations)
 /// </summary>
 /// <param name="elementName">Element associated with attribute.</param>
 /// <param name="dtdAttribute">Attribute description to validate.</param>
-void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XMLNodeDTD::Attribute &dtdAttribute)
+void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XNodeDTD::Attribute &dtdAttribute)
 {
   // Attribute cannot be ID and fixed
-  if (dtdAttribute.type == (XMLNodeDTD::AttributeType::id | XMLNodeDTD::AttributeType::fixed)) {
+  if (dtdAttribute.type == (XNodeDTD::AttributeType::id | XNodeDTD::AttributeType::fixed)) {
     throw SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
   }
   // Only one ID attribute allowed per element
-  else if ((dtdAttribute.type & XMLNodeDTD::AttributeType::id) != 0) {
-    if (m_xmlNodeDTD.getElement(elementName).idAttributePresent) {
+  else if ((dtdAttribute.type & XNodeDTD::AttributeType::id) != 0) {
+    if (m_xNodeDTD.getElement(elementName).idAttributePresent) {
       throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
     }
-    m_xmlNodeDTD.getElement(elementName).idAttributePresent = true;
+    m_xNodeDTD.getElement(elementName).idAttributePresent = true;
   }
   // Enumeration contains unique values and default is valid value
-  else if (dtdAttribute.type == (XMLNodeDTD::AttributeType::enumeration | XMLNodeDTD::AttributeType::normal)) {
+  else if (dtdAttribute.type == (XNodeDTD::AttributeType::enumeration | XNodeDTD::AttributeType::normal)) {
     std::set<std::string> options;
     for (auto &option : splitString(dtdAttribute.enumeration.substr(1, dtdAttribute.enumeration.size() - 2), '|')) {
       if (options.find(option) == options.end()) {
@@ -111,50 +109,50 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
 /// <param name="source">DTD source stream.</param>
 /// <param name="attribute">Attribute description.</param>
 /// <returns>Attribute type as string (UTF-8 encoded).</returns>
-void DTD_Impl::parseAttributeType(ISource &source, XMLNodeDTD::Attribute &attribute)
+void DTD_Impl::parseAttributeType(ISource &source, XNodeDTD::Attribute &attribute)
 {
   if (source.match(U"CDATA")) {
-    attribute.type = XMLNodeDTD::AttributeType::cdata;
+    attribute.type = XNodeDTD::AttributeType::cdata;
     source.ignoreWS();
     return;
   } else if (source.match(U"IDREFS")) {
-    attribute.type = XMLNodeDTD::AttributeType::idrefs;
+    attribute.type = XNodeDTD::AttributeType::idrefs;
     source.ignoreWS();
     return;
   } else if (source.match(U"IDREF")) {
-    attribute.type = XMLNodeDTD::AttributeType::idref;
+    attribute.type = XNodeDTD::AttributeType::idref;
     source.ignoreWS();
     return;
   } else if (source.match(U"ID")) {
-    attribute.type = XMLNodeDTD::AttributeType::id;
+    attribute.type = XNodeDTD::AttributeType::id;
     source.ignoreWS();
     return;
   } else if (source.match(U"NMTOKENS")) {
-    attribute.type = XMLNodeDTD::AttributeType::nmtokens;
+    attribute.type = XNodeDTD::AttributeType::nmtokens;
     source.ignoreWS();
     return;
   } else if (source.match(U"NMTOKEN")) {
-    attribute.type = XMLNodeDTD::AttributeType::nmtoken;
+    attribute.type = XNodeDTD::AttributeType::nmtoken;
     source.ignoreWS();
     return;
   } else if (source.match(U"ENTITY")) {
-    attribute.type = XMLNodeDTD::AttributeType::entity;
+    attribute.type = XNodeDTD::AttributeType::entity;
     source.ignoreWS();
     return;
   } else if (source.match(U"ENTITIES")) {
-    attribute.type = XMLNodeDTD::AttributeType::entities;
+    attribute.type = XNodeDTD::AttributeType::entities;
     source.ignoreWS();
     return;
   } else if (source.match(U"NOTATION")) {
-    attribute.type = XMLNodeDTD::AttributeType::notation;
+    attribute.type = XNodeDTD::AttributeType::notation;
     source.ignoreWS();
   }
   if (source.current() == '(') {
     attribute.enumeration = parseAttributeEnumerationType(source);
-    if (attribute.type == XMLNodeDTD::AttributeType::notation) {
+    if (attribute.type == XNodeDTD::AttributeType::notation) {
       parseValidNotations(attribute.enumeration);
     } else {
-      attribute.type = XMLNodeDTD::AttributeType::enumeration;
+      attribute.type = XNodeDTD::AttributeType::enumeration;
     }
     return;
   }
@@ -165,20 +163,20 @@ void DTD_Impl::parseAttributeType(ISource &source, XMLNodeDTD::Attribute &attrib
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 /// <param name="attribute">Attribute description.</param>
-void DTD_Impl::parseAttributeValue(ISource &source, XMLNodeDTD::Attribute &attribute)
+void DTD_Impl::parseAttributeValue(ISource &source, XNodeDTD::Attribute &attribute)
 {
   if (source.match(U"#REQUIRED")) {
-    attribute.type |= XMLNodeDTD::AttributeType::required;
+    attribute.type |= XNodeDTD::AttributeType::required;
   } else if (source.match(U"#IMPLIED")) {
-    attribute.type |= XMLNodeDTD::AttributeType::implied;
+    attribute.type |= XNodeDTD::AttributeType::implied;
   } else if (source.match(U"#FIXED")) {
     source.ignoreWS();
-    attribute.value = parseValue(source, m_xmlNodeDTD.m_entityMapper);
-    attribute.type |= XMLNodeDTD::AttributeType::fixed;
+    attribute.value = parseValue(source, m_xNodeDTD.m_entityMapper);
+    attribute.type |= XNodeDTD::AttributeType::fixed;
   } else {
     source.ignoreWS();
-    attribute.value = parseValue(source, m_xmlNodeDTD.m_entityMapper);
-    attribute.type |= XMLNodeDTD::AttributeType::normal;
+    attribute.value = parseValue(source, m_xNodeDTD.m_entityMapper);
+    attribute.type |= XNodeDTD::AttributeType::normal;
   }
 }
 /// <summary>
@@ -190,12 +188,12 @@ void DTD_Impl::parseAttributeList(ISource &source)
   source.ignoreWS();
   std::string elementName = parseName(source);
   while (source.more() && validNameStartChar(source.current())) {
-    XMLNodeDTD::Attribute dtdAttribute;
+    XNodeDTD::Attribute dtdAttribute;
     dtdAttribute.name = parseName(source);
     parseAttributeType(source, dtdAttribute);
     parseAttributeValue(source, dtdAttribute);
     parseValidateAttribute(elementName, dtdAttribute);
-    m_xmlNodeDTD.getElement(elementName).attributes.emplace_back(dtdAttribute);
+    m_xNodeDTD.getElement(elementName).attributes.emplace_back(dtdAttribute);
     source.ignoreWS();
   }
 }
@@ -207,7 +205,7 @@ void DTD_Impl::parseNotation(ISource &source)
 {
   source.ignoreWS();
   std::string name = parseName(source);
-  m_xmlNodeDTD.addNotation(name, parseExternalReference(source));
+  m_xNodeDTD.addNotation(name, parseExternalReference(source));
   source.ignoreWS();
 }
 /// <summary>
@@ -226,12 +224,12 @@ void DTD_Impl::parseEntity(ISource &source)
   entityName += parseName(source) + ";";
   if (source.current() == '\'' || source.current() == '"') {
     XMLValue entityValue = parseValue(source);
-    m_xmlNodeDTD.m_entityMapper.get(entityName).internal = entityValue.parsed;
+    m_xNodeDTD.m_entityMapper.get(entityName).internal = entityValue.parsed;
   } else {
-    m_xmlNodeDTD.m_entityMapper.get(entityName).external = parseExternalReference(source);
+    m_xNodeDTD.m_entityMapper.get(entityName).external = parseExternalReference(source);
     if (source.match(U"NDATA")) {
       source.ignoreWS();
-      m_xmlNodeDTD.m_entityMapper.get(entityName).notation = parseName(source);
+      m_xNodeDTD.m_entityMapper.get(entityName).notation = parseName(source);
     }
   }
 }
@@ -244,17 +242,17 @@ void DTD_Impl::parseElement(ISource &source)
   source.ignoreWS();
   std::string elementName = parseName(source);
   if (source.match(U"EMPTY")) {
-    m_xmlNodeDTD.addElement(elementName, XMLNodeDTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
+    m_xNodeDTD.addElement(elementName, XNodeDTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
   } else if (source.match(U"ANY")) {
-    m_xmlNodeDTD.addElement(elementName, XMLNodeDTD::Element(elementName, XMLValue{ "ANY", "ANY" }));
+    m_xNodeDTD.addElement(elementName, XNodeDTD::Element(elementName, XMLValue{ "ANY", "ANY" }));
   } else {
     std::string unparsed;
     while (source.more() && (source.current() != '<') && (source.current() != '>')) {
       unparsed += source.current_to_bytes();
       source.next();
     }
-    m_xmlNodeDTD.addElement(elementName,
-      XMLNodeDTD::Element(elementName, parseElementContentSpecification(elementName, XMLValue{ unparsed, "" })));
+    m_xNodeDTD.addElement(elementName,
+      XNodeDTD::Element(elementName, parseElementContentSpecification(elementName, XMLValue{ unparsed, "" })));
   }
   source.ignoreWS();
 }
@@ -273,7 +271,7 @@ void DTD_Impl::parseComment(ISource &source)
 void DTD_Impl::parseParameterEntityReference(ISource &source)
 {
   XMLValue parameterEntity = parseEntityReference(source);
-  BufferSource entitySource(m_xmlNodeDTD.m_entityMapper.translate(parameterEntity.unparsed));
+  BufferSource entitySource(m_xNodeDTD.m_entityMapper.translate(parameterEntity.unparsed));
   parseInternal(entitySource);
   source.ignoreWS();
 }
@@ -318,15 +316,15 @@ void DTD_Impl::parseDTD(ISource &source)
   // in its raw unparsed form.
   long start = source.position();
   source.ignoreWS();
-  m_xmlNodeDTD.setRootName(parseName(source));
+  m_xNodeDTD.setRootName(parseName(source));
   // Parse in external DTD reference
-  if (source.current() != '[') { m_xmlNodeDTD.setExternalReference(parseExternalReference(source)); }
+  if (source.current() != '[') { m_xNodeDTD.setExternalReference(parseExternalReference(source)); }
   // We have internal DTD so parse that first
   if (source.current() == '[') {
     source.next();
     source.ignoreWS();
     parseInternal(source);
-    m_xmlNodeDTD.setType(XMLNodeDTD::Type::internal);
+    m_xNodeDTD.setType(XNodeDTD::Type::internal);
   }
   // Missing '>' after external DTD reference
   else if (source.current() != '>') {
@@ -338,18 +336,18 @@ void DTD_Impl::parseDTD(ISource &source)
     source.ignoreWS();
   }
   // Parse any DTD in external reference found
-  if (!m_xmlNodeDTD.getExternalReference().type.empty()) {
+  if (!m_xNodeDTD.getExternalReference().type.empty()) {
     parseExternal(source);
-    m_xmlNodeDTD.setType(m_xmlNodeDTD.getType() | XMLNodeDTD::Type::external);
+    m_xNodeDTD.setType(m_xNodeDTD.getType() | XNodeDTD::Type::external);
   }
   // Save away unparsed form of DTD
-  m_xmlNodeDTD.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
+  m_xNodeDTD.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
   // Make sure no defined entity contains recursion
-  for (auto &entityName : m_xmlNodeDTD.m_entityMapper.getList()) {
-    m_xmlNodeDTD.m_entityMapper.checkForRecursion(entityName.first);
+  for (auto &entityName : m_xNodeDTD.m_entityMapper.getList()) {
+    m_xNodeDTD.m_entityMapper.checkForRecursion(entityName.first);
   }
   // Count lines in DTD
-  std::string unparsedDTD = m_xmlNodeDTD.unparsed();
-  m_xmlNodeDTD.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);
+  std::string unparsedDTD = m_xNodeDTD.unparsed();
+  m_xNodeDTD.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);
 }
 }// namespace XML_Lib

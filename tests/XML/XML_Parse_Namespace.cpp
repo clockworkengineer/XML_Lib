@@ -36,12 +36,13 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].name() == "h:table");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].getNameSpaceList().size() == 1);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].getNameSpace("h").value.parsed == "http://www.w3.org/TR/html4/");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].getNameSpaceList().size() == 1);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].name() == "f:table");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].getNameSpace("f").value.parsed == "https://www.w3schools.com/furniture");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "h:table");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getNameSpaceList().size() == 1);
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getNameSpace("h").value.parsed == "http://www.w3.org/TR/html4/");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getNameSpaceList().size() == 1);
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].name() == "f:table");
+    REQUIRE(
+      XNodeRef<XNodeElement>(xml.root())[1].getNameSpace("f").value.parsed == "https://www.w3schools.com/furniture");
   }
   SECTION("A root document and two namespaces defined in the root element.", "[XML][Parse][Namespace]")
   {
@@ -62,14 +63,16 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].name() == "h:table");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].getNameSpaceList().size() == 2);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].getNameSpace("h").value.parsed == "http://www.w3.org/TR/html4/");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].getNameSpace("f").value.parsed == "https://www.w3schools.com/furniture");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].name() == "f:table");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].getNameSpaceList().size() == 2);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].getNameSpace("h").value.parsed == "http://www.w3.org/TR/html4/");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[1].getNameSpace("f").value.parsed == "https://www.w3schools.com/furniture");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "h:table");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getNameSpaceList().size() == 2);
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getNameSpace("h").value.parsed == "http://www.w3.org/TR/html4/");
+    REQUIRE(
+      XNodeRef<XNodeElement>(xml.root())[0].getNameSpace("f").value.parsed == "https://www.w3schools.com/furniture");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].name() == "f:table");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getNameSpaceList().size() == 2);
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getNameSpace("h").value.parsed == "http://www.w3.org/TR/html4/");
+    REQUIRE(
+      XNodeRef<XNodeElement>(xml.root())[1].getNameSpace("f").value.parsed == "https://www.w3schools.com/furniture");
   }
   SECTION(
     "A root document and two namespaces defined in the root element and non-existant namespace g for one of tables.",
@@ -90,9 +93,9 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].name() == "tr");
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].getNameSpaceList().size() == 1);
-    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root())[0].getNameSpace(":").value.parsed == "http://www.w3.org/TR/html4/");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "tr");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getNameSpaceList().size() == 1);
+    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getNameSpace(":").value.parsed == "http://www.w3.org/TR/html4/");
   }
   SECTION("A root document and two namespaces (the same name) defined in the root element.", "[XML][Parse][Namespace]")
   {

@@ -102,41 +102,41 @@ struct XMLEntityMapping
 // ==============
 // XML Node types
 // ==============
-enum class XMLNodeType { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
+enum class XNodeType { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
 // ====
 // Base
 // ====
-struct XMLNode
+struct XNode
 {
-  using Ptr = std::unique_ptr<XMLNode>;
+  using Ptr = std::unique_ptr<XNode>;
   struct Error : public std::runtime_error
   {
     Error(const std::string &message) : std::runtime_error("XMLNode Error: " + message) {}
   };
-  explicit XMLNode(XMLNodeType nodeType = XMLNodeType::base) : xmlNodeType(nodeType) {}
-  [[nodiscard]] XMLNodeType getNodeType() const { return (xmlNodeType); }
-  void setNodeType(XMLNodeType nodeType) { xmlNodeType = nodeType; }
+  explicit XNode(XNodeType nodeType = XNodeType::base) : xNodeType(nodeType) {}
+  [[nodiscard]] XNodeType getNodeType() const { return (xNodeType); }
+  void setNodeType(XNodeType nodeType) { xNodeType = nodeType; }
   [[nodiscard]] std::string getContents() const;
-  XMLNode &operator[](int index) const;
-  XMLNode &operator[](const std::string &name) const;
-  std::vector<XMLNode::Ptr> children;
+  XNode &operator[](int index) const;
+  XNode &operator[](const std::string &name) const;
+  std::vector<XNode::Ptr> children;
 
 private:
-  XMLNodeType xmlNodeType;
+  XNodeType xNodeType;
 };
 // ======
 // Prolog
 // ======
-struct XMLNodeProlog : XMLNode
+struct XNodeProlog : XNode
 {
-  explicit XMLNodeProlog(XMLNodeType nodeType = XMLNodeType::prolog) : XMLNode(nodeType) {}
+  explicit XNodeProlog(XNodeType nodeType = XNodeType::prolog) : XNode(nodeType) {}
 };
 // ===========
 // Declaration
 // ===========
-struct XMLNodeDeclaration : XMLNode
+struct XNodeDeclaration : XNode
 {
-  explicit XMLNodeDeclaration(XMLNodeType nodeType = XMLNodeType::declaration) : XMLNode(nodeType) {}
+  explicit XNodeDeclaration(XNodeType nodeType = XNodeType::declaration) : XNode(nodeType) {}
   [[nodiscard]] bool isValidVersion() const { return (m_version == "1.0" || m_version == "1.1"); }
   [[nodiscard]] bool isValidEncoding() const { return (m_encoding == "UTF-8" || m_encoding == "UTF-16"); }
   [[nodiscard]] bool isValidStandalone() const { return (m_standalone == "yes" || m_standalone == "no"); }
@@ -155,10 +155,10 @@ private:
 // =======
 // Content
 // =======
-struct XMLNodeContent : XMLNode
+struct XNodeContent : XNode
 {
-  explicit XMLNodeContent(bool isWhiteSpace = true, XMLNodeType nodeType = XMLNodeType::content)
-    : XMLNode(nodeType), m_isWhiteSpace(isWhiteSpace)
+  explicit XNodeContent(bool isWhiteSpace = true, XNodeType nodeType = XNodeType::content)
+    : XNode(nodeType), m_isWhiteSpace(isWhiteSpace)
   {}
   [[nodiscard]] std::string content() const { return (m_content); }
   void addContent(const std::string &content) { m_content += content; }
@@ -172,9 +172,9 @@ private:
 // =====
 // CDATA
 // =====
-struct XMLNodeCDATA : XMLNode
+struct XNodeCDATA : XNode
 {
-  explicit XMLNodeCDATA(XMLNodeType nodeType = XMLNodeType::cdata) : XMLNode(nodeType) {}
+  explicit XNodeCDATA(XNodeType nodeType = XNodeType::cdata) : XNode(nodeType) {}
   [[nodiscard]] std::string CDATA() const { return (m_cdata); }
   void setCDATA(const std::string &cdata) { m_cdata = cdata; }
 
@@ -184,10 +184,10 @@ private:
 // ===============
 // EntityReference
 // ===============
-struct XMLNodeEntityReference : XMLNode
+struct XNodeEntityReference : XNode
 {
-  explicit XMLNodeEntityReference(XMLValue value, XMLNodeType nodeType = XMLNodeType::entity)
-    : XMLNode(nodeType), m_value(std::move(value))
+  explicit XNodeEntityReference(XMLValue value, XNodeType nodeType = XNodeType::entity)
+    : XNode(nodeType), m_value(std::move(value))
   {}
   [[nodiscard]] XMLValue value() const { return (m_value); }
   void setValue(const XMLValue &value) { m_value = value; }
@@ -198,10 +198,10 @@ private:
 // =======
 // Element
 // =======
-struct XMLNodeElement : XMLNode
+struct XNodeElement : XNode
 {
-  explicit XMLNodeElement(XMLNodeType nodeType = XMLNodeType::element) : XMLNode(nodeType) {}
-  explicit XMLNodeElement(const std::string &name) : XMLNodeElement() { m_name = name; }
+  explicit XNodeElement(XNodeType nodeType = XNodeType::element) : XNode(nodeType) {}
+  explicit XNodeElement(const std::string &name) : XNodeElement() { m_name = name; }
   [[nodiscard]] bool isAttributePresent(const std::string &name) const
   {
     return (std::find_if(m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) {
@@ -230,8 +230,8 @@ struct XMLNodeElement : XMLNode
   [[nodiscard]] const XMLAttribute::List &getNameSpaceList() const { return (m_namespaces); }
   [[nodiscard]] std::string name() const { return (m_name); }
   void setName(const std::string &name) { m_name = name; }
-  XMLNodeElement &operator[](int index) const;
-  XMLNodeElement &operator[](const std::string &name) const;
+  XNodeElement &operator[](int index) const;
+  XNodeElement &operator[](const std::string &name) const;
 
 private:
   std::string m_name;
@@ -241,10 +241,10 @@ private:
 // =======
 // Comment
 // =======
-struct XMLNodeComment : XMLNode
+struct XNodeComment : XNode
 {
-  explicit XMLNodeComment(std::string comment = "", XMLNodeType nodeType = XMLNodeType::comment)
-    : XMLNode(nodeType), m_comment(std::move(comment))
+  explicit XNodeComment(std::string comment = "", XNodeType nodeType = XNodeType::comment)
+    : XNode(nodeType), m_comment(std::move(comment))
   {}
   [[nodiscard]] std::string comment() const { return (m_comment); }
   void setComment(const std::string &comment) { m_comment = comment; }
@@ -255,9 +255,9 @@ private:
 // ==
 // PI
 // ==
-struct XMLNodePI : XMLNode
+struct XNodePI : XNode
 {
-  explicit XMLNodePI(XMLNodeType nodeType = XMLNodeType::pi) : XMLNode(nodeType) {}
+  explicit XNodePI(XNodeType nodeType = XNodeType::pi) : XNode(nodeType) {}
   [[nodiscard]] std::string name() const { return (m_name); }
   void setName(const std::string &name) { m_name = name; }
   [[nodiscard]] std::string parameters() const { return (m_parameters); }
@@ -270,7 +270,7 @@ private:
 // ===
 // DTD
 // ===
-struct XMLNodeDTD : XMLNode
+struct XNodeDTD : XNode
 {
   //
   // DTD Type
@@ -322,8 +322,8 @@ struct XMLNodeDTD : XMLNode
     XMLValue content{ "", "" };
     std::vector<Attribute> attributes;
   };
-  explicit XMLNodeDTD(IEntityMapper &entityMapper, XMLNodeType nodeType = XMLNodeType::dtd)
-    : XMLNode(nodeType), m_entityMapper(entityMapper)
+  explicit XNodeDTD(IEntityMapper &entityMapper, XNodeType nodeType = XNodeType::dtd)
+    : XNode(nodeType), m_entityMapper(entityMapper)
   {}
   [[nodiscard]] std::string unparsed() const { return (m_unparsed); }
   void setUnparsed(const std::string &unparsed) { m_unparsed = unparsed; }
@@ -337,13 +337,13 @@ struct XMLNodeDTD : XMLNode
   {
     return (m_elements.find(elementName) != m_elements.end());
   }
-  XMLNodeDTD::Element &getElement(const std::string &elementName)
+  XNodeDTD::Element &getElement(const std::string &elementName)
   {
     auto element = m_elements.find(elementName);
     if (element != m_elements.end()) { return (element->second); }
-    throw XMLNode::Error("Could not find notation name.");
+    throw XNode::Error("Could not find notation name.");
   }
-  void addElement(const std::string &elementName, const XMLNodeDTD::Element &element)
+  void addElement(const std::string &elementName, const XNodeDTD::Element &element)
   {
     m_elements.emplace(elementName, element);
   }
@@ -352,7 +352,7 @@ struct XMLNodeDTD : XMLNode
   {
     auto notation = m_notations.find(notationName);
     if (notation != m_notations.end()) { return (notation->second); }
-    throw XMLNode::Error("Could not find notation name.");
+    throw XNode::Error("Could not find notation name.");
   }
   void addNotation(const std::string &notationName, const XMLExternalReference &notation)
   {
@@ -371,115 +371,115 @@ private:
   long m_lineCount{};
   std::string m_name;
   XMLExternalReference m_external{ "" };
-  std::unordered_map<std::string, XMLNodeDTD::Element> m_elements;
+  std::unordered_map<std::string, XNodeDTD::Element> m_elements;
   std::unordered_map<std::string, XMLExternalReference> m_notations;
   std::string m_unparsed;
 };
 // ===========================
 // XMLNode reference converter
 // ===========================
-template<typename T> void CheckXMLNodeType(const XMLNode &xmlNode)
+template<typename T> void CheckXNodeType(const XNode &xNode)
 {
-  if constexpr (std::is_same_v<T, XMLNodeProlog>) {
-    if (xmlNode.getNodeType() != XMLNodeType::prolog) { throw XMLNode::Error("Node not a prolog."); }
-  } else if constexpr (std::is_same_v<T, XMLNodeDeclaration>) {
-    if (xmlNode.getNodeType() != XMLNodeType::declaration) { throw XMLNode::Error("Node not a declaration."); }
-  } else if constexpr (std::is_same_v<T, XMLNodeElement>) {
-    if ((xmlNode.getNodeType() != XMLNodeType::root) && (xmlNode.getNodeType() != XMLNodeType::self)
-        && (xmlNode.getNodeType() != XMLNodeType::element)) {
-      throw XMLNode::Error("Node not a element.");
+  if constexpr (std::is_same_v<T, XNodeProlog>) {
+    if (xNode.getNodeType() != XNodeType::prolog) { throw XNode::Error("Node not a prolog."); }
+  } else if constexpr (std::is_same_v<T, XNodeDeclaration>) {
+    if (xNode.getNodeType() != XNodeType::declaration) { throw XNode::Error("Node not a declaration."); }
+  } else if constexpr (std::is_same_v<T, XNodeElement>) {
+    if ((xNode.getNodeType() != XNodeType::root) && (xNode.getNodeType() != XNodeType::self)
+        && (xNode.getNodeType() != XNodeType::element)) {
+      throw XNode::Error("Node not a element.");
     }
-  } else if constexpr (std::is_same_v<T, XMLNodeContent>) {
-    if (xmlNode.getNodeType() != XMLNodeType::content) { throw XMLNode::Error("Node not content."); }
-  } else if constexpr (std::is_same_v<T, XMLNodeEntityReference>) {
-    if (xmlNode.getNodeType() != XMLNodeType::entity) { throw XMLNode::Error("Node not an entity."); }
-  } else if constexpr (std::is_same_v<T, XMLNodeComment>) {
-    if (xmlNode.getNodeType() != XMLNodeType::comment) { throw XMLNode::Error("Node not a comment."); }
-  } else if constexpr (std::is_same_v<T, XMLNodeCDATA>) {
-    if (xmlNode.getNodeType() != XMLNodeType::cdata) { throw XMLNode::Error("Node not CDATA."); }
-  } else if constexpr (std::is_same_v<T, XMLNodePI>) {
-    if (xmlNode.getNodeType() != XMLNodeType::pi) { throw XMLNode::Error("Node not a PI."); }
-  } else if constexpr (std::is_same_v<T, XMLNodeDTD>) {
-    if (xmlNode.getNodeType() != XMLNodeType::dtd) { throw XMLNode::Error("Node not DTD."); }
+  } else if constexpr (std::is_same_v<T, XNodeContent>) {
+    if (xNode.getNodeType() != XNodeType::content) { throw XNode::Error("Node not content."); }
+  } else if constexpr (std::is_same_v<T, XNodeEntityReference>) {
+    if (xNode.getNodeType() != XNodeType::entity) { throw XNode::Error("Node not an entity."); }
+  } else if constexpr (std::is_same_v<T, XNodeComment>) {
+    if (xNode.getNodeType() != XNodeType::comment) { throw XNode::Error("Node not a comment."); }
+  } else if constexpr (std::is_same_v<T, XNodeCDATA>) {
+    if (xNode.getNodeType() != XNodeType::cdata) { throw XNode::Error("Node not CDATA."); }
+  } else if constexpr (std::is_same_v<T, XNodePI>) {
+    if (xNode.getNodeType() != XNodeType::pi) { throw XNode::Error("Node not a PI."); }
+  } else if constexpr (std::is_same_v<T, XNodeDTD>) {
+    if (xNode.getNodeType() != XNodeType::dtd) { throw XNode::Error("Node not DTD."); }
   }
 }
-template<typename T> T &XMLNodeRef(XMLNode &xmlNode)
+template<typename T> T &XNodeRef(XNode &xNode)
 {
-  CheckXMLNodeType<T>(xmlNode);
-  return (static_cast<T &>(xmlNode));
+  CheckXNodeType<T>(xNode);
+  return (static_cast<T &>(xNode));
 }
-template<typename T> const T &XMLNodeRef(const XMLNode &xmlNode)
+template<typename T> const T &XMLNodeRef(const XNode &xNode)
 {
-  CheckXMLNodeType<T>(xmlNode);
-  return (static_cast<const T &>(xmlNode));
+  CheckXNodeType<T>(xNode);
+  return (static_cast<const T &>(xNode));
 }
 // ====================
 // XMLNode index access
 // ====================
-inline XMLNode &XMLNode::operator[](int index) const// Array
+inline XNode &XNode::operator[](int index) const// Array
 {
-  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XMLNode>(*this).children.size())))) {
-    return (*((XMLNodeRef<XMLNode>(*this).children[index])));
+  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XNode>(*this).children.size())))) {
+    return (*((XMLNodeRef<XNode>(*this).children[index])));
   }
-  throw XMLNode::Error("Invalid index used to access array.");
+  throw XNode::Error("Invalid index used to access array.");
 }
 // ===================
 // XMLNode name access
 // ===================
-inline XMLNode &XMLNode::operator[](const std::string &name) const// Array
+inline XNode &XNode::operator[](const std::string &name) const// Array
 {
-  if (xmlNodeType <= XMLNodeType::element) {
-    for (const auto &element : XMLNodeRef<XMLNodeElement>(*this).children) {
-      if (XMLNodeRef<XMLNodeElement>(*element).name() == name) { return (*element); }
+  if (xNodeType <= XNodeType::element) {
+    for (const auto &element : XMLNodeRef<XNodeElement>(*this).children) {
+      if (XNodeRef<XNodeElement>(*element).name() == name) { return (*element); }
     }
   }
-  throw XMLNode::Error("Invalid index used to access array.");
+  throw XNode::Error("Invalid index used to access array.");
 }
 // ===========================
 // XMLNodeElement index access
 // ===========================
-inline XMLNodeElement &XMLNodeElement::operator[](int index) const// Array
+inline XNodeElement &XNodeElement::operator[](int index) const// Array
 {
   int number = 0;
-  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XMLNodeElement>(*this).children.size())))) {
-    for (const auto &child : XMLNodeRef<XMLNode>(*this).children) {
-      if (XMLNodeRef<XMLNode>(*child).getNodeType() <= XMLNodeType::element) {
-        if (number == index) { return (XMLNodeRef<XMLNodeElement>(*child)); }
+  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XNodeElement>(*this).children.size())))) {
+    for (const auto &child : XMLNodeRef<XNode>(*this).children) {
+      if (XNodeRef<XNode>(*child).getNodeType() <= XNodeType::element) {
+        if (number == index) { return (XNodeRef<XNodeElement>(*child)); }
         number++;
       }
     }
   }
-  throw XMLNode::Error("Invalid index used to access array.");
+  throw XNode::Error("Invalid index used to access array.");
 }
 // ==========================
 // XMLNodeElement name access
 // ==========================
-inline XMLNodeElement &XMLNodeElement::operator[](const std::string &name) const// Array
+inline XNodeElement &XNodeElement::operator[](const std::string &name) const// Array
 {
-  if (getNodeType() <= XMLNodeType::element) {
-    for (const auto &element : XMLNodeRef<XMLNodeElement>(*this).children) {
-      if (XMLNodeRef<XMLNodeElement>(*element).m_name == name) { return (XMLNodeRef<XMLNodeElement>(*element)); }
+  if (getNodeType() <= XNodeType::element) {
+    for (const auto &element : XMLNodeRef<XNodeElement>(*this).children) {
+      if (XNodeRef<XNodeElement>(*element).m_name == name) { return (XNodeRef<XNodeElement>(*element)); }
     }
   }
-  throw XMLNode::Error("Invalid index used to access array.");
+  throw XNode::Error("Invalid index used to access array.");
 }
 // ====================
 // XMLNode get contents
 // ====================
-inline std::string XMLNode::getContents() const
+inline std::string XNode::getContents() const
 {
   std::string result;
   for (const auto &node : children) {
-    if (node->getNodeType() == XMLNodeType::content) {
-      result += XMLNodeRef<XMLNodeContent>(*node).content();
-    } else if (node->getNodeType() == XMLNodeType::entity) {
-      if (!XMLNodeRef<XMLNodeEntityReference>(*node).children.empty()) {
-        result += XMLNodeRef<XMLNodeEntityReference>(*node).getContents();
+    if (node->getNodeType() == XNodeType::content) {
+      result += XNodeRef<XNodeContent>(*node).content();
+    } else if (node->getNodeType() == XNodeType::entity) {
+      if (!XNodeRef<XNodeEntityReference>(*node).children.empty()) {
+        result += XNodeRef<XNodeEntityReference>(*node).getContents();
       } else {
-        result += XMLNodeRef<XMLNodeEntityReference>(*node).value().parsed;
+        result += XNodeRef<XNodeEntityReference>(*node).value().parsed;
       }
-    } else if (node->getNodeType() == XMLNodeType::cdata) {
-      result += XMLNodeRef<XMLNodeCDATA>(*node).CDATA();
+    } else if (node->getNodeType() == XNodeType::cdata) {
+      result += XNodeRef<XNodeCDATA>(*node).CDATA();
     }
   }
   return (result);
