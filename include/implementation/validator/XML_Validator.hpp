@@ -44,7 +44,7 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  void validate(const XMLNodeProlog &prolog) override;
+  void validate(const XMLNode &prolog) override;
   // ================
   // PUBLIC VARIABLES
   // ================
@@ -69,7 +69,7 @@ private:
   void checkAttributeType(const XMLNode &xmlNode, const XMLNodeDTD::Attribute &attribute);
   bool checkIsPCDATA(const XMLNode &xmlNode);
   bool checkIsEMPTY(const XMLNode &xmlNode);
-  void checkAgainstDTD(const XMLNodeProlog &prolog);
+  void checkAgainstDTD(const XMLNode &prolog);
   // =================
   // PRIVATE VARIABLES
   // =================

@@ -33,10 +33,10 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  XMLNodeDTD &dtd();
-  XMLNodeProlog &prolog();
-  XMLNodeDeclaration &declaration();
-  XMLNodeElement &root();
+  XMLNode &dtd();
+  XMLNode &prolog();
+  XMLNode &declaration();
+  XMLNode &root();
   void validate();
   std::string version();
   void parse(ISource &source);

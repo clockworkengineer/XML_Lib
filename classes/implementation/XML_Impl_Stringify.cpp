@@ -50,7 +50,7 @@ void XML_Impl::stringifyElements(XMLNode &xmlNode, IDestination &destination)
   }
   // XML declaration
   case XMLNodeType::declaration: {
-    XMLNodeDeclaration &xNodeDeclaration = declaration();
+    XMLNodeDeclaration &xNodeDeclaration = XMLNodeRef<XMLNodeDeclaration>(declaration());
     destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
                     + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
     break;
@@ -110,7 +110,7 @@ void XML_Impl::stringifyElements(XMLNode &xmlNode, IDestination &destination)
   }
   // XML DTD
   case XMLNodeType::dtd: {
-    destination.add(dtd().unparsed());
+    destination.add(XMLNodeRef<XMLNodeDTD>(dtd()).unparsed());
     break;
   }
   default:

@@ -99,7 +99,6 @@ struct XMLEntityMapping
   XMLExternalReference external{ "" };
   std::string notation{};
 };
-
 // ==============
 // XML Node types
 // ==============

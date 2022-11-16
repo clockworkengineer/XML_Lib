@@ -5,7 +5,7 @@
 class XML_Impl;
 class ISource;
 class IDestination;
-struct XMLNodeElement;
-struct XMLNodeProlog;
-struct XMLNodeDeclaration;
-struct XMLNodeDTD;
+// struct XMLNodeElement;
+// struct XMLNodeProlog;
+// struct XMLNodeDeclaration;
+struct XMLNode;

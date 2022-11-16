@@ -44,10 +44,10 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  XMLNodeDTD &dtd();
-  XMLNodeProlog &prolog();
-  XMLNodeElement &root();
-  XMLNodeDeclaration &declaration();
+  XMLNode &dtd();
+  XMLNode &prolog();
+  XMLNode &root();
+  XMLNode &declaration();
   void parse(ISource &source);
   void stringify(IDestination &destination);
   void validate();

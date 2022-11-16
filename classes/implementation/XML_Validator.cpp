@@ -314,7 +314,7 @@ void XML_Validator::checkElements(const XMLNode &xmlNode)
 /// </summary>
 /// <param name=""></param>
 /// <param name="prolog">Prolog element containing root of XML to validate.</param>
-void XML_Validator::checkAgainstDTD(const XMLNodeProlog &prolog)
+void XML_Validator::checkAgainstDTD(const XMLNode &prolog)
 {
   m_lineNumber = m_xmlNodeDTD.getLineCount();
   checkElements(prolog);
@@ -330,5 +330,5 @@ void XML_Validator::checkAgainstDTD(const XMLNodeProlog &prolog)
 /// issue with the XML that is being validated.
 /// </summary>
 /// <param name="prolog">Prolog element containing root of XML to validate.</param>
-void XML_Validator::validate(const XMLNodeProlog &prolog) { checkAgainstDTD(prolog); }
+void XML_Validator::validate(const XMLNode &prolog) { checkAgainstDTD(prolog); }
 }// namespace XML_Lib

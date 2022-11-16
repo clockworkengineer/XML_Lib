@@ -25,7 +25,7 @@ public:
   // ========================
   // Validate XML against DTD
   // ========================
-  virtual void validate(const XMLNodeProlog &prolog) = 0;
+  virtual void validate(const XMLNode &prolog) = 0;
 };
 
 }// namespace XML_Lib

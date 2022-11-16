@@ -53,19 +53,19 @@ std::string XML::version() { return (m_implementation->version()); }
 /// <summary>
 /// Return reference to any internal DTD for parsed XML.
 /// </summary>
-XMLNodeDTD &XML::dtd() { return (m_implementation->dtd()); }
+XMLNode &XML::dtd() { return (m_implementation->dtd()); }
 /// <summary>
 /// Return prolog node of parsed XML tree.
 /// </summary>
-XMLNodeProlog &XML::prolog() { return (m_implementation->prolog()); }
+XMLNode &XML::prolog() { return (m_implementation->prolog()); }
 /// <summary>
 /// Return declaration node of parsed XML tree.
 /// </summary>
-XMLNodeDeclaration &XML::declaration() { return (m_implementation->declaration()); }
+XMLNode &XML::declaration() { return (m_implementation->declaration()); }
 /// <summary>
 /// Return root node of parsed XML tree.
 /// </summary>
-XMLNodeElement &XML::root() { return (m_implementation->root()); }
+XMLNode &XML::root() { return (m_implementation->root()); }
 /// <summary>
 /// Validate XML against any DTD provided to see whether it is valid. If an
 /// exception is thrown then there is a validation issue and the XML is not valid.

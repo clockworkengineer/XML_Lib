@@ -26,13 +26,13 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version() == "1.0");
-    REQUIRE(xml.declaration().encoding() == "UTF-8");
-    REQUIRE(xml.declaration().standalone() == "no");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).version() == "1.0");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
-    REQUIRE(xml.root().name() == "AddressBook");
-    REQUIRE(xml.root().getAttributeList().size() == 1);
-    REQUIRE(xml.root().getAttribute("number").value.parsed == "15");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getAttributeList().size() == 1);
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getAttribute("number").value.parsed == "15");
   }
   SECTION("Root attribute with 3 attached attributes number, away, flat", "[XML][Parse][[Attributes]")
   {
@@ -43,15 +43,15 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.declaration().version() == "1.0");
-    REQUIRE(xml.declaration().encoding() == "UTF-8");
-    REQUIRE(xml.declaration().standalone() == "no");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).version() == "1.0");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
+    REQUIRE(XMLNodeRef<XMLNodeDeclaration>(xml.declaration()).standalone() == "no");
     REQUIRE(xml.prolog().children.size() == 4);
-    REQUIRE(xml.root().name() == "AddressBook");
-    REQUIRE(xml.root().getAttributeList().size() == 3);
-    REQUIRE(xml.root().getAttribute("number").value.parsed == "15");
-    REQUIRE(xml.root().getAttribute("away").value.parsed == "yes");
-    REQUIRE(xml.root().getAttribute("flat").value.parsed == "no");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getAttributeList().size() == 3);
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getAttribute("number").value.parsed == "15");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getAttribute("away").value.parsed == "yes");
+    REQUIRE(XMLNodeRef<XMLNodeElement>(xml.root()).getAttribute("flat").value.parsed == "no");
   }
   SECTION("Empty elements with attributes are allowed.", "[XML][Parse][[Attributes]")
   {
