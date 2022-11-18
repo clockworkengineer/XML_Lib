@@ -51,7 +51,7 @@ void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
 void XML_Impl::resetWhiteSpace(XNode &xNode)
 {
   if (!xNode.children.empty()) {
-    if (xNode.children.back()->getNodeType() == XNodeType::content) {
+    if (xNode.children.back()->getNodeType() == XNode::Type::content) {
       XNodeRef<XNodeContent>(*xNode.children.back()).setIsWhiteSpace(false);
     }
   }
@@ -64,11 +64,11 @@ void XML_Impl::resetWhiteSpace(XNode &xNode)
 void XML_Impl::addContentToElementChildList(XNode &xNode, const std::string &content)
 {
   // Make sure there is a content node to receive characters
-  if (xNode.children.empty() || xNode.children.back()->getNodeType() != XNodeType::content) {
+  if (xNode.children.empty() || xNode.children.back()->getNodeType() != XNode::Type::content) {
     bool isWhiteSpace = true;
     if (!xNode.children.empty()) {
-      if ((xNode.children.back()->getNodeType() == XNodeType::cdata)
-          || (xNode.children.back()->getNodeType() == XNodeType::entity)) {
+      if ((xNode.children.back()->getNodeType() == XNode::Type::cdata)
+          || (xNode.children.back()->getNodeType() == XNode::Type::entity)) {
         isWhiteSpace = false;
       }
     }

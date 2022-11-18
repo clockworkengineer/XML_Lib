@@ -44,7 +44,7 @@ std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source))
 /// of elements for the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-XNode::Ptr XML_Impl::parseComment(ISource &source)
+std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
 {
   std::string comment;
   while (source.more() && !source.match(U"--")) {
@@ -59,7 +59,7 @@ XNode::Ptr XML_Impl::parseComment(ISource &source)
 /// the list of elements under the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-XNode::Ptr XML_Impl::parsePI(ISource &source)
+std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
 {
   XNodePI xNodePI;
   xNodePI.setName(parseName(source));
@@ -77,7 +77,7 @@ XNode::Ptr XML_Impl::parsePI(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element node.</param>
-XNode::Ptr XML_Impl::parseCDATA(ISource &source)
+std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
 {
   XNodeCDATA xNodeCDATA;
   std::string cdata;
@@ -195,7 +195,8 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="namespaces">Current list of namespaces.</param>
-XNode::Ptr XML_Impl::parseElement(ISource &source, const XMLAttribute::List &namespaces, XNodeType xNodeType)
+std::unique_ptr<XNode>
+  XML_Impl::parseElement(ISource &source, const XMLAttribute::List &namespaces, XNode::Type xNodeType)
 {
   XNodeElement xNodeElement{ xNodeType };
   for (const auto &ns : namespaces) { xNodeElement.addNameSpace(ns.name, ns.value); }
@@ -213,7 +214,7 @@ XNode::Ptr XML_Impl::parseElement(ISource &source, const XMLAttribute::List &nam
     }
   } else if (source.match(U"/>")) {
     // Self closing element tag
-    xNodeElement.setNodeType(XNodeType::self);
+    xNodeElement.setNodeType(XNode::Type::self);
   } else {
     throw SyntaxError(source.getPosition(), "Missing closing tag.");
   }
@@ -222,7 +223,7 @@ XNode::Ptr XML_Impl::parseElement(ISource &source, const XMLAttribute::List &nam
 /// <summary>
 /// </summary>
 /// <param name="source">XML source stream.</param>
-XNode::Ptr XML_Impl::parseDeclaration(ISource &source)
+std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
 {
   XNodeDeclaration declaration;
   if (source.match(U"<?xml")) {
@@ -280,10 +281,10 @@ void XML_Impl::parseXMLTail(ISource &source)
     }
   }
 }
-XNode::Ptr XML_Impl::parseDTD(ISource &source)
+std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 {
   if (m_dtd == nullptr) {
-    XNode::Ptr xNodeDTD = std::make_unique<XNodeDTD>(*m_entityMapper);
+    std::unique_ptr<XNode> xNodeDTD = std::make_unique<XNodeDTD>(*m_entityMapper);
     m_dtd = std::make_unique<DTD>(XNodeRef<XNodeDTD>(*xNodeDTD));
     m_dtd->parse(source);
     m_validator = std::make_unique<XML_Validator>(XNodeRef<XNodeDTD>(*xNodeDTD));
@@ -299,7 +300,7 @@ XNode::Ptr XML_Impl::parseDTD(ISource &source)
 /// Document Type Declaration (DTD).
 /// </summary>
 /// <param name="source">XML source stream.</param>
-XNode::Ptr XML_Impl::parseProlog(ISource &source)
+std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 {
   XNodeProlog xNodeProlog;
   source.ignoreWS();
@@ -329,7 +330,7 @@ void XML_Impl::parseXML(ISource &source)
 {
   m_prolog = parseProlog(source);
   if (source.match(U"<")) {
-    prolog().children.emplace_back(parseElement(source, {}, XNodeType::root));
+    prolog().children.emplace_back(parseElement(source, {}, XNode::Type::root));
     parseXMLTail(source);
   } else {
     throw SyntaxError(source.getPosition(), "Missing root element.");

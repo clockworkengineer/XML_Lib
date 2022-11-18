@@ -67,7 +67,7 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNode>(*xml.prolog().children[2]).getNodeType() == XNodeType::pi);
+    REQUIRE(XNodeRef<XNode>(*xml.prolog().children[2]).getNodeType() == XNode::Type::pi);
     REQUIRE(XNodeRef<XNodePI>(*xml.prolog().children[2]).name() == "xml-stylesheet");
     REQUIRE(XNodeRef<XNodePI>(*xml.prolog().children[2]).parameters()
             == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
@@ -81,7 +81,7 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNode>(*xml.root().children[0]).getNodeType() == XNodeType::pi);
+    REQUIRE(XNodeRef<XNode>(*xml.root().children[0]).getNodeType() == XNode::Type::pi);
     REQUIRE(XNodeRef<XNodePI>(*xml.root().children[0]).name() == "xml-stylesheet");
     REQUIRE(
       XNodeRef<XNodePI>(*xml.root().children[0]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");

@@ -77,21 +77,21 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNode>(*xml.root().children[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNode>(*xml.root().children[0]).getNodeType() == XNode::Type::content);
     REQUIRE(XNodeRef<XNodeContent>(*xml.root().children[0]).isWhiteSpace() == true);
-    REQUIRE(XNodeRef<XNode>((*xml.root().children[1])[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[1])[0]).getNodeType() == XNode::Type::content);
     REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[1])[0]).isWhiteSpace() == false);
-    REQUIRE(XNodeRef<XNode>((*xml.root().children[2])[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[2])[0]).getNodeType() == XNode::Type::content);
     REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[2])[0]).isWhiteSpace() == true);
-    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[0]).getNodeType() == XNode::Type::content);
     REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[3])[0]).isWhiteSpace() == false);
-    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[1]).getNodeType() == XNodeType::entity);
-    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[2]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[1]).getNodeType() == XNode::Type::entity);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[3])[2]).getNodeType() == XNode::Type::content);
     REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[3])[2]).isWhiteSpace() == false);
-    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[0]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[0]).getNodeType() == XNode::Type::content);
     REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[4])[0]).isWhiteSpace() == false);
-    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[1]).getNodeType() == XNodeType::cdata);
-    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[2]).getNodeType() == XNodeType::content);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[1]).getNodeType() == XNode::Type::cdata);
+    REQUIRE(XNodeRef<XNode>((*xml.root().children[4])[2]).getNodeType() == XNode::Type::content);
     REQUIRE(XNodeRef<XNodeContent>((*xml.root().children[4])[2]).isWhiteSpace() == false);
   }
 }
