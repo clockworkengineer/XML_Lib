@@ -58,7 +58,7 @@ std::string XML_Impl::version()
 XNode &XML_Impl::dtd()
 {
   // Slow need to speed up.
-  for (auto &element : prolog().children) {
+  for (auto &element : prolog().getChildren()) {
     if (element->getNodeType() == XNode::Type::dtd) { return (*element); }
   }
   throw XML_Lib::Error("No DTD found.");
@@ -70,14 +70,14 @@ XNode &XML_Impl::prolog() { return (*m_prolog); }
 /// <summary>
 /// Return XML declaration node.
 /// </summary>
-XNode &XML_Impl::declaration() { return (*prolog().children[0]); }
+XNode &XML_Impl::declaration() { return (*prolog().getChildren()[0]); }
 /// <summary>
 /// Return XML root element node.
 /// </summary>
 XNode &XML_Impl::root()
 {
   // Slow need to speed up.
-  for (auto &element : prolog().children) {
+  for (auto &element : prolog().getChildren()) {
     if ((element->getNodeType() == XNode::Type::root) || (element->getNodeType() == XNode::Type::self)) {
       return (*element);
     }

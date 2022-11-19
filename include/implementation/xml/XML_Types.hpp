@@ -112,26 +112,29 @@ struct XNode
   // XNode Types
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
   // Constructors/Destructors
-  explicit XNode(Type nodeType = Type::base) : xNodeType(nodeType) {}
+  explicit XNode(Type nodeType = Type::base) : m_xNodeType(nodeType) {}
   XNode(const XNode &other) = delete;
   XNode &operator=(XNode &other) = delete;
   XNode(XNode &&other) = default;
   XNode &operator=(XNode &&other) = default;
   ~XNode() = default;
   // Get/Set XNode Type
-  [[nodiscard]] Type getNodeType() const { return (xNodeType); }
-  void setNodeType(Type nodeType) { xNodeType = nodeType; }
+  [[nodiscard]] Type getNodeType() const { return (m_xNodeType); }
+  void setNodeType(Type nodeType) { m_xNodeType = nodeType; }
   // Return XNode contents
   [[nodiscard]] std::string getContents() const;
   // XNode Index overrloads
   XNode &operator[](int index) const;
   XNode &operator[](const std::string &name) const;
-  // XNode Children
-  std::vector<std::unique_ptr<XNode>> children;
+  // Get XNode Children reference
+  std::vector<std::unique_ptr<XNode>> &getChildren() { return (m_children); };
+  const std::vector<std::unique_ptr<XNode>> &getChildren() const { return (m_children); };
 
 private:
   // XNode Type
-  Type xNodeType;
+  Type m_xNodeType;
+  // XNode Children
+  std::vector<std::unique_ptr<XNode>> m_children;
 };
 // ======
 // Prolog
@@ -228,7 +231,6 @@ struct XNodeEntityReference : XNode
   XNodeEntityReference(XNodeEntityReference &&other) = default;
   XNodeEntityReference &operator=(XNodeEntityReference &&other) = default;
   ~XNodeEntityReference() = default;
-
   [[nodiscard]] XMLValue value() const { return (m_value); }
   void setValue(const XMLValue &value) { m_value = value; }
 
@@ -482,8 +484,8 @@ template<typename T> const T &XMLNodeRef(const XNode &xNode)
 // ====================
 inline XNode &XNode::operator[](int index) const// Array
 {
-  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XNode>(*this).children.size())))) {
-    return (*((XMLNodeRef<XNode>(*this).children[index])));
+  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XNode>(*this).getChildren().size())))) {
+    return (*((XMLNodeRef<XNode>(*this).getChildren()[index])));
   }
   throw XNode::Error("Invalid index used to access array.");
 }
@@ -492,8 +494,8 @@ inline XNode &XNode::operator[](int index) const// Array
 // ===================
 inline XNode &XNode::operator[](const std::string &name) const// Array
 {
-  if (xNodeType <= XNode::Type::element) {
-    for (const auto &element : XMLNodeRef<XNodeElement>(*this).children) {
+  if (m_xNodeType <= XNode::Type::element) {
+    for (const auto &element : XMLNodeRef<XNodeElement>(*this).getChildren()) {
       if (XNodeRef<XNodeElement>(*element).name() == name) { return (*element); }
     }
   }
@@ -505,8 +507,8 @@ inline XNode &XNode::operator[](const std::string &name) const// Array
 inline XNodeElement &XNodeElement::operator[](int index) const// Array
 {
   int number = 0;
-  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XNodeElement>(*this).children.size())))) {
-    for (const auto &child : XMLNodeRef<XNode>(*this).children) {
+  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XNodeElement>(*this).getChildren().size())))) {
+    for (const auto &child : XMLNodeRef<XNode>(*this).getChildren()) {
       if (XNodeRef<XNode>(*child).getNodeType() <= XNode::Type::element) {
         if (number == index) { return (XNodeRef<XNodeElement>(*child)); }
         number++;
@@ -521,7 +523,7 @@ inline XNodeElement &XNodeElement::operator[](int index) const// Array
 inline XNodeElement &XNodeElement::operator[](const std::string &name) const// Array
 {
   if (getNodeType() <= XNode::Type::element) {
-    for (const auto &element : XMLNodeRef<XNodeElement>(*this).children) {
+    for (const auto &element : XMLNodeRef<XNodeElement>(*this).getChildren()) {
       if (XNodeRef<XNodeElement>(*element).m_name == name) { return (XNodeRef<XNodeElement>(*element)); }
     }
   }
@@ -533,11 +535,11 @@ inline XNodeElement &XNodeElement::operator[](const std::string &name) const// A
 inline std::string XNode::getContents() const
 {
   std::string result;
-  for (const auto &node : children) {
+  for (const auto &node : m_children) {
     if (node->getNodeType() == XNode::Type::content) {
       result += XNodeRef<XNodeContent>(*node).content();
     } else if (node->getNodeType() == XNode::Type::entity) {
-      if (!XNodeRef<XNodeEntityReference>(*node).children.empty()) {
+      if (!XNodeRef<XNodeEntityReference>(*node).getChildren().empty()) {
         result += XNodeRef<XNodeEntityReference>(*node).getContents();
       } else {
         result += XNodeRef<XNodeEntityReference>(*node).value().parsed;

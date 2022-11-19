@@ -43,16 +43,16 @@ void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
   // Parse entity XML
   while (entitySource.more()) { parseElementContents(entitySource, entityElement); }
   // Place into node (element) child list
-  for (auto &xNodePtr : entityElement.children) { xNode.children.emplace_back(std::move(xNodePtr)); }
+  for (auto &xNodePtr : entityElement.getChildren()) { xNode.getChildren().emplace_back(std::move(xNodePtr)); }
 }
 /// <summary>
 /// </summary>
 /// <param name="xNode">Current element node.</param>
 void XML_Impl::resetWhiteSpace(XNode &xNode)
 {
-  if (!xNode.children.empty()) {
-    if (xNode.children.back()->getNodeType() == XNode::Type::content) {
-      XNodeRef<XNodeContent>(*xNode.children.back()).setIsWhiteSpace(false);
+  if (!xNode.getChildren().empty()) {
+    if (xNode.getChildren().back()->getNodeType() == XNode::Type::content) {
+      XNodeRef<XNodeContent>(*xNode.getChildren().back()).setIsWhiteSpace(false);
     }
   }
 }
@@ -64,17 +64,17 @@ void XML_Impl::resetWhiteSpace(XNode &xNode)
 void XML_Impl::addContentToElementChildList(XNode &xNode, const std::string &content)
 {
   // Make sure there is a content node to receive characters
-  if (xNode.children.empty() || xNode.children.back()->getNodeType() != XNode::Type::content) {
+  if (xNode.getChildren().empty() || xNode.getChildren().back()->getNodeType() != XNode::Type::content) {
     bool isWhiteSpace = true;
-    if (!xNode.children.empty()) {
-      if ((xNode.children.back()->getNodeType() == XNode::Type::cdata)
-          || (xNode.children.back()->getNodeType() == XNode::Type::entity)) {
+    if (!xNode.getChildren().empty()) {
+      if ((xNode.getChildren().back()->getNodeType() == XNode::Type::cdata)
+          || (xNode.getChildren().back()->getNodeType() == XNode::Type::entity)) {
         isWhiteSpace = false;
       }
     }
-    xNode.children.emplace_back(std::make_unique<XNodeContent>(isWhiteSpace));
+    xNode.getChildren().emplace_back(std::make_unique<XNodeContent>(isWhiteSpace));
   }
-  XNodeContent &xmlContent = XNodeRef<XNodeContent>(*xNode.children.back());
+  XNodeContent &xmlContent = XNodeRef<XNodeContent>(*xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
     for (const auto ch : content) {
       if (!std::iswspace(ch)) {

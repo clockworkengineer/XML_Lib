@@ -28,7 +28,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).version() == "1.0");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
-    REQUIRE(xml.prolog().children.size() == 4);
+    REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "contact-info");
   }
   SECTION("Empty root element <AddressBook> ", "[XML][Parse][Root]")
@@ -42,7 +42,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).version() == "1.0");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
-    REQUIRE(xml.prolog().children.size() == 4);
+    REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
   }
   SECTION("Root element <AddressBook> and one child <Address> with contents ", "[XML][Parse][Root]")
@@ -59,7 +59,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).children.size() == 3);
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getChildren().size() == 3);
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "Address");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getContents() == "    This is some contents    ");
   }
@@ -85,7 +85,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).children.size() == 7);
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getChildren().size() == 7);
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "Address");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getContents() == "\n    This is some contents 1   ");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].name() == "Address");

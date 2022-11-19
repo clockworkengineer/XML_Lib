@@ -153,7 +153,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
         resetWhiteSpace(xNode);
       }
     }
-    xNode.children.emplace_back(std::make_unique<XNodeEntityReference>(std::move(xNodeEntityReference)));
+    xNode.getChildren().emplace_back(std::make_unique<XNodeEntityReference>(std::move(xNodeEntityReference)));
   } else {
     addContentToElementChildList(xNode, content.parsed);
   }
@@ -167,15 +167,15 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
 void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 {
   if (source.match(U"<!--")) {
-    xNode.children.emplace_back(parseComment(source));
+    xNode.getChildren().emplace_back(parseComment(source));
   } else if (source.match(U"<?")) {
-    xNode.children.emplace_back(parsePI(source));
+    xNode.getChildren().emplace_back(parsePI(source));
   } else if (source.match(U"<![CDATA[")) {
     resetWhiteSpace(xNode);
-    xNode.children.emplace_back(parseCDATA(source));
+    xNode.getChildren().emplace_back(parseCDATA(source));
   } else if (source.match(U"<")) {
-    xNode.children.emplace_back(parseElement(source, XNodeRef<XNodeElement>(xNode).getNameSpaceList()));
-    XNodeElement &xNodeChildElement = XNodeRef<XNodeElement>(*xNode.children.back());
+    xNode.getChildren().emplace_back(parseElement(source, XNodeRef<XNodeElement>(xNode).getNameSpaceList()));
+    XNodeElement &xNodeChildElement = XNodeRef<XNodeElement>(*xNode.getChildren().back());
     if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
@@ -271,9 +271,9 @@ void XML_Impl::parseXMLTail(ISource &source)
 {
   while (source.more()) {
     if (source.match(U"<!--")) {
-      prolog().children.emplace_back(parseComment(source));
+      prolog().getChildren().emplace_back(parseComment(source));
     } else if (source.match(U"<?")) {
-      prolog().children.emplace_back(parsePI(source));
+      prolog().getChildren().emplace_back(parsePI(source));
     } else if (source.isWS()) {
       parseWhiteSpaceToContent(source, prolog());
     } else {
@@ -304,16 +304,16 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 {
   XNodeProlog xNodeProlog;
   source.ignoreWS();
-  xNodeProlog.children.emplace_back(parseDeclaration(source));
+  xNodeProlog.getChildren().emplace_back(parseDeclaration(source));
   while (source.more()) {
     if (source.match(U"<!--")) {
-      xNodeProlog.children.emplace_back(parseComment(source));
+      xNodeProlog.getChildren().emplace_back(parseComment(source));
     } else if (source.match(U"<?")) {
-      xNodeProlog.children.emplace_back(parsePI(source));
+      xNodeProlog.getChildren().emplace_back(parsePI(source));
     } else if (source.isWS()) {
       parseWhiteSpaceToContent(source, xNodeProlog);
     } else if (source.match(U"<!DOCTYPE")) {
-      xNodeProlog.children.emplace_back(parseDTD(source));
+      xNodeProlog.getChildren().emplace_back(parseDTD(source));
     } else if (source.current() != '<') {
       throw SyntaxError(source.getPosition(), "Content detected before root element.");
     } else {
@@ -330,7 +330,7 @@ void XML_Impl::parseXML(ISource &source)
 {
   m_prolog = parseProlog(source);
   if (source.match(U"<")) {
-    prolog().children.emplace_back(parseElement(source, {}, XNode::Type::root));
+    prolog().getChildren().emplace_back(parseElement(source, {}, XNode::Type::root));
     parseXMLTail(source);
   } else {
     throw SyntaxError(source.getPosition(), "Missing root element.");

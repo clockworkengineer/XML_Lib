@@ -45,7 +45,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
   switch (xNode.getNodeType()) {
   // XML prolog
   case XNode::Type::prolog: {
-    for (auto &element : xNode.children) { stringifyElements(*element, destination); }
+    for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
     break;
   }
   // XML declaration
@@ -64,7 +64,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
       destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");
     }
     destination.add(">");
-    for (auto &element : xNode.children) { stringifyElements(*element, destination); }
+    for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
     destination.add("</" + xNodeElement.name() + ">");
     break;
   }

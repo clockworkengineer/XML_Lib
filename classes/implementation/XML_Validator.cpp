@@ -76,7 +76,7 @@ bool XML_Validator::checkIsIDOK(const std::string &idValue)
 /// <returns>true if element contains characters otherwise false.</returns>
 bool XML_Validator::checkIsPCDATA(const XNode &xNode)
 {
-  for (const auto &element : xNode.children) {
+  for (const auto &element : xNode.getChildren()) {
     if ((element->getNodeType() == XNode::Type::element) || (element->getNodeType() == XNode::Type::self)) {
       return (false);
     }
@@ -90,7 +90,7 @@ bool XML_Validator::checkIsPCDATA(const XNode &xNode)
 /// <returns>true if element empty otherwise false.</returns>
 bool XML_Validator::checkIsEMPTY(const XNode &xNode)
 {
-  return (xNode.children.empty() || xNode.getNodeType() == XNode::Type::self);
+  return (xNode.getChildren().empty() || xNode.getNodeType() == XNode::Type::self);
 }
 /// <summary>
 ///
@@ -245,7 +245,7 @@ void XML_Validator::checkContentSpecification(const XNode &xNode)
   if (m_xNodeDTD.getElement(xNodeElement.name()).content.parsed == "ANY") { return; }
   std::regex match{ m_xNodeDTD.getElement(xNodeElement.name()).content.parsed };
   std::string elements;
-  for (auto &element : xNodeElement.children) {
+  for (auto &element : xNodeElement.getChildren()) {
     if ((element->getNodeType() == XNode::Type::element) || (element->getNodeType() == XNode::Type::self)) {
       elements += "<" + XNodeRef<XNodeElement>(*element).name() + ">";
     } else if (element->getNodeType() == XNode::Type::content) {
@@ -275,7 +275,7 @@ void XML_Validator::checkElements(const XNode &xNode)
 {
   switch (xNode.getNodeType()) {
   case XNode::Type::prolog:
-    for (auto &element : xNode.children) { checkElements(*element); }
+    for (auto &element : xNode.getChildren()) { checkElements(*element); }
     break;
   case XNode::Type::declaration:
     // Nothing for present
@@ -288,7 +288,7 @@ void XML_Validator::checkElements(const XNode &xNode)
         "DOCTYPE name does not match that of root element " + XMLNodeRef<XNodeElement>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
-    for (auto &element : xNode.children) { checkElements(*element); }
+    for (auto &element : xNode.getChildren()) { checkElements(*element); }
     break;
   case XNode::Type::self:
     checkElement(xNode);

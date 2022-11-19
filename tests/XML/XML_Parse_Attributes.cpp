@@ -29,7 +29,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).version() == "1.0");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
-    REQUIRE(xml.prolog().children.size() == 4);
+    REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttributeList().size() == 1);
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttribute("number").value.parsed == "15");
@@ -46,7 +46,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).version() == "1.0");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
-    REQUIRE(xml.prolog().children.size() == 4);
+    REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttributeList().size() == 3);
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttribute("number").value.parsed == "15");

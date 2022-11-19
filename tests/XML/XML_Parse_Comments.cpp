@@ -58,14 +58,14 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
     REQUIRE(XNodeRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
     REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).children.size() == 13);
-    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).children[1]).comment() == "Address one ");
+    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getChildren().size() == 13);
+    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).getChildren()[1]).comment() == "Address one ");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "Address");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getContents() == "    This is some contents 1   ");
-    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).children[5]).comment() == "Address two ");
+    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).getChildren()[5]).comment() == "Address two ");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].name() == "Address");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getContents() == "    This is some contents 2   ");
-    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).children[9]).comment() == "Address three ");
+    REQUIRE(XNodeRef<XNodeComment>(*XNodeRef<XNodeElement>(xml.root()).getChildren()[9]).comment() == "Address three ");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[2].name() == "Address");
     REQUIRE(XNodeRef<XNodeElement>(xml.root())[2].getContents() == "    This is some contents 3   ");
   }
