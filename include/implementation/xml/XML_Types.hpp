@@ -99,24 +99,38 @@ struct XMLEntityMapping
   XMLExternalReference external{ "" };
   std::string notation{};
 };
+// ====
 // Base
 // ====
 struct XNode
 {
-  enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
+  // XNode Error
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("XMLNode Error: " + message) {}
+    Error(const std::string &message) : std::runtime_error("XNode Error: " + message) {}
   };
+  // XNode Types
+  enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
+  // Constructors/Destructors
   explicit XNode(Type nodeType = Type::base) : xNodeType(nodeType) {}
+  XNode(const XNode &other) = delete;
+  XNode &operator=(XNode &other) = delete;
+  XNode(XNode &&other) = default;
+  XNode &operator=(XNode &&other) = default;
+  ~XNode() = default;
+  // Get/Set XNode Type
   [[nodiscard]] Type getNodeType() const { return (xNodeType); }
   void setNodeType(Type nodeType) { xNodeType = nodeType; }
+  // Return XNode contents
   [[nodiscard]] std::string getContents() const;
+  // XNode Index overrloads
   XNode &operator[](int index) const;
   XNode &operator[](const std::string &name) const;
+  // XNode Children
   std::vector<std::unique_ptr<XNode>> children;
 
 private:
+  // XNode Type
   Type xNodeType;
 };
 // ======
@@ -124,14 +138,26 @@ private:
 // ======
 struct XNodeProlog : XNode
 {
+  // Constructors/Destructors
   explicit XNodeProlog(XNode::Type nodeType = XNode::Type::prolog) : XNode(nodeType) {}
+  XNodeProlog(const XNodeProlog &other) = delete;
+  XNodeProlog &operator=(XNodeProlog &other) = delete;
+  XNodeProlog(XNodeProlog &&other) = default;
+  XNodeProlog &operator=(XNodeProlog &&other) = default;
+  ~XNodeProlog() = default;
 };
 // ===========
 // Declaration
 // ===========
 struct XNodeDeclaration : XNode
 {
+  // Constructors/Destructors
   explicit XNodeDeclaration(XNode::Type nodeType = XNode::Type::declaration) : XNode(nodeType) {}
+  XNodeDeclaration(const XNodeDeclaration &other) = delete;
+  XNodeDeclaration &operator=(XNodeDeclaration &other) = delete;
+  XNodeDeclaration(XNodeDeclaration &&other) = default;
+  XNodeDeclaration &operator=(XNodeDeclaration &&other) = default;
+  ~XNodeDeclaration() = default;
   [[nodiscard]] bool isValidVersion() const { return (m_version == "1.0" || m_version == "1.1"); }
   [[nodiscard]] bool isValidEncoding() const { return (m_encoding == "UTF-8" || m_encoding == "UTF-16"); }
   [[nodiscard]] bool isValidStandalone() const { return (m_standalone == "yes" || m_standalone == "no"); }
@@ -152,9 +178,15 @@ private:
 // =======
 struct XNodeContent : XNode
 {
+  // Constructors/Destructors
   explicit XNodeContent(bool isWhiteSpace = true, XNode::Type nodeType = XNode::Type::content)
     : XNode(nodeType), m_isWhiteSpace(isWhiteSpace)
   {}
+  XNodeContent(const XNodeContent &other) = delete;
+  XNodeContent &operator=(XNodeContent &other) = delete;
+  XNodeContent(XNodeContent &&other) = default;
+  XNodeContent &operator=(XNodeContent &&other) = default;
+  ~XNodeContent() = default;
   [[nodiscard]] std::string content() const { return (m_content); }
   void addContent(const std::string &content) { m_content += content; }
   [[nodiscard]] bool isWhiteSpace() const { return (m_isWhiteSpace); }
@@ -169,7 +201,13 @@ private:
 // =====
 struct XNodeCDATA : XNode
 {
+  // Constructors/Destructors
   explicit XNodeCDATA(XNode::Type nodeType = XNode::Type::cdata) : XNode(nodeType) {}
+  XNodeCDATA(const XNodeCDATA &other) = delete;
+  XNodeCDATA &operator=(XNodeCDATA &other) = delete;
+  XNodeCDATA(XNodeCDATA &&other) = default;
+  XNodeCDATA &operator=(XNodeCDATA &&other) = default;
+  ~XNodeCDATA() = default;
   [[nodiscard]] std::string CDATA() const { return (m_cdata); }
   void setCDATA(const std::string &cdata) { m_cdata = cdata; }
 
@@ -181,9 +219,16 @@ private:
 // ===============
 struct XNodeEntityReference : XNode
 {
+  // Constructors/Destructors
   explicit XNodeEntityReference(XMLValue value, XNode::Type nodeType = XNode::Type::entity)
     : XNode(nodeType), m_value(std::move(value))
   {}
+  XNodeEntityReference(const XNodeEntityReference &other) = delete;
+  XNodeEntityReference &operator=(XNodeEntityReference &other) = delete;
+  XNodeEntityReference(XNodeEntityReference &&other) = default;
+  XNodeEntityReference &operator=(XNodeEntityReference &&other) = default;
+  ~XNodeEntityReference() = default;
+
   [[nodiscard]] XMLValue value() const { return (m_value); }
   void setValue(const XMLValue &value) { m_value = value; }
 
@@ -195,8 +240,14 @@ private:
 // =======
 struct XNodeElement : XNode
 {
+  // Constructors/Destructors
   explicit XNodeElement(XNode::Type nodeType = XNode::Type::element) : XNode(nodeType) {}
   explicit XNodeElement(const std::string &name) : XNodeElement() { m_name = name; }
+  XNodeElement(const XNodeElement &other) = delete;
+  XNodeElement &operator=(XNodeElement &other) = delete;
+  XNodeElement(XNodeElement &&other) = default;
+  XNodeElement &operator=(XNodeElement &&other) = default;
+  ~XNodeElement() = default;
   [[nodiscard]] bool isAttributePresent(const std::string &name) const
   {
     return (std::find_if(m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) {
@@ -238,9 +289,15 @@ private:
 // =======
 struct XNodeComment : XNode
 {
+  // Constructors/Destructors
   explicit XNodeComment(std::string comment = "", XNode::Type nodeType = XNode::Type::comment)
     : XNode(nodeType), m_comment(std::move(comment))
   {}
+  XNodeComment(const XNodeComment &other) = delete;
+  XNodeComment &operator=(XNodeComment &other) = delete;
+  XNodeComment(XNodeComment &&other) = default;
+  XNodeComment &operator=(XNodeComment &&other) = default;
+  ~XNodeComment() = default;
   [[nodiscard]] std::string comment() const { return (m_comment); }
   void setComment(const std::string &comment) { m_comment = comment; }
 
@@ -252,7 +309,13 @@ private:
 // ==
 struct XNodePI : XNode
 {
+  // Constructors/Destructors
   explicit XNodePI(XNode::Type nodeType = XNode::Type::pi) : XNode(nodeType) {}
+  XNodePI(const XNodePI &other) = delete;
+  XNodePI &operator=(XNodePI &other) = delete;
+  XNodePI(XNodePI &&other) = default;
+  XNodePI &operator=(XNodePI &&other) = default;
+  ~XNodePI() = default;
   [[nodiscard]] std::string name() const { return (m_name); }
   void setName(const std::string &name) { m_name = name; }
   [[nodiscard]] std::string parameters() const { return (m_parameters); }
@@ -320,6 +383,12 @@ struct XNodeDTD : XNode
   explicit XNodeDTD(IEntityMapper &entityMapper, XNode::Type nodeType = XNode::Type::dtd)
     : XNode(nodeType), m_entityMapper(entityMapper)
   {}
+  // Constructors/Destructors
+  XNodeDTD(const XNodeDTD &other) = delete;
+  XNodeDTD &operator=(XNodeDTD &other) = delete;
+  XNodeDTD(XNodeDTD &&other) = default;
+  XNodeDTD &operator=(XNodeDTD &&other) = default;
+  ~XNodeDTD() = default;
   [[nodiscard]] std::string unparsed() const { return (m_unparsed); }
   void setUnparsed(const std::string &unparsed) { m_unparsed = unparsed; }
   [[nodiscard]] uint16_t getType() const { return (m_type); }
