@@ -469,12 +469,12 @@ template<typename T> void CheckXNodeType(const XNode &xNode)
     if (xNode.getNodeType() != XNode::Type::dtd) { throw XNode::Error("Node not DTD."); }
   }
 }
-template<typename T> T &XNodeRef(XNode &xNode)
+template<typename T> T &XRef(XNode &xNode)
 {
   CheckXNodeType<T>(xNode);
   return (static_cast<T &>(xNode));
 }
-template<typename T> const T &XMLNodeRef(const XNode &xNode)
+template<typename T> const T &XRef(const XNode &xNode)
 {
   CheckXNodeType<T>(xNode);
   return (static_cast<const T &>(xNode));
@@ -484,8 +484,8 @@ template<typename T> const T &XMLNodeRef(const XNode &xNode)
 // ====================
 inline XNode &XNode::operator[](int index) const// Array
 {
-  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XNode>(*this).getChildren().size())))) {
-    return (*((XMLNodeRef<XNode>(*this).getChildren()[index])));
+  if ((index >= 0) && (index < (static_cast<int>(XRef<XNode>(*this).getChildren().size())))) {
+    return (*((XRef<XNode>(*this).getChildren()[index])));
   }
   throw XNode::Error("Invalid index used to access array.");
 }
@@ -495,8 +495,8 @@ inline XNode &XNode::operator[](int index) const// Array
 inline XNode &XNode::operator[](const std::string &name) const// Array
 {
   if (m_xNodeType <= XNode::Type::element) {
-    for (const auto &element : XMLNodeRef<XNodeElement>(*this).getChildren()) {
-      if (XNodeRef<XNodeElement>(*element).name() == name) { return (*element); }
+    for (const auto &element : XRef<XNodeElement>(*this).getChildren()) {
+      if (XRef<XNodeElement>(*element).name() == name) { return (*element); }
     }
   }
   throw XNode::Error("Invalid index used to access array.");
@@ -507,10 +507,10 @@ inline XNode &XNode::operator[](const std::string &name) const// Array
 inline XNodeElement &XNodeElement::operator[](int index) const// Array
 {
   int number = 0;
-  if ((index >= 0) && (index < (static_cast<int>(XMLNodeRef<XNodeElement>(*this).getChildren().size())))) {
-    for (const auto &child : XMLNodeRef<XNode>(*this).getChildren()) {
-      if (XNodeRef<XNode>(*child).getNodeType() <= XNode::Type::element) {
-        if (number == index) { return (XNodeRef<XNodeElement>(*child)); }
+  if ((index >= 0) && (index < (static_cast<int>(XRef<XNodeElement>(*this).getChildren().size())))) {
+    for (const auto &child : XRef<XNode>(*this).getChildren()) {
+      if (XRef<XNode>(*child).getNodeType() <= XNode::Type::element) {
+        if (number == index) { return (XRef<XNodeElement>(*child)); }
         number++;
       }
     }
@@ -523,8 +523,8 @@ inline XNodeElement &XNodeElement::operator[](int index) const// Array
 inline XNodeElement &XNodeElement::operator[](const std::string &name) const// Array
 {
   if (getNodeType() <= XNode::Type::element) {
-    for (const auto &element : XMLNodeRef<XNodeElement>(*this).getChildren()) {
-      if (XNodeRef<XNodeElement>(*element).m_name == name) { return (XNodeRef<XNodeElement>(*element)); }
+    for (const auto &element : XRef<XNodeElement>(*this).getChildren()) {
+      if (XRef<XNodeElement>(*element).m_name == name) { return (XRef<XNodeElement>(*element)); }
     }
   }
   throw XNode::Error("Invalid index used to access array.");
@@ -537,15 +537,15 @@ inline std::string XNode::getContents() const
   std::string result;
   for (const auto &node : m_children) {
     if (node->getNodeType() == XNode::Type::content) {
-      result += XNodeRef<XNodeContent>(*node).content();
+      result += XRef<XNodeContent>(*node).content();
     } else if (node->getNodeType() == XNode::Type::entity) {
-      if (!XNodeRef<XNodeEntityReference>(*node).getChildren().empty()) {
-        result += XNodeRef<XNodeEntityReference>(*node).getContents();
+      if (!XRef<XNodeEntityReference>(*node).getChildren().empty()) {
+        result += XRef<XNodeEntityReference>(*node).getContents();
       } else {
-        result += XNodeRef<XNodeEntityReference>(*node).value().parsed;
+        result += XRef<XNodeEntityReference>(*node).value().parsed;
       }
     } else if (node->getNodeType() == XNode::Type::cdata) {
-      result += XNodeRef<XNodeCDATA>(*node).CDATA();
+      result += XRef<XNodeCDATA>(*node).CDATA();
     }
   }
   return (result);

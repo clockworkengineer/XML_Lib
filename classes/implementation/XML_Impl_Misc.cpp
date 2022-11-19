@@ -52,7 +52,7 @@ void XML_Impl::resetWhiteSpace(XNode &xNode)
 {
   if (!xNode.getChildren().empty()) {
     if (xNode.getChildren().back()->getNodeType() == XNode::Type::content) {
-      XNodeRef<XNodeContent>(*xNode.getChildren().back()).setIsWhiteSpace(false);
+      XRef<XNodeContent>(*xNode.getChildren().back()).setIsWhiteSpace(false);
     }
   }
 }
@@ -74,7 +74,7 @@ void XML_Impl::addContentToElementChildList(XNode &xNode, const std::string &con
     }
     xNode.getChildren().emplace_back(std::make_unique<XNodeContent>(isWhiteSpace));
   }
-  XNodeContent &xmlContent = XNodeRef<XNodeContent>(*xNode.getChildren().back());
+  XNodeContent &xmlContent = XRef<XNodeContent>(*xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
     for (const auto ch : content) {
       if (!std::iswspace(ch)) {

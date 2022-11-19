@@ -131,11 +131,11 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     XML xml;
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getNodeType() == XNode::Type::root);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 1);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getAttribute("number").value.parsed == "2001");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[2].getAttributeList().size() == 1);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[2].getAttribute("number").value.parsed == "2001");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getNodeType() == XNode::Type::root);
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].getAttribute("number").value.parsed == "2001");
+    REQUIRE(XRef<XNodeElement>(xml.root())[2].getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root())[2].getAttribute("number").value.parsed == "2001");
   }
   SECTION("XML with a DTD that specifies an element attribute that has a default value if it is not defined. ",
     "[XML][DTD][Validate][Attributes]")
@@ -159,11 +159,11 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     XML xml;
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getNodeType() == XNode::Type::root);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 1);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getAttribute("number").value.parsed == "2002");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[2].getAttributeList().size() == 1);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[2].getAttribute("number").value.parsed == "2001");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getNodeType() == XNode::Type::root);
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].getAttribute("number").value.parsed == "2002");
+    REQUIRE(XRef<XNodeElement>(xml.root())[2].getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root())[2].getAttribute("number").value.parsed == "2001");
   }
   SECTION("Validate XML with DTD that contains a enumeration attribute gender with a default value if 'F'.",
     "[XML][DTD][Validate][Attributes]")
@@ -187,9 +187,9 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    XNodeDTD &xNodeDTD = XNodeRef<XNodeDTD>(xml.dtd());
+    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(XNodeRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
     REQUIRE(xNodeDTD.isElementPresent("person") == true);
     REQUIRE(xNodeDTD.getElement("person").attributes.size() == 1);
     REQUIRE(xNodeDTD.getElement("person").attributes[0].name == "gender");
@@ -198,13 +198,13 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE(xNodeDTD.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(xNodeDTD.getElement("person").attributes[0].value.parsed == "F");
     REQUIRE(xNodeDTD.getRootName() == "queue");
-    REQUIRE(xNodeDTD.getRootName() == XNodeRef<XNodeElement>(XNodeRef<XNodeElement>(xml.root())).name());
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "person");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getAttributeList().size() == 1);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getAttribute("gender").value.parsed == "M");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].name() == "person");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 1);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getAttribute("gender").value.parsed == "F");
+    REQUIRE(xNodeDTD.getRootName() == XRef<XNodeElement>(XRef<XNodeElement>(xml.root())).name());
+    REQUIRE(XRef<XNodeElement>(xml.root())[0].name() == "person");
+    REQUIRE(XRef<XNodeElement>(xml.root())[0].getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root())[0].getAttribute("gender").value.parsed == "M");
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].name() == "person");
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].getAttribute("gender").value.parsed == "F");
   }
   SECTION("Validate XML with DTD that contains a enumeration attribute gender that is not valid.",
     "[XML][DTD][Validate][Attributes]")

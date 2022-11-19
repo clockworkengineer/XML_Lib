@@ -25,7 +25,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getContents() == " & ");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getContents() == " & ");
   }
   SECTION("Parse entity &quot; in contents area", "[XML][Parse][Entities]")
   {
@@ -35,7 +35,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getContents() == " \" ");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getContents() == " \" ");
   }
   SECTION("Parse entities &apos; &lt; &gt; in contents area", "[XML][Parse][Entities]")
   {
@@ -45,7 +45,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getContents() == " ' < > ");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getContents() == " ' < > ");
   }
   SECTION("Parse reference &#x00A5; in contents area", "[XML][Parse][Entities]")
   {
@@ -55,7 +55,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getContents() == " ¥ ");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getContents() == " ¥ ");
   }
   SECTION("Parse reference &#163; in contents area", "[XML][Parse][Entities]")
   {
@@ -65,7 +65,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getContents() == " £ ");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getContents() == " £ ");
   }
   SECTION("Parse entity &amp;&quot;&apos;&gt;&lt; in attribute value", "[XML][Parse][Entities]")
   {
@@ -76,9 +76,8 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttributeList().size() == 1);
-    REQUIRE(
-      XNodeRef<XNodeElement>(xml.root()).getAttribute("attr1").value.parsed == " &#x26;&#x22;&#x27;&#x3E;&#x3C; ");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root()).getAttribute("attr1").value.parsed == " &#x26;&#x22;&#x27;&#x3E;&#x3C; ");
   }
   SECTION("Parse references &#x00A5;&#163 in attribute value", "[XML][Parse][Entities]")
   {
@@ -88,7 +87,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttributeList().size() == 1);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttribute("attr1").value.parsed == " ¥£ ");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root()).getAttribute("attr1").value.parsed == " ¥£ ");
   }
 }

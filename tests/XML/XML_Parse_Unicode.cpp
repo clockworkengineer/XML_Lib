@@ -32,9 +32,9 @@ TEST_CASE("Parse XML with Unicode characters. ", "[XML][Parse][Unicode]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).name() == "俄语");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttributeList().size() == 1);
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getAttribute("լեզու").value.parsed == "ռուսերեն");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root()).getContents() == "данные");
+    REQUIRE(XRef<XNodeElement>(xml.root()).name() == "俄语");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getAttributeList().size() == 1);
+    REQUIRE(XRef<XNodeElement>(xml.root()).getAttribute("լեզու").value.parsed == "ռուսերեն");
+    REQUIRE(XRef<XNodeElement>(xml.root()).getContents() == "данные");
   }
 }

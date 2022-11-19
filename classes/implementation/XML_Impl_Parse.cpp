@@ -174,8 +174,8 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
     resetWhiteSpace(xNode);
     xNode.getChildren().emplace_back(parseCDATA(source));
   } else if (source.match(U"<")) {
-    xNode.getChildren().emplace_back(parseElement(source, XNodeRef<XNodeElement>(xNode).getNameSpaceList()));
-    XNodeElement &xNodeChildElement = XNodeRef<XNodeElement>(*xNode.getChildren().back());
+    xNode.getChildren().emplace_back(parseElement(source, XRef<XNodeElement>(xNode).getNameSpaceList()));
+    XNodeElement &xNodeChildElement = XRef<XNodeElement>(*xNode.getChildren().back());
     if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
@@ -285,9 +285,9 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 {
   if (m_dtd == nullptr) {
     std::unique_ptr<XNode> xNodeDTD = std::make_unique<XNodeDTD>(*m_entityMapper);
-    m_dtd = std::make_unique<DTD>(XNodeRef<XNodeDTD>(*xNodeDTD));
+    m_dtd = std::make_unique<DTD>(XRef<XNodeDTD>(*xNodeDTD));
     m_dtd->parse(source);
-    m_validator = std::make_unique<XML_Validator>(XNodeRef<XNodeDTD>(*xNodeDTD));
+    m_validator = std::make_unique<XML_Validator>(XRef<XNodeDTD>(*xNodeDTD));
     return (xNodeDTD);
   }
 

@@ -66,10 +66,10 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    XNodeDTD &xNodeDTD = XNodeRef<XNodeDTD>(xml.dtd());
-    REQUIRE(XNodeRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
+    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
     REQUIRE(xNodeDTD.getType() == XNodeDTD::Type::internal);
-    REQUIRE(xNodeDTD.getRootName() == XNodeRef<XNodeElement>(XNodeRef<XNodeElement>(xml.root())).name());
+    REQUIRE(xNodeDTD.getRootName() == XRef<XNodeElement>(XRef<XNodeElement>(xml.root())).name());
     REQUIRE(xNodeDTD.getRootName() == "TVSCHEDULE");
     REQUIRE(xNodeDTD.getElement("TVSCHEDULE").name == "TVSCHEDULE");
     REQUIRE(xNodeDTD.getElement("CHANNEL").name == "CHANNEL");
@@ -128,10 +128,10 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    XNodeDTD &xNodeDTD = XNodeRef<XNodeDTD>(xml.dtd());
-    REQUIRE(XNodeRef<XNode>(*xml.prolog().getChildren()[1]).getNodeType() == XNode::Type::dtd);
+    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[1]).getNodeType() == XNode::Type::dtd);
     REQUIRE(xNodeDTD.getType() == XNodeDTD::Type::internal);
-    REQUIRE(xNodeDTD.getRootName() == XNodeRef<XNodeElement>(XNodeRef<XNodeElement>(xml.root())).name());
+    REQUIRE(xNodeDTD.getRootName() == XRef<XNodeElement>(XRef<XNodeElement>(xml.root())).name());
     REQUIRE(xNodeDTD.getRootName() == "CATALOG");
     REQUIRE(xNodeDTD.getElement("PRODUCT").name == "PRODUCT");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes.size() == 5);
@@ -186,8 +186,8 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    XNodeDTD &xNodeDTD = XNodeRef<XNodeDTD>(xml.dtd());
-    REQUIRE(XNodeRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
+    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
     REQUIRE(xNodeDTD.getType() == XNodeDTD::Type::internal);
     REQUIRE(xNodeDTD.isElementPresent("person") == true);
     REQUIRE(xNodeDTD.getElement("person").attributes.size() == 1);
@@ -197,14 +197,14 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     REQUIRE(xNodeDTD.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(xNodeDTD.getElement("person").attributes[0].value.parsed == "F");
     REQUIRE(xNodeDTD.getRootName() == "queue");
-    REQUIRE(xNodeDTD.getRootName() == XNodeRef<XNodeElement>(XNodeRef<XNodeElement>(xml.root())).name());
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].name() == "person");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[0].getAttributeList().size() == 1);
-    XMLAttribute attribute = XNodeRef<XNodeElement>(xml.root())[0].getAttribute("gender");
+    REQUIRE(xNodeDTD.getRootName() == XRef<XNodeElement>(XRef<XNodeElement>(xml.root())).name());
+    REQUIRE(XRef<XNodeElement>(xml.root())[0].name() == "person");
+    REQUIRE(XRef<XNodeElement>(xml.root())[0].getAttributeList().size() == 1);
+    XMLAttribute attribute = XRef<XNodeElement>(xml.root())[0].getAttribute("gender");
     REQUIRE(attribute.name == "gender");
     REQUIRE(attribute.value.parsed == "M");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].name() == "person");
-    REQUIRE(XNodeRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 0);
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].name() == "person");
+    REQUIRE(XRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 0);
   }
   SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing enumeration name).",
     "[XML][DTD][Parse][Error][Attributes]")
@@ -350,8 +350,8 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     BufferSource source{ xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    XNodeDTD &xNodeDTD = XNodeRef<XNodeDTD>(xml.dtd());
-    REQUIRE(XNodeRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
+    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
     REQUIRE(xNodeDTD.getType() == XNodeDTD::Type::internal);
     REQUIRE(xNodeDTD.isElementPresent("mountain") == true);
     REQUIRE(xNodeDTD.getElement("mountain").attributes.size() == 2);

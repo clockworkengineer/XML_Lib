@@ -105,7 +105,7 @@ bool XML_Validator::checkIsEMPTY(const XNode &xNode)
 /// <param name="xNode">Current element node.</param>
 void XML_Validator::checkAttributeValue(const XNode &xNode, const XNodeDTD::Attribute &attribute)
 {
-  const XNodeElement &xNodeElement = XMLNodeRef<XNodeElement>(xNode);
+  const XNodeElement &xNodeElement = XRef<XNodeElement>(xNode);
   bool attributePresent = xNodeElement.isAttributePresent(attribute.name);
   if ((attribute.type & XNodeDTD::AttributeType::required) != 0) {
     if (!attributePresent) { elementError(xNodeElement, "is missing required attribute '" + attribute.name + "'."); }
@@ -143,7 +143,7 @@ void XML_Validator::checkAttributeValue(const XNode &xNode, const XNodeDTD::Attr
 /// <param name="xNode">Current element node.</param>
 void XML_Validator::checkAttributeType(const XNode &xNode, const XNodeDTD::Attribute &attribute)
 {
-  const XNodeElement &xNodeElement = XMLNodeRef<XNodeElement>(xNode);
+  const XNodeElement &xNodeElement = XRef<XNodeElement>(xNode);
   XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
   if ((attribute.type & XNodeDTD::AttributeType::cdata) != 0) {
     if (elementAttribute.value.parsed.empty())// No character data present.
@@ -220,7 +220,7 @@ void XML_Validator::checkAttributeType(const XNode &xNode, const XNodeDTD::Attri
 /// <param name="xNode">Current element node.</param>
 void XML_Validator::checkAttributes(const XNode &xNode)
 {
-  const XNodeElement &xNodeElement = XMLNodeRef<XNodeElement>(xNode);
+  const XNodeElement &xNodeElement = XRef<XNodeElement>(xNode);
   for (auto &attribute : m_xNodeDTD.getElement(xNodeElement.name()).attributes) {
     if (xNodeElement.isAttributePresent(attribute.name)) { checkAttributeType(xNode, attribute); }
     checkAttributeValue(xNode, attribute);
@@ -232,7 +232,7 @@ void XML_Validator::checkAttributes(const XNode &xNode)
 /// <param name="xNode">Current element node.</param>
 void XML_Validator::checkContentSpecification(const XNode &xNode)
 {
-  const XNodeElement &xNodeElement = XMLNodeRef<XNodeElement>(xNode);
+  const XNodeElement &xNodeElement = XRef<XNodeElement>(xNode);
   if (m_xNodeDTD.getElementCount() == 0) { return; }
   if (m_xNodeDTD.getElement(xNodeElement.name()).content.parsed == "((<#PCDATA>))") {
     if (!checkIsPCDATA(xNode)) { elementError(xNodeElement, "does not contain just any parsable data."); }
@@ -247,9 +247,9 @@ void XML_Validator::checkContentSpecification(const XNode &xNode)
   std::string elements;
   for (auto &element : xNodeElement.getChildren()) {
     if ((element->getNodeType() == XNode::Type::element) || (element->getNodeType() == XNode::Type::self)) {
-      elements += "<" + XNodeRef<XNodeElement>(*element).name() + ">";
+      elements += "<" + XRef<XNodeElement>(*element).name() + ">";
     } else if (element->getNodeType() == XNode::Type::content) {
-      if (!XNodeRef<XNodeContent>(*element).isWhiteSpace()) { elements += "<#PCDATA>"; }
+      if (!XRef<XNodeContent>(*element).isWhiteSpace()) { elements += "<#PCDATA>"; }
     }
   }
   if (!std::regex_match(elements, match)) {
@@ -282,10 +282,9 @@ void XML_Validator::checkElements(const XNode &xNode)
     break;
   case XNode::Type::root:
   case XNode::Type::element:
-    if (xNode.getNodeType() == XNode::Type::root
-        && XMLNodeRef<XNodeElement>(xNode).name() != m_xNodeDTD.getRootName()) {
+    if (xNode.getNodeType() == XNode::Type::root && XRef<XNodeElement>(xNode).name() != m_xNodeDTD.getRootName()) {
       throw ValidationError(m_lineNumber,
-        "DOCTYPE name does not match that of root element " + XMLNodeRef<XNodeElement>(xNode).name() + " of DTD.");
+        "DOCTYPE name does not match that of root element " + XRef<XNodeElement>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
     for (auto &element : xNode.getChildren()) { checkElements(*element); }
@@ -300,7 +299,7 @@ void XML_Validator::checkElements(const XNode &xNode)
   case XNode::Type::dtd:
     break;
   case XNode::Type::content:
-    for (auto &ch : XMLNodeRef<XNodeContent>(xNode).content()) {
+    for (auto &ch : XRef<XNodeContent>(xNode).content()) {
       if (ch == kLineFeed) { m_lineNumber++; }
     }
     break;
