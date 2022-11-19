@@ -6,7 +6,7 @@ namespace XML_Lib {
 // ===================================================
 // Forward declarations for interfaces/classes/structs
 // ===================================================
-struct XNodeProlog;
+struct XProlog;
 // =======================
 // XML validator interface
 // =======================

@@ -38,7 +38,7 @@ namespace XML_Lib {
 /// <summary>
 /// DTD_Impl constructor.
 /// </summary>
-DTD_Impl::DTD_Impl(XNodeDTD &xNodeDTD) : m_xNodeDTD(xNodeDTD) {}
+DTD_Impl::DTD_Impl(XDTD &xNodeDTD) : m_xNodeDTD(xNodeDTD) {}
 /// <summary>
 /// DTD_Impl destructor.
 /// </summary>

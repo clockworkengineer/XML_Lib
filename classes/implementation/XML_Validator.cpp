@@ -36,7 +36,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xNodeElement">Element X Node.</param>
 /// <param name="error">Error text string.</param>
-void XML_Validator::elementError(const XNodeElement &xNodeElement, const std::string &error)
+void XML_Validator::elementError(const XElement &xNodeElement, const std::string &error)
 {
   throw ValidationError(m_lineNumber, "Element <" + xNodeElement.name() + "> " + error);
 }
@@ -103,13 +103,13 @@ bool XML_Validator::checkIsEMPTY(const XNode &xNode)
 ///
 /// </summary>
 /// <param name="xNode">Current element node.</param>
-void XML_Validator::checkAttributeValue(const XNode &xNode, const XNodeDTD::Attribute &attribute)
+void XML_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute)
 {
-  const XNodeElement &xNodeElement = XRef<XNodeElement>(xNode);
+  const XElement &xNodeElement = XRef<XElement>(xNode);
   bool attributePresent = xNodeElement.isAttributePresent(attribute.name);
-  if ((attribute.type & XNodeDTD::AttributeType::required) != 0) {
+  if ((attribute.type & XDTD::AttributeType::required) != 0) {
     if (!attributePresent) { elementError(xNodeElement, "is missing required attribute '" + attribute.name + "'."); }
-  } else if ((attribute.type & XNodeDTD::AttributeType::fixed) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::fixed) != 0) {
     if (attributePresent) {
       XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
       if (attribute.value.parsed != elementAttribute.value.parsed) {
@@ -141,16 +141,16 @@ void XML_Validator::checkAttributeValue(const XNode &xNode, const XNodeDTD::Attr
 ///
 /// </summary>
 /// <param name="xNode">Current element node.</param>
-void XML_Validator::checkAttributeType(const XNode &xNode, const XNodeDTD::Attribute &attribute)
+void XML_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute)
 {
-  const XNodeElement &xNodeElement = XRef<XNodeElement>(xNode);
+  const XElement &xNodeElement = XRef<XElement>(xNode);
   XMLAttribute elementAttribute = xNodeElement.getAttribute(attribute.name);
-  if ((attribute.type & XNodeDTD::AttributeType::cdata) != 0) {
+  if ((attribute.type & XDTD::AttributeType::cdata) != 0) {
     if (elementAttribute.value.parsed.empty())// No character data present.
     {
       elementError(xNodeElement, "attribute '" + attribute.name + "' does not contain character data.");
     }
-  } else if ((attribute.type & XNodeDTD::AttributeType::id) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::id) != 0) {
     if (!checkIsIDOK(elementAttribute.value.parsed)) {
       elementError(xNodeElement, "ID attribute '" + attribute.name + "' is invalid.");
     }
@@ -158,41 +158,41 @@ void XML_Validator::checkAttributeType(const XNode &xNode, const XNodeDTD::Attri
       elementError(xNodeElement, "ID attribute '" + attribute.name + "' is not unique.");
     }
     m_assignedIDValues.insert(elementAttribute.value.parsed);
-  } else if ((attribute.type & XNodeDTD::AttributeType::idref) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::idref) != 0) {
     if (!checkIsIDOK(elementAttribute.value.parsed)) {
       elementError(xNodeElement, "IDREF attribute '" + attribute.name + "' is invalid.");
     }
     m_assignedIDREFValues.insert(elementAttribute.value.parsed);
-  } else if ((attribute.type & XNodeDTD::AttributeType::idrefs) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::idrefs) != 0) {
     for (auto &id : splitString(elementAttribute.value.parsed, ' ')) {
       if (!checkIsIDOK(id)) {
         elementError(xNodeElement, "IDREFS attribute '" + attribute.name + "' contains an invalid IDREF.");
       }
       m_assignedIDREFValues.insert(id);
     }
-  } else if ((attribute.type & XNodeDTD::AttributeType::nmtoken) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::nmtoken) != 0) {
     if (!checkIsNMTOKENOK(elementAttribute.value.parsed)) {
       elementError(xNodeElement, "NMTOKEN attribute '" + attribute.name + "' is invalid.");
     }
-  } else if ((attribute.type & XNodeDTD::AttributeType::nmtokens) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::nmtokens) != 0) {
     for (auto &nmtoken : splitString(elementAttribute.value.parsed, ' ')) {
       if (!checkIsNMTOKENOK(nmtoken)) {
         elementError(xNodeElement, "NMTOKEN attribute '" + attribute.name + "' contains an invalid NMTOKEN.");
       }
     }
-  } else if ((attribute.type & XNodeDTD::AttributeType::entity) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::entity) != 0) {
     if (!m_xNodeDTD.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";")) {
       elementError(xNodeElement,
         "ENTITY attribute '" + attribute.name + "' value '" + elementAttribute.value.parsed + "' is not defined.");
     }
-  } else if ((attribute.type & XNodeDTD::AttributeType::entities) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::entities) != 0) {
     for (auto &entity : splitString(elementAttribute.value.parsed, ' ')) {
       if (!m_xNodeDTD.m_entityMapper.isPresent("&" + entity + ";")) {
         elementError(
           xNodeElement, "ENTITIES attribute '" + attribute.name + "' value '" + entity + "' is not defined.");
       }
     }
-  } else if ((attribute.type & XNodeDTD::AttributeType::notation) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::notation) != 0) {
     std::set<std::string> notations;
     for (auto &notation : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
       notations.insert(notation);
@@ -201,7 +201,7 @@ void XML_Validator::checkAttributeType(const XNode &xNode, const XNodeDTD::Attri
       elementError(xNodeElement,
         "NOTATION attribute '" + attribute.name + "' value '" + elementAttribute.value.parsed + "' is not defined.");
     }
-  } else if ((attribute.type & XNodeDTD::AttributeType::enumeration) != 0) {
+  } else if ((attribute.type & XDTD::AttributeType::enumeration) != 0) {
     std::set<std::string> enumeration;
     for (auto &option : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
       enumeration.insert(option);
@@ -220,7 +220,7 @@ void XML_Validator::checkAttributeType(const XNode &xNode, const XNodeDTD::Attri
 /// <param name="xNode">Current element node.</param>
 void XML_Validator::checkAttributes(const XNode &xNode)
 {
-  const XNodeElement &xNodeElement = XRef<XNodeElement>(xNode);
+  const XElement &xNodeElement = XRef<XElement>(xNode);
   for (auto &attribute : m_xNodeDTD.getElement(xNodeElement.name()).attributes) {
     if (xNodeElement.isAttributePresent(attribute.name)) { checkAttributeType(xNode, attribute); }
     checkAttributeValue(xNode, attribute);
@@ -232,7 +232,7 @@ void XML_Validator::checkAttributes(const XNode &xNode)
 /// <param name="xNode">Current element node.</param>
 void XML_Validator::checkContentSpecification(const XNode &xNode)
 {
-  const XNodeElement &xNodeElement = XRef<XNodeElement>(xNode);
+  const XElement &xNodeElement = XRef<XElement>(xNode);
   if (m_xNodeDTD.getElementCount() == 0) { return; }
   if (m_xNodeDTD.getElement(xNodeElement.name()).content.parsed == "((<#PCDATA>))") {
     if (!checkIsPCDATA(xNode)) { elementError(xNodeElement, "does not contain just any parsable data."); }
@@ -247,9 +247,9 @@ void XML_Validator::checkContentSpecification(const XNode &xNode)
   std::string elements;
   for (auto &element : xNodeElement.getChildren()) {
     if ((element->getNodeType() == XNode::Type::element) || (element->getNodeType() == XNode::Type::self)) {
-      elements += "<" + XRef<XNodeElement>(*element).name() + ">";
+      elements += "<" + XRef<XElement>(*element).name() + ">";
     } else if (element->getNodeType() == XNode::Type::content) {
-      if (!XRef<XNodeContent>(*element).isWhiteSpace()) { elements += "<#PCDATA>"; }
+      if (!XRef<XContent>(*element).isWhiteSpace()) { elements += "<#PCDATA>"; }
     }
   }
   if (!std::regex_match(elements, match)) {
@@ -282,9 +282,9 @@ void XML_Validator::checkElements(const XNode &xNode)
     break;
   case XNode::Type::root:
   case XNode::Type::element:
-    if (xNode.getNodeType() == XNode::Type::root && XRef<XNodeElement>(xNode).name() != m_xNodeDTD.getRootName()) {
-      throw ValidationError(m_lineNumber,
-        "DOCTYPE name does not match that of root element " + XRef<XNodeElement>(xNode).name() + " of DTD.");
+    if (xNode.getNodeType() == XNode::Type::root && XRef<XElement>(xNode).name() != m_xNodeDTD.getRootName()) {
+      throw ValidationError(
+        m_lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
     for (auto &element : xNode.getChildren()) { checkElements(*element); }
@@ -299,7 +299,7 @@ void XML_Validator::checkElements(const XNode &xNode)
   case XNode::Type::dtd:
     break;
   case XNode::Type::content:
-    for (auto &ch : XRef<XNodeContent>(xNode).content()) {
+    for (auto &ch : XRef<XContent>(xNode).content()) {
       if (ch == kLineFeed) { m_lineNumber++; }
     }
     break;

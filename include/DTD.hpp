@@ -23,7 +23,7 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit DTD(XNodeDTD &xNodeDTD);
+  explicit DTD(XDTD &xNodeDTD);
   DTD() = default;
   DTD(const DTD &other) = delete;
   DTD &operator=(const DTD &other) = delete;

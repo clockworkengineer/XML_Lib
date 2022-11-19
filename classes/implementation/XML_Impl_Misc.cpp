@@ -38,7 +38,7 @@ namespace XML_Lib {
 /// <param name="entityReference">Entity reference to be parsed fro XML.</param>
 void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference)
 {
-  XNodeElement entityElement;
+  XElement entityElement;
   BufferSource entitySource(entityReference.parsed);
   // Parse entity XML
   while (entitySource.more()) { parseElementContents(entitySource, entityElement); }
@@ -52,7 +52,7 @@ void XML_Impl::resetWhiteSpace(XNode &xNode)
 {
   if (!xNode.getChildren().empty()) {
     if (xNode.getChildren().back()->getNodeType() == XNode::Type::content) {
-      XRef<XNodeContent>(*xNode.getChildren().back()).setIsWhiteSpace(false);
+      XRef<XContent>(*xNode.getChildren().back()).setIsWhiteSpace(false);
     }
   }
 }
@@ -72,9 +72,9 @@ void XML_Impl::addContentToElementChildList(XNode &xNode, const std::string &con
         isWhiteSpace = false;
       }
     }
-    xNode.getChildren().emplace_back(std::make_unique<XNodeContent>(isWhiteSpace));
+    xNode.getChildren().emplace_back(std::make_unique<XContent>(isWhiteSpace));
   }
-  XNodeContent &xmlContent = XRef<XNodeContent>(*xNode.getChildren().back());
+  XContent &xmlContent = XRef<XContent>(*xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
     for (const auto ch : content) {
       if (!std::iswspace(ch)) {

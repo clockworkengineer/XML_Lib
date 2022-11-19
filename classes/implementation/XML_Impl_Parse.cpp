@@ -52,7 +52,7 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
     source.next();
   }
   if (!source.match(U">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
-  return (std::make_unique<XNodeComment>(XNodeComment{ comment }));
+  return (std::make_unique<XComment>(XComment{ comment }));
 }
 /// <summary>
 /// Parse a XML process instruction, create an XMLNodePI for it and add it to
@@ -61,7 +61,7 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
 /// <param name="source">XML source stream.</param>
 std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
 {
-  XNodePI xNodePI;
+  XPI xNodePI;
   xNodePI.setName(parseName(source));
   std::string parameters;
   while (source.more() && !source.match(U"?>")) {
@@ -69,7 +69,7 @@ std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
     source.next();
   }
   xNodePI.setParameters(parameters);
-  return (std::make_unique<XNodePI>(std::move(xNodePI)));
+  return (std::make_unique<XPI>(std::move(xNodePI)));
 }
 /// <summary>
 /// Parse an XML CDATA section, create an XNodeCDATA for it and add it to
@@ -79,7 +79,7 @@ std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
 /// <param name="xNode">Current element node.</param>
 std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
 {
-  XNodeCDATA xNodeCDATA;
+  XCDATA xNodeCDATA;
   std::string cdata;
   while (source.more() && !source.match(U"]]>")) {
     if (source.match(U"<![CDATA[")) {
@@ -89,7 +89,7 @@ std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
     source.next();
   }
   xNodeCDATA.setCDATA(cdata);
-  return (std::make_unique<XNodeCDATA>(std::move(xNodeCDATA)));
+  return (std::make_unique<XCDATA>(std::move(xNodeCDATA)));
 }
 /// <summary>
 /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
@@ -139,7 +139,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
   XMLValue content{ parseCharacter(source) };
   if (content.isReference()) {
     if (content.isEntityReference()) { content = m_entityMapper->map(content); }
-    XNodeEntityReference xNodeEntityReference(content);
+    XEntityReference xNodeEntityReference(content);
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
       // YES then XML into current element list
@@ -153,7 +153,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
         resetWhiteSpace(xNode);
       }
     }
-    xNode.getChildren().emplace_back(std::make_unique<XNodeEntityReference>(std::move(xNodeEntityReference)));
+    xNode.getChildren().emplace_back(std::make_unique<XEntityReference>(std::move(xNodeEntityReference)));
   } else {
     addContentToElementChildList(xNode, content.parsed);
   }
@@ -174,8 +174,8 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
     resetWhiteSpace(xNode);
     xNode.getChildren().emplace_back(parseCDATA(source));
   } else if (source.match(U"<")) {
-    xNode.getChildren().emplace_back(parseElement(source, XRef<XNodeElement>(xNode).getNameSpaceList()));
-    XNodeElement &xNodeChildElement = XRef<XNodeElement>(*xNode.getChildren().back());
+    xNode.getChildren().emplace_back(parseElement(source, XRef<XElement>(xNode).getNameSpaceList()));
+    XElement &xNodeChildElement = XRef<XElement>(*xNode.getChildren().back());
     if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
@@ -198,7 +198,7 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 std::unique_ptr<XNode>
   XML_Impl::parseElement(ISource &source, const XMLAttribute::List &namespaces, XNode::Type xNodeType)
 {
-  XNodeElement xNodeElement{ xNodeType };
+  XElement xNodeElement{ xNodeType };
   for (const auto &ns : namespaces) { xNodeElement.addNameSpace(ns.name, ns.value); }
   xNodeElement.setName(parseTagName(source));
   for (const auto &attribute : parseAttributes(source)) {
@@ -218,14 +218,14 @@ std::unique_ptr<XNode>
   } else {
     throw SyntaxError(source.getPosition(), "Missing closing tag.");
   }
-  return (std::make_unique<XNodeElement>(std::move(xNodeElement)));
+  return (std::make_unique<XElement>(std::move(xNodeElement)));
 }
 /// <summary>
 /// </summary>
 /// <param name="source">XML source stream.</param>
 std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
 {
-  XNodeDeclaration declaration;
+  XDeclaration declaration;
   if (source.match(U"<?xml")) {
     source.ignoreWS();
     if (source.match(U"version")) {
@@ -262,7 +262,7 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
     }
     if (!source.match(U"?>")) { throw SyntaxError(source.getPosition(), "Declaration end tag not found."); }
   }
-  return (std::make_unique<XNodeDeclaration>(std::move(declaration)));
+  return (std::make_unique<XDeclaration>(std::move(declaration)));
 }
 /// <summary>
 /// </summary>
@@ -284,10 +284,10 @@ void XML_Impl::parseXMLTail(ISource &source)
 std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 {
   if (m_dtd == nullptr) {
-    std::unique_ptr<XNode> xNodeDTD = std::make_unique<XNodeDTD>(*m_entityMapper);
-    m_dtd = std::make_unique<DTD>(XRef<XNodeDTD>(*xNodeDTD));
+    std::unique_ptr<XNode> xNodeDTD = std::make_unique<XDTD>(*m_entityMapper);
+    m_dtd = std::make_unique<DTD>(XRef<XDTD>(*xNodeDTD));
     m_dtd->parse(source);
-    m_validator = std::make_unique<XML_Validator>(XRef<XNodeDTD>(*xNodeDTD));
+    m_validator = std::make_unique<XML_Validator>(XRef<XDTD>(*xNodeDTD));
     return (xNodeDTD);
   }
 
@@ -302,7 +302,7 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 /// <param name="source">XML source stream.</param>
 std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 {
-  XNodeProlog xNodeProlog;
+  XProlog xNodeProlog;
   source.ignoreWS();
   xNodeProlog.getChildren().emplace_back(parseDeclaration(source));
   while (source.more()) {
@@ -321,7 +321,7 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
       break;
     }
   }
-  return (std::make_unique<XNodeProlog>(std::move(xNodeProlog)));
+  return (std::make_unique<XProlog>(std::move(xNodeProlog)));
 }
 /// <summary>
 /// Parse XML from source stream.

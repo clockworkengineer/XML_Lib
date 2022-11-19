@@ -5,4 +5,4 @@
 class DTD_Impl;
 class ISource;
 class IDestination;
-struct XNodeDTD;
+struct XDTD;

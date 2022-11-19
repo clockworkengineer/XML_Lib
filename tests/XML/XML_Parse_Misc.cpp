@@ -45,9 +45,9 @@ TEST_CASE("Use name for accessing elements", "[XML][Access][ByName]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XRef<XNodeElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XRef<XNodeElement>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(XRef<XNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XRef<XElement>(xml.root()["Address"]).name() == "Address");
+    REQUIRE(XRef<XElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }
 TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
@@ -78,21 +78,21 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     XML xml;
     xml.parse(source);
     REQUIRE(XRef<XNode>(*xml.root().getChildren()[0]).getNodeType() == XNode::Type::content);
-    REQUIRE(XRef<XNodeContent>(*xml.root().getChildren()[0]).isWhiteSpace() == true);
+    REQUIRE(XRef<XContent>(*xml.root().getChildren()[0]).isWhiteSpace() == true);
     REQUIRE(XRef<XNode>((*xml.root().getChildren()[1])[0]).getNodeType() == XNode::Type::content);
-    REQUIRE(XRef<XNodeContent>((*xml.root().getChildren()[1])[0]).isWhiteSpace() == false);
+    REQUIRE(XRef<XContent>((*xml.root().getChildren()[1])[0]).isWhiteSpace() == false);
     REQUIRE(XRef<XNode>((*xml.root().getChildren()[2])[0]).getNodeType() == XNode::Type::content);
-    REQUIRE(XRef<XNodeContent>((*xml.root().getChildren()[2])[0]).isWhiteSpace() == true);
+    REQUIRE(XRef<XContent>((*xml.root().getChildren()[2])[0]).isWhiteSpace() == true);
     REQUIRE(XRef<XNode>((*xml.root().getChildren()[3])[0]).getNodeType() == XNode::Type::content);
-    REQUIRE(XRef<XNodeContent>((*xml.root().getChildren()[3])[0]).isWhiteSpace() == false);
+    REQUIRE(XRef<XContent>((*xml.root().getChildren()[3])[0]).isWhiteSpace() == false);
     REQUIRE(XRef<XNode>((*xml.root().getChildren()[3])[1]).getNodeType() == XNode::Type::entity);
     REQUIRE(XRef<XNode>((*xml.root().getChildren()[3])[2]).getNodeType() == XNode::Type::content);
-    REQUIRE(XRef<XNodeContent>((*xml.root().getChildren()[3])[2]).isWhiteSpace() == false);
+    REQUIRE(XRef<XContent>((*xml.root().getChildren()[3])[2]).isWhiteSpace() == false);
     REQUIRE(XRef<XNode>((*xml.root().getChildren()[4])[0]).getNodeType() == XNode::Type::content);
-    REQUIRE(XRef<XNodeContent>((*xml.root().getChildren()[4])[0]).isWhiteSpace() == false);
+    REQUIRE(XRef<XContent>((*xml.root().getChildren()[4])[0]).isWhiteSpace() == false);
     REQUIRE(XRef<XNode>((*xml.root().getChildren()[4])[1]).getNodeType() == XNode::Type::cdata);
     REQUIRE(XRef<XNode>((*xml.root().getChildren()[4])[2]).getNodeType() == XNode::Type::content);
-    REQUIRE(XRef<XNodeContent>((*xml.root().getChildren()[4])[2]).isWhiteSpace() == false);
+    REQUIRE(XRef<XContent>((*xml.root().getChildren()[4])[2]).isWhiteSpace() == false);
   }
 }
 TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XMLNode][R-Value Reference]")
@@ -107,9 +107,9 @@ TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XMLNode][R-Value Re
                     "Flat A, West Road, Wolverhampton, W1SSX9"
                     "</Address>"
                     "</AddressBook>" });
-    REQUIRE(XRef<XNodeElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XRef<XNodeElement>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(XRef<XNodeElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XRef<XElement>(xml.root()["Address"]).name() == "Address");
+    REQUIRE(XRef<XElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
   SECTION("Parse/Stringify both with R-Value reference (File).", "[XML][MLNode][R-Value Reference]")
   {

@@ -25,9 +25,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).standalone() == "no");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
   }
   SECTION("Parse XML declaration with unsupported version. ", "[XML][Parse][Declaration]")
   {
@@ -76,9 +76,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-16");
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).standalone() == "yes");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-16");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "yes");
   }
   SECTION("Parse version 1.0, standalone == yes XML declaration. ", "[XML][Parse][Declaration]")
   {
@@ -88,9 +88,9 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XNodeDeclaration>(xml.declaration()).standalone() == "yes");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "yes");
   }
   SECTION("Check declaration contains at least version attribute.", "[XML][Parse][Declaration]")
   {

@@ -66,10 +66,10 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
+    XDTD &xNodeDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
-    REQUIRE(xNodeDTD.getType() == XNodeDTD::Type::internal);
-    REQUIRE(xNodeDTD.getRootName() == XRef<XNodeElement>(XRef<XNodeElement>(xml.root())).name());
+    REQUIRE(xNodeDTD.getType() == XDTD::Type::internal);
+    REQUIRE(xNodeDTD.getRootName() == XRef<XElement>(XRef<XElement>(xml.root())).name());
     REQUIRE(xNodeDTD.getRootName() == "TVSCHEDULE");
     REQUIRE(xNodeDTD.getElement("TVSCHEDULE").name == "TVSCHEDULE");
     REQUIRE(xNodeDTD.getElement("CHANNEL").name == "CHANNEL");
@@ -91,15 +91,15 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     REQUIRE(xNodeDTD.getElement("TITLE").attributes[0].name == "RATING");
     REQUIRE(xNodeDTD.getElement("TITLE").attributes[1].name == "LANGUAGE");
     REQUIRE(xNodeDTD.getElement("TVSCHEDULE").attributes[0].type
-            == (XNodeDTD::AttributeType::cdata | XNodeDTD::AttributeType::required));
+            == (XDTD::AttributeType::cdata | XDTD::AttributeType::required));
     REQUIRE(xNodeDTD.getElement("CHANNEL").attributes[0].type
-            == (XNodeDTD::AttributeType::cdata | XNodeDTD::AttributeType::required));
+            == (XDTD::AttributeType::cdata | XDTD::AttributeType::required));
     REQUIRE(xNodeDTD.getElement("PROGRAMSLOT").attributes[0].type
-            == (XNodeDTD::AttributeType::cdata | XNodeDTD::AttributeType::implied));
-    REQUIRE(xNodeDTD.getElement("TITLE").attributes[0].type
-            == (XNodeDTD::AttributeType::cdata | XNodeDTD::AttributeType::implied));
-    REQUIRE(xNodeDTD.getElement("TITLE").attributes[1].type
-            == (XNodeDTD::AttributeType::cdata | XNodeDTD::AttributeType::implied));
+            == (XDTD::AttributeType::cdata | XDTD::AttributeType::implied));
+    REQUIRE(
+      xNodeDTD.getElement("TITLE").attributes[0].type == (XDTD::AttributeType::cdata | XDTD::AttributeType::implied));
+    REQUIRE(
+      xNodeDTD.getElement("TITLE").attributes[1].type == (XDTD::AttributeType::cdata | XDTD::AttributeType::implied));
   }
   SECTION("XML with internal DTD with elements with multiple attributes to parse and check values",
     "[XML][DTD][Parse][Attributes]")
@@ -128,32 +128,32 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
+    XDTD &xNodeDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[1]).getNodeType() == XNode::Type::dtd);
-    REQUIRE(xNodeDTD.getType() == XNodeDTD::Type::internal);
-    REQUIRE(xNodeDTD.getRootName() == XRef<XNodeElement>(XRef<XNodeElement>(xml.root())).name());
+    REQUIRE(xNodeDTD.getType() == XDTD::Type::internal);
+    REQUIRE(xNodeDTD.getRootName() == XRef<XElement>(XRef<XElement>(xml.root())).name());
     REQUIRE(xNodeDTD.getRootName() == "CATALOG");
     REQUIRE(xNodeDTD.getElement("PRODUCT").name == "PRODUCT");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes.size() == 5);
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[0].name == "NAME");
-    REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[0].type
-            == (XNodeDTD::AttributeType::cdata | XNodeDTD::AttributeType::implied));
+    REQUIRE(
+      xNodeDTD.getElement("PRODUCT").attributes[0].type == (XDTD::AttributeType::cdata | XDTD::AttributeType::implied));
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[1].name == "CATEGORY");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[1].type
-            == (XNodeDTD::AttributeType::enumeration | XNodeDTD::AttributeType::normal));
+            == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[1].enumeration == "(HandTool|Table|Shop-Professional)");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[1].value.parsed == "HandTool");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[2].name == "PARTNUM");
-    REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[2].type
-            == (XNodeDTD::AttributeType::cdata | XNodeDTD::AttributeType::implied));
+    REQUIRE(
+      xNodeDTD.getElement("PRODUCT").attributes[2].type == (XDTD::AttributeType::cdata | XDTD::AttributeType::implied));
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[3].name == "PLANT");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[3].type
-            == (XNodeDTD::AttributeType::enumeration | XNodeDTD::AttributeType::normal));
+            == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[3].enumeration == "(Pittsburgh|Milwaukee|Chicago)");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[3].value.parsed == "Chicago");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[4].name == "INVENTORY");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[4].type
-            == (XNodeDTD::AttributeType::enumeration | XNodeDTD::AttributeType::normal));
+            == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[4].enumeration == "(InStock|Backordered|Discontinued)");
     REQUIRE(xNodeDTD.getElement("PRODUCT").attributes[4].value.parsed == "InStock");
     REQUIRE(xNodeDTD.getElement("NOTES").name == "NOTES");
@@ -186,25 +186,25 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
+    XDTD &xNodeDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
-    REQUIRE(xNodeDTD.getType() == XNodeDTD::Type::internal);
+    REQUIRE(xNodeDTD.getType() == XDTD::Type::internal);
     REQUIRE(xNodeDTD.isElementPresent("person") == true);
     REQUIRE(xNodeDTD.getElement("person").attributes.size() == 1);
     REQUIRE(xNodeDTD.getElement("person").attributes[0].name == "gender");
     REQUIRE(xNodeDTD.getElement("person").attributes[0].type
-            == (XNodeDTD::AttributeType::enumeration | XNodeDTD::AttributeType::normal));
+            == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
     REQUIRE(xNodeDTD.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(xNodeDTD.getElement("person").attributes[0].value.parsed == "F");
     REQUIRE(xNodeDTD.getRootName() == "queue");
-    REQUIRE(xNodeDTD.getRootName() == XRef<XNodeElement>(XRef<XNodeElement>(xml.root())).name());
-    REQUIRE(XRef<XNodeElement>(xml.root())[0].name() == "person");
-    REQUIRE(XRef<XNodeElement>(xml.root())[0].getAttributeList().size() == 1);
-    XMLAttribute attribute = XRef<XNodeElement>(xml.root())[0].getAttribute("gender");
+    REQUIRE(xNodeDTD.getRootName() == XRef<XElement>(XRef<XElement>(xml.root())).name());
+    REQUIRE(XRef<XElement>(xml.root())[0].name() == "person");
+    REQUIRE(XRef<XElement>(xml.root())[0].getAttributeList().size() == 1);
+    XMLAttribute attribute = XRef<XElement>(xml.root())[0].getAttribute("gender");
     REQUIRE(attribute.name == "gender");
     REQUIRE(attribute.value.parsed == "M");
-    REQUIRE(XRef<XNodeElement>(xml.root())[1].name() == "person");
-    REQUIRE(XRef<XNodeElement>(xml.root())[1].getAttributeList().size() == 0);
+    REQUIRE(XRef<XElement>(xml.root())[1].name() == "person");
+    REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 0);
   }
   SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing enumeration name).",
     "[XML][DTD][Parse][Error][Attributes]")
@@ -350,17 +350,17 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     BufferSource source{ xmlString };
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
-    XNodeDTD &xNodeDTD = XRef<XNodeDTD>(xml.dtd());
+    XDTD &xNodeDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getNodeType() == XNode::Type::dtd);
-    REQUIRE(xNodeDTD.getType() == XNodeDTD::Type::internal);
+    REQUIRE(xNodeDTD.getType() == XDTD::Type::internal);
     REQUIRE(xNodeDTD.isElementPresent("mountain") == true);
     REQUIRE(xNodeDTD.getElement("mountain").attributes.size() == 2);
     REQUIRE(xNodeDTD.getElement("mountain").attributes[0].name == "photo");
     REQUIRE(xNodeDTD.getElement("mountain").attributes[0].type
-            == (XNodeDTD::AttributeType::entity | XNodeDTD::AttributeType::implied));
+            == (XDTD::AttributeType::entity | XDTD::AttributeType::implied));
     REQUIRE(xNodeDTD.getElement("mountain").attributes[1].name == "photo_type");
     REQUIRE(xNodeDTD.getElement("mountain").attributes[1].type
-            == (XNodeDTD::AttributeType::notation | XNodeDTD::AttributeType::implied));
+            == (XDTD::AttributeType::notation | XDTD::AttributeType::implied));
     REQUIRE(xNodeDTD.getElement("mountain").attributes[1].enumeration == "(GIF|JPG|PNG)");
   }
   SECTION("Parse XML with DTD that has a missing NOTATION attribute (photo_type GIF) and usage.",

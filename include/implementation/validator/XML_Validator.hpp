@@ -32,7 +32,7 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit XML_Validator(XNodeDTD &xNodeDTD) : m_xNodeDTD(xNodeDTD) {}
+  explicit XML_Validator(XDTD &xNodeDTD) : m_xNodeDTD(xNodeDTD) {}
   XML_Validator(const XML_Validator &other) = delete;
   XML_Validator &operator=(const XML_Validator &other) = delete;
   XML_Validator(XML_Validator &&other) = delete;
@@ -58,15 +58,15 @@ private:
   // ===============
   // PRIVATE METHODS
   // ===============
-  void elementError(const XNodeElement &xNodeElement, const std::string &error);
+  void elementError(const XElement &xNodeElement, const std::string &error);
   void checkAttributes(const XNode &xNode);
   void checkContentSpecification(const XNode &xNode);
   void checkElement(const XNode &xNode);
   void checkElements(const XNode &xNode);
   bool checkIsNMTOKENOK(const std::string &nmTokenValue);
   bool checkIsIDOK(const std::string &idValue);
-  void checkAttributeValue(const XNode &xNode, const XNodeDTD::Attribute &attribute);
-  void checkAttributeType(const XNode &xNode, const XNodeDTD::Attribute &attribute);
+  void checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute);
+  void checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute);
   bool checkIsPCDATA(const XNode &xNode);
   bool checkIsEMPTY(const XNode &xNode);
   void checkAgainstDTD(const XNode &prolog);
@@ -76,6 +76,6 @@ private:
   std::set<std::string> m_assignedIDValues;
   std::set<std::string> m_assignedIDREFValues;
   long m_lineNumber = 1;
-  XNodeDTD &m_xNodeDTD;
+  XDTD &m_xNodeDTD;
 };
 }// namespace XML_Lib

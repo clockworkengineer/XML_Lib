@@ -31,7 +31,7 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit DTD_Impl(XNodeDTD &xNodeDTD);
+  explicit DTD_Impl(XDTD &xNodeDTD);
   DTD_Impl() = default;
   DTD_Impl(const DTD_Impl &other) = delete;
   DTD_Impl &operator=(const DTD_Impl &other) = delete;
@@ -57,7 +57,7 @@ private:
   // PRIVATE METHODS
   // ===============
   void parseValidNotations(const std::string &notations);
-  void parseValidateAttribute(const std::string &elementName, const XNodeDTD::Attribute &dtdAttribute);
+  void parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute);
   void parseConditional(ISource &source, bool includeOff = true);
   void parseParameterEntities(ISource &source);
   void parseExternalContent(ISource &source);
@@ -76,8 +76,8 @@ private:
   void parseEntity(ISource &source);
   void parseElement(ISource &source);
   XMLExternalReference parseExternalReference(ISource &source);
-  void parseAttributeType(ISource &source, XNodeDTD::Attribute &attribute);
-  void parseAttributeValue(ISource &source, XNodeDTD::Attribute &attribute);
+  void parseAttributeType(ISource &source, XDTD::Attribute &attribute);
+  void parseAttributeValue(ISource &source, XDTD::Attribute &attribute);
   void parseComment(ISource &source);
   void parseParameterEntityReference(ISource &source);
   void parseExternal(ISource &source);
@@ -86,6 +86,6 @@ private:
   // =================
   // PRIVATE VARIABLES
   // =================
-  XNodeDTD &m_xNodeDTD;
+  XDTD &m_xNodeDTD;
 };
 }// namespace XML_Lib
