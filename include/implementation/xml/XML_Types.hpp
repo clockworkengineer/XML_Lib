@@ -126,6 +126,9 @@ struct XNode
   // XNode Index overloads
   XNode &operator[](int index) const;
   XNode &operator[](const std::string &name) const;
+  // Add child
+  void addChild(std::unique_ptr<XNode> &child) { m_children.push_back(std::move(child)); }
+  void addChild(std::unique_ptr<XNode> &&child) { m_children.push_back(std::move(child)); }
   // Get XNode Children reference
   std::vector<std::unique_ptr<XNode>> &getChildren() { return (m_children); };
   const std::vector<std::unique_ptr<XNode>> &getChildren() const { return (m_children); };
