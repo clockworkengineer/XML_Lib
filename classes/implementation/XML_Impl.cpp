@@ -59,7 +59,7 @@ XNode &XML_Impl::dtd()
 {
   // Slow need to speed up.
   for (auto &element : prolog().getChildren()) {
-    if (element->getNodeType() == XNode::Type::dtd) { return (*element); }
+    if (element->getType() == XNode::Type::dtd) { return (*element); }
   }
   throw XML_Lib::Error("No DTD found.");
 }
@@ -78,9 +78,7 @@ XNode &XML_Impl::root()
 {
   // Slow need to speed up.
   for (auto &element : prolog().getChildren()) {
-    if ((element->getNodeType() == XNode::Type::root) || (element->getNodeType() == XNode::Type::self)) {
-      return (*element);
-    }
+    if ((element->getType() == XNode::Type::root) || (element->getType() == XNode::Type::self)) { return (*element); }
   }
   throw XML_Lib::Error("No root element found.");
 }

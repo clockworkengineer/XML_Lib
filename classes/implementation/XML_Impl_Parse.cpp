@@ -214,7 +214,7 @@ std::unique_ptr<XNode>
     }
   } else if (source.match(U"/>")) {
     // Self closing element tag
-    xNodeElement.setNodeType(XNode::Type::self);
+    xNodeElement.setType(XNode::Type::self);
   } else {
     throw SyntaxError(source.getPosition(), "Missing closing tag.");
   }

@@ -77,9 +77,7 @@ bool XML_Validator::checkIsIDOK(const std::string &idValue)
 bool XML_Validator::checkIsPCDATA(const XNode &xNode)
 {
   for (const auto &element : xNode.getChildren()) {
-    if ((element->getNodeType() == XNode::Type::element) || (element->getNodeType() == XNode::Type::self)) {
-      return (false);
-    }
+    if ((element->getType() == XNode::Type::element) || (element->getType() == XNode::Type::self)) { return (false); }
   }
   return (!xNode.getContents().empty());
 }
@@ -90,7 +88,7 @@ bool XML_Validator::checkIsPCDATA(const XNode &xNode)
 /// <returns>true if element empty otherwise false.</returns>
 bool XML_Validator::checkIsEMPTY(const XNode &xNode)
 {
-  return (xNode.getChildren().empty() || xNode.getNodeType() == XNode::Type::self);
+  return (xNode.getChildren().empty() || xNode.getType() == XNode::Type::self);
 }
 /// <summary>
 ///
@@ -246,9 +244,9 @@ void XML_Validator::checkContentSpecification(const XNode &xNode)
   std::regex match{ m_xNodeDTD.getElement(xNodeElement.name()).content.parsed };
   std::string elements;
   for (auto &element : xNodeElement.getChildren()) {
-    if ((element->getNodeType() == XNode::Type::element) || (element->getNodeType() == XNode::Type::self)) {
+    if ((element->getType() == XNode::Type::element) || (element->getType() == XNode::Type::self)) {
       elements += "<" + XRef<XElement>(*element).name() + ">";
-    } else if (element->getNodeType() == XNode::Type::content) {
+    } else if (element->getType() == XNode::Type::content) {
       if (!XRef<XContent>(*element).isWhiteSpace()) { elements += "<#PCDATA>"; }
     }
   }
@@ -273,7 +271,7 @@ void XML_Validator::checkElement(const XNode &xNode)
 /// <param name="xNode">Current element node.</param>
 void XML_Validator::checkElements(const XNode &xNode)
 {
-  switch (xNode.getNodeType()) {
+  switch (xNode.getType()) {
   case XNode::Type::prolog:
     for (auto &element : xNode.getChildren()) { checkElements(*element); }
     break;
@@ -282,7 +280,7 @@ void XML_Validator::checkElements(const XNode &xNode)
     break;
   case XNode::Type::root:
   case XNode::Type::element:
-    if (xNode.getNodeType() == XNode::Type::root && XRef<XElement>(xNode).name() != m_xNodeDTD.getRootName()) {
+    if (xNode.getType() == XNode::Type::root && XRef<XElement>(xNode).name() != m_xNodeDTD.getRootName()) {
       throw ValidationError(
         m_lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
     }

@@ -42,7 +42,7 @@ namespace XML_Lib {
 /// <param name="destination">XML destination stream.</param>
 void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
 {
-  switch (xNode.getNodeType()) {
+  switch (xNode.getType()) {
   // XML prolog
   case XNode::Type::prolog: {
     for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
