@@ -127,17 +127,41 @@ struct XNode
   XNode &operator[](int index) const;
   XNode &operator[](const std::string &name) const;
   // Add child
-  void addChild(std::unique_ptr<XNode> &child) { m_children.push_back(std::move(child)); }
-  void addChild(std::unique_ptr<XNode> &&child) { m_children.push_back(std::move(child)); }
+  void addChild(std::unique_ptr<XNode> &child)
+  {
+    if (m_children == nullptr) { m_children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
+    m_children->push_back(std::move(child));
+  }
+  void addChild(std::unique_ptr<XNode> &&child)
+  {
+    if (m_children == nullptr) { m_children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
+    m_children->push_back(std::move(child));
+  }
   // Get XNode Children reference
-  std::vector<std::unique_ptr<XNode>> &getChildren() { return (m_children); };
-  const std::vector<std::unique_ptr<XNode>> &getChildren() const { return (m_children); };
+  std::vector<std::unique_ptr<XNode>> &getChildren()
+  {
+    if (m_children == nullptr) {
+      return (no_children);
+    } else {
+      return (*m_children);
+    }
+  };
+  const std::vector<std::unique_ptr<XNode>> &getChildren() const
+  {
+    if (m_children == nullptr) {
+      return (no_children);
+    } else {
+      return (*m_children);
+    }
+  };
 
 private:
   // XNode Type
   Type m_type;
   // XNode Children
-  std::vector<std::unique_ptr<XNode>> m_children;
+  std::unique_ptr<std::vector<std::unique_ptr<XNode>>> m_children;
+  // Default XNode has no children
+  inline static std::vector<std::unique_ptr<XNode>> no_children;
 };
 // ======
 // Prolog
@@ -538,7 +562,7 @@ inline XElement &XElement::operator[](const std::string &name) const// Array
 inline std::string XNode::getContents() const
 {
   std::string result;
-  for (const auto &node : m_children) {
+  for (const auto &node : getChildren()) {
     if (node->getType() == XNode::Type::content) {
       result += XRef<XContent>(*node).content();
     } else if (node->getType() == XNode::Type::entity) {
