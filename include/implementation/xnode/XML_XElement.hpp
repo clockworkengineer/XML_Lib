@@ -9,11 +9,6 @@
 // LIBRARY NAMESPACE
 // =================
 namespace XML_Lib {
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
-struct XMLAttribute;
-struct XMLValue;
 // =======
 // Element
 // =======

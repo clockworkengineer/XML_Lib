@@ -2,6 +2,7 @@
 // =======
 // C++ STL
 // =======
+// =================
 // LIBRARY NAMESPACE
 // =================
 namespace XML_Lib {
