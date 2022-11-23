@@ -1,0 +1,25 @@
+#pragma once
+// =======
+// C++ STL
+// =======
+#include <vector>
+#include <string>
+// =================
+// LIBRARY NAMESPACE
+// =================
+namespace XML_Lib {
+// ===================================================
+// Forward declarations for interfaces/classes/structs
+// ===================================================
+struct XMLValue;
+// =============
+// XML Attribute
+// =============
+struct XMLAttribute
+{
+  using List = std::vector<XMLAttribute>;
+  XMLAttribute(std::string name, XMLValue value) : name(std::move(name)), value(std::move(value)) {}
+  std::string name;
+  XMLValue value;
+};
+}// namespace XML_Lib

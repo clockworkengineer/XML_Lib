@@ -52,10 +52,27 @@ set (XML_INCLUDES
     ./include/implementation/io/XML_FileDestination.hpp
     ./include/implementation/validator/XML_Validator.hpp
     ./include/implementation/xml/XML_Forward.hpp
+    ./include/implementation/xml/XML_Error.hpp
+    ./include/implementation/xml/XML_Value.hpp
+    ./include/implementation/xml/XML_Attribute.hpp
+    ./include/implementation/xml/XML_ExternalReference.hpp
+    ./include/implementation/xml/XML_EntityMapping.hpp
     ./include/implementation/xml/XML_Impl.hpp
     ./include/implementation/xml/XML_Types.hpp
     ./include/implementation/xml/XML_Core.hpp
     ./include/implementation/xml/XML_EntityMapper.hpp
+    ./include/implementation/xnode/XML_XNode.hpp
+    ./include/implementation/xnode/XML_XProlog.hpp
+    ./include/implementation/xnode/XML_XDeclaration.hpp
+    ./include/implementation/xnode/XML_XContent.hpp
+    ./include/implementation/xnode/XML_XCDATA.hpp
+    ./include/implementation/xnode/XML_XEntityReference.hpp
+    ./include/implementation/xnode/XML_XElement.hpp
+    ./include/implementation/xnode/XML_XComment.hpp
+    ./include/implementation/xnode/XML_XPI.hpp
+    ./include/implementation/xnode/XML_XDTD.hpp
+    ./include/implementation/xnode/XML_Reference.hpp
+    ./include/implementation/xnode/XML_Creation.hpp
 )
 
 # XML library
@@ -69,6 +86,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}/include/implementation/io
     ${PROJECT_SOURCE_DIR}/include/implementation/validator
     ${PROJECT_SOURCE_DIR}/include/implementation/xml
+    ${PROJECT_SOURCE_DIR}/include/implementation/xnode
     ${PROJECT_BINARY_DIR} )
 
 # Add tests
