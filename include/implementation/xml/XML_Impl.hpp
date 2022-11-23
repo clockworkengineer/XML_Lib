@@ -9,12 +9,9 @@
 // XML
 // ===
 #include "XML_Config.hpp"
-#include "XML_Types.hpp"
 #include "XML_Core.hpp"
 #include "XML_Validator.hpp"
 #include "XML_EntityMapper.hpp"
-#include "XML_Sources.hpp"
-#include "XML_Destinations.hpp"
 // ===
 // DTD
 // ===

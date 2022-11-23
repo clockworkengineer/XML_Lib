@@ -1,49 +1,22 @@
 #pragma once
-// =======
-// C++ STL
-// =======
-#include <stdexcept>
-#include <filesystem>
-#include <map>
-#include <set>
-#include <sstream>
-// ===
-// XML
-// ===
-#include "XML_Types.hpp"
-#include "XML_Sources.hpp"
-#include "XML_Destinations.hpp"
-// ===========================
-// XML Entity Mapper interface
-// ===========================
-#include "IEntityMapper.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
-namespace XML_Lib {
-// ==============
-// XML validation
-// ==============
-bool validChar(ISource::Char c);
-bool validNameStartChar(ISource::Char c);
-bool validNameChar(ISource::Char c);
-bool validReservedName(const ISource::String &name);
-bool validName(ISource::String name);
-bool validAttributeValue(const XMLValue &value);
-// ===========
-// XML parsing
-// ===========
-XMLValue parseEntityReference(ISource &source);
-std::string parseName(ISource &source);
-XMLValue parseCharacterReference(ISource &source);
-XMLValue parseCharacter(ISource &source);
-XMLValue parseValue(ISource &source);
-XMLValue parseValue(ISource &source, IEntityMapper &entityMapper);
-std::string parseTagBody(ISource &source);
-// ===========
-// XML utility
-// ===========
-std::vector<std::string> splitString(const std::string &stringToSplit, char delimeter);
-std::string trimmString(const std::string &stringToTrimm);
-std::string toUpperString(const std::string &stringToUpper);
-}// namespace XML_Lib
+// ==========
+// XML Common
+// ==========
+#include "XML_Error.hpp"
+#include "XML_Value.hpp"
+#include "XML_Attribute.hpp"
+#include "XML_ExternalReference.hpp"
+#include "XML_EntityMapping.hpp"
+#include "XML_XNode.hpp"
+#include "XML_XProlog.hpp"
+#include "XML_XDeclaration.hpp"
+#include "XML_XContent.hpp"
+#include "XML_XCDATA.hpp"
+#include "XML_XEntityReference.hpp"
+#include "XML_XElement.hpp"
+#include "XML_XComment.hpp"
+#include "XML_XPI.hpp"
+#include "XML_XDTD.hpp"
+#include "XML_Reference.hpp"
+#include "XML_Creation.hpp"
+#include "XML_Common.hpp"

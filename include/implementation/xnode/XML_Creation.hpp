@@ -8,9 +8,9 @@
 // =================
 namespace XML_Lib {
 // ====================
-// XMLNode index access
+// XNode index access
 // ====================
-inline XNode &XNode::operator[](int index) const// Array
+inline XNode &XNode::operator[](int index) const
 {
   if ((index >= 0) && (index < (static_cast<int>(XRef<XNode>(*this).getChildren().size())))) {
     return (*((XRef<XNode>(*this).getChildren()[index])));
@@ -18,9 +18,9 @@ inline XNode &XNode::operator[](int index) const// Array
   throw XNode::Error("Invalid index used to access array.");
 }
 // ===================
-// XMLNode name access
+// XNode name access
 // ===================
-inline XNode &XNode::operator[](const std::string &name) const// Array
+inline XNode &XNode::operator[](const std::string &name) const
 {
   if (m_type <= XNode::Type::element) {
     for (const auto &element : XRef<XElement>(*this).getChildren()) {
@@ -30,9 +30,9 @@ inline XNode &XNode::operator[](const std::string &name) const// Array
   throw XNode::Error("Invalid index used to access array.");
 }
 // ===========================
-// XMLNodeElement index access
+// XElement index access
 // ===========================
-inline XElement &XElement::operator[](int index) const// Array
+inline XElement &XElement::operator[](int index) const
 {
   int number = 0;
   if ((index >= 0) && (index < (static_cast<int>(XRef<XElement>(*this).getChildren().size())))) {
@@ -46,9 +46,9 @@ inline XElement &XElement::operator[](int index) const// Array
   throw XNode::Error("Invalid index used to access array.");
 }
 // ==========================
-// XMLNodeElement name access
+// XeElement name access
 // ==========================
-inline XElement &XElement::operator[](const std::string &name) const// Array
+inline XElement &XElement::operator[](const std::string &name) const
 {
   if (getType() <= XNode::Type::element) {
     for (const auto &element : XRef<XElement>(*this).getChildren()) {
@@ -58,7 +58,7 @@ inline XElement &XElement::operator[](const std::string &name) const// Array
   throw XNode::Error("Invalid index used to access array.");
 }
 // ====================
-// XMLNode get contents
+// Xode get contents
 // ====================
 inline std::string XNode::getContents() const
 {

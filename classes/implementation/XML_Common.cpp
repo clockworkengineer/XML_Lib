@@ -1,7 +1,7 @@
 //
 // Class: XML
 //
-// Description: XML parser core functionality.
+// Description: XML parser common functionality.
 //
 // Dependencies:   C20++ - Language standard features used.
 //

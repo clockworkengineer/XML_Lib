@@ -9,7 +9,7 @@
 // ===
 // XML
 // ===
-#include "XML_Types.hpp"
+#include "XML_Core.hpp"
 #include "XML_Sources.hpp"
 // ===========================
 // XML Entity Mapper interface

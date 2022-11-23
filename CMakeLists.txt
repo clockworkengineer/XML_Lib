@@ -29,7 +29,7 @@ set (XML_SOURCES
     ./classes/implementation/DTD_Impl_Parse.cpp
     ./classes/implementation/DTD_Impl_Parse_Content.cpp
     ./classes/implementation/DTD_Impl_Parse_External.cpp
-    ./classes/implementation/XML_Core.cpp
+    ./classes/implementation/XML_Common.cpp
     ./classes/implementation/XML_Validator.cpp
     ./classes/implementation/XML_EntityMapper.cpp
 )
@@ -58,7 +58,7 @@ set (XML_INCLUDES
     ./include/implementation/xml/XML_ExternalReference.hpp
     ./include/implementation/xml/XML_EntityMapping.hpp
     ./include/implementation/xml/XML_Impl.hpp
-    ./include/implementation/xml/XML_Types.hpp
+    ./include/implementation/xml/XML_Common.hpp
     ./include/implementation/xml/XML_Core.hpp
     ./include/implementation/xml/XML_EntityMapper.hpp
     ./include/implementation/xnode/XML_XNode.hpp

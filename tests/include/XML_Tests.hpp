@@ -7,7 +7,7 @@
 // Class under test includes
 // =========================
 #include "XML.hpp"
-#include "XML_Types.hpp"
+#include "XML_Core.hpp"
 #include "IEntityMapper.hpp"
 #include "DTD.hpp"
 #include "XML_Sources.hpp"
