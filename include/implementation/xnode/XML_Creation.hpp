@@ -17,9 +17,9 @@ inline XNode &XNode::operator[](int index) const
   }
   throw XNode::Error("Invalid index used to access array.");
 }
-// ===================
+// =================
 // XNode name access
-// ===================
+// =================
 inline XNode &XNode::operator[](const std::string &name) const
 {
   if (m_type <= XNode::Type::element) {
@@ -29,9 +29,9 @@ inline XNode &XNode::operator[](const std::string &name) const
   }
   throw XNode::Error("Invalid index used to access array.");
 }
-// ===========================
+// =====================
 // XElement index access
-// ===========================
+// =====================
 inline XElement &XElement::operator[](int index) const
 {
   int number = 0;
@@ -45,9 +45,9 @@ inline XElement &XElement::operator[](int index) const
   }
   throw XNode::Error("Invalid index used to access array.");
 }
-// ==========================
-// XeElement name access
-// ==========================
+// ====================
+// XElement name access
+// ====================
 inline XElement &XElement::operator[](const std::string &name) const
 {
   if (getType() <= XNode::Type::element) {
@@ -57,9 +57,9 @@ inline XElement &XElement::operator[](const std::string &name) const
   }
   throw XNode::Error("Invalid index used to access array.");
 }
-// ====================
-// Xode get contents
-// ====================
+// ==================
+// XNode get contents
+// ==================
 inline std::string XNode::getContents() const
 {
   std::string result;

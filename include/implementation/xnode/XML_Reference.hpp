@@ -7,9 +7,9 @@
 // LIBRARY NAMESPACE
 // =================
 namespace XML_Lib {
-// ===========================
-// XMLNode reference converter
-// ===========================
+// =========================
+// XNode reference converter
+// =========================
 template<typename T> void CheckXNodeType(const XNode &xNode)
 {
   if constexpr (std::is_same_v<T, XProlog>) {
