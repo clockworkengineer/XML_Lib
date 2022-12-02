@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 project("XML_Lib" VERSION 0.1.0 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
 

@@ -29,7 +29,7 @@ public:
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
   explicit DTD_Impl(XDTD &xNodeDTD);
-  DTD_Impl() = default;
+  DTD_Impl() = delete;
   DTD_Impl(const DTD_Impl &other) = delete;
   DTD_Impl &operator=(const DTD_Impl &other) = delete;
   DTD_Impl(DTD_Impl &&other) = delete;

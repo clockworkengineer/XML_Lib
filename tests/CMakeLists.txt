@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.23.1)
+cmake_minimum_required(VERSION 3.22.1)
 
 project("XML_Lib Unit Tests" VERSION 0.0.1 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 

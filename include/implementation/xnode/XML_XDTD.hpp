@@ -77,8 +77,8 @@ struct XDTD : XNode
   {}
   XDTD(const XDTD &other) = delete;
   XDTD &operator=(XDTD &other) = delete;
-  XDTD(XDTD &&other) = default;
-  XDTD &operator=(XDTD &&other) = default;
+  XDTD(XDTD &&other) = delete;
+  XDTD &operator=(XDTD &&other) = delete;
   ~XDTD() = default;
   [[nodiscard]] std::string unparsed() const { return (m_unparsed); }
   void setUnparsed(const std::string &unparsed) { m_unparsed = unparsed; }
