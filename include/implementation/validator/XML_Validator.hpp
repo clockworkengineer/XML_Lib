@@ -5,9 +5,9 @@
 #include <string>
 #include <set>
 #include <regex>
-// ===
-// XML
-// ===
+// ========
+// XML Core
+// ========
 #include "XML_Core.hpp"
 // ========================================
 // XML Validator / Entity Mapper interfaces
@@ -30,7 +30,7 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit XML_Validator(XDTD &xNodeDTD) : m_xNodeDTD(xNodeDTD) {}
+  explicit XML_Validator(XNode &xNode) : m_xNodeDTD(XRef<XDTD>(xNode)) {}
   XML_Validator(const XML_Validator &other) = delete;
   XML_Validator &operator=(const XML_Validator &other) = delete;
   XML_Validator(XML_Validator &&other) = delete;

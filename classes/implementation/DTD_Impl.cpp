@@ -38,7 +38,7 @@ namespace XML_Lib {
 /// <summary>
 /// DTD_Impl constructor.
 /// </summary>
-DTD_Impl::DTD_Impl(XDTD &xNodeDTD) : m_xNodeDTD(xNodeDTD) {}
+DTD_Impl::DTD_Impl(XNode &xNode) : m_xDTD(XRef<XDTD>(xNode)) {}
 /// <summary>
 /// DTD_Impl destructor.
 /// </summary>
@@ -52,5 +52,5 @@ void DTD_Impl::parse(ISource &source) { parseDTD(source); }
 /// Create DTD text from an DTD object.
 /// </summary>
 /// <param name="destination">DTD destination stream.</param>
-void DTD_Impl::stringify(IDestination &destination) { destination.add(m_xNodeDTD.unparsed()); }
+void DTD_Impl::stringify(IDestination &destination) { destination.add(m_xDTD.unparsed()); }
 }// namespace XML_Lib

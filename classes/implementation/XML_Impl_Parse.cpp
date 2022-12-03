@@ -284,11 +284,11 @@ void XML_Impl::parseXMLTail(ISource &source)
 std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 {
   if (m_dtd == nullptr) {
-    std::unique_ptr<XNode> xNodeDTD = std::make_unique<XDTD>(*m_entityMapper);
-    m_dtd = std::make_unique<DTD>(XRef<XDTD>(*xNodeDTD));
+    std::unique_ptr<XNode> xNode = std::make_unique<XDTD>(*m_entityMapper);
+    m_dtd = std::make_unique<DTD>(*xNode);
     m_dtd->parse(source);
-    m_validator = std::make_unique<XML_Validator>(XRef<XDTD>(*xNodeDTD));
-    return (xNodeDTD);
+    m_validator = std::make_unique<XML_Validator>(*xNode);
+    return (xNode);
   }
 
   throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");

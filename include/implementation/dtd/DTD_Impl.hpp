@@ -4,9 +4,9 @@
 // =======
 #include <string>
 #include <unordered_map>
-// ===
-// XML
-// ===
+// ========
+// XML Core
+// ========
 #include "XML_Core.hpp"
 // ===========================
 // XML Entity Mapper interface
@@ -28,7 +28,7 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit DTD_Impl(XDTD &xNodeDTD);
+  explicit DTD_Impl(XNode &xNode);
   DTD_Impl() = delete;
   DTD_Impl(const DTD_Impl &other) = delete;
   DTD_Impl &operator=(const DTD_Impl &other) = delete;
@@ -83,6 +83,6 @@ private:
   // =================
   // PRIVATE VARIABLES
   // =================
-  XDTD &m_xNodeDTD;
+  XDTD &m_xDTD;
 };
 }// namespace XML_Lib
