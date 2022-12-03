@@ -23,11 +23,11 @@ namespace XML_Lib {
 // ==============
 // XML validation
 // ==============
-bool validChar(ISource::Char c);
-bool validNameStartChar(ISource::Char c);
-bool validNameChar(ISource::Char c);
-bool validReservedName(const ISource::String &name);
-bool validName(ISource::String name);
+bool validChar(XML_Lib::Char c);
+bool validNameStartChar(XML_Lib::Char c);
+bool validNameChar(XML_Lib::Char c);
+bool validReservedName(const XML_Lib::String &name);
+bool validName(XML_Lib::String name);
 bool validAttributeValue(const XMLValue &value);
 // ===========
 // XML parsing

@@ -61,7 +61,7 @@ private:
   // ===============
   // PRIVATE METHODS
   // ===============
-  void recurseOverEntityReference(const std::string &entityReference, ISource::Char type);
+  void recurseOverEntityReference(const std::string &entityReference, XML_Lib::Char type);
   std::string getFileMappingContents(const std::string &fileName);
   // =================
   // PRIVATE VARIABLES

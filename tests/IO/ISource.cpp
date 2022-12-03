@@ -52,7 +52,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
       length++;
     }
     REQUIRE(length == 8752);// eof
-    REQUIRE(source.current() == static_cast<ISource::Char>(EOF));// eof
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));// eof
   }
   std::string xmlString;
   SECTION("Check that FileSource is  performing CRLF to LF conversion on windows format data correctly.",
@@ -130,14 +130,14 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
-    ISource::String xmlResult;
+    XML_Lib::String xmlResult;
     while (source.more()) {
       source.ignoreWS();
       xmlResult += source.current();
       source.next();
     }
     REQUIRE(xmlResult == U"<root>TestTestTest</root>");
-    REQUIRE(source.current() == static_cast<ISource::Char>(EOF));
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
   }
   SECTION("Check that FileSource ignoreWS() at end of file does not throw but next() does.", "[XML][Parse][FileSource]")
   {
@@ -174,7 +174,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     REQUIRE(source.current() == '&');
     source.next();
     REQUIRE_FALSE(!source.match(U"</root>"));
-    REQUIRE(source.current() == static_cast<ISource::Char>(EOF));
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
   }
   SECTION("Check that FileSource backup works and doesn't go negative.", "[XML][Parse][FileSource]")
@@ -191,7 +191,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     source.backup(12);
     REQUIRE(source.current() == '<');
     while (source.more()) { source.next(); }
-    REQUIRE(source.current() == static_cast<ISource::Char>(EOF));
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     source.backup(1);
     REQUIRE(source.current() == '>');
   }
@@ -230,7 +230,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
       length++;
     }
     REQUIRE(length == 8752);// eof
-    REQUIRE(source.current() == static_cast<ISource::Char>(EOF));// eof
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));// eof
   }
   std::string xmlString;
   SECTION("Check that BufferSource is  performing CRLF to LF conversion on windows format data correctly.",
@@ -305,14 +305,14 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
     BufferSource source{ xmlString };
-    ISource::String xmlResult;
+    XML_Lib::String xmlResult;
     while (source.more()) {
       source.ignoreWS();
       xmlResult += source.current();
       source.next();
     }
     REQUIRE(xmlResult == U"<root>TestTestTest</root>");
-    REQUIRE(source.current() == static_cast<ISource::Char>(EOF));
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
   }
   SECTION(
     "Check that BufefrSource ignoreWS() at end of file does not throw but next() does.", "[XML][Parse][BufferSource]")
@@ -348,7 +348,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE(source.current() == '&');
     source.next();
     REQUIRE_FALSE(!source.match(U"</root>"));
-    REQUIRE(source.current() == static_cast<ISource::Char>(EOF));
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
   }
   SECTION("Check that BufferSource backup works and doesn't go negative.", "[XML][Parse][BufferSource]")
@@ -362,7 +362,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     source.backup(12);
     REQUIRE(source.current() == '<');
     while (source.more()) { source.next(); }
-    REQUIRE(source.current() == static_cast<ISource::Char>(EOF));
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     source.backup(1);
     REQUIRE(source.current() == '>');
   }

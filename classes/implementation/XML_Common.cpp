@@ -33,7 +33,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="c">Character to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validChar(ISource::Char c)
+bool validChar(XML_Lib::Char c)
 {
   return ((c == 0x09) || (c == kLineFeed) || (c == kCarriageReturn) || (c >= 0x20 && c <= 0xD7FF)
           || (c >= 0xE000 && c <= 0xFFFD) || (c >= 0x10000 && c <= 0x10FFFF));
@@ -43,7 +43,7 @@ bool validChar(ISource::Char c)
 /// </summary>
 /// <param name="c">Character value to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validNameStartChar(ISource::Char c)
+bool validNameStartChar(XML_Lib::Char c)
 {
   return ((c == ':') || (c == '_') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= 0xC0 && c <= 0xD6)
           || (c >= 0xD8 && c <= 0xF6) || (c >= 0xF8 && c <= 0x2FF) || (c >= 0x370 && c <= 0x37D)
@@ -56,7 +56,7 @@ bool validNameStartChar(ISource::Char c)
 /// </summary>
 /// <param name="c">Name to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validNameChar(ISource::Char c)
+bool validNameChar(XML_Lib::Char c)
 {
   return (validNameStartChar(c) || (c == '-') || (c == '.') || (c >= '0' && c <= '9') || (c == 0xB7)
           || (c >= 0x0300 && c <= 0x036F) || (c >= 0x203F && c <= 0x2040));
@@ -66,7 +66,7 @@ bool validNameChar(ISource::Char c)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validReservedName(const ISource::String &name)
+bool validReservedName(const XML_Lib::String &name)
 {
   return ((name.find(U"xmlns") == 0) || (name.find(U"xml-stylesheet") == 0) || (name == U"xml"));
 }
@@ -75,7 +75,7 @@ bool validReservedName(const ISource::String &name)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validName(ISource::String name)
+bool validName(XML_Lib::String name)
 {
   if (name.empty()) { return (false); }
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);
@@ -114,7 +114,7 @@ bool validAttributeValue(const XMLValue &value)
 /// <returns>XML name.</returns>
 std::string parseName(ISource &source)
 {
-  ISource::String name;
+  XML_Lib::String name;
   while (source.more() && validNameChar(source.current())) {
     name += source.current();
     source.next();
@@ -201,7 +201,7 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 {
   if ((source.current() == '\'') || ((source.current() == '"'))) {
     std::string unparsed, parsed;
-    ISource::Char quote = source.current();
+    XML_Lib::Char quote = source.current();
     source.next();
     while (source.more() && source.current() != quote) {
       XMLValue character{ parseCharacter(source) };
@@ -229,7 +229,7 @@ XMLValue parseValue(ISource &source)
 {
   if ((source.current() == '\'') || ((source.current() == '"'))) {
     std::string unparsed, parsed;
-    ISource::Char quote = source.current();
+    XML_Lib::Char quote = source.current();
     source.next();
     while (source.more() && source.current() != quote) {
       XMLValue character{ parseCharacter(source) };

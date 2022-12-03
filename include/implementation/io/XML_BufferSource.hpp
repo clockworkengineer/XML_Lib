@@ -27,7 +27,7 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit BufferSource(const std::u16string &sourceBuffer)
+  explicit BufferSource(const std::u16string &sourceBuffer)// UTF16 source BE/LE
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     std::u16string utf16xml{ sourceBuffer };
@@ -36,14 +36,14 @@ public:
         ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
       }
     }
-    m_parseBuffer = m_UTF8.from_bytes(m_UTF16.to_bytes(utf16xml));
-    convertCRLFToLF(m_parseBuffer);
+    m_buffer = m_UTF8.from_bytes(m_UTF16.to_bytes(utf16xml));
+    convertCRLFToLF(m_buffer);
   }
   explicit BufferSource(const std::string &sourceBuffer)
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
-    m_parseBuffer = m_UTF8.from_bytes(sourceBuffer);
-    convertCRLFToLF(m_parseBuffer);
+    m_buffer = m_UTF8.from_bytes(sourceBuffer);
+    convertCRLFToLF(m_buffer);
   }
   BufferSource() = default;
   BufferSource(const BufferSource &other) = delete;
@@ -54,37 +54,37 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  [[nodiscard]] ISource::Char current() const override
+  [[nodiscard]] XML_Lib::Char current() const override
   {
-    if (more()) { return (m_parseBuffer[m_bufferPosition]); }
-    return (static_cast<ISource::Char>(EOF));
+    if (more()) { return (m_buffer[m_position]); }
+    return (static_cast<XML_Lib::Char>(EOF));
   }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }
-    m_bufferPosition++;
+    m_position++;
     m_column++;
     if (current() == kLineFeed) {
       m_lineNo++;
       m_column = 1;
     }
   }
-  [[nodiscard]] bool more() const override { return (m_bufferPosition < static_cast<long>(m_parseBuffer.size())); }
+  [[nodiscard]] bool more() const override { return (m_position < static_cast<long>(m_buffer.size())); }
   void backup(long length) override
   {
-    m_bufferPosition -= length;
-    if (m_bufferPosition < 0) { m_bufferPosition = 0; }
+    m_position -= length;
+    if (m_position < 0) { m_position = 0; }
   }
-  [[nodiscard]] long position() const override { return (m_bufferPosition); }
+  [[nodiscard]] long position() const override { return (m_position); }
   std::string getRange(long start, long end) override
   {
-    return (m_UTF8.to_bytes(m_parseBuffer.substr(start, static_cast<std::size_t>(end) - start)));
+    return (m_UTF8.to_bytes(m_buffer.substr(start, static_cast<std::size_t>(end) - start)));
   }
   void reset() override
   {
     m_lineNo = 1;
     m_column = 1;
-    m_bufferPosition = 0;
+    m_position = 0;
   }
   // ================
   // PUBLIC VARIABLES
@@ -96,7 +96,7 @@ private:
   // ===============
   // PRIVATE METHODS
   // ===============
-  void convertCRLFToLF(ISource::String &xmlString)
+  void convertCRLFToLF(XML_Lib::String &xmlString)
   {
     size_t pos = xmlString.find(U"\x0D\x0A");
     while (pos != std::string::npos) {
@@ -107,7 +107,7 @@ private:
   // =================
   // PRIVATE VARIABLES
   // =================
-  long m_bufferPosition = 0;
-  ISource::String m_parseBuffer;
+  long m_position = 0;
+  XML_Lib::String m_buffer;
 };
 }// namespace XML_Lib

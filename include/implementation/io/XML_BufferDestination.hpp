@@ -36,10 +36,10 @@ public:
   // ==============
   void add(const std::string &bytes) override
   {
-    for (auto b : bytes) { m_stringifyBuffer.push_back(b); }
+    for (auto b : bytes) { m_buffer.push_back(b); }
   }
-  void add(const ISource::Char ch) override { add(m_UTF8.to_bytes(ch)); }
-  [[nodiscard]] std::string getBuffer() const { return (m_stringifyBuffer); }
+  void add(const XML_Lib::Char ch) override { add(m_UTF8.to_bytes(ch)); }
+  [[nodiscard]] std::string getBuffer() const { return (m_buffer); }
   // ================
   // PUBLIC VARIABLES
   // ================
@@ -53,6 +53,6 @@ private:
   // =================
   // PRIVATE VARIABLES
   // =================
-  std::string m_stringifyBuffer;
+  std::string m_buffer;
 };
 }// namespace XML_Lib

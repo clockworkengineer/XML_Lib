@@ -43,7 +43,7 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  ISource::Char current() const override { return (m_source.peek()); }
+  XML_Lib::Char current() const override { return (m_source.peek()); }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }
@@ -61,7 +61,7 @@ public:
   bool more() const override { return (m_source.peek() != EOF); }
   void backup(long length) override
   {
-    if ((static_cast<long>(m_source.tellg()) - length >= 0) || (current() == (ISource::Char)EOF)) {
+    if ((static_cast<long>(m_source.tellg()) - length >= 0) || (current() == (XML_Lib::Char)EOF)) {
       m_source.clear();
       m_source.seekg(-length, std::ios_base::cur);
     } else {

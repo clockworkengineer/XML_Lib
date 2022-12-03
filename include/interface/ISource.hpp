@@ -10,6 +10,11 @@
 // LIBRARY NAMESPACE
 // =================
 namespace XML_Lib {
+// ==================
+// Source String Type
+// ==================
+using String = std::u32string;
+using Char = String::value_type;
 // ===================
 // Character constants
 // ===================
@@ -21,11 +26,6 @@ constexpr char kLineFeed{ 0x0A };
 class ISource
 {
 public:
-  // ============================
-  // 32 bit characters internally
-  // ============================
-  using String = std::u32string;
-  using Char = String::value_type;
   // =============
   // ISource Error
   // =============
