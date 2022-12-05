@@ -33,7 +33,9 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
+  // Parse XML DTD from source
   void parse(ISource &source);
+  // Stringify XML DTD to text destination
   void stringify(IDestination &destination);
   // ================
   // PUBLIC VARIABLES
@@ -51,6 +53,6 @@ private:
   // =================
   // PRIVATE VARIABLES
   // =================
-  std::unique_ptr<DTD_Impl> m_implementation;
+  const std::unique_ptr<DTD_Impl> m_implementation;
 };
 }// namespace XML_Lib

@@ -1,17 +1,8 @@
 #pragma once
-// =======
-// C++ STL
-// =======
-#include <string>
-#include <unordered_map>
 // ========
 // XML Core
 // ========
 #include "XML_Core.hpp"
-// ===========================
-// XML Entity Mapper interface
-// ===========================
-#include "IEntityMapper.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================
@@ -38,7 +29,9 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
+  // Parse XML DTD from source
   void parse(ISource &source);
+  // Stringify XML DTD to text destination
   void stringify(IDestination &destination);
   // ================
   // PUBLIC VARIABLES

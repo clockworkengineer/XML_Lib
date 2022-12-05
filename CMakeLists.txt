@@ -37,12 +37,13 @@ set (XML_SOURCES
 set (XML_INCLUDES
     XML_Config.hpp
     ./include/XML.hpp
+    ./include/XML_Forward.hpp
     ./include/DTD.hpp
+    ./include/DTD_Forward.hpp
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp
     ./include/interface/IEntityMapper.hpp
     ./include/interface/IValidator.hpp
-    ./include/implementation/dtd/DTD_Forward.hpp
     ./include/implementation/dtd/DTD_Impl.hpp
     ./include/implementation/io/XML_Sources.hpp
     ./include/implementation/io/XML_BufferSource.hpp
@@ -51,7 +52,6 @@ set (XML_INCLUDES
     ./include/implementation/io/XML_BufferDestination.hpp
     ./include/implementation/io/XML_FileDestination.hpp
     ./include/implementation/validator/XML_Validator.hpp
-    ./include/implementation/xml/XML_Forward.hpp
     ./include/implementation/xml/XML_Error.hpp
     ./include/implementation/xml/XML_Value.hpp
     ./include/implementation/xml/XML_Attribute.hpp

@@ -33,14 +33,22 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
+  // Get reference to DTD node
   XNode &dtd();
+  // Get reference to proglog node
   XNode &prolog();
+  // Get reference to declaration node
   XNode &declaration();
+  // Get reference to root element node
   XNode &root();
+  // Validate XML
   void validate();
+  // Return version string
   std::string version();
+  // Parse XML source
   void parse(ISource &source);
   void parse(ISource &&source);
+  // Stringify XML object to destination text 
   void stringify(IDestination &destination);
   void stringify(IDestination &&destination);
   // ================
