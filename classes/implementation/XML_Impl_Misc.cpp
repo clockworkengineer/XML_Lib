@@ -8,7 +8,6 @@
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "XML.hpp"
 #include "XML_Impl.hpp"
 // ====================
 // CLASS IMPLEMENTATION

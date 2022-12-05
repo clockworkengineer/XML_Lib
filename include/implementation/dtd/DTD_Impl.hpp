@@ -3,6 +3,10 @@
 // XML Core
 // ========
 #include "XML_Core.hpp"
+// ===
+// DTD
+// ===
+#include "DTD.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================

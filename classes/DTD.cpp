@@ -10,7 +10,6 @@
 // =================
 // CLASS DEFINITIONS
 // =================
-#include "DTD.hpp"
 #include "DTD_Impl.hpp"
 // ====================
 // CLASS IMPLEMENTATION
