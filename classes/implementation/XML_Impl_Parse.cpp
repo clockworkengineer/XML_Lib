@@ -53,7 +53,7 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
     source.next();
   }
   if (!source.match(U">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
-  return (std::make_unique<XComment>(XComment{ comment }));
+  return (std::make_unique<XComment>(comment));
 }
 /// <summary>
 /// Parse a XML process instruction, create an XMLNodePI for it and add it to
@@ -63,15 +63,13 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
 /// <returns>Pointer to PI XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
 {
-  XPI xNodePI;
-  xNodePI.setName(parseName(source));
+  std::string name { parseName(source) };
   std::string parameters;
   while (source.more() && !source.match(U"?>")) {
     parameters += source.current_to_bytes();
     source.next();
   }
-  xNodePI.setParameters(parameters);
-  return (std::make_unique<XPI>(std::move(xNodePI)));
+  return (std::make_unique<XPI>(name, parameters));
 }
 /// <summary>
 /// Parse an XML CDATA section, create an XNodeCDATA for it and add it to
@@ -81,7 +79,6 @@ std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
 /// <returns>Pointer to CDATA XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
 {
-  XCDATA xNodeCDATA;
   std::string cdata;
   while (source.more() && !source.match(U"]]>")) {
     if (source.match(U"<![CDATA[")) {
@@ -90,8 +87,7 @@ std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
     cdata += source.current_to_bytes();
     source.next();
   }
-  xNodeCDATA.setCDATA(cdata);
-  return (std::make_unique<XCDATA>(std::move(xNodeCDATA)));
+  return (std::make_unique<XCDATA>(cdata));
 }
 /// <summary>
 /// Parse list of attributes (name/value pairs) that exist in a tag and add them to

@@ -21,8 +21,7 @@ struct XComment : XNode
   XComment(XComment &&other) = default;
   XComment &operator=(XComment &&other) = default;
   ~XComment() = default;
-  [[nodiscard]] std::string comment() const { return (m_comment); }
-  void setComment(const std::string &comment) { m_comment = comment; }
+  [[nodiscard]] const std::string &comment() const { return (m_comment); }
 
 private:
   std::string m_comment;

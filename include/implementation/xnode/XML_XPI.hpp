@@ -13,16 +13,16 @@ namespace XML_Lib {
 struct XPI : XNode
 {
   // Constructors/Destructors
-  explicit XPI(XNode::Type nodeType = XNode::Type::pi) : XNode(nodeType) {}
+  XPI(const std::string &name, const std::string &parameters, XNode::Type nodeType = XNode::Type::pi)
+    : XNode(nodeType), m_name(name), m_parameters(parameters)
+  {}
   XPI(const XPI &other) = delete;
   XPI &operator=(XPI &other) = delete;
   XPI(XPI &&other) = default;
   XPI &operator=(XPI &&other) = default;
   ~XPI() = default;
-  [[nodiscard]] std::string name() const { return (m_name); }
-  void setName(const std::string &name) { m_name = name; }
-  [[nodiscard]] std::string parameters() const { return (m_parameters); }
-  void setParameters(const std::string &parameters) { m_parameters = parameters; }
+  [[nodiscard]] const std::string &name() const { return (m_name); }
+  [[nodiscard]] const std::string &parameters() const { return (m_parameters); }
 
 private:
   std::string m_name;
