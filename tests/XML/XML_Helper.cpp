@@ -20,7 +20,7 @@ using namespace XML_Lib;
 /// <summary>
 /// Prefix path to test data file name.
 /// </summary>
-/// <param name="name">Test data file name</param>
+/// <param name="name">Test data file name.</param>
 /// <returns>Full path to test data file</returns>
 std::string prefixPath(const std::string &file)
 {
@@ -31,7 +31,7 @@ std::string prefixPath(const std::string &file)
 /// Open a XML file, read its contents (UTF8) into a string buffer
 //  and return the buffer.
 /// </summary>
-/// <param name="xmlFileName">XML file name</param>
+/// <param name="xmlFileName">XML file name.</param>
 /// <returns>String containing UTF8 encoded XML.</returns>
 std::string readXMLFromFileUTF8(const std::string &xmlFileName)
 {
@@ -45,7 +45,7 @@ std::string readXMLFromFileUTF8(const std::string &xmlFileName)
 /// Open a XML file, read its contents (UTF16BE) into a string buffer
 //  and return the buffer.
 /// </summary>
-/// <param name="xmlFileName">XML file name</param>
+/// <param name="xmlFileName">XML file name.</param>
 /// <returnsString containign UTF16 encoded XML.</returns>
 std::u16string readXMLFromFileUTF16(const std::string &xmlFileName)
 {
@@ -64,8 +64,8 @@ std::u16string readXMLFromFileUTF16(const std::string &xmlFileName)
 /// <summary>
 /// Create an XML file and write XML to it in UTF8 encoding.
 /// </summary>
-/// <param name="xmlFileName">XML file name</param>
-/// <param name="xmlFileName">XML</param>
+/// <param name="xmlFileName">XML file name.</param>
+/// <param name="xmlFileName">XML.</param>
 /// <returns></returns>
 void writeXMLToFileUTF8(const std::string &xmlFileName, const std::string &xmlString)
 {
@@ -78,8 +78,8 @@ void writeXMLToFileUTF8(const std::string &xmlFileName, const std::string &xmlSt
 /// <summary>
 /// Create an XML file and write XML to it in UTF16 encoding.
 /// </summary>
-/// <param name="xmlFileName">XML file name</param>
-/// <param name="xmlFileName">XML</param>
+/// <param name="xmlFileName">XML file name.</param>
+/// <param name="xmlFileName">XML.</param>
 /// <returns></returns>
 void writeXMLToFileUTF16(const std::string &xmlFileName, const std::u16string &xmlString, bool be = true)
 {
@@ -103,9 +103,9 @@ void writeXMLToFileUTF16(const std::string &xmlFileName, const std::u16string &x
 /// Convert CRLF to LF for source and check number of CR/LF left after with
 /// REQUIRE.
 /// </summary>
-/// <param name="xmlFileName">XML source</param>
-/// <param name="crFinal">Final number of CR</param>
-/// <param name="lfFinal">FInal number of LF</param>
+/// <param name="xmlFileName">XML source.</param>
+/// <param name="crFinal">Final number of CR.</param>
+/// <param name="lfFinal">FInal number of LF.</param>
 /// <returns></returns>
 void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
 {

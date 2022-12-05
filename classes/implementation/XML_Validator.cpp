@@ -43,7 +43,7 @@ void XML_Validator::elementError(const XElement &xNodeElement, const std::string
 /// <summary>
 /// Check whether a token value is valid.
 /// </summary>
-/// <param name="nmTokenValue">Token value</param>
+/// <param name="nmTokenValue">Token value.</param>
 /// <returns>true then token is valid otherwise false.</returns>
 bool XML_Validator::checkIsNMTOKENOK(const std::string &nmTokenValue)
 {
@@ -309,7 +309,7 @@ void XML_Validator::checkElements(const XNode &xNode)
 /// Check XML element by element and then check all ID values reference an
 /// element.
 /// </summary>
-/// <param name=""></param>
+/// <param name="">.</param>
 /// <param name="xNode">XNode element containing root of XML to validate.</param>
 void XML_Validator::checkAgainstDTD(const XNode &xNode)
 {

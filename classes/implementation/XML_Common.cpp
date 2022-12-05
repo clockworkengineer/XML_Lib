@@ -89,7 +89,7 @@ bool validName(XML_Lib::String name)
 /// <summary>
 /// Make sure that XML attribute value does not contain any illegal characters.
 /// </summary>
-/// <param name=""></param>
+/// <param name="">.</param>
 /// <returns>true then contains all legal characters otherwise false.</returns>
 bool validAttributeValue(const XMLValue &value)
 {

@@ -34,7 +34,7 @@ namespace XML_Lib {
 /// <summary>
 ///
 /// </summary>
-/// <param name=""></param>
+/// <param name="">.</param>
 /// <returns></returns>
 void DTD_Impl::parseValidNotations(const std::string &notations)
 {

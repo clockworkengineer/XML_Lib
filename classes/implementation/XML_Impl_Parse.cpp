@@ -37,12 +37,14 @@ namespace XML_Lib {
 /// Parse a element tag name and set its value in current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
+/// <returns>Element tag name.</returns>
 std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source)); }
 /// <summary>
 /// Parse a XML comment, create a XMLNodeComment for it and add to list
 /// of elements for the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
+/// <returns>Pointer to comment XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
 {
   std::string comment;
@@ -58,6 +60,7 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
 /// the list of elements under the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
+/// <returns>Pointer to PI XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
 {
   XPI xNodePI;
@@ -75,7 +78,7 @@ std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
 /// the list of elements under the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="xNode">Current element node.</param>
+/// <returns>Pointer to CDATA XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
 {
   XCDATA xNodeCDATA;
@@ -95,7 +98,7 @@ std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
 /// the list of attributes associated with the current XMLNodeElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="xNode">Current element node.</param>
+/// <returns>XML element attribute list.</returns>
 XMLAttribute::List XML_Impl::parseAttributes(ISource &source)
 {
   XMLAttribute::List attributes;
@@ -119,6 +122,11 @@ XMLAttribute::List XML_Impl::parseAttributes(ISource &source)
   }
   return (attributes);
 }
+/// <summary>
+/// Parse white space add to current nodes child list.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="xNode">Current XNode.</param>
 void XML_Impl::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 {
   std::string whiteSpace;
@@ -194,6 +202,7 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="namespaces">Current list of namespaces.</param>
+/// <returns>Pointer to element XNode.</returns>
 std::unique_ptr<XNode>
   XML_Impl::parseElement(ISource &source, const XMLAttribute::List &namespaces, XNode::Type xNodeType)
 {
@@ -220,8 +229,10 @@ std::unique_ptr<XNode>
   return (std::make_unique<XElement>(std::move(xNodeElement)));
 }
 /// <summary>
+/// Parse XML declaration and return XNode for it.
 /// </summary>
 /// <param name="source">XML source stream.</param>
+/// <returns>Pointer to declaration XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
 {
   XDeclaration declaration;
@@ -264,6 +275,7 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
   return (std::make_unique<XDeclaration>(std::move(declaration)));
 }
 /// <summary>
+/// Parse any XML tail that is present. This can include comments, PI and white space.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 void XML_Impl::parseXMLTail(ISource &source)
@@ -280,6 +292,11 @@ void XML_Impl::parseXMLTail(ISource &source)
     }
   }
 }
+/// <summary>
+/// Parse XML DTD and return any XNode created for it.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Pointer to DTD XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 {
   if (m_dtd == nullptr) {
@@ -299,6 +316,7 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 /// Document Type Declaration (DTD).
 /// </summary>
 /// <param name="source">XML source stream.</param>
+/// <returns>Pointer to prolog XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 {
   XProlog xNodeProlog;
