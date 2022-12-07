@@ -197,21 +197,20 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 /// Parse current XML element found.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="namespaces">Current list of namespaces.</param>
+/// <param name="outerNamespaces">Current list of outerNamespaces.</param>
 /// <returns>Pointer to element XNode.</returns>
 std::unique_ptr<XNode>
-  XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, XNode::Type xNodeType)
+  XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, XNode::Type xNodeType)
 {
-  std::vector<XMLAttribute> namespaceList{ namespaces };
-  std::vector<XMLAttribute> attributeList;
-  std::string name {parseTagName(source)};
-  for (const auto &attribute : parseAttributes(source)) {
-    attributeList.push_back(attribute);
+  std::vector<XMLAttribute> namespaces{ outerNamespaces };
+  const std::string name{ parseTagName(source) };
+  const std::vector<XMLAttribute> attributes{ parseAttributes(source) };
+  for (const auto &attribute : attributes) {
     if (attribute.name.starts_with("xmlns")) {
-      namespaceList.emplace_back((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
+      namespaces.emplace_back((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
     }
   }
-  std::unique_ptr<XElement> xNodeElement = std::make_unique<XElement>(name, attributeList, namespaceList, xNodeType);
+  std::unique_ptr<XElement> xNodeElement = std::make_unique<XElement>(name, attributes, namespaces, xNodeType);
   if (source.match(U">")) {
     while (source.more() && !source.match(U"</")) { parseElementContents(source, *xNodeElement); }
     if (!source.match(source.from_bytes(xNodeElement->name()) + U">")) {

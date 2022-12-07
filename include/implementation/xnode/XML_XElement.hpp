@@ -53,8 +53,8 @@ struct XElement : XNode
   }
   [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaceList() const { return (m_namespaces); }
   [[nodiscard]] const std::string &name() const { return (m_name); }
-  XElement &operator[](int index) const;
-  XElement &operator[](const std::string &name) const;
+  [[nodiscard]] const XElement &operator[](int index) const;
+  [[nodiscard]] const XElement &operator[](const std::string &name) const;
 
 private:
   std::string m_name;

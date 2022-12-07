@@ -35,8 +35,8 @@ struct XNode
   // Return XNode contents
   [[nodiscard]] std::string getContents() const;
   // XNode Index overloads
-  XNode &operator[](int index) const;
-  XNode &operator[](const std::string &name) const;
+  [[nodiscard]] const XNode &operator[](int index) const;
+  [[nodiscard]] const XNode &operator[](const std::string &name) const;
   // Add child
   void addChild(std::unique_ptr<XNode> &child)
   {

@@ -10,7 +10,7 @@ namespace XML_Lib {
 // ====================
 // XNode index access
 // ====================
-inline XNode &XNode::operator[](int index) const
+inline const XNode &XNode::operator[](int index) const
 {
   if ((index >= 0) && (index < (static_cast<int>(XRef<XNode>(*this).getChildren().size())))) {
     return (*((XRef<XNode>(*this).getChildren()[index])));
@@ -20,7 +20,7 @@ inline XNode &XNode::operator[](int index) const
 // =================
 // XNode name access
 // =================
-inline XNode &XNode::operator[](const std::string &name) const
+inline const XNode &XNode::operator[](const std::string &name) const
 {
   if (m_type <= XNode::Type::element) {
     for (const auto &element : XRef<XElement>(*this).getChildren()) {
@@ -32,7 +32,7 @@ inline XNode &XNode::operator[](const std::string &name) const
 // =====================
 // XElement index access
 // =====================
-inline XElement &XElement::operator[](int index) const
+inline const XElement &XElement::operator[](int index) const
 {
   int number = 0;
   if ((index >= 0) && (index < (static_cast<int>(XRef<XElement>(*this).getChildren().size())))) {
@@ -48,7 +48,7 @@ inline XElement &XElement::operator[](int index) const
 // ====================
 // XElement name access
 // ====================
-inline XElement &XElement::operator[](const std::string &name) const
+inline const XElement &XElement::operator[](const std::string &name) const
 {
   if (getType() <= XNode::Type::element) {
     for (const auto &element : XRef<XElement>(*this).getChildren()) {

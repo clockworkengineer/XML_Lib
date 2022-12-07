@@ -75,7 +75,7 @@ private:
   void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
   void parseElementContents(ISource &source, XNode &xNode);
   std::unique_ptr<XNode> parseElement(ISource &source,
-    const std::vector<XMLAttribute> &namespaces,
+    const std::vector<XMLAttribute> &outerNamespaces,
     XNode::Type xNodeType = XNode::Type::element);
   std::unique_ptr<XNode> parseDeclaration(ISource &source);
   std::unique_ptr<XNode> parseDTD(ISource &source);
