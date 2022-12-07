@@ -31,7 +31,6 @@ struct XNode
   ~XNode() = default;
   // Get/Set XNode type
   [[nodiscard]] Type getType() const { return (m_type); }
-  void setType(Type nodeType) { m_type = nodeType; }
   // Return XNode contents
   [[nodiscard]] std::string getContents() const;
   // XNode Index overloads

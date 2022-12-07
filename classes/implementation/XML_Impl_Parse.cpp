@@ -202,23 +202,26 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 std::unique_ptr<XNode>
   XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, XNode::Type xNodeType)
 {
-  std::vector<XMLAttribute> namespaces{ outerNamespaces };
+  // Parse tag and attributes
   const std::string name{ parseTagName(source) };
   const std::vector<XMLAttribute> attributes{ parseAttributes(source) };
+  // Add any new namespaces
+  std::vector<XMLAttribute> namespaces{ outerNamespaces };
   for (const auto &attribute : attributes) {
     if (attribute.name.starts_with("xmlns")) {
       namespaces.emplace_back((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
     }
   }
-  std::unique_ptr<XElement> xNodeElement = std::make_unique<XElement>(name, attributes, namespaces, xNodeType);
+  std::unique_ptr<XElement> xNodeElement;
   if (source.match(U">")) {
+    xNodeElement = std::make_unique<XElement>(name, attributes, namespaces, xNodeType);
     while (source.more() && !source.match(U"</")) { parseElementContents(source, *xNodeElement); }
     if (!source.match(source.from_bytes(xNodeElement->name()) + U">")) {
       throw SyntaxError(source.getPosition(), "Missing closing tag.");
     }
   } else if (source.match(U"/>")) {
     // Self closing element tag
-    xNodeElement->setType(XNode::Type::self);
+     xNodeElement = std::make_unique<XElement>(name, attributes, namespaces, XNode::Type::self);
   } else {
     throw SyntaxError(source.getPosition(), "Missing closing tag.");
   }
