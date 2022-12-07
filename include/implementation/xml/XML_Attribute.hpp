@@ -13,7 +13,6 @@ namespace XML_Lib {
 // =============
 struct XMLAttribute
 {
-  using List = std::vector<XMLAttribute>;
   XMLAttribute(std::string name, XMLValue value) : name(std::move(name)), value(std::move(value)) {}
   std::string name;
   XMLValue value;

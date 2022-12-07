@@ -95,9 +95,9 @@ std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>XML element attribute list.</returns>
-XMLAttribute::List XML_Impl::parseAttributes(ISource &source)
+std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
 {
-  XMLAttribute::List attributes;
+  std::vector<XMLAttribute> attributes;
   std::set<std::string> attributeNames;
   while (source.more() && source.current() != '?' && source.current() != '/' && source.current() != '>') {
     std::string attributeName = parseName(source);
@@ -200,29 +200,29 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 /// <param name="namespaces">Current list of namespaces.</param>
 /// <returns>Pointer to element XNode.</returns>
 std::unique_ptr<XNode>
-  XML_Impl::parseElement(ISource &source, const XMLAttribute::List &namespaces, XNode::Type xNodeType)
+  XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, XNode::Type xNodeType)
 {
-  XElement xNodeElement{ xNodeType };
-  for (const auto &ns : namespaces) { xNodeElement.addNameSpace(ns.name, ns.value); }
-  xNodeElement.setName(parseTagName(source));
+  std::unique_ptr<XElement> xNodeElement = std::make_unique<XElement>(xNodeType);
+  xNodeElement->setName(parseTagName(source));
+  for (const auto &ns : namespaces) { xNodeElement->addNameSpace(ns.name, ns.value); }
   for (const auto &attribute : parseAttributes(source)) {
-    xNodeElement.addAttribute(attribute.name, attribute.value);
+    xNodeElement->addAttribute(attribute.name, attribute.value);
     if (attribute.name.starts_with("xmlns")) {
-      xNodeElement.addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
+      xNodeElement->addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
     }
   }
   if (source.match(U">")) {
-    while (source.more() && !source.match(U"</")) { parseElementContents(source, xNodeElement); }
-    if (!source.match(source.from_bytes(xNodeElement.name()) + U">")) {
+    while (source.more() && !source.match(U"</")) { parseElementContents(source, *xNodeElement); }
+    if (!source.match(source.from_bytes(xNodeElement->name()) + U">")) {
       throw SyntaxError(source.getPosition(), "Missing closing tag.");
     }
   } else if (source.match(U"/>")) {
     // Self closing element tag
-    xNodeElement.setType(XNode::Type::self);
+    xNodeElement->setType(XNode::Type::self);
   } else {
     throw SyntaxError(source.getPosition(), "Missing closing tag.");
   }
-  return (std::make_unique<XElement>(std::move(xNodeElement)));
+  return (xNodeElement);
 }
 /// <summary>
 /// Parse XML declaration and return XNode for it.
@@ -302,7 +302,6 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
     m_validator = std::make_unique<XML_Validator>(*xNode);
     return (xNode);
   }
-
   throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
 }
 /// <summary>

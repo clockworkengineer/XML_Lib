@@ -68,14 +68,15 @@ private:
   void addContentToElementChildList(XNode &xNode, const std::string &content);
   void parseElementContent(ISource &source, XNode &xNode);
   std::string parseTagName(ISource &source);
-  XMLAttribute::List parseAttributes(ISource &source);
+  std::vector<XMLAttribute> parseAttributes(ISource &source);
   std::unique_ptr<XNode> parseComment(ISource &source);
   std::unique_ptr<XNode> parseCDATA(ISource &source);
   std::unique_ptr<XNode> parsePI(ISource &source);
   void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
   void parseElementContents(ISource &source, XNode &xNode);
-  std::unique_ptr<XNode>
-    parseElement(ISource &source, const XMLAttribute::List &namespaces, XNode::Type xNodeType = XNode::Type::element);
+  std::unique_ptr<XNode> parseElement(ISource &source,
+    const std::vector<XMLAttribute> &namespaces,
+    XNode::Type xNodeType = XNode::Type::element);
   std::unique_ptr<XNode> parseDeclaration(ISource &source);
   std::unique_ptr<XNode> parseDTD(ISource &source);
   std::unique_ptr<XNode> parseProlog(ISource &source);

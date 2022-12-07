@@ -34,7 +34,7 @@ struct XElement : XNode
     return (*std::find_if(
       m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) { return (attr.name == name); }));
   }
-  [[nodiscard]] const XMLAttribute::List &getAttributeList() const { return (m_attributes); }
+  [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return (m_attributes); }
   [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
   {
     return (std::find_if(m_namespaces.rbegin(), m_namespaces.rend(), [&name](const XMLAttribute &attr) {
@@ -47,7 +47,7 @@ struct XElement : XNode
     return (*std::find_if(
       m_namespaces.rbegin(), m_namespaces.rend(), [&name](const XMLAttribute &ns) { return (ns.name == name); }));
   }
-  [[nodiscard]] const XMLAttribute::List &getNameSpaceList() const { return (m_namespaces); }
+  [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaceList() const { return (m_namespaces); }
   [[nodiscard]] std::string name() const { return (m_name); }
   void setName(const std::string &name) { m_name = name; }
   XElement &operator[](int index) const;
@@ -55,7 +55,7 @@ struct XElement : XNode
 
 private:
   std::string m_name;
-  XMLAttribute::List m_namespaces;
-  mutable XMLAttribute::List m_attributes;
+  std::vector<XMLAttribute> m_namespaces;
+  mutable std::vector<XMLAttribute> m_attributes;
 };
 }// namespace XML_Lib
