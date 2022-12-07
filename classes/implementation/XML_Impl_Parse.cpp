@@ -202,15 +202,16 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 std::unique_ptr<XNode>
   XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, XNode::Type xNodeType)
 {
-  std::unique_ptr<XElement> xNodeElement = std::make_unique<XElement>(xNodeType);
-  xNodeElement->setName(parseTagName(source));
-  for (const auto &ns : namespaces) { xNodeElement->addNameSpace(ns.name, ns.value); }
+  std::vector<XMLAttribute> namespaceList{ namespaces };
+  std::vector<XMLAttribute> attributeList;
+  std::string name {parseTagName(source)};
   for (const auto &attribute : parseAttributes(source)) {
-    xNodeElement->addAttribute(attribute.name, attribute.value);
+    attributeList.push_back(attribute);
     if (attribute.name.starts_with("xmlns")) {
-      xNodeElement->addNameSpace((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
+      namespaceList.emplace_back((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
     }
   }
+  std::unique_ptr<XElement> xNodeElement = std::make_unique<XElement>(name, attributeList, namespaceList, xNodeType);
   if (source.match(U">")) {
     while (source.more() && !source.match(U"</")) { parseElementContents(source, *xNodeElement); }
     if (!source.match(source.from_bytes(xNodeElement->name()) + U">")) {

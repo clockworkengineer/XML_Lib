@@ -15,8 +15,13 @@ namespace XML_Lib {
 struct XElement : XNode
 {
   // Constructors/Destructors
-  explicit XElement(XNode::Type nodeType = XNode::Type::element) : XNode(nodeType) {}
-  explicit XElement(const std::string &name) : XElement() { m_name = name; }
+  XElement(XNode::Type nodeType = XNode::Type::element) : XNode(nodeType) {}
+  XElement(const std::string &name,
+    const std::vector<XMLAttribute> &attributes,
+    const std::vector<XMLAttribute> &namespaces,
+    XNode::Type nodeType = XNode::Type::element)
+    : XNode(nodeType), m_name(name), m_attributes(attributes), m_namespaces(namespaces)
+  {}
   XElement(const XElement &other) = delete;
   XElement &operator=(XElement &other) = delete;
   XElement(XElement &&other) = default;
@@ -29,7 +34,7 @@ struct XElement : XNode
     }) != m_attributes.rend());
   }
   void addAttribute(const std::string &name, const XMLValue &value) const { m_attributes.emplace_back(name, value); }
-  [[nodiscard]] XMLAttribute getAttribute(const std::string &name) const
+  [[nodiscard]] const XMLAttribute &getAttribute(const std::string &name) const
   {
     return (*std::find_if(
       m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) { return (attr.name == name); }));
@@ -41,21 +46,19 @@ struct XElement : XNode
       return (attr.name == name);
     }) != m_namespaces.rend());
   }
-  void addNameSpace(const std::string &name, const XMLValue &value) { m_namespaces.emplace_back(name, value); }
-  [[nodiscard]] XMLAttribute getNameSpace(const std::string &name) const
+  [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const
   {
     return (*std::find_if(
       m_namespaces.rbegin(), m_namespaces.rend(), [&name](const XMLAttribute &ns) { return (ns.name == name); }));
   }
   [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaceList() const { return (m_namespaces); }
-  [[nodiscard]] std::string name() const { return (m_name); }
-  void setName(const std::string &name) { m_name = name; }
+  [[nodiscard]] const std::string &name() const { return (m_name); }
   XElement &operator[](int index) const;
   XElement &operator[](const std::string &name) const;
 
 private:
   std::string m_name;
-  std::vector<XMLAttribute> m_namespaces;
   mutable std::vector<XMLAttribute> m_attributes;
+  std::vector<XMLAttribute> m_namespaces;
 };
 }// namespace XML_Lib
