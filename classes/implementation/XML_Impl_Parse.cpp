@@ -212,13 +212,12 @@ std::unique_ptr<XNode>
       namespaces.emplace_back((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
     }
   }
+  // Create element XNode
   if (source.match(U">")) {
-    auto xNode  = std::make_unique<XElement>(name, attributes, namespaces, xNodeType);
+    // Normal element tag
+    auto xNode = std::make_unique<XElement>(name, attributes, namespaces, xNodeType);
     while (source.more() && !source.match(U"</")) { parseElementContents(source, *xNode); }
-    if (!source.match(source.from_bytes(xNode->name()) + U">")) {
-      throw SyntaxError(source.getPosition(), "Missing closing tag.");
-    }
-    return (xNode);
+    if (source.match(source.from_bytes(xNode->name()) + U">")) { return (xNode); }
   } else if (source.match(U"/>")) {
     // Self closing element tag
     return (std::make_unique<XElement>(name, attributes, namespaces, XNode::Type::self));
