@@ -12,15 +12,16 @@ namespace XML_Lib {
 struct XCDATA : XNode
 {
   // Constructors/Destructors
-  XCDATA(const std::string &cdata, XNode::Type nodeType = XNode::Type::cdata) : XNode(nodeType), m_cdata(cdata) {}
+  explicit XCDATA(const std::string &cdata) : XNode(XNode::Type::cdata), m_cdata(cdata) {}
   XCDATA(const XCDATA &other) = delete;
   XCDATA &operator=(XCDATA &other) = delete;
   XCDATA(XCDATA &&other) = default;
   XCDATA &operator=(XCDATA &&other) = default;
   ~XCDATA() = default;
+  // Return reference to cdata
   [[nodiscard]] const std::string &CDATA() const { return (m_cdata); }
 
 private:
   std::string m_cdata;
 };
-}
+}// namespace XML_Lib

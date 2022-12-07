@@ -13,7 +13,7 @@ namespace XML_Lib {
 struct XDeclaration : XNode
 {
   // Constructors/Destructors
-  explicit XDeclaration(XNode::Type nodeType = XNode::Type::declaration) : XNode(nodeType) {}
+  explicit XDeclaration() : XNode(XNode::Type::declaration) {}
   XDeclaration(const XDeclaration &other) = delete;
   XDeclaration &operator=(XDeclaration &other) = delete;
   XDeclaration(XDeclaration &&other) = default;

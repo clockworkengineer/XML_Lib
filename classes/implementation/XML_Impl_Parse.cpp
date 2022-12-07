@@ -63,7 +63,7 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
 /// <returns>Pointer to PI XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
 {
-  std::string name { parseName(source) };
+  std::string name{ parseName(source) };
   std::string parameters;
   while (source.more() && !source.match(U"?>")) {
     parameters += source.current_to_bytes();
@@ -142,7 +142,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
   XMLValue content{ parseCharacter(source) };
   if (content.isReference()) {
     if (content.isEntityReference()) { content = m_entityMapper->map(content); }
-    XEntityReference xNodeEntityReference(content);
+    std::unique_ptr<XNode> xEntityReference = std::make_unique<XEntityReference>(content);
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
       // YES then XML into current element list
@@ -152,11 +152,11 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
       }
       // NO XML into entity elements list.
       else {
-        processEntityReferenceXML(xNodeEntityReference, content);
+        processEntityReferenceXML(*xEntityReference, content);
         resetWhiteSpace(xNode);
       }
     }
-    xNode.addChild(std::make_unique<XEntityReference>(std::move(xNodeEntityReference)));
+    xNode.addChild(std::move(xEntityReference));
   } else {
     addContentToElementChildList(xNode, content.parsed);
   }

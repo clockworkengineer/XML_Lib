@@ -9,7 +9,7 @@ namespace XML_Lib {
 struct XProlog : XNode
 {
   // Constructors/Destructors
-  explicit XProlog(XNode::Type nodeType = XNode::Type::prolog) : XNode(nodeType) {}
+  XProlog() : XNode(XNode::Type::prolog) {}
   XProlog(const XProlog &other) = delete;
   XProlog &operator=(XProlog &other) = delete;
   XProlog(XProlog &&other) = default;

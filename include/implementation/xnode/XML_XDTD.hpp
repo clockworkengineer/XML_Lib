@@ -72,8 +72,8 @@ struct XDTD : XNode
     std::vector<Attribute> attributes;
   };
   // Constructors/Destructors
-  explicit XDTD(IEntityMapper &entityMapper, XNode::Type nodeType = XNode::Type::dtd)
-    : XNode(nodeType), m_entityMapper(entityMapper)
+  explicit XDTD(IEntityMapper &entityMapper)
+    : XNode(XNode::Type::dtd), m_entityMapper(entityMapper)
   {}
   XDTD(const XDTD &other) = delete;
   XDTD &operator=(XDTD &other) = delete;

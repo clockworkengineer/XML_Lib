@@ -13,8 +13,8 @@ namespace XML_Lib {
 struct XPI : XNode
 {
   // Constructors/Destructors
-  XPI(const std::string &name, const std::string &parameters, XNode::Type nodeType = XNode::Type::pi)
-    : XNode(nodeType), m_name(name), m_parameters(parameters)
+  XPI(const std::string &name, const std::string &parameters)
+    : XNode(XNode::Type::pi), m_name(name), m_parameters(parameters)
   {}
   XPI(const XPI &other) = delete;
   XPI &operator=(XPI &other) = delete;
