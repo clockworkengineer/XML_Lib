@@ -177,7 +177,7 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
     resetWhiteSpace(xNode);
     xNode.addChild(parseCDATA(source));
   } else if (source.match(U"<")) {
-    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNameSpaceList()));
+    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNamespaceList()));
     XElement &xNodeChildElement = XRef<XElement>(*xNode.getChildren().back());
     if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {

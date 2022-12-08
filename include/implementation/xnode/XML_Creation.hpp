@@ -65,7 +65,7 @@ inline std::string XNode::getContents() const
   std::string result;
   for (const auto &node : getChildren()) {
     if (node->getType() == XNode::Type::content) {
-      result += XRef<XContent>(*node).content();
+      result += XRef<XContent>(*node).getContent();
     } else if (node->getType() == XNode::Type::entity) {
       if (!XRef<XEntityReference>(*node).getChildren().empty()) {
         result += XRef<XEntityReference>(*node).getContents();

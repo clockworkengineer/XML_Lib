@@ -297,7 +297,7 @@ void XML_Validator::checkElements(const XNode &xNode)
   case XNode::Type::dtd:
     break;
   case XNode::Type::content:
-    for (auto &ch : XRef<XContent>(xNode).content()) {
+    for (auto &ch : XRef<XContent>(xNode).getContent()) {
       if (ch == kLineFeed) { m_lineNumber++; }
     }
     break;

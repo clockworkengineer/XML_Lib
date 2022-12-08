@@ -27,18 +27,21 @@ struct XElement : XNode
   XElement(XElement &&other) = default;
   XElement &operator=(XElement &&other) = default;
   ~XElement() = default;
+  // Is an attribute present ?
   [[nodiscard]] bool isAttributePresent(const std::string &name) const
   {
     return (std::find_if(m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) {
       return (attr.name == name);
     }) != m_attributes.rend());
   }
+  // Add an attribute
   void addAttribute(const std::string &name, const XMLValue &value) const { m_attributes.emplace_back(name, value); }
   [[nodiscard]] const XMLAttribute &getAttribute(const std::string &name) const
   {
     return (*std::find_if(
       m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) { return (attr.name == name); }));
   }
+  // Return reference to attribute list
   [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return (m_attributes); }
   [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
   {
@@ -46,13 +49,17 @@ struct XElement : XNode
       return (attr.name == name);
     }) != m_namespaces.rend());
   }
+  // Is a namespace present ?
   [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const
   {
     return (*std::find_if(
       m_namespaces.rbegin(), m_namespaces.rend(), [&name](const XMLAttribute &ns) { return (ns.name == name); }));
   }
-  [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaceList() const { return (m_namespaces); }
+  // Return reference to namespace list
+  [[nodiscard]] const std::vector<XMLAttribute> &getNamespaceList() const { return (m_namespaces); }
+  // Return reference to element tag name
   [[nodiscard]] const std::string &name() const { return (m_name); }
+  // XElement Index overloads
   [[nodiscard]] const XElement &operator[](int index) const;
   [[nodiscard]] const XElement &operator[](const std::string &name) const;
 

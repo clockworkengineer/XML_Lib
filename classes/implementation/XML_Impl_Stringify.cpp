@@ -86,7 +86,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
   // XML element content
   case XNode::Type::content: {
     XContent &xNodeContent = XRef<XContent>(xNode);
-    destination.add(xNodeContent.content());
+    destination.add(xNodeContent.getContent());
     break;
   }
   // XML character entity
