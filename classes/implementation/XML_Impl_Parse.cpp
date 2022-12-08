@@ -308,8 +308,7 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 /// <summary>
 /// Parse XML prolog and create the necessary element XNodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
-/// processing instructions, comments, whitespace content and XMLxNode.
-/// Document Type Declaration (DTD).
+/// processing instructions, comments, whitespace and a Document Type Declaration (DTD).
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to prolog XNode.</returns>
@@ -326,11 +325,10 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
       parseWhiteSpaceToContent(source, *xNode);
     } else if (source.match(U"<!DOCTYPE")) {
       xNode->addChild(parseDTD(source));
-    } else if (source.current() != '<') {
-      throw SyntaxError(source.getPosition(), "Content detected before root element.");
+    } else if (source.current() == '<') {
+      break;// Break out as root element detected
     } else {
-      // Break out as root element detected
-      break;
+      throw SyntaxError(source.getPosition(), "Content detected before root element.");
     }
   }
   return (xNode);
