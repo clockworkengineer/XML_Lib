@@ -56,7 +56,7 @@ private:
   // ===============
   // PRIVATE METHODS
   // ===============
-  void elementError(const XElement &xNodeElement, const std::string &error);
+  void elementError(const XElement &xElement, const std::string &error);
   void checkAttributes(const XNode &xNode);
   void checkContentSpecification(const XNode &xNode);
   void checkElement(const XNode &xNode);

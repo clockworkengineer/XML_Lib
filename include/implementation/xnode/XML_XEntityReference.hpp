@@ -9,13 +9,14 @@ namespace XML_Lib {
 struct XEntityReference : XNode
 {
   // Constructors/Destructors
-  XEntityReference(const XMLValue &value, XNode::Type nodeType = XNode::Type::entity) : XNode(nodeType), m_value(value)
+  explicit XEntityReference(const XMLValue &value) : XNode(XNode::Type::entity), m_value(value)
   {}
   XEntityReference(const XEntityReference &other) = delete;
   XEntityReference &operator=(XEntityReference &other) = delete;
   XEntityReference(XEntityReference &&other) = default;
   XEntityReference &operator=(XEntityReference &&other) = default;
   ~XEntityReference() = default;
+  // Return reference to entity reference
   [[nodiscard]] const XMLValue &value() const { return (m_value); }
 
 private:

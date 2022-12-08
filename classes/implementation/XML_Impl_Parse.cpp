@@ -232,6 +232,7 @@ std::unique_ptr<XNode>
 std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
 {
   XDeclaration declaration;
+  source.ignoreWS();
   if (source.match(U"<?xml")) {
     source.ignoreWS();
     if (source.match(U"version")) {
@@ -274,15 +275,15 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
 /// Parse any XML tail that is present. This can include comments, PI and white space.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-void XML_Impl::parseXMLTail(ISource &source)
+void XML_Impl::parseTail(ISource &source)
 {
   while (source.more()) {
     if (source.match(U"<!--")) {
-      prolog().addChild(parseComment(source));
+      m_prolog->addChild(parseComment(source));
     } else if (source.match(U"<?")) {
-      prolog().addChild(parsePI(source));
+      m_prolog->addChild(parsePI(source));
     } else if (source.isWS()) {
-      parseWhiteSpaceToContent(source, prolog());
+      parseWhiteSpaceToContent(source, *m_prolog);
     } else {
       throw SyntaxError(source.getPosition(), "Extra content at the end of document.");
     }
@@ -305,27 +306,26 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
   throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
 }
 /// <summary>
-/// Parse XML prolog and create the necessary XMLNodeElements for it. Valid
+/// Parse XML prolog and create the necessary element XNodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
-/// processing instructions, comments, whitespace content and XML
+/// processing instructions, comments, whitespace content and XMLxNode.
 /// Document Type Declaration (DTD).
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to prolog XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 {
-  XProlog xNodeProlog;
-  source.ignoreWS();
-  xNodeProlog.addChild(parseDeclaration(source));
+  auto xNode = std::make_unique<XProlog>();
+  xNode->addChild(parseDeclaration(source));
   while (source.more()) {
     if (source.match(U"<!--")) {
-      xNodeProlog.addChild(parseComment(source));
+      xNode->addChild(parseComment(source));
     } else if (source.match(U"<?")) {
-      xNodeProlog.addChild(parsePI(source));
+      xNode->addChild(parsePI(source));
     } else if (source.isWS()) {
-      parseWhiteSpaceToContent(source, xNodeProlog);
+      parseWhiteSpaceToContent(source, *xNode);
     } else if (source.match(U"<!DOCTYPE")) {
-      xNodeProlog.addChild(parseDTD(source));
+      xNode->addChild(parseDTD(source));
     } else if (source.current() != '<') {
       throw SyntaxError(source.getPosition(), "Content detected before root element.");
     } else {
@@ -333,7 +333,7 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
       break;
     }
   }
-  return (std::make_unique<XProlog>(std::move(xNodeProlog)));
+  return (xNode);
 }
 /// <summary>
 /// Parse XML from source stream.
@@ -341,11 +341,8 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 void XML_Impl::parseXML(ISource &source)
 {
   m_prolog = parseProlog(source);
-  if (source.match(U"<")) {
-    prolog().addChild(parseElement(source, {}, XNode::Type::root));
-    parseXMLTail(source);
-  } else {
-    throw SyntaxError(source.getPosition(), "Missing root element.");
-  }
+  if (!source.match(U"<")) { throw SyntaxError(source.getPosition(), "Missing root element."); }
+  m_prolog->addChild(parseElement(source, {}, XNode::Type::root));
+  parseTail(source);
 }
 }// namespace XML_Lib

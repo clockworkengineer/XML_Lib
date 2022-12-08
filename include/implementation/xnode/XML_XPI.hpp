@@ -21,7 +21,9 @@ struct XPI : XNode
   XPI(XPI &&other) = default;
   XPI &operator=(XPI &&other) = default;
   ~XPI() = default;
+  // Return reference to name
   [[nodiscard]] const std::string &name() const { return (m_name); }
+  // Return reference to parameters
   [[nodiscard]] const std::string &parameters() const { return (m_parameters); }
 
 private:

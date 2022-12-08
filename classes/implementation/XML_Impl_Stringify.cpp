@@ -57,21 +57,21 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
   // XML root or child elements
   case XNode::Type::root:
   case XNode::Type::element: {
-    XElement &xNodeElement = XRef<XElement>(xNode);
-    destination.add("<" + xNodeElement.name());
-    for (auto attr : xNodeElement.getAttributeList()) {
+    XElement &xElement = XRef<XElement>(xNode);
+    destination.add("<" + xElement.name());
+    for (auto attr : xElement.getAttributeList()) {
       destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");
     }
     destination.add(">");
     for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
-    destination.add("</" + xNodeElement.name() + ">");
+    destination.add("</" + xElement.name() + ">");
     break;
   }
   // Self closing element
   case XNode::Type::self: {
-    XElement &xNodeElement = XRef<XElement>(xNode);
-    destination.add("<" + xNodeElement.name());
-    for (auto attr : xNodeElement.getAttributeList()) {
+    XElement &xElement = XRef<XElement>(xNode);
+    destination.add("<" + xElement.name());
+    for (auto attr : xElement.getAttributeList()) {
       destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");
     }
     destination.add("/>");
