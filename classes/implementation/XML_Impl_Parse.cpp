@@ -34,14 +34,14 @@ namespace XML_Lib {
 // PRIVATE METHODS
 // ===============
 /// <summary>
-/// Parse a element tag name and set its value in current XMLNodeElement.
+/// Parse a element tag name and set its value in current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Element tag name.</returns>
 std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source)); }
 /// <summary>
-/// Parse a XML comment, create a XMLNodeComment for it and add to list
-/// of elements for the current XMLNodeElement.
+/// Parse a XML comment, create a XComment for it and add to list
+/// of elements for the current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to comment XNode.</returns>
@@ -56,8 +56,8 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
   return (std::make_unique<XComment>(comment));
 }
 /// <summary>
-/// Parse a XML process instruction, create an XMLNodePI for it and add it to
-/// the list of elements under the current XMLNodeElement.
+/// Parse a XML process instruction, create an XPI for it and add it to
+/// the list of elements under the current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to PI XNode.</returns>
@@ -72,8 +72,8 @@ std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
   return (std::make_unique<XPI>(name, parameters));
 }
 /// <summary>
-/// Parse an XML CDATA section, create an XNodeCDATA for it and add it to
-/// the list of elements under the current XMLNodeElement.
+/// Parse an XML CDATA section, create an XCDATA for it and add it to
+/// the list of elements under the current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to CDATA XNode.</returns>
@@ -91,7 +91,7 @@ std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
 }
 /// <summary>
 /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
-/// the list of attributes associated with the current XMLNodeElement.
+/// the list of attributes associated with the current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>XML element attribute list.</returns>
@@ -162,8 +162,8 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
   }
 }
 /// <summary>
-/// Parse element content area, generating any XNodes and adding them
-/// to the list of the current XMLNodeElement.
+/// Parse element content area, generating any XNode(s) and adding them
+/// to the list of the current XElement.
 /// </summary>
 /// <param name="source">XMl source stream.</param>
 /// <param name="xNode">Current element node.</param>
@@ -326,7 +326,7 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
     } else if (source.match(U"<!DOCTYPE")) {
       xNode->addChild(parseDTD(source));
     } else if (source.current() == '<') {
-      break;// Break out as root element detected
+      break;// --- Break out as potential root element detected ---
     } else {
       throw SyntaxError(source.getPosition(), "Content detected before root element.");
     }
