@@ -36,7 +36,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n";
     BufferSource source{ xmlString };
     XML xml;
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 1 Column: 21] Unsupported version 1.2.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Unsupported XML version '1.2'.");
   }
   SECTION("Parse XML declaration with unsupported encoding. ", "[XML][Parse][Declaration]")
   {
@@ -45,8 +45,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n";
     BufferSource source{ xmlString };
     XML xml;
-    REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 1 Column: 39] Unsupported encoding UTF-32 specified.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Unsupported XML encoding 'UTF-32' specified.");
   }
   SECTION("Parse XML declaration with invalid standalone value. ", "[XML][Parse][Declaration]")
   {
@@ -55,8 +54,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n";
     BufferSource source{ xmlString };
     XML xml;
-    REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 1 Column: 56] Invalid standalone value of 'maybe'.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid XML standalone value of 'maybe'.");
   }
   SECTION("Parse XML declaration with extra content after root element. ", "[XML][Parse][Declaration]")
   {

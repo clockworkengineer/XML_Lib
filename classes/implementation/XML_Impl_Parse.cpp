@@ -231,7 +231,7 @@ std::unique_ptr<XNode>
 /// <returns>Pointer to declaration XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
 {
-  XDeclaration declaration;
+  std::string version, encoding, standalone;
   source.ignoreWS();
   if (source.match(U"<?xml")) {
     source.ignoreWS();
@@ -239,10 +239,8 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
       source.ignoreWS();
       if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after version."); }
       source.ignoreWS();
-      declaration.setVersion(parseValue(source).parsed);
-      if (!declaration.isValidVersion()) {
-        throw SyntaxError(source.getPosition(), "Unsupported version " + declaration.version() + ".");
-      }
+      version = parseValue(source).parsed;
+      if (version != "1.0" && version != "1.1") { throw SyntaxError("Unsupported XML version '" + version + "'."); }
     } else {
       throw SyntaxError(source.getPosition(), "Version missing from declaration.");
     }
@@ -250,18 +248,18 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
       source.ignoreWS();
       if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after encoding."); }
       source.ignoreWS();
-      declaration.setEncoding(toUpperString(parseValue(source).parsed));
-      if (!declaration.isValidEncoding()) {
-        throw SyntaxError(source.getPosition(), "Unsupported encoding " + declaration.encoding() + " specified.");
+      encoding = toUpperString(parseValue(source).parsed);
+      if (encoding != "UTF-8" && encoding != "UTF-16") {
+        throw SyntaxError("Unsupported XML encoding '" + encoding + "' specified.");
       }
     }
     if (source.match(U"standalone")) {
       source.ignoreWS();
       if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after standalone."); }
       source.ignoreWS();
-      declaration.setStandalone(parseValue(source).parsed);
-      if (!declaration.isValidStandalone()) {
-        throw SyntaxError(source.getPosition(), "Invalid standalone value of '" + declaration.standalone() + "'.");
+      standalone = parseValue(source).parsed;
+      if (standalone != "yes" && standalone != "no") {
+        throw SyntaxError("Invalid XML standalone value of '" + standalone + "'.");
       }
     }
     if (source.match(U"encoding")) {
@@ -269,7 +267,7 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
     }
     if (!source.match(U"?>")) { throw SyntaxError(source.getPosition(), "Declaration end tag not found."); }
   }
-  return (std::make_unique<XDeclaration>(std::move(declaration)));
+  return (std::make_unique<XDeclaration>(version, encoding, standalone));
 }
 /// <summary>
 /// Parse any XML tail that is present. This can include comments, PI and white space.
