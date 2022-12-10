@@ -48,22 +48,27 @@ XML::~XML() {}
 /// <summary>
 /// Get XML_Lib version.
 /// </summary>
+/// <returns>Library version string.</returns>
 std::string XML::version() { return (m_implementation->version()); }
 /// <summary>
 /// Return reference to any internal DTD for parsed XML.
 /// </summary>
+/// <returns>Reference to DTD XNode.</returns>
 XNode &XML::dtd() { return (m_implementation->dtd()); }
 /// <summary>
 /// Return prolog node of parsed XML tree.
 /// </summary>
+/// <returns>Reference to prolog XNode.</returns>
 XNode &XML::prolog() { return (m_implementation->prolog()); }
 /// <summary>
 /// Return declaration node of parsed XML tree.
 /// </summary>
+/// <returns>Reference to declaration XNode.</returns>
 XNode &XML::declaration() { return (m_implementation->declaration()); }
 /// <summary>
 /// Return root node of parsed XML tree.
 /// </summary>
+/// <returns>Reference to root element XNode.</returns>
 XNode &XML::root() { return (m_implementation->root()); }
 /// <summary>
 /// Validate XML against any DTD provided to see whether it is valid. If an

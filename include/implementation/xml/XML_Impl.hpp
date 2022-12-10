@@ -84,8 +84,8 @@ private:
   std::unique_ptr<XNode> parseDeclaration(ISource &source);
   std::unique_ptr<XNode> parseDTD(ISource &source);
   std::unique_ptr<XNode> parseProlog(ISource &source);
-  void parseTail(ISource &source);
-  void parseXML(ISource &source);
+  void parseTail(ISource &source, XNode &xProlog);
+  std::unique_ptr<XNode> parseXML(ISource &source);
   void stringifyElements(XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
   // =================

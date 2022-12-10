@@ -45,6 +45,7 @@ XML_Impl::~XML_Impl() {}
 /// <summary>
 ///  Get XML_Lib version.
 /// </summary>
+/// <returns>Library version string.</returns>
 std::string XML_Impl::version()
 {
   std::stringstream versionString;
@@ -52,8 +53,9 @@ std::string XML_Impl::version()
   return (versionString.str());
 }
 /// <summary>
-/// Return XML DT node.
+/// Return XML DTD XNode.
 /// </summary>
+/// <returns>Reference to DTD XNode.</returns>
 XNode &XML_Impl::dtd()
 {
   // Slow need to speed up.
@@ -63,16 +65,19 @@ XNode &XML_Impl::dtd()
   throw XML_Lib::Error("No DTD found.");
 }
 /// <summary>
-/// Return XML prolog node.
+/// Return XML prolog XNode.
 /// </summary>
+/// <returns>Reference to prolog XNode.</returns>
 XNode &XML_Impl::prolog() { return (*m_prolog); }
 /// <summary>
-/// Return XML declaration node.
+/// Return XML declaration XNode.
 /// </summary>
+/// <returns>Reference to declaration XNode.</returns>
 XNode &XML_Impl::declaration() { return (*prolog().getChildren()[0]); }
 /// <summary>
-/// Return XML root element node.
+/// Return XML root element XNode.
 /// </summary>
+/// <returns>Reference to root element XNode.</returns>
 XNode &XML_Impl::root()
 {
   // Slow need to speed up.
@@ -85,7 +90,7 @@ XNode &XML_Impl::root()
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well formed).
 /// </summary>
-void XML_Impl::parse(ISource &source) { parseXML(source); }
+void XML_Impl::parse(ISource &source) { m_prolog = parseXML(source); }
 /// <summary>
 /// Validate XML against any DTD provided to see whether it is valid. If an
 /// exception is thrown then there is a validation issue and the XML is not valid.
