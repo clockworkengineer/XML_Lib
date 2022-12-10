@@ -303,7 +303,7 @@ void XML_Impl::parseTail(ISource &source)
 std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 {
   if (m_dtd == nullptr) {
-    std::unique_ptr<XNode> xNode = std::make_unique<XDTD>(*m_entityMapper);
+    auto xNode = XNode::make<XDTD>(*m_entityMapper);
     m_dtd = std::make_unique<DTD>(*xNode);
     m_dtd->parse(source);
     m_validator = std::make_unique<XML_Validator>(*xNode);
