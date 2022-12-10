@@ -72,13 +72,11 @@ struct XDTD : XNode
     std::vector<Attribute> attributes;
   };
   // Constructors/Destructors
-  explicit XDTD(IEntityMapper &entityMapper)
-    : XNode(XNode::Type::dtd), m_entityMapper(entityMapper)
-  {}
+  explicit XDTD(IEntityMapper &entityMapper) : XNode(XNode::Type::dtd), m_entityMapper(entityMapper) {}
   XDTD(const XDTD &other) = delete;
   XDTD &operator=(XDTD &other) = delete;
-  XDTD(XDTD &&other) = delete;
-  XDTD &operator=(XDTD &&other) = delete;
+  XDTD(XDTD &&other) = default;
+  XDTD &operator=(XDTD &&other) = default;
   ~XDTD() = default;
   [[nodiscard]] std::string unparsed() const { return (m_unparsed); }
   void setUnparsed(const std::string &unparsed) { m_unparsed = unparsed; }

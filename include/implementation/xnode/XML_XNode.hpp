@@ -64,7 +64,8 @@ struct XNode
       return (*m_children);
     }
   };
-
+  // Make XNode
+  template<typename T, typename ... Args> static std::unique_ptr<T> make(Args... args) { return (std::make_unique<T>(args...) ); }
 private:
   // XNode Type
   Type m_type;

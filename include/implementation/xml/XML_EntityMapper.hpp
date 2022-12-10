@@ -36,7 +36,7 @@ public:
   XML_EntityMapper &operator=(const XML_EntityMapper &other) = delete;
   XML_EntityMapper(XML_EntityMapper &&other) = delete;
   XML_EntityMapper &operator=(XML_EntityMapper &&other) = delete;
-  ~XML_EntityMapper() override;
+  ~XML_EntityMapper();
   // ==============
   // PUBLIC METHODS
   // ==============

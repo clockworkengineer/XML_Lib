@@ -30,6 +30,7 @@ namespace XML_Lib {
 // =======================
 // PUBLIC STATIC VARIABLES
 // =======================
+
 // ===============
 // PRIVATE METHODS
 // ===============
@@ -75,7 +76,7 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
     source.next();
   }
   if (!source.match(U">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
-  return (std::make_unique<XComment>(comment));
+  return (XNode::make<XComment>(comment));
 }
 /// <summary>
 /// Parse a XML process instruction, create an XPI for it and add it to
@@ -91,7 +92,7 @@ std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
     parameters += source.current_to_bytes();
     source.next();
   }
-  return (std::make_unique<XPI>(name, parameters));
+  return (XNode::make<XPI>(name, parameters));
 }
 /// <summary>
 /// Parse an XML CDATA section, create an XCDATA for it and add it to
@@ -109,7 +110,7 @@ std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
     cdata += source.current_to_bytes();
     source.next();
   }
-  return (std::make_unique<XCDATA>(cdata));
+  return (XNode::make<XCDATA>(cdata));
 }
 /// <summary>
 /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
@@ -164,7 +165,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
   XMLValue content{ parseCharacter(source) };
   if (content.isReference()) {
     if (content.isEntityReference()) { content = m_entityMapper->map(content); }
-    std::unique_ptr<XNode> xEntityReference = std::make_unique<XEntityReference>(content);
+    std::unique_ptr<XNode> xEntityReference = XNode::make<XEntityReference>(content);
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
       // YES then XML into current element list
@@ -237,12 +238,12 @@ std::unique_ptr<XNode>
   // Create element XNode
   if (source.match(U">")) {
     // Normal element tag
-    auto xNode = std::make_unique<XElement>(name, attributes, namespaces, xNodeType);
+    auto xNode = XNode::make<XElement>(name, attributes, namespaces, xNodeType);
     while (source.more() && !source.match(U"</")) { parseElementContents(source, *xNode); }
     if (source.match(source.from_bytes(xNode->name()) + U">")) { return (xNode); }
   } else if (source.match(U"/>")) {
     // Self closing element tag
-    return (std::make_unique<XElement>(name, attributes, namespaces, XNode::Type::self));
+    return (XNode::make<XElement>(name, attributes, namespaces, XNode::Type::self));
   }
   throw SyntaxError(source.getPosition(), "Missing closing tag.");
 }
@@ -274,7 +275,7 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
     }
     if (!source.match(U"?>")) { throw SyntaxError(source.getPosition(), "Declaration end tag not found."); }
   }
-  return (std::make_unique<XDeclaration>(version, encoding, standalone));
+  return (XNode::make<XDeclaration>(version, encoding, standalone));
 }
 /// <summary>
 /// Parse any XML tail that is present. This can include comments, PI and white space.
@@ -319,7 +320,7 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 /// <returns>Pointer to prolog XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 {
-  auto xNode = std::make_unique<XProlog>();
+  auto xNode = XNode::make<XProlog>();
   xNode->addChild(parseDeclaration(source));
   while (source.more()) {
     if (source.match(U"<!--")) {
