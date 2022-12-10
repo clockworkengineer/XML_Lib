@@ -30,9 +30,15 @@ namespace XML_Lib {
 // =======================
 // PUBLIC STATIC VARIABLES
 // =======================
-// =================
-// PRIVATE FUNCTIONS
-// =================
+// ===============
+// PRIVATE METHODS
+// ===============
+/// <summary>
+/// Parse a element tag name and set its value in current XElement.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Element tag name.</returns>
+std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source)); }
 /// <summary>
 /// Parse declaration attribute and validate its value.
 /// </summary>
@@ -41,7 +47,7 @@ namespace XML_Lib {
 /// <param name="values">Set of valid attribute values.</param>
 /// <param name="toUpper">==true then convert attribute value all to uppercase.</param>
 /// <returns>Valid attribute value.</returns>
-std::string parseDeclarationAttribute(ISource &source,
+std::string XML_Impl::parseDeclarationAttribute(ISource &source,
   const std::string &name,
   const std::set<std::string> &values,
   bool toUpper = false)
@@ -52,20 +58,9 @@ std::string parseDeclarationAttribute(ISource &source,
   source.ignoreWS();
   result = parseValue(source).parsed;
   if (toUpper) { result = toUpperString(result); }
-  if (!values.contains(result)) {
-    throw SyntaxError("Unsupported XML " + name + " value '" + result + "' specified.");
-  }
+  if (!values.contains(result)) { throw SyntaxError("Unsupported XML " + name + " value '" + result + "' specified."); }
   return (result);
 }
-// ===============
-// PRIVATE METHODS
-// ===============
-/// <summary>
-/// Parse a element tag name and set its value in current XElement.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <returns>Element tag name.</returns>
-std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source)); }
 /// <summary>
 /// Parse a XML comment, create a XComment for it and add to list
 /// of elements for the current XElement.

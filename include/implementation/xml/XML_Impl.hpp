@@ -66,6 +66,10 @@ private:
   void resetWhiteSpace(XNode &xNode);
   void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
   void addContentToElementChildList(XNode &xNode, const std::string &content);
+  std::string parseDeclarationAttribute(ISource &source,
+    const std::string &name,
+    const std::set<std::string> &values,
+    bool toUpper);
   void parseElementContent(ISource &source, XNode &xNode);
   std::string parseTagName(ISource &source);
   std::vector<XMLAttribute> parseAttributes(ISource &source);
