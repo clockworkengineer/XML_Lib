@@ -30,6 +30,33 @@ namespace XML_Lib {
 // =======================
 // PUBLIC STATIC VARIABLES
 // =======================
+// =================
+// PRIVATE FUNCTIONS
+// =================
+/// <summary>
+/// Parse declaration attribute and validate its value.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="name">Attribute name string.</param>
+/// <param name="values">Set of valid attribute values.</param>
+/// <param name="toUpper">==true then convert attribute value all to uppercase.</param>
+/// <returns>Valid attribute value.</returns>
+std::string parseDeclarationAttribute(ISource &source,
+  const std::string &name,
+  const std::set<std::string> &values,
+  bool toUpper = false)
+{
+  std::string result;
+  source.ignoreWS();
+  if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after " + name + "."); }
+  source.ignoreWS();
+  result = parseValue(source).parsed;
+  if (toUpper) { result = toUpperString(result); }
+  if (!values.contains(result)) {
+    throw SyntaxError("Unsupported XML " + name + " value '" + result + "' specified.");
+  }
+  return (result);
+}
 // ===============
 // PRIVATE METHODS
 // ===============
@@ -224,6 +251,7 @@ std::unique_ptr<XNode>
   }
   throw SyntaxError(source.getPosition(), "Missing closing tag.");
 }
+
 /// <summary>
 /// Parse XML declaration and return XNode for it.
 /// </summary>
@@ -231,37 +259,21 @@ std::unique_ptr<XNode>
 /// <returns>Pointer to declaration XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
 {
-  std::string version, encoding, standalone;
+  std::string version{ "1.0" };
+  std::string encoding{ "UTF-8" };
+  std::string standalone{ "no" };
   source.ignoreWS();
   if (source.match(U"<?xml")) {
     source.ignoreWS();
     if (source.match(U"version")) {
-      source.ignoreWS();
-      if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after version."); }
-      source.ignoreWS();
-      version = parseValue(source).parsed;
-      if (version != "1.0" && version != "1.1") { throw SyntaxError("Unsupported XML version '" + version + "'."); }
+      version = parseDeclarationAttribute(source, "version", { "1.0", "2.0" });
     } else {
       throw SyntaxError(source.getPosition(), "Version missing from declaration.");
     }
     if (source.match(U"encoding")) {
-      source.ignoreWS();
-      if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after encoding."); }
-      source.ignoreWS();
-      encoding = toUpperString(parseValue(source).parsed);
-      if (encoding != "UTF-8" && encoding != "UTF-16") {
-        throw SyntaxError("Unsupported XML encoding '" + encoding + "' specified.");
-      }
+      encoding = parseDeclarationAttribute(source, "encoding", { "UTF-8", "UTF-16" }, true);
     }
-    if (source.match(U"standalone")) {
-      source.ignoreWS();
-      if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after standalone."); }
-      source.ignoreWS();
-      standalone = parseValue(source).parsed;
-      if (standalone != "yes" && standalone != "no") {
-        throw SyntaxError("Invalid XML standalone value of '" + standalone + "'.");
-      }
-    }
+    if (source.match(U"standalone")) { standalone = parseDeclarationAttribute(source, "standalone", { "yes", "no" }); }
     if (source.match(U"encoding")) {
       throw SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes.");
     }

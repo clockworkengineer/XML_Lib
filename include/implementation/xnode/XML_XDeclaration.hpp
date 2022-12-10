@@ -14,12 +14,8 @@ struct XDeclaration : XNode
 {
   // Constructors/Destructors
   XDeclaration(const std::string &version, const std::string &encoding, const std::string &standalone)
-    : XNode(XNode::Type::declaration)
-  {
-    if (!version.empty()) { m_version = version; }
-    if (!encoding.empty()) { m_encoding = encoding; }
-    if (!standalone.empty()) { m_standalone = standalone; }
-  }
+    : XNode(XNode::Type::declaration), m_version(version), m_encoding(encoding), m_standalone(standalone)
+  {}
   XDeclaration(const XDeclaration &other) = delete;
   XDeclaration &operator=(XDeclaration &other) = delete;
   XDeclaration(XDeclaration &&other) = default;
@@ -31,8 +27,8 @@ struct XDeclaration : XNode
   [[nodiscard]] const std::string &standalone() const { return (m_standalone); }
 
 private:
-  std::string m_version{ "1.0" };
-  std::string m_encoding{ "UTF-8" };
-  std::string m_standalone{ "no" };
+  std::string m_version;
+  std::string m_encoding;
+  std::string m_standalone;
 };
 }// namespace XML_Lib
