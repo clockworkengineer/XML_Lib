@@ -37,35 +37,17 @@ struct XNode
   [[nodiscard]] const XNode &operator[](int index) const;
   [[nodiscard]] const XNode &operator[](const std::string &name) const;
   // Add child
-  void addChild(std::unique_ptr<XNode> &child)
-  {
-    if (m_children == nullptr) { m_children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
-    m_children->push_back(std::move(child));
-  }
-  void addChild(std::unique_ptr<XNode> &&child)
-  {
-    if (m_children == nullptr) { m_children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
-    m_children->push_back(std::move(child));
-  }
+  void addChild(std::unique_ptr<XNode> &child);
+  void addChild(std::unique_ptr<XNode> &&child);
   // Get XNode children reference
-  std::vector<std::unique_ptr<XNode>> &getChildren()
-  {
-    if (m_children == nullptr) {
-      return (no_children);
-    } else {
-      return (*m_children);
-    }
-  };
-  const std::vector<std::unique_ptr<XNode>> &getChildren() const
-  {
-    if (m_children == nullptr) {
-      return (no_children);
-    } else {
-      return (*m_children);
-    }
-  };
+  std::vector<std::unique_ptr<XNode>> &getChildren();
+  const std::vector<std::unique_ptr<XNode>> &getChildren() const;
   // Make XNode
-  template<typename T, typename ... Args> static std::unique_ptr<T> make(Args&&... args) { return (std::make_unique<T>(std::forward<Args>(args)...) ); }
+  template<typename T, typename... Args> static std::unique_ptr<T> make(Args &&...args)
+  {
+    return (std::make_unique<T>(std::forward<Args>(args)...));
+  }
+
 private:
   // XNode Type
   Type m_type;

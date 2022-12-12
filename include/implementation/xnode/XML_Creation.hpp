@@ -29,6 +29,38 @@ inline const XNode &XNode::operator[](const std::string &name) const
   }
   throw XNode::Error("Invalid index used to access array.");
 }
+// ===============
+// Add child XNode
+// ===============
+inline void XNode::addChild(std::unique_ptr<XNode> &child)
+{
+  if (m_children == nullptr) { m_children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
+  m_children->push_back(std::move(child));
+}
+inline void XNode::addChild(std::unique_ptr<XNode> &&child)
+{
+  if (m_children == nullptr) { m_children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
+  m_children->push_back(std::move(child));
+}
+// ============================
+// Get XNode children reference
+// ============================
+inline std::vector<std::unique_ptr<XNode>> &XNode::getChildren()
+{
+  if (m_children == nullptr) {
+    return (no_children);
+  } else {
+    return (*m_children);
+  }
+};
+inline const std::vector<std::unique_ptr<XNode>> &XNode::getChildren() const
+{
+  if (m_children == nullptr) {
+    return (no_children);
+  } else {
+    return (*m_children);
+  }
+}
 // =====================
 // XElement index access
 // =====================

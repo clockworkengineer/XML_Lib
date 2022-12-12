@@ -62,17 +62,18 @@ set (XML_INCLUDES
     ./include/implementation/xml/XML_Core.hpp
     ./include/implementation/xml/XML_EntityMapper.hpp
     ./include/implementation/xnode/XML_XNode.hpp
-    ./include/implementation/xnode/XML_XProlog.hpp
-    ./include/implementation/xnode/XML_XDeclaration.hpp
-    ./include/implementation/xnode/XML_XContent.hpp
-    ./include/implementation/xnode/XML_XCDATA.hpp
-    ./include/implementation/xnode/XML_XEntityReference.hpp
-    ./include/implementation/xnode/XML_XElement.hpp
-    ./include/implementation/xnode/XML_XComment.hpp
-    ./include/implementation/xnode/XML_XPI.hpp
-    ./include/implementation/xnode/XML_XDTD.hpp
     ./include/implementation/xnode/XML_Reference.hpp
     ./include/implementation/xnode/XML_Creation.hpp
+    ./include/implementation/xnode/types/XML_XProlog.hpp
+    ./include/implementation/xnode/types/XML_XDeclaration.hpp
+    ./include/implementation/xnode/types/XML_XContent.hpp
+    ./include/implementation/xnode/types/XML_XCDATA.hpp
+    ./include/implementation/xnode/types/XML_XEntityReference.hpp
+    ./include/implementation/xnode/types/XML_XElement.hpp
+    ./include/implementation/xnode/types/XML_XComment.hpp
+    ./include/implementation/xnode/types/XML_XPI.hpp
+    ./include/implementation/xnode/types/XML_XDTD.hpp
+
 )
 
 # XML library
@@ -87,6 +88,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}/include/implementation/validator
     ${PROJECT_SOURCE_DIR}/include/implementation/xml
     ${PROJECT_SOURCE_DIR}/include/implementation/xnode
+    ${PROJECT_SOURCE_DIR}/include/implementation/xnode/types
     ${PROJECT_BINARY_DIR} )
 
 # Add tests
