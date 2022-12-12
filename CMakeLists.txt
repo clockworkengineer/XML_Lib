@@ -20,18 +20,18 @@ set(XML_LIBRARY_NAME ${PROJECT_NAME})
 
 set (XML_SOURCES
     ./classes/XML.cpp
-    ./classes/implementation/XML_Impl.cpp
-    ./classes/implementation/XML_Impl_Parse.cpp
-    ./classes/implementation/XML_Impl_Misc.cpp
-    ./classes/implementation/XML_Impl_Stringify.cpp
+    ./classes/implementation/xml/XML_Impl.cpp
+    ./classes/implementation/xml/XML_Impl_Parse.cpp
+    ./classes/implementation/xml/XML_Impl_Misc.cpp
+    ./classes/implementation/xml/XML_Impl_Stringify.cpp
+    ./classes/implementation/xml/XML_Common.cpp
     ./classes/DTD.cpp
-    ./classes/implementation/DTD_Impl.cpp
-    ./classes/implementation/DTD_Impl_Parse.cpp
-    ./classes/implementation/DTD_Impl_Parse_Content.cpp
-    ./classes/implementation/DTD_Impl_Parse_External.cpp
-    ./classes/implementation/XML_Common.cpp
-    ./classes/implementation/XML_Validator.cpp
-    ./classes/implementation/XML_EntityMapper.cpp
+    ./classes/implementation/dtd/DTD_Impl.cpp
+    ./classes/implementation/dtd/DTD_Impl_Parse.cpp
+    ./classes/implementation/dtd/DTD_Impl_Parse_Content.cpp
+    ./classes/implementation/dtd/DTD_Impl_Parse_External.cpp
+    ./classes/implementation/validator/XML_Validator.cpp
+    ./classes/implementation/entity/XML_EntityMapper.cpp
 )
  
 set (XML_INCLUDES
@@ -45,6 +45,8 @@ set (XML_INCLUDES
     ./include/interface/IEntityMapper.hpp
     ./include/interface/IValidator.hpp
     ./include/implementation/dtd/DTD_Impl.hpp
+    ./include/implementation/entity/XML_EntityMapper.hpp
+    ./include/implementation/entity/XML_EntityMapping.hpp
     ./include/implementation/io/XML_Sources.hpp
     ./include/implementation/io/XML_BufferSource.hpp
     ./include/implementation/io/XML_FileSource.hpp
@@ -56,11 +58,9 @@ set (XML_INCLUDES
     ./include/implementation/xml/XML_Value.hpp
     ./include/implementation/xml/XML_Attribute.hpp
     ./include/implementation/xml/XML_ExternalReference.hpp
-    ./include/implementation/xml/XML_EntityMapping.hpp
     ./include/implementation/xml/XML_Impl.hpp
     ./include/implementation/xml/XML_Common.hpp
     ./include/implementation/xml/XML_Core.hpp
-    ./include/implementation/xml/XML_EntityMapper.hpp
     ./include/implementation/xnode/XML_XNode.hpp
     ./include/implementation/xnode/XML_Reference.hpp
     ./include/implementation/xnode/XML_Creation.hpp
@@ -73,7 +73,6 @@ set (XML_INCLUDES
     ./include/implementation/xnode/types/XML_XComment.hpp
     ./include/implementation/xnode/types/XML_XPI.hpp
     ./include/implementation/xnode/types/XML_XDTD.hpp
-
 )
 
 # XML library
@@ -84,6 +83,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}/include/interface
     ${PROJECT_SOURCE_DIR}/include/implementation
     ${PROJECT_SOURCE_DIR}/include/implementation/dtd
+    ${PROJECT_SOURCE_DIR}/include/implementation/entity
     ${PROJECT_SOURCE_DIR}/include/implementation/io
     ${PROJECT_SOURCE_DIR}/include/implementation/validator
     ${PROJECT_SOURCE_DIR}/include/implementation/xml
