@@ -303,14 +303,11 @@ void XML_Impl::parseTail(ISource &source, XNode &xProlog)
 /// <returns>Pointer to DTD XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 {
-  if (m_dtd == nullptr) {
-    auto xNode = XNode::make<XDTD>(*m_entityMapper);
-    m_dtd = std::make_unique<DTD>(*xNode);
-    m_dtd->parse(source);
-    m_validator = std::make_unique<XML_Validator>(*xNode);
-    return (xNode);
-  }
-  throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
+  auto xNode = XNode::make<XDTD>(*m_entityMapper);
+  DTD dtd{ *xNode };
+  dtd.parse(source);
+  m_validator = std::make_unique<XML_Validator>(*xNode);
+  return (xNode);
 }
 /// <summary>
 /// Parse XML prolog and create the necessary element XNodes for it. Valid
@@ -331,6 +328,11 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
     } else if (source.isWS()) {
       parseWhiteSpaceToContent(source, *xProlog);
     } else if (source.match(U"<!DOCTYPE")) {
+      for (auto &element : xProlog->getChildren()) {
+        if (element->getType() == XNode::Type::dtd) {
+          throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
+        }
+      }
       xProlog->addChild(parseDTD(source));
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
@@ -349,6 +351,6 @@ std::unique_ptr<XNode> XML_Impl::parseXML(ISource &source)
   if (!source.match(U"<")) { throw SyntaxError(source.getPosition(), "Missing root element."); }
   xProlog->addChild(parseElement(source, {}, XNode::Type::root));
   parseTail(source, *xProlog);
-  return(xProlog);
+  return (xProlog);
 }
 }// namespace XML_Lib

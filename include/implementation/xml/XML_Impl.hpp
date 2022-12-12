@@ -92,7 +92,6 @@ private:
   // PRIVATE VARIABLES
   // =================
   std::unique_ptr<XNode> m_prolog;
-  std::unique_ptr<DTD> m_dtd;
   std::unique_ptr<IValidator> m_validator;
   std::unique_ptr<IEntityMapper> m_entityMapper;
 };
