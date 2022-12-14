@@ -27,7 +27,7 @@ bool validChar(XML_Lib::Char c);
 bool validNameStartChar(XML_Lib::Char c);
 bool validNameChar(XML_Lib::Char c);
 bool validReservedName(const XML_Lib::String &name);
-bool validName(XML_Lib::String name);
+bool validName(const XML_Lib::String &name);
 bool validAttributeValue(const XMLValue &value);
 // ===========
 // XML parsing

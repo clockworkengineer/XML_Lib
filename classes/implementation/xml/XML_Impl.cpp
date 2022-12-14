@@ -58,7 +58,6 @@ std::string XML_Impl::version()
 /// <returns>Reference to DTD XNode.</returns>
 XNode &XML_Impl::dtd()
 {
-  // Slow need to speed up.
   for (auto &element : prolog().getChildren()) {
     if (element->getType() == XNode::Type::dtd) { return (*element); }
   }
@@ -80,7 +79,6 @@ XNode &XML_Impl::declaration() { return (*prolog().getChildren()[0]); }
 /// <returns>Reference to root element XNode.</returns>
 XNode &XML_Impl::root()
 {
-  // Slow need to speed up.
   for (auto &element : prolog().getChildren()) {
     if ((element->getType() == XNode::Type::root) || (element->getType() == XNode::Type::self)) { return (*element); }
   }
@@ -100,7 +98,7 @@ void XML_Impl::validate()
   if (m_validator.get() != nullptr) { m_validator->validate(prolog()); }
 }
 /// <summary>
-/// Create XML text from an XML object.
+/// Create XML text on destination stream from an XML object.
 /// </summary>
 /// <param name="destination">XML destination stream.</param>
 void XML_Impl::stringify(IDestination &destination) { stringifyXML(destination); }

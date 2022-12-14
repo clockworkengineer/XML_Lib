@@ -142,7 +142,7 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
   return (attributes);
 }
 /// <summary>
-/// Parse white space add to current nodes child list.
+/// Parse white space add to current XNodes child list.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current XNode.</param>
@@ -159,13 +159,13 @@ void XML_Impl::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 /// Parse any element content that is found.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
 {
   XMLValue content{ parseCharacter(source) };
   if (content.isReference()) {
     if (content.isEntityReference()) { content = m_entityMapper->map(content); }
-    std::unique_ptr<XNode> xEntityReference = XNode::make<XEntityReference>(content);
+    auto xEntityReference = XNode::make<XEntityReference>(content);
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
       // YES then XML into current element list
@@ -189,7 +189,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
 /// to the list of the current XElement.
 /// </summary>
 /// <param name="source">XMl source stream.</param>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 {
   if (source.match(U"<!--")) {
@@ -340,6 +340,7 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
       throw SyntaxError(source.getPosition(), "Content detected before root element.");
     }
   }
+  if (!source.match(U"<")) { throw SyntaxError(source.getPosition(), "Missing root element."); }
   return (xProlog);
 }
 /// <summary>
@@ -348,7 +349,6 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 std::unique_ptr<XNode> XML_Impl::parseXML(ISource &source)
 {
   auto xProlog = parseProlog(source);
-  if (!source.match(U"<")) { throw SyntaxError(source.getPosition(), "Missing root element."); }
   xProlog->addChild(parseElement(source, {}, XNode::Type::root));
   parseTail(source, *xProlog);
   return (xProlog);

@@ -2,8 +2,8 @@
 // Class: XML_Impl
 //
 // Description:  Code to take an XML internal object description and produce
-// the XML text for it; currently as UTF-8 encoded text but this may change in
-// future.
+// the XML text for it on a destination stream. Currently as UTF-8 encoded 
+// text but this may change in future.
 //
 // Dependencies:   C20++ - Language standard features used.
 //
@@ -34,10 +34,10 @@ namespace XML_Lib {
 // PRIVATE METHODS
 // ===============
 /// <summary>
-/// Recursively parse XMLNode passed in to produce XML output on an XML
+/// Recursively parse XNode passed in to produce XML output on a
 /// destination stream in UTF-8 encoding.
 /// </summary>
-/// <param name="xNode">XMLNode to convert into XML.</param>
+/// <param name="xNode">XNode to convert into XML.</param>
 /// <param name="destination">XML destination stream.</param>
 void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
 {
@@ -113,11 +113,11 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     break;
   }
   default:
-    throw XML_Lib::Error("Invalid XMLNode encountered during stringify.");
+    throw XML_Lib::Error("Invalid XNode encountered during stringify.");
   }
 }
 /// <summary>
-/// Recursively parse XMLNode passed in to produce XML output on an XML
+/// Recursively parse XNode passed in to produce XML output on a
 /// destination stream in UTF-8 encoding.
 /// </summary>
 /// <param name="destination">XML destination stream.</param>

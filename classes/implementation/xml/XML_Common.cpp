@@ -75,13 +75,14 @@ bool validReservedName(const XML_Lib::String &name)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validName(XML_Lib::String name)
+bool validName(const XML_Lib::String &name)
 {
-  if (name.empty()) { return (false); }
-  std::transform(name.begin(), name.end(), name.begin(), ::tolower);
-  if (name.find(U"xml") == 0 && !(validReservedName(name))) { return (false); }
-  if (!validNameStartChar(name[0])) { return (false); }
-  for (auto it = name.begin() + 1; it != name.end(); it++) {
+  XML_Lib::String localName{ name };
+  if (localName.empty()) { return (false); }
+  std::transform(localName.begin(), localName.end(), localName.begin(), ::tolower);
+  if (localName.find(U"xml") == 0 && !(validReservedName(localName))) { return (false); }
+  if (!validNameStartChar(localName[0])) { return (false); }
+  for (auto it = localName.begin() + 1; it != localName.end(); it++) {
     if (!validNameChar(*it)) { return (false); }
   }
   return (true);
