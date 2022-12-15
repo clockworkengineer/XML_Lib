@@ -11,7 +11,7 @@
 #include "XML.hpp"
 #include "XML_Config.hpp"
 #include "XML_Core.hpp"
-#include "XML_Validator.hpp"
+#include "DTD_Validator.hpp"
 #include "XML_EntityMapper.hpp"
 // ===
 // DTD

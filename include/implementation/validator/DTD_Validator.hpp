@@ -21,7 +21,7 @@ namespace XML_Lib {
 // ================
 // CLASS DEFINITION
 // ================
-class XML_Validator : public IValidator
+class DTD_Validator : public IValidator
 {
 public:
   // ==========================
@@ -30,12 +30,12 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit XML_Validator(XNode &xNode) : m_xNodeDTD(XRef<XDTD>(xNode)) {}
-  XML_Validator(const XML_Validator &other) = delete;
-  XML_Validator &operator=(const XML_Validator &other) = delete;
-  XML_Validator(XML_Validator &&other) = delete;
-  XML_Validator &operator=(XML_Validator &&other) = delete;
-  ~XML_Validator() override = default;
+  explicit DTD_Validator(XNode &xNode) : m_xNodeDTD(XRef<XDTD>(xNode)) {}
+  DTD_Validator(const DTD_Validator &other) = delete;
+  DTD_Validator &operator=(const DTD_Validator &other) = delete;
+  DTD_Validator(DTD_Validator &&other) = delete;
+  DTD_Validator &operator=(DTD_Validator &&other) = delete;
+  ~DTD_Validator() override = default;
   // ==========
   // DESTRUCTOR
   // ==========

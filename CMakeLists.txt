@@ -30,7 +30,7 @@ set (XML_SOURCES
     ./classes/implementation/dtd/DTD_Impl_Parse.cpp
     ./classes/implementation/dtd/DTD_Impl_Parse_Content.cpp
     ./classes/implementation/dtd/DTD_Impl_Parse_External.cpp
-    ./classes/implementation/validator/XML_Validator.cpp
+    ./classes/implementation/validator/DTD_Validator.cpp
     ./classes/implementation/entity/XML_EntityMapper.cpp
 )
  
@@ -53,7 +53,7 @@ set (XML_INCLUDES
     ./include/implementation/io/XML_Destinations.hpp
     ./include/implementation/io/XML_BufferDestination.hpp
     ./include/implementation/io/XML_FileDestination.hpp
-    ./include/implementation/validator/XML_Validator.hpp
+    ./include/implementation/validator/DTD_Validator.hpp
     ./include/implementation/xml/XML_Error.hpp
     ./include/implementation/xml/XML_Value.hpp
     ./include/implementation/xml/XML_Attribute.hpp
