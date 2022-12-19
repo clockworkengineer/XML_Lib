@@ -24,12 +24,12 @@ set (XML_SOURCES
     ./classes/implementation/xml/XML_Impl_Parse.cpp
     ./classes/implementation/xml/XML_Impl_Misc.cpp
     ./classes/implementation/xml/XML_Impl_Stringify.cpp
-    ./classes/implementation/xml/XML_Common.cpp
     ./classes/DTD.cpp
     ./classes/implementation/dtd/DTD_Impl.cpp
     ./classes/implementation/dtd/DTD_Impl_Parse.cpp
     ./classes/implementation/dtd/DTD_Impl_Parse_Content.cpp
     ./classes/implementation/dtd/DTD_Impl_Parse_External.cpp
+    ./classes/implementation/common/XML_Common.cpp
     ./classes/implementation/validator/DTD_Validator.cpp
     ./classes/implementation/entity/XML_EntityMapper.cpp
 )
@@ -37,9 +37,9 @@ set (XML_SOURCES
 set (XML_INCLUDES
     XML_Config.hpp
     ./include/XML.hpp
-    ./include/XML_Forward.hpp
     ./include/DTD.hpp
-    ./include/DTD_Forward.hpp
+    ./include/forward/DTD_Forward.hpp
+    ./include/forward/XML_Forward.hpp
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp
     ./include/interface/IEntityMapper.hpp
@@ -80,6 +80,7 @@ set (XML_INCLUDES
 add_library(${XML_LIBRARY_NAME} ${XML_SOURCES} ${XML_INCLUDES})
 target_include_directories(${XML_LIBRARY_NAME} PUBLIC 
     ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/include/forward
     ${PROJECT_SOURCE_DIR}/include/interface
     ${PROJECT_SOURCE_DIR}/include/implementation
     ${PROJECT_SOURCE_DIR}/include/implementation/dtd
