@@ -9,11 +9,10 @@
 // XML Core
 // ========
 #include "XML_Core.hpp"
-// ========================================
-// XML Validator / Entity Mapper interfaces
-// ========================================
+// =======================
+// XML Validator interface
+// =======================
 #include "IValidator.hpp"
-#include "IEntityMapper.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================
@@ -30,7 +29,7 @@ public:
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================
-  explicit DTD_Validator(XNode &xNode) : m_xNodeDTD(XRef<XDTD>(xNode)) {}
+  explicit DTD_Validator(XNode &xNode) : m_xDTD(XRef<XDTD>(xNode)) {}
   DTD_Validator(const DTD_Validator &other) = delete;
   DTD_Validator &operator=(const DTD_Validator &other) = delete;
   DTD_Validator(DTD_Validator &&other) = delete;
@@ -74,6 +73,6 @@ private:
   std::set<std::string> m_assignedIDValues;
   std::set<std::string> m_assignedIDREFValues;
   long m_lineNumber = 1;
-  XDTD &m_xNodeDTD;
+  XDTD &m_xDTD;
 };
 }// namespace XML_Lib

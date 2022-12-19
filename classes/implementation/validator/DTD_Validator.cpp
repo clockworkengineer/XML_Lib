@@ -72,7 +72,7 @@ bool DTD_Validator::checkIsIDOK(const std::string &idValue)
 /// <summary>
 /// Check whether element contains characters.
 /// </summary>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 /// <returns>true if element contains characters otherwise false.</returns>
 bool DTD_Validator::checkIsPCDATA(const XNode &xNode)
 {
@@ -84,7 +84,7 @@ bool DTD_Validator::checkIsPCDATA(const XNode &xNode)
 /// <summary>
 /// Check whether an element does not contain any content (is empty).
 /// </summary>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 /// <returns>true if element empty otherwise false.</returns>
 bool DTD_Validator::checkIsEMPTY(const XNode &xNode)
 {
@@ -100,7 +100,7 @@ bool DTD_Validator::checkIsEMPTY(const XNode &xNode)
 /// #FIXED value	The attribute value is fixed
 ///
 /// </summary>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 void DTD_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute)
 {
   const XElement &xElement = XRef<XElement>(xNode);
@@ -123,20 +123,20 @@ void DTD_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribut
 ///
 /// Validate a elements attribute type which can be one of the following.
 ///
-/// CDATA	      The value is character data
+/// CDATA	        The value is character data
 /// (en1|en2|..)  The value must be one from an enumerated list
 /// ID	          The value is a unique id
 /// IDREF         The value is the id of another element
 /// IDREFS        The value is a list of other ids
 /// NMTOKEN       The value is a valid DTD name
-/// NMTOKENS	  The value is a list of valid DTD names
+/// NMTOKENS	    The value is a list of valid DTD names
 /// ENTITY        The value is an entity
-/// ENTITIES	  The value is a list of entities
-/// NOTATION	  The value is a name of a notation
+/// ENTITIES	    The value is a list of entities
+/// NOTATION	    The value is a name of a notation
 /// xml:          The value is a predefined xml value
 ///
 /// </summary>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute)
 {
   const XElement &xElement = XRef<XElement>(xNode);
@@ -177,13 +177,13 @@ void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute
       }
     }
   } else if ((attribute.type & XDTD::AttributeType::entity) != 0) {
-    if (!m_xNodeDTD.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";")) {
+    if (!m_xDTD.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";")) {
       elementError(xElement,
         "ENTITY attribute '" + attribute.name + "' value '" + elementAttribute.value.parsed + "' is not defined.");
     }
   } else if ((attribute.type & XDTD::AttributeType::entities) != 0) {
     for (auto &entity : splitString(elementAttribute.value.parsed, ' ')) {
-      if (!m_xNodeDTD.m_entityMapper.isPresent("&" + entity + ";")) {
+      if (!m_xDTD.m_entityMapper.isPresent("&" + entity + ";")) {
         elementError(xElement, "ENTITIES attribute '" + attribute.name + "' value '" + entity + "' is not defined.");
       }
     }
@@ -212,11 +212,11 @@ void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute
 /// Check element has the correct attribute type(s) and value(s) associated with
 /// it.
 /// </summary>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 void DTD_Validator::checkAttributes(const XNode &xNode)
 {
   const XElement &xElement = XRef<XElement>(xNode);
-  for (auto &attribute : m_xNodeDTD.getElement(xElement.name()).attributes) {
+  for (auto &attribute : m_xDTD.getElement(xElement.name()).attributes) {
     if (xElement.isAttributePresent(attribute.name)) { checkAttributeType(xNode, attribute); }
     checkAttributeValue(xNode, attribute);
   }
@@ -224,21 +224,21 @@ void DTD_Validator::checkAttributes(const XNode &xNode)
 /// <summary>
 /// Check elements structure.
 /// </summary>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 void DTD_Validator::checkContentSpecification(const XNode &xNode)
 {
   const XElement &xElement = XRef<XElement>(xNode);
-  if (m_xNodeDTD.getElementCount() == 0) { return; }
-  if (m_xNodeDTD.getElement(xElement.name()).content.parsed == "((<#PCDATA>))") {
+  if (m_xDTD.getElementCount() == 0) { return; }
+  if (m_xDTD.getElement(xElement.name()).content.parsed == "((<#PCDATA>))") {
     if (!checkIsPCDATA(xNode)) { elementError(xElement, "does not contain just any parsable data."); }
     return;
   }
-  if (m_xNodeDTD.getElement(xElement.name()).content.parsed == "EMPTY") {
+  if (m_xDTD.getElement(xElement.name()).content.parsed == "EMPTY") {
     if (!checkIsEMPTY(xNode)) { elementError(xElement, "is not empty."); }
     return;
   }
-  if (m_xNodeDTD.getElement(xElement.name()).content.parsed == "ANY") { return; }
-  std::regex match{ m_xNodeDTD.getElement(xElement.name()).content.parsed };
+  if (m_xDTD.getElement(xElement.name()).content.parsed == "ANY") { return; }
+  std::regex match{ m_xDTD.getElement(xElement.name()).content.parsed };
   std::string elements;
   for (auto &element : xElement.getChildren()) {
     if ((element->getType() == XNode::Type::element) || (element->getType() == XNode::Type::self)) {
@@ -249,13 +249,13 @@ void DTD_Validator::checkContentSpecification(const XNode &xNode)
   }
   if (!std::regex_match(elements, match)) {
     elementError(xElement,
-      "does not conform to the content specification " + m_xNodeDTD.getElement(xElement.name()).content.unparsed + ".");
+      "does not conform to the content specification " + m_xDTD.getElement(xElement.name()).content.unparsed + ".");
   }
 }
 /// <summary>
 /// Check elements content and associated attributes.
 /// </summary>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 void DTD_Validator::checkElement(const XNode &xNode)
 {
   checkContentSpecification(xNode);
@@ -264,7 +264,7 @@ void DTD_Validator::checkElement(const XNode &xNode)
 /// <summary>
 /// Recursively check elements of XML document.
 /// </summary>
-/// <param name="xNode">Current element node.</param>
+/// <param name="xNode">Current element XNode.</param>
 void DTD_Validator::checkElements(const XNode &xNode)
 {
   switch (xNode.getType()) {
@@ -276,7 +276,7 @@ void DTD_Validator::checkElements(const XNode &xNode)
     break;
   case XNode::Type::root:
   case XNode::Type::element:
-    if (xNode.getType() == XNode::Type::root && XRef<XElement>(xNode).name() != m_xNodeDTD.getRootName()) {
+    if (xNode.getType() == XNode::Type::root && XRef<XElement>(xNode).name() != m_xDTD.getRootName()) {
       throw ValidationError(
         m_lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
     }
@@ -309,7 +309,7 @@ void DTD_Validator::checkElements(const XNode &xNode)
 /// <param name="xNode">XNode element containing root of XML to validate.</param>
 void DTD_Validator::checkAgainstDTD(const XNode &xNode)
 {
-  m_lineNumber = m_xNodeDTD.getLineCount();
+  m_lineNumber = m_xDTD.getLineCount();
   checkElements(xNode);
   for (auto &idref : m_assignedIDREFValues) {
     if (m_assignedIDValues.count(idref) == 0) {
