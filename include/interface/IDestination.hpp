@@ -3,8 +3,10 @@
 // C++ STL
 // =======
 #include <string>
-#include <codecvt>
-#include <locale>
+// ===================
+// Character converter
+// ===================
+#include "Converter.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================
@@ -12,7 +14,7 @@ namespace XML_Lib {
 // =======================================================================
 // Interface for writing destination stream during XML/DTD stringification
 // =======================================================================
-class IDestination
+class IDestination : protected Converter
 {
 public:
   // ==================
@@ -37,7 +39,5 @@ public:
   virtual void add(const std::string &bytes) = 0;
   virtual void add(XML_Lib::Char c) = 0;
 
-protected:
-  std::wstring_convert<std::codecvt_utf8_utf16<XML_Lib::String::value_type>, XML_Lib::String::value_type> m_UTF8;
 };
 }// namespace XML_Lib

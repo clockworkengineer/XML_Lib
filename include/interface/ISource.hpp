@@ -3,18 +3,15 @@
 // C++ STL
 // =======
 #include <string>
-#include <codecvt>
-#include <locale>
 #include <cwctype>
+// ===================
+// Character converter
+// ===================
+#include "Converter.hpp"
 // =================
 // LIBRARY NAMESPACE
 // =================
 namespace XML_Lib {
-// ==================
-// Source String Type
-// ==================
-using String = std::u32string;
-using Char = String::value_type;
 // ===================
 // Character constants
 // ===================
@@ -23,7 +20,7 @@ constexpr char kLineFeed{ 0x0A };
 // ==========================================================
 // Interface for reading source stream during XML/DTD parsing
 // ==========================================================
-class ISource
+class ISource : protected Converter
 {
 public:
   // =============
@@ -118,7 +115,5 @@ public:
 protected:
   long m_lineNo = 1;
   long m_column = 1;
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> m_UTF16;
-  std::wstring_convert<std::codecvt_utf8_utf16<Char>, Char> m_UTF8;
 };
 }// namespace XML_Lib
