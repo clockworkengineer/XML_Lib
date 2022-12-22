@@ -39,7 +39,7 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  void add(XML_Lib::Char c) override { add(m_UTF8.to_bytes(c)); }
+  void add(XML_Lib::Char c) override { add(toUtf8(c)); }
   void add(const std::string &bytes) override
   {
     m_destination.write(bytes.c_str(), static_cast<std::streamsize>(bytes.length()));

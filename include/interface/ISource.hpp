@@ -98,19 +98,19 @@ public:
   // =============================================
   // Read bytes representing the current character
   // =============================================
-  std::string current_to_bytes() { return (m_UTF8.to_bytes(current())); }
+  std::string current_to_bytes() { return (toUtf8(current())); }
   // ==============================
   // Convert to byte string (UTF-8)
   // ==============================
-  std::string to_bytes(const String &from) { return (m_UTF8.to_bytes(from)); }
+  std::string to_bytes(const String &from) { return (toUtf8(from)); }
   // ==============================
   // Convert to byte string (UTF-8)
   // ==============================
-  std::string to_bytes(const Char from) { return (m_UTF8.to_bytes(from)); }
+  std::string to_bytes(const Char from) { return (toUtf8(from)); }
   // ================================
   // Convert from byte string (UTF-8)
   // ================================
-  String from_bytes(const std::string &from) { return (m_UTF8.from_bytes(from)); }
+  String from_bytes(const std::string &from) { return (toUtf32(from)); }
 
 protected:
   long m_lineNo = 1;

@@ -36,13 +36,13 @@ public:
         ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
       }
     }
-    m_buffer = m_UTF8.from_bytes(m_UTF16.to_bytes(utf16xml));
+    m_buffer = toUtf32(toUtf8(utf16xml));
     convertCRLFToLF(m_buffer);
   }
   explicit BufferSource(const std::string &sourceBuffer)
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
-    m_buffer = m_UTF8.from_bytes(sourceBuffer);
+    m_buffer = toUtf32(sourceBuffer);
     convertCRLFToLF(m_buffer);
   }
   BufferSource() = default;
@@ -78,7 +78,7 @@ public:
   [[nodiscard]] long position() const override { return (m_position); }
   std::string getRange(long start, long end) override
   {
-    return (m_UTF8.to_bytes(m_buffer.substr(start, static_cast<std::size_t>(end) - start)));
+    return (toUtf8(m_buffer.substr(start, static_cast<std::size_t>(end) - start)));
   }
   void reset() override
   {

@@ -16,7 +16,7 @@ configure_file(XML_Config.h.in XML_Config.hpp)
 
 set(XML_LIBRARY_NAME ${PROJECT_NAME})
 
-# XML sources and includes
+# XML sources
 
 set (XML_SOURCES
     ./classes/XML.cpp
@@ -33,13 +33,24 @@ set (XML_SOURCES
     ./classes/implementation/validator/DTD_Validator.cpp
     ./classes/implementation/entity/XML_EntityMapper.cpp
 )
- 
+
+# Platform specific sources
+
+if(MSVC)
+  list (APPEND XML_SOURCES "./classes/implementation/platform/windows/Converter.cpp")
+else()
+  list (APPEND XML_SOURCES "./classes/implementation/platform/linux/Converter.cpp")
+endif()
+
+# XML  includes
+
 set (XML_INCLUDES
     XML_Config.hpp
     ./include/XML.hpp
     ./include/DTD.hpp
     ./include/forward/DTD_Forward.hpp
     ./include/forward/XML_Forward.hpp
+    ./include/interface/Converter.hpp
     ./include/interface/ISource.hpp
     ./include/interface/IDestination.hpp
     ./include/interface/IEntityMapper.hpp

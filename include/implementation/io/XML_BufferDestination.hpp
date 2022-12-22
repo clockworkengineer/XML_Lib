@@ -32,13 +32,13 @@ public:
   BufferDestination &operator=(BufferDestination &&other) = delete;
   ~BufferDestination() = default;
   // ==============
-  // PUBLIC METHODS
+  // PUBLIC METHODS 
   // ==============
   void add(const std::string &bytes) override
   {
     for (auto b : bytes) { m_buffer.push_back(b); }
   }
-  void add(const XML_Lib::Char ch) override { add(m_UTF8.to_bytes(ch)); }
+  void add(const XML_Lib::Char ch) override { add(toUtf8(ch)); }
   [[nodiscard]] std::string getBuffer() const { return (m_buffer); }
   // ================
   // PUBLIC VARIABLES
