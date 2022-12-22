@@ -1,7 +1,7 @@
 //
 // Class: Converter
 //
-// Description: Convert characters to/from UTF8 and UTF16.
+// Description: Convert characters to/from UTF8 and UTF16/UTF32.
 //
 // Dependencies:  Windows - character conversion API.
 //
