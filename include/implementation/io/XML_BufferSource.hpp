@@ -36,7 +36,7 @@ public:
         ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
       }
     }
-    m_buffer = toUtf32(toUtf8(utf16xml));
+    m_buffer = toUtf32(utf16xml);
     convertCRLFToLF(m_buffer);
   }
   explicit BufferSource(const std::string &sourceBuffer)

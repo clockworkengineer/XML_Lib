@@ -47,8 +47,9 @@ static std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> m_UTF32
 std::u16string Converter::toUtf16(const std::string &utf8) const { return (m_UTF16.from_bytes(utf8)); }
 std::string Converter::toUtf8(const std::u16string &utf16) const { return (m_UTF16.to_bytes(utf16)); }
 /// <summary>
-/// Convert utf8 <-> utf32 strings.
+/// Convert utf8/utf16 <-> utf32 strings.
 /// </summary>
 std::u32string Converter::toUtf32(const std::string &utf8) const { return (m_UTF32.from_bytes(utf8)); }
+std::u32string toUtf32(const std::u16string &utf16) const {}
 std::string Converter::toUtf8(const std::u32string &utf32) const { return (m_UTF32.to_bytes(utf32)); }
 }// namespace XML_Lib

@@ -28,7 +28,10 @@ public:
   Converter(Converter &&other) = delete;
   Converter &operator=(Converter &&other) = delete;
   virtual ~Converter() = default;
-
+  // ==================
+  // Conversion methods
+  // ==================
+  std::u32string toUtf32(const std::u16string &utf16) const;
   std::u32string toUtf32(const std::string &utf8) const;
   std::u16string toUtf16(const std::string &utf8) const;
   std::string toUtf8(const std::u16string &utf16) const;

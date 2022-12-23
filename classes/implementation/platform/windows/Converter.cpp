@@ -67,9 +67,10 @@ std::string Converter::toUtf8(const std::u16string &utf16) const
   return bytes;
 }
 /// <summary>
-/// Convert utf8 <-> utf32 strings.
+/// Convert utf8/utf16 <-> utf32 strings.
 /// </summary>
 std::u32string Converter::toUtf32(const std::string &utf8) const { return (m_UTF32.from_bytes(utf8)); }
+std::u32string Converter::toUtf32(const std::u16string &utf16) const { return(toUtf32(toUtf8(utf16))); }
 std::string Converter::toUtf8(const std::u32string &utf32) const { return (m_UTF32.to_bytes(utf32)); }
 std::string Converter::toUtf8(char32_t utf32) const { return (m_UTF32.to_bytes(utf32)); }
 }// namespace XML_Lib
