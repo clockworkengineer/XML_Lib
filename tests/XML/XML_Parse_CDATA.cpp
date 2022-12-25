@@ -14,7 +14,7 @@ using namespace XML_Lib;
 // ==========
 // Test cases
 // ==========
-TEST_CASE("Parse CDATA SECTION", "[XML][Parse][CDATA]")
+TEST_CASE("Parse CDATA section.", "[XML][Parse][CDATA]")
 {
   std::string xmlString;
   SECTION("Parse XML root containing CDDATA containing a XML tags", "[XML][Parse][CDATA]")

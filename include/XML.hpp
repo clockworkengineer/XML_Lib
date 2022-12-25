@@ -33,13 +33,13 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  // Get reference to DTD node
+  // Get reference to DTD XNode
   XNode &dtd();
-  // Get reference to proglog node
+  // Get reference to proglog XNode
   XNode &prolog();
-  // Get reference to declaration node
+  // Get reference to declaration XNode
   XNode &declaration();
-  // Get reference to root element node
+  // Get reference to root element XNode
   XNode &root();
   // Validate XML
   void validate();

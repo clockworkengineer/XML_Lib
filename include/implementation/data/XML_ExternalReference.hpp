@@ -12,12 +12,11 @@ namespace XML_Lib {
 // ======================
 struct XMLExternalReference
 {
-  explicit XMLExternalReference(std::string type) : type(std::move(type)) {}
-  XMLExternalReference(std::string type, std::string systemID, std::string publicID)
-    : type(std::move(type)), systemID(std::move(systemID)), publicID(std::move(publicID))
+  XMLExternalReference(const std::string &type, const std::string &systemID = "", const std::string publicID = "")
+    : type(type), systemID(systemID), publicID(publicID)
   {}
   std::string type{};
   std::string systemID{};
   std::string publicID{};
 };
-}
+}// namespace XML_Lib

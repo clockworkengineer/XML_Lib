@@ -4,16 +4,14 @@
 // =======
 #include <set>
 #include <map>
-
 // =================
 // LIBRARY NAMESPACE
 // =================
 namespace XML_Lib {
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
-struct XMLEntityMapping;
-struct XMLValue;
+// ====================
+// FORWARD DECLARATIONS
+// ====================
+#include "IEntityMapper_Forward.hpp"
 // ===========================
 // XML Entity mapper interface
 // ===========================

@@ -54,6 +54,9 @@ set (XML_INCLUDES
     ./include/interface/IDestination.hpp
     ./include/interface/IEntityMapper.hpp
     ./include/interface/IValidator.hpp
+    ./include/implementation/data/XML_Value.hpp
+    ./include/implementation/data/XML_Attribute.hpp
+    ./include/implementation/data/XML_ExternalReference.hpp
     ./include/implementation/dtd/DTD_Impl.hpp
     ./include/implementation/entity/XML_EntityMapper.hpp
     ./include/implementation/entity/XML_EntityMapping.hpp
@@ -65,9 +68,6 @@ set (XML_INCLUDES
     ./include/implementation/io/XML_FileDestination.hpp
     ./include/implementation/validator/DTD_Validator.hpp
     ./include/implementation/xml/XML_Error.hpp
-    ./include/implementation/xml/XML_Value.hpp
-    ./include/implementation/xml/XML_Attribute.hpp
-    ./include/implementation/xml/XML_ExternalReference.hpp
     ./include/implementation/xml/XML_Impl.hpp
     ./include/implementation/xml/XML_Common.hpp
     ./include/implementation/xml/XML_Core.hpp
@@ -93,6 +93,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
     ${PROJECT_SOURCE_DIR}/include/forward
     ${PROJECT_SOURCE_DIR}/include/interface
     ${PROJECT_SOURCE_DIR}/include/implementation
+    ${PROJECT_SOURCE_DIR}/include/implementation/data
     ${PROJECT_SOURCE_DIR}/include/implementation/dtd
     ${PROJECT_SOURCE_DIR}/include/implementation/entity
     ${PROJECT_SOURCE_DIR}/include/implementation/io

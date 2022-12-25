@@ -2,7 +2,6 @@
 // =======
 // C++ STL
 // =======
-#include <vector>
 #include <string>
 // =================
 // LIBRARY NAMESPACE
@@ -13,7 +12,7 @@ namespace XML_Lib {
 // =============
 struct XMLAttribute
 {
-  XMLAttribute(std::string name, XMLValue value) : name(std::move(name)), value(std::move(value)) {}
+  XMLAttribute(const std::string &name, const XMLValue &value) : name(name), value(value) {}
   std::string name;
   XMLValue value;
 };
