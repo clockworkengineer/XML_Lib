@@ -7,9 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF) 
 
 if(MSVC)
-  add_compile_options(/W4 /D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
+  add_compile_options(/W4)
+  set(PLATFORM "windows")
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options(-Wall -Werror -pedantic)
+  set(PLATFORM "linux")
 endif()
 
 configure_file(XML_Config.h.in XML_Config.hpp)
@@ -32,15 +34,12 @@ set (XML_SOURCES
     ./classes/implementation/common/XML_Common.cpp
     ./classes/implementation/validator/DTD_Validator.cpp
     ./classes/implementation/entity/XML_EntityMapper.cpp
+    ./classes/implementation/platform/${PLATFORM}/Converter.cpp
 )
 
 # Platform specific sources
 
-if(MSVC)
-  list (APPEND XML_SOURCES "./classes/implementation/platform/windows/Converter.cpp")
-else()
-  list (APPEND XML_SOURCES "./classes/implementation/platform/linux/Converter.cpp")
-endif()
+list (APPEND XML_SOURCES "./classes/implementation/platform/${PLATFORM}/Converter.cpp")
 
 # XML  includes
 

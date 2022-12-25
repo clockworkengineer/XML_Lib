@@ -12,6 +12,10 @@
 // =================
 // CLASS DEFINITIONS
 // =================
+// ++++++++++++++++++++++++++++++++++++++++++++
+// Switch off C++17 warning for conversion code
+// ++++++++++++++++++++++++++++++++++++++++++++
+#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include "Converter.hpp"
 // ====================
 // CLASS IMPLEMENTATION
@@ -53,7 +57,7 @@ int BytesToWideChar(const char *bytes, int length, wchar_t *sideString = nullptr
 /// <summary>
 /// Convert to UTF-8 strings.
 /// </summary>
-std::string Converter::toUtf8(char16_t utf16) const { return (toUtf8(std::u16string(utf16,1))); }
+std::string Converter::toUtf8(char16_t utf16) const { return (toUtf8(std::u16string(utf16, 1))); }
 std::string Converter::toUtf8(const std::u16string &utf16) const
 {
   std::wstring wideString{ utf16.begin(), utf16.end() };
