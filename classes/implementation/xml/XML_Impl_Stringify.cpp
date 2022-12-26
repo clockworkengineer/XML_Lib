@@ -60,7 +60,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
-      destination.add(" " + attr.name + "=\"" + attr.value.getUnparsed() + "\"");
+      destination.add(" " + attr.getName() + "=\"" + attr.getUnparsed() + "\"");
     }
     destination.add(">");
     for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
@@ -72,7 +72,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
-      destination.add(" " + attr.name + "=\"" + attr.value.getUnparsed() + "\"");
+      destination.add(" " + attr.getName() + "=\"" + attr.getUnparsed() + "\"");
     }
     destination.add("/>");
     break;

@@ -31,29 +31,30 @@ struct XElement : XNode
   [[nodiscard]] bool isAttributePresent(const std::string &name) const
   {
     return (std::find_if(m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) {
-      return (attr.name == name);
+      return (attr.getName() == name);
     }) != m_attributes.rend());
   }
   // Add an attribute
   void addAttribute(const std::string &name, const XMLValue &value) const { m_attributes.emplace_back(name, value); }
   [[nodiscard]] const XMLAttribute &getAttribute(const std::string &name) const
   {
-    return (*std::find_if(
-      m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) { return (attr.name == name); }));
+    return (*std::find_if(m_attributes.rbegin(), m_attributes.rend(), [&name](const XMLAttribute &attr) {
+      return (attr.getName() == name);
+    }));
   }
   // Return reference to attribute list
   [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return (m_attributes); }
   [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
   {
     return (std::find_if(m_namespaces.rbegin(), m_namespaces.rend(), [&name](const XMLAttribute &attr) {
-      return (attr.name == name);
+      return (attr.getName() == name);
     }) != m_namespaces.rend());
   }
   // Is a namespace present ?
   [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const
   {
     return (*std::find_if(
-      m_namespaces.rbegin(), m_namespaces.rend(), [&name](const XMLAttribute &ns) { return (ns.name == name); }));
+      m_namespaces.rbegin(), m_namespaces.rend(), [&name](const XMLAttribute &ns) { return (ns.getName() == name); }));
   }
   // Return reference to namespace list
   [[nodiscard]] const std::vector<XMLAttribute> &getNamespaceList() const { return (m_namespaces); }

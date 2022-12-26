@@ -199,8 +199,8 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     REQUIRE(XRef<XElement>(xml.root())[0].name() == "person");
     REQUIRE(XRef<XElement>(xml.root())[0].getAttributeList().size() == 1);
     XMLAttribute attribute = XRef<XElement>(xml.root())[0].getAttribute("gender");
-    REQUIRE(attribute.name == "gender");
-    REQUIRE(attribute.value.getParsed() == "M");
+    REQUIRE(attribute.getName() == "gender");
+    REQUIRE(attribute.getValue() == "M");
     REQUIRE(XRef<XElement>(xml.root())[1].name() == "person");
     REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 0);
   }

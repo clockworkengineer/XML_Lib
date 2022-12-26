@@ -231,8 +231,9 @@ std::unique_ptr<XNode>
   // Add any new namespaces
   std::vector<XMLAttribute> namespaces{ outerNamespaces };
   for (const auto &attribute : attributes) {
-    if (attribute.name.starts_with("xmlns")) {
-      namespaces.emplace_back((attribute.name.size() > 5) ? attribute.name.substr(6) : ":", attribute.value);
+    if (attribute.getName().starts_with("xmlns")) {
+      namespaces.emplace_back((attribute.getName().size() > 5) ? attribute.getName().substr(6) : ":",
+        XMLValue{ attribute.getUnparsed(), attribute.getValue() });
     }
   }
   // Create element XNode

@@ -117,9 +117,9 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     REQUIRE(xDTD.m_entityMapper.get("&x;").internal == "&lt;");
     REQUIRE(XRef<XElement>(XRef<XElement>(xml.root())).getAttributeList().size() == 1);
     XMLAttribute attribute = XRef<XElement>(xml.root()).getAttribute("attr");
-    REQUIRE(attribute.name == "attr");
-    REQUIRE(attribute.value.getUnparsed() == "&x;");
-    REQUIRE(attribute.value.getParsed() == "&lt;");
+    REQUIRE(attribute.getName() == "attr");
+    REQUIRE(attribute.getUnparsed() == "&x;");
+    REQUIRE(attribute.getValue() == "&lt;");
   }
   // This should throw an error as & ' " < >  not allowed to be assigned to attribute directly (NEED TO FIX)
   SECTION("XML DTD with entity and how it deals with entity character expansion case 4)", "[XML][DTD][Parse][Entity]")

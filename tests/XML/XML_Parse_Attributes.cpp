@@ -32,7 +32,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
     REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 1);
-    REQUIRE(XRef<XElement>(xml.root()).getAttribute("number").value.getParsed() == "15");
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("number").getValue() == "15");
   }
   SECTION("Root attribute with 3 attached attributes number, away, flat", "[XML][Parse][[Attributes]")
   {
@@ -49,9 +49,9 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
     REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 3);
-    REQUIRE(XRef<XElement>(xml.root()).getAttribute("number").value.getParsed() == "15");
-    REQUIRE(XRef<XElement>(xml.root()).getAttribute("away").value.getParsed() == "yes");
-    REQUIRE(XRef<XElement>(xml.root()).getAttribute("flat").value.getParsed() == "no");
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("number").getValue() == "15");
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("away").getValue() == "yes");
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("flat").getValue() == "no");
   }
   SECTION("Empty elements with attributes are allowed.", "[XML][Parse][[Attributes]")
   {

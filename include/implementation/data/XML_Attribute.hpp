@@ -19,6 +19,11 @@ struct XMLAttribute
   XMLAttribute(XMLAttribute &&other) = default;
   XMLAttribute &operator=(XMLAttribute &&other) = default;
   ~XMLAttribute() = default;
+  const std::string &getName() const { return (name); }
+  const std::string &getValue() const { return (value.getParsed()); }
+  const std::string &getUnparsed() const { return (value.getUnparsed()); }
+
+private:
   // Attribute name and value
   std::string name;
   XMLValue value;
