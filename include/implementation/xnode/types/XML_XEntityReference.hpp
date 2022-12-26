@@ -12,7 +12,7 @@ struct XEntityReference : XNode
   explicit XEntityReference(const XMLValue &value) : XNode(XNode::Type::entity), m_value(value)
   {}
   XEntityReference(const XEntityReference &other) = delete;
-  XEntityReference &operator=(XEntityReference &other) = delete;
+  XEntityReference &operator=(const XEntityReference &other) = delete;
   XEntityReference(XEntityReference &&other) = default;
   XEntityReference &operator=(XEntityReference &&other) = default;
   ~XEntityReference() = default;

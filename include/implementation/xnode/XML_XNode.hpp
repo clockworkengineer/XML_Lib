@@ -25,7 +25,7 @@ struct XNode
   // Constructors/Destructors
   explicit XNode(Type nodeType = Type::base) : m_type(nodeType) {}
   XNode(const XNode &other) = delete;
-  XNode &operator=(XNode &other) = delete;
+  XNode &operator=(const XNode &other) = delete;
   XNode(XNode &&other) = default;
   XNode &operator=(XNode &&other) = default;
   ~XNode() = default;

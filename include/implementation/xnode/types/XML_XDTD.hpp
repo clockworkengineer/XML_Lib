@@ -74,7 +74,7 @@ struct XDTD : XNode
   // Constructors/Destructors
   explicit XDTD(IEntityMapper &entityMapper) : XNode(XNode::Type::dtd), m_entityMapper(entityMapper) {}
   XDTD(const XDTD &other) = delete;
-  XDTD &operator=(XDTD &other) = delete;
+  XDTD &operator=(const XDTD &other) = delete;
   XDTD(XDTD &&other) = default;
   XDTD &operator=(XDTD &&other) = default;
   ~XDTD() = default;

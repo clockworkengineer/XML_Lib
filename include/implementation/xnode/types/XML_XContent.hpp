@@ -15,7 +15,7 @@ struct XContent : XNode
   // Constructors/Destructors
   explicit XContent(bool isWhiteSpace = true) : XNode(XNode::Type::content), m_isWhiteSpace(isWhiteSpace) {}
   XContent(const XContent &other) = delete;
-  XContent &operator=(XContent &other) = delete;
+  XContent &operator=(const XContent &other) = delete;
   XContent(XContent &&other) = default;
   XContent &operator=(XContent &&other) = default;
   ~XContent() = default;

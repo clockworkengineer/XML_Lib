@@ -17,7 +17,7 @@ struct XPI : XNode
     : XNode(XNode::Type::pi), m_name(name), m_parameters(parameters)
   {}
   XPI(const XPI &other) = delete;
-  XPI &operator=(XPI &other) = delete;
+  XPI &operator=(const XPI &other) = delete;
   XPI(XPI &&other) = default;
   XPI &operator=(XPI &&other) = default;
   ~XPI() = default;

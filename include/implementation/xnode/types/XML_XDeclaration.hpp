@@ -17,7 +17,7 @@ struct XDeclaration : XNode
     : XNode(XNode::Type::declaration), m_version(version), m_encoding(encoding), m_standalone(standalone)
   {}
   XDeclaration(const XDeclaration &other) = delete;
-  XDeclaration &operator=(XDeclaration &other) = delete;
+  XDeclaration &operator=(const XDeclaration &other) = delete;
   XDeclaration(XDeclaration &&other) = default;
   XDeclaration &operator=(XDeclaration &&other) = default;
   ~XDeclaration() = default;

@@ -23,7 +23,7 @@ struct XElement : XNode
     : XNode(nodeType), m_name(name), m_attributes(attributes), m_namespaces(namespaces)
   {}
   XElement(const XElement &other) = delete;
-  XElement &operator=(XElement &other) = delete;
+  XElement &operator=(const XElement &other) = delete;
   XElement(XElement &&other) = default;
   XElement &operator=(XElement &&other) = default;
   ~XElement() = default;
