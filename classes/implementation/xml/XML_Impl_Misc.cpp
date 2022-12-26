@@ -39,7 +39,7 @@ namespace XML_Lib {
 void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference)
 {
   auto xElement = XNode::make<XElement>();
-  BufferSource entitySource(entityReference.parsed);
+  BufferSource entitySource(entityReference.getParsed());
   // Parse entity XML
   while (entitySource.more()) { parseElementContents(entitySource, xNode); }
   // Place into XNode (element) child list

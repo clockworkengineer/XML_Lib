@@ -140,7 +140,7 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     REQUIRE(xDTD.getElement("PRODUCT").attributes[1].type
             == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
     REQUIRE(xDTD.getElement("PRODUCT").attributes[1].enumeration == "(HandTool|Table|Shop-Professional)");
-    REQUIRE(xDTD.getElement("PRODUCT").attributes[1].value.parsed == "HandTool");
+    REQUIRE(xDTD.getElement("PRODUCT").attributes[1].value.getParsed() == "HandTool");
     REQUIRE(xDTD.getElement("PRODUCT").attributes[2].name == "PARTNUM");
     REQUIRE(
       xDTD.getElement("PRODUCT").attributes[2].type == (XDTD::AttributeType::cdata | XDTD::AttributeType::implied));
@@ -148,14 +148,14 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     REQUIRE(xDTD.getElement("PRODUCT").attributes[3].type
             == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
     REQUIRE(xDTD.getElement("PRODUCT").attributes[3].enumeration == "(Pittsburgh|Milwaukee|Chicago)");
-    REQUIRE(xDTD.getElement("PRODUCT").attributes[3].value.parsed == "Chicago");
+    REQUIRE(xDTD.getElement("PRODUCT").attributes[3].value.getParsed() == "Chicago");
     REQUIRE(xDTD.getElement("PRODUCT").attributes[4].name == "INVENTORY");
     REQUIRE(xDTD.getElement("PRODUCT").attributes[4].type
             == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
     REQUIRE(xDTD.getElement("PRODUCT").attributes[4].enumeration == "(InStock|Backordered|Discontinued)");
-    REQUIRE(xDTD.getElement("PRODUCT").attributes[4].value.parsed == "InStock");
+    REQUIRE(xDTD.getElement("PRODUCT").attributes[4].value.getParsed() == "InStock");
     REQUIRE(xDTD.getElement("NOTES").name == "NOTES");
-    REQUIRE(xDTD.getElement("NOTES").content.unparsed == "(#PCDATA)");
+    REQUIRE(xDTD.getElement("NOTES").content.getUnparsed() == "(#PCDATA)");
   }
 }
 TEST_CASE("Parse XML DTD that contains enumeration attributes with various errors.",
@@ -193,14 +193,14 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     REQUIRE(
       xDTD.getElement("person").attributes[0].type == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
     REQUIRE(xDTD.getElement("person").attributes[0].enumeration == "(M|F)");
-    REQUIRE(xDTD.getElement("person").attributes[0].value.parsed == "F");
+    REQUIRE(xDTD.getElement("person").attributes[0].value.getParsed() == "F");
     REQUIRE(xDTD.getRootName() == "queue");
     REQUIRE(xDTD.getRootName() == XRef<XElement>(XRef<XElement>(xml.root())).name());
     REQUIRE(XRef<XElement>(xml.root())[0].name() == "person");
     REQUIRE(XRef<XElement>(xml.root())[0].getAttributeList().size() == 1);
     XMLAttribute attribute = XRef<XElement>(xml.root())[0].getAttribute("gender");
     REQUIRE(attribute.name == "gender");
-    REQUIRE(attribute.value.parsed == "M");
+    REQUIRE(attribute.value.getParsed() == "M");
     REQUIRE(XRef<XElement>(xml.root())[1].name() == "person");
     REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 0);
   }

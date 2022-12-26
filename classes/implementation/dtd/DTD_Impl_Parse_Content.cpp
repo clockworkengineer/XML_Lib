@@ -191,7 +191,7 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
 XMLValue DTD_Impl::parseElementContentSpecification(const std::string &elementName, const XMLValue &contentSpec)
 {
   try {
-    BufferSource contentSpecSource(contentSpec.unparsed);
+    BufferSource contentSpecSource(contentSpec.getUnparsed());
     BufferDestination contentSpecDestination;
     contentSpecSource.ignoreWS();
     if (contentSpecSource.current() == '(') {
@@ -206,7 +206,7 @@ XMLValue DTD_Impl::parseElementContentSpecification(const std::string &elementNa
     } else {
       throw SyntaxError("Invalid element content specification.");
     }
-    return (XMLValue{ contentSpec.unparsed, contentSpecDestination.getBuffer() });
+    return (XMLValue{ contentSpec.getUnparsed(), contentSpecDestination.getBuffer() });
   } catch (SyntaxError &e) {
     if (e.what() == std::string("XML Syntax Error: Invalid element content specification.")) {
       throw SyntaxError("Invalid content specification for element <" + elementName + ">.");

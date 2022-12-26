@@ -23,6 +23,11 @@ struct XMLValue
   [[nodiscard]] bool isReference() const { return (unparsed[0] == '&' && unparsed.back() == ';'); }
   [[nodiscard]] bool isEntityReference() const { return (isReference() && unparsed[1] != '#'); }
   [[nodiscard]] bool isCharacterReference() const { return (isReference() && unparsed[1] == '#'); }
+  // Get value 
+  const std::string &getUnparsed() const { return (unparsed); }
+  const std::string &getParsed() const { return (parsed); }
+
+private:
   // Parsed/Unparsed value
   std::string unparsed{};
   std::string parsed{};

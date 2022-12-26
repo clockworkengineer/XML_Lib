@@ -102,7 +102,7 @@ inline std::string XNode::getContents() const
       if (!XRef<XEntityReference>(*node).getChildren().empty()) {
         result += XRef<XEntityReference>(*node).getContents();
       } else {
-        result += XRef<XEntityReference>(*node).value().parsed;
+        result += XRef<XEntityReference>(*node).value().getParsed();
       }
     } else if (node->getType() == XNode::Type::cdata) {
       result += XRef<XCDATA>(*node).CDATA();

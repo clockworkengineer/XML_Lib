@@ -94,7 +94,7 @@ bool validName(const XML_Lib::String &name)
 /// <returns>true then contains all legal characters otherwise false.</returns>
 bool validAttributeValue(const XMLValue &value)
 {
-  BufferSource valueSource(value.parsed);
+  BufferSource valueSource(value.getParsed());
   while (valueSource.more()) {
     if (valueSource.match(U"&#")) {
       parseCharacterReference(valueSource);
@@ -208,11 +208,11 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
       XMLValue character{ parseCharacter(source) };
       if (character.isEntityReference()) {
         XMLValue entityReference{ entityMapper.map(character) };
-        unparsed += entityReference.unparsed;
-        parsed += entityReference.parsed;
+        unparsed += entityReference.getUnparsed();
+        parsed += entityReference.getParsed();
       } else {
-        unparsed += character.unparsed;
-        parsed += character.parsed;
+        unparsed += character.getUnparsed();
+        parsed += character.getParsed();
       }
     }
     source.next();
@@ -234,8 +234,8 @@ XMLValue parseValue(ISource &source)
     source.next();
     while (source.more() && source.current() != quote) {
       XMLValue character{ parseCharacter(source) };
-      unparsed += character.unparsed;
-      parsed += character.parsed;
+      unparsed += character.getUnparsed();
+      parsed += character.getParsed();
     }
     source.next();
     source.ignoreWS();

@@ -60,7 +60,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
-      destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");
+      destination.add(" " + attr.name + "=\"" + attr.value.getUnparsed() + "\"");
     }
     destination.add(">");
     for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
@@ -72,7 +72,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
-      destination.add(" " + attr.name + "=\"" + attr.value.unparsed + "\"");
+      destination.add(" " + attr.name + "=\"" + attr.value.getUnparsed() + "\"");
     }
     destination.add("/>");
     break;
@@ -92,7 +92,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
   // XML character entity
   case XNode::Type::entity: {
     XEntityReference &xNodeEntity = XRef<XEntityReference>(xNode);
-    destination.add(xNodeEntity.value().unparsed);
+    destination.add(xNodeEntity.value().getUnparsed());
     break;
   }
   // XML processing instruction

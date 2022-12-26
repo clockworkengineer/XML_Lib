@@ -110,14 +110,14 @@ void DTD_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribut
   } else if ((attribute.type & XDTD::AttributeType::fixed) != 0) {
     if (attributePresent) {
       XMLAttribute elementAttribute = xElement.getAttribute(attribute.name);
-      if (attribute.value.parsed != elementAttribute.value.parsed) {
+      if (attribute.value.getParsed() != elementAttribute.value.getParsed()) {
         elementError(xElement,
-          "attribute '" + attribute.name + "' is '" + elementAttribute.value.parsed + "' instead of '"
-            + attribute.value.parsed + "'.");
+          "attribute '" + attribute.name + "' is '" + elementAttribute.value.getParsed() + "' instead of '"
+            + attribute.value.getParsed() + "'.");
       }
     }
   }
-  if (!attributePresent) { xElement.addAttribute(attribute.name, { attribute.value.parsed, attribute.value.parsed }); }
+  if (!attributePresent) { xElement.addAttribute(attribute.name, { attribute.value.getParsed(), attribute.value.getParsed() }); }
 }
 /// <summary>
 ///
@@ -142,47 +142,47 @@ void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute
   const XElement &xElement = XRef<XElement>(xNode);
   XMLAttribute elementAttribute = xElement.getAttribute(attribute.name);
   if ((attribute.type & XDTD::AttributeType::cdata) != 0) {
-    if (elementAttribute.value.parsed.empty())// No character data present.
+    if (elementAttribute.value.getParsed().empty())// No character data present.
     {
       elementError(xElement, "attribute '" + attribute.name + "' does not contain character data.");
     }
   } else if ((attribute.type & XDTD::AttributeType::id) != 0) {
-    if (!checkIsIDOK(elementAttribute.value.parsed)) {
+    if (!checkIsIDOK(elementAttribute.value.getParsed())) {
       elementError(xElement, "ID attribute '" + attribute.name + "' is invalid.");
     }
-    if (m_assignedIDValues.count(elementAttribute.value.parsed) > 0) {
+    if (m_assignedIDValues.count(elementAttribute.value.getParsed()) > 0) {
       elementError(xElement, "ID attribute '" + attribute.name + "' is not unique.");
     }
-    m_assignedIDValues.insert(elementAttribute.value.parsed);
+    m_assignedIDValues.insert(elementAttribute.value.getParsed());
   } else if ((attribute.type & XDTD::AttributeType::idref) != 0) {
-    if (!checkIsIDOK(elementAttribute.value.parsed)) {
+    if (!checkIsIDOK(elementAttribute.value.getParsed())) {
       elementError(xElement, "IDREF attribute '" + attribute.name + "' is invalid.");
     }
-    m_assignedIDREFValues.insert(elementAttribute.value.parsed);
+    m_assignedIDREFValues.insert(elementAttribute.value.getParsed());
   } else if ((attribute.type & XDTD::AttributeType::idrefs) != 0) {
-    for (auto &id : splitString(elementAttribute.value.parsed, ' ')) {
+    for (auto &id : splitString(elementAttribute.value.getParsed(), ' ')) {
       if (!checkIsIDOK(id)) {
         elementError(xElement, "IDREFS attribute '" + attribute.name + "' contains an invalid IDREF.");
       }
       m_assignedIDREFValues.insert(id);
     }
   } else if ((attribute.type & XDTD::AttributeType::nmtoken) != 0) {
-    if (!checkIsNMTOKENOK(elementAttribute.value.parsed)) {
+    if (!checkIsNMTOKENOK(elementAttribute.value.getParsed())) {
       elementError(xElement, "NMTOKEN attribute '" + attribute.name + "' is invalid.");
     }
   } else if ((attribute.type & XDTD::AttributeType::nmtokens) != 0) {
-    for (auto &nmtoken : splitString(elementAttribute.value.parsed, ' ')) {
+    for (auto &nmtoken : splitString(elementAttribute.value.getParsed(), ' ')) {
       if (!checkIsNMTOKENOK(nmtoken)) {
         elementError(xElement, "NMTOKEN attribute '" + attribute.name + "' contains an invalid NMTOKEN.");
       }
     }
   } else if ((attribute.type & XDTD::AttributeType::entity) != 0) {
-    if (!m_xDTD.m_entityMapper.isPresent("&" + elementAttribute.value.parsed + ";")) {
+    if (!m_xDTD.m_entityMapper.isPresent("&" + elementAttribute.value.getParsed() + ";")) {
       elementError(xElement,
-        "ENTITY attribute '" + attribute.name + "' value '" + elementAttribute.value.parsed + "' is not defined.");
+        "ENTITY attribute '" + attribute.name + "' value '" + elementAttribute.value.getParsed() + "' is not defined.");
     }
   } else if ((attribute.type & XDTD::AttributeType::entities) != 0) {
-    for (auto &entity : splitString(elementAttribute.value.parsed, ' ')) {
+    for (auto &entity : splitString(elementAttribute.value.getParsed(), ' ')) {
       if (!m_xDTD.m_entityMapper.isPresent("&" + entity + ";")) {
         elementError(xElement, "ENTITIES attribute '" + attribute.name + "' value '" + entity + "' is not defined.");
       }
@@ -192,18 +192,18 @@ void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute
     for (auto &notation : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
       notations.insert(notation);
     }
-    if (notations.count(elementAttribute.value.parsed) == 0) {
+    if (notations.count(elementAttribute.value.getParsed()) == 0) {
       elementError(xElement,
-        "NOTATION attribute '" + attribute.name + "' value '" + elementAttribute.value.parsed + "' is not defined.");
+        "NOTATION attribute '" + attribute.name + "' value '" + elementAttribute.value.getParsed() + "' is not defined.");
     }
   } else if ((attribute.type & XDTD::AttributeType::enumeration) != 0) {
     std::set<std::string> enumeration;
     for (auto &option : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
       enumeration.insert(option);
     }
-    if (enumeration.find(elementAttribute.value.parsed) == enumeration.end()) {
+    if (enumeration.find(elementAttribute.value.getParsed()) == enumeration.end()) {
       elementError(xElement,
-        "attribute '" + attribute.name + "' contains invalid enumeration value '" + elementAttribute.value.parsed
+        "attribute '" + attribute.name + "' contains invalid enumeration value '" + elementAttribute.value.getParsed()
           + "'.");
     }
   }
@@ -229,16 +229,16 @@ void DTD_Validator::checkContentSpecification(const XNode &xNode)
 {
   const XElement &xElement = XRef<XElement>(xNode);
   if (m_xDTD.getElementCount() == 0) { return; }
-  if (m_xDTD.getElement(xElement.name()).content.parsed == "((<#PCDATA>))") {
+  if (m_xDTD.getElement(xElement.name()).content.getParsed() == "((<#PCDATA>))") {
     if (!checkIsPCDATA(xNode)) { elementError(xElement, "does not contain just any parsable data."); }
     return;
   }
-  if (m_xDTD.getElement(xElement.name()).content.parsed == "EMPTY") {
+  if (m_xDTD.getElement(xElement.name()).content.getParsed() == "EMPTY") {
     if (!checkIsEMPTY(xNode)) { elementError(xElement, "is not empty."); }
     return;
   }
-  if (m_xDTD.getElement(xElement.name()).content.parsed == "ANY") { return; }
-  std::regex match{ m_xDTD.getElement(xElement.name()).content.parsed };
+  if (m_xDTD.getElement(xElement.name()).content.getParsed() == "ANY") { return; }
+  std::regex match{ m_xDTD.getElement(xElement.name()).content.getParsed() };
   std::string elements;
   for (auto &element : xElement.getChildren()) {
     if ((element->getType() == XNode::Type::element) || (element->getType() == XNode::Type::self)) {
@@ -249,7 +249,7 @@ void DTD_Validator::checkContentSpecification(const XNode &xNode)
   }
   if (!std::regex_match(elements, match)) {
     elementError(xElement,
-      "does not conform to the content specification " + m_xDTD.getElement(xElement.name()).content.unparsed + ".");
+      "does not conform to the content specification " + m_xDTD.getElement(xElement.name()).content.getUnparsed() + ".");
   }
 }
 /// <summary>

@@ -57,7 +57,7 @@ std::string XML_Impl::parseDeclarationAttribute(ISource &source,
   source.ignoreWS();
   if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after " + name + "."); }
   source.ignoreWS();
-  result = parseValue(source).parsed;
+  result = parseValue(source).getParsed();
   if (toUpper) { result = toUpperString(result); }
   if (!values.contains(result)) { throw SyntaxError("Unsupported XML " + name + " value '" + result + "' specified."); }
   return (result);
@@ -169,7 +169,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
       // YES then XML into current element list
-      if (content.parsed.starts_with("<")) {
+      if (content.getParsed().starts_with("<")) {
         processEntityReferenceXML(xNode, content);
         return;
       }
@@ -181,7 +181,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
     }
     xNode.addChild(std::move(xEntityReference));
   } else {
-    addContentToElementChildList(xNode, content.parsed);
+    addContentToElementChildList(xNode, content.getParsed());
   }
 }
 /// <summary>

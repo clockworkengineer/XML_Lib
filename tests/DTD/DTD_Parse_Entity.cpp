@@ -118,8 +118,8 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     REQUIRE(XRef<XElement>(XRef<XElement>(xml.root())).getAttributeList().size() == 1);
     XMLAttribute attribute = XRef<XElement>(xml.root()).getAttribute("attr");
     REQUIRE(attribute.name == "attr");
-    REQUIRE(attribute.value.unparsed == "&x;");
-    REQUIRE(attribute.value.parsed == "&lt;");
+    REQUIRE(attribute.value.getUnparsed() == "&x;");
+    REQUIRE(attribute.value.getParsed() == "&lt;");
   }
   // This should throw an error as & ' " < >  not allowed to be assigned to attribute directly (NEED TO FIX)
   SECTION("XML DTD with entity and how it deals with entity character expansion case 4)", "[XML][DTD][Parse][Entity]")
@@ -263,7 +263,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     REQUIRE(xDTD.getRootName() == "REPORT");
     REQUIRE(xDTD.m_entityMapper.get("%empty_report;").internal == "<!ELEMENT REPORT EMPTY>");
     REQUIRE(xDTD.getElement("REPORT").name == "REPORT");
-    REQUIRE(xDTD.getElement("REPORT").content.parsed == "EMPTY");
+    REQUIRE(xDTD.getElement("REPORT").content.getParsed() == "EMPTY");
   }
   SECTION("XML with external DTD with parameter entities to parse.", "[XML][DTD][Parse][Entity]")
   {
@@ -293,15 +293,15 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     REQUIRE(xDTD.m_entityMapper.get("%contact;").internal == "phone");
     REQUIRE(xDTD.m_entityMapper.get("%area;").internal == "name, street, pincode, city");
     REQUIRE(xDTD.getElement("REPORT").name == "REPORT");
-    REQUIRE(xDTD.getElement("REPORT").content.unparsed == "(residence|apartment|office|shop)*");
+    REQUIRE(xDTD.getElement("REPORT").content.getUnparsed() == "(residence|apartment|office|shop)*");
     REQUIRE(xDTD.getElement("residence").name == "residence");
-    REQUIRE(xDTD.getElement("residence").content.unparsed == "(name, street, pincode, city, phone)");
+    REQUIRE(xDTD.getElement("residence").content.getUnparsed() == "(name, street, pincode, city, phone)");
     REQUIRE(xDTD.getElement("apartment").name == "apartment");
-    REQUIRE(xDTD.getElement("apartment").content.unparsed == "(name, street, pincode, city, phone)");
+    REQUIRE(xDTD.getElement("apartment").content.getUnparsed() == "(name, street, pincode, city, phone)");
     REQUIRE(xDTD.getElement("office").name == "office");
-    REQUIRE(xDTD.getElement("office").content.unparsed == "(name, street, pincode, city, phone)");
+    REQUIRE(xDTD.getElement("office").content.getUnparsed() == "(name, street, pincode, city, phone)");
     REQUIRE(xDTD.getElement("shop").name == "shop");
-    REQUIRE(xDTD.getElement("shop").content.unparsed == "(name, street, pincode, city, phone)");
+    REQUIRE(xDTD.getElement("shop").content.getUnparsed() == "(name, street, pincode, city, phone)");
   }
   SECTION("XML DTD with parameter entity within general entity.", "[XML][DTD][Parse][Entity]")
   {

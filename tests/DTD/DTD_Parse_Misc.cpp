@@ -140,17 +140,17 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(xDTD.getElement("address").name == "address");
-    REQUIRE(xDTD.getElement("address").content.unparsed == "(name,company,phone)");
+    REQUIRE(xDTD.getElement("address").content.getUnparsed() == "(name,company,phone)");
     REQUIRE(xDTD.getElement("name").name == "name");
-    REQUIRE(xDTD.getElement("name").content.unparsed == "(#PCDATA)");
+    REQUIRE(xDTD.getElement("name").content.getUnparsed() == "(#PCDATA)");
     REQUIRE(xDTD.getElement("company").name == "company");
-    REQUIRE(xDTD.getElement("company").content.unparsed == "(#PCDATA)");
+    REQUIRE(xDTD.getElement("company").content.getUnparsed() == "(#PCDATA)");
     REQUIRE(xDTD.getElement("phone").name == "phone");
-    REQUIRE(xDTD.getElement("phone").content.unparsed == "(#PCDATA)");
+    REQUIRE(xDTD.getElement("phone").content.getUnparsed() == "(#PCDATA)");
     REQUIRE(xDTD.getElement("br").name == "br");
-    REQUIRE(xDTD.getElement("br").content.unparsed == "EMPTY");
+    REQUIRE(xDTD.getElement("br").content.getUnparsed() == "EMPTY");
     REQUIRE(xDTD.getElement("footer").name == "footer");
-    REQUIRE(xDTD.getElement("footer").content.unparsed == "ANY");
+    REQUIRE(xDTD.getElement("footer").content.getUnparsed() == "ANY");
   }
   SECTION("XML with external file DTD and check values", "[XML][DTD][Parse]")
   {
@@ -171,7 +171,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     REQUIRE(xDTD.getExternalReference().type == "SYSTEM");
     REQUIRE(xDTD.getExternalReference().systemID == "./files/note001.dtd");
     REQUIRE(xDTD.getElement("note").name == "note");
-    REQUIRE(xDTD.getElement("note").content.unparsed == "(to,from,heading,body)");
+    REQUIRE(xDTD.getElement("note").content.getUnparsed() == "(to,from,heading,body)");
   }
   SECTION("XML with external URL DTD to parse and check values", "[XML][DTD][Parse]")
   {

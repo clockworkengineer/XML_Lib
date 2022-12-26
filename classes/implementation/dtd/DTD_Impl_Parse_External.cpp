@@ -42,7 +42,7 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
   source.ignoreWS();
   if (includeOn) {
     if (source.current() == '%') {
-      conditionalValue = m_xDTD.m_entityMapper.map(parseEntityReference(source)).parsed;
+      conditionalValue = m_xDTD.m_entityMapper.map(parseEntityReference(source)).getParsed();
     } else if (source.match(U"INCLUDE")) {
       conditionalValue = "INCLUDE";
     } else if (source.match(U"IGNORE")) {
@@ -138,11 +138,11 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source)
 {
   if (source.match(U"SYSTEM")) {
     source.ignoreWS();
-    return (XMLExternalReference{ "SYSTEM", parseValue(source, m_xDTD.m_entityMapper).parsed, "" });
+    return (XMLExternalReference{ "SYSTEM", parseValue(source, m_xDTD.m_entityMapper).getParsed(), "" });
   } else if (source.match(U"PUBLIC")) {
     source.ignoreWS();
-    std::string publicID{ parseValue(source, m_xDTD.m_entityMapper).parsed };
-    std::string systemID{ parseValue(source, m_xDTD.m_entityMapper).parsed };
+    std::string publicID{ parseValue(source, m_xDTD.m_entityMapper).getParsed() };
+    std::string systemID{ parseValue(source, m_xDTD.m_entityMapper).getParsed() };
     return (XMLExternalReference{ "PUBLIC", systemID, publicID });
   }
   throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
