@@ -45,11 +45,7 @@ static std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> m_UTF32
 /// Convert to UTF-8 strings.
 /// </summary>
 std::string Converter::toUtf8(char16_t utf16) const { return (toUtf8(std::u16string(utf16, 1))); }
-std::string Converter::toUtf8(const std::u16string &utf16) const std::string Converter::toUtf8(
-  const std::u16string &utf16) const
-{
-  return (m_UTF16.to_bytes(utf16));
-}
+std::string Converter::toUtf8(const std::u16string &utf16) const { return (m_UTF16.to_bytes(utf16)); }
 std::string Converter::toUtf8(char32_t utf32) const { return (m_UTF32.to_bytes(utf32)); }
 std::string Converter::toUtf8(const std::u32string &utf32) const { return (m_UTF32.to_bytes(utf32)); }
 /// <summary>
