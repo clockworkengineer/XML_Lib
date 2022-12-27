@@ -71,8 +71,8 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
                           + "' occurs more than once in its definition.");
       }
     }
-    if (options.find(dtdAttribute.value.parsed) == options.end()) {
-      throw SyntaxError("Default value '" + dtdAttribute.value.parsed + "' for enumeration attribute '"
+    if (options.find(dtdAttribute.value.getParsed()) == options.end()) {
+      throw SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
                         + dtdAttribute.name + "' is invalid.");
     }
   }
@@ -223,7 +223,7 @@ void DTD_Impl::parseEntity(ISource &source)
   entityName += parseName(source) + ";";
   if (source.current() == '\'' || source.current() == '"') {
     XMLValue entityValue = parseValue(source);
-    m_xDTD.m_entityMapper.get(entityName).internal = entityValue.parsed;
+    m_xDTD.m_entityMapper.get(entityName).internal = entityValue.getParsed();
   } else {
     m_xDTD.m_entityMapper.get(entityName).external = parseExternalReference(source);
     if (source.match(U"NDATA")) {
@@ -270,7 +270,7 @@ void DTD_Impl::parseComment(ISource &source)
 void DTD_Impl::parseParameterEntityReference(ISource &source)
 {
   XMLValue parameterEntity = parseEntityReference(source);
-  BufferSource entitySource(m_xDTD.m_entityMapper.translate(parameterEntity.unparsed));
+  BufferSource entitySource(m_xDTD.m_entityMapper.translate(parameterEntity.getUnparsed()));
   parseInternal(entitySource);
   source.ignoreWS();
 }
@@ -335,7 +335,7 @@ void DTD_Impl::parseDTD(ISource &source)
     source.ignoreWS();
   }
   // Parse any DTD in external reference found
-  if (!m_xDTD.getExternalReference().type.empty()) {
+  if (!m_xDTD.getExternalReference().getType().empty()) {
     parseExternal(source);
     m_xDTD.setType(m_xDTD.getType() | XDTD::Type::external);
   }

@@ -146,25 +146,25 @@ std::map<std::string, XMLEntityMapping> &XML_EntityMapper::getList() { return (m
 /// <returns></returns>
 XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 {
-  std::string parsed{ entityReference.unparsed };
-  if (isPresent(entityReference.unparsed)) {
+  std::string parsed{ entityReference.getUnparsed() };
+  if (isPresent(entityReference.getUnparsed())) {
     // Internal so from memory.
-    auto entityMapping = get(entityReference.unparsed);
+    auto entityMapping = get(entityReference.getUnparsed());
     if (!entityMapping.internal.empty()) {
       parsed = entityMapping.internal;
     } else
     // External so from a file.
     // *** TODO Need to add support for external other than file ***
     {
-      if (std::filesystem::exists(entityMapping.external.systemID)) {
-        parsed = getFileMappingContents(entityMapping.external.systemID);
+      if (std::filesystem::exists(entityMapping.external.getSystemID())) {
+        parsed = getFileMappingContents(entityMapping.external.getSystemID());
       } else {
-        throw SyntaxError("Entity '" + entityReference.unparsed + "' source file '" + entityMapping.external.systemID
+        throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '" + entityMapping.external.getSystemID()
                           + "' does not exist.");
       }
     }
 
-    return (XMLValue{ entityReference.unparsed, parsed });
+    return (XMLValue{ entityReference.getUnparsed(), parsed });
   }
   return (entityReference);
 }
