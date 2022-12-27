@@ -80,12 +80,12 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[1]).getType() == XNode::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.getNotation("GIF").type == "SYSTEM");
-    REQUIRE(xDTD.getNotation("GIF").systemID == "GIF");
-    REQUIRE(xDTD.getNotation("JPG").type == "SYSTEM");
-    REQUIRE(xDTD.getNotation("JPG").systemID == "JPG");
-    REQUIRE(xDTD.getNotation("BMP").type == "SYSTEM");
-    REQUIRE(xDTD.getNotation("BMP").systemID == "BMP");
+    REQUIRE(xDTD.getNotation("GIF").getType() == "SYSTEM");
+    REQUIRE(xDTD.getNotation("GIF").getSystemID() == "GIF");
+    REQUIRE(xDTD.getNotation("JPG").getType() == "SYSTEM");
+    REQUIRE(xDTD.getNotation("JPG").getSystemID() == "JPG");
+    REQUIRE(xDTD.getNotation("BMP").getType() == "SYSTEM");
+    REQUIRE(xDTD.getNotation("BMP").getSystemID() == "BMP");
   }
   SECTION("XML with internal DTD containing comments.", "[XML][DTD][Parse]")
   {
@@ -168,8 +168,8 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == XNode::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
-    REQUIRE(xDTD.getExternalReference().type == "SYSTEM");
-    REQUIRE(xDTD.getExternalReference().systemID == "./files/note001.dtd");
+    REQUIRE(xDTD.getExternalReference().getType() == "SYSTEM");
+    REQUIRE(xDTD.getExternalReference().getSystemID() == "./files/note001.dtd");
     REQUIRE(xDTD.getElement("note").name == "note");
     REQUIRE(xDTD.getElement("note").content.getUnparsed() == "(to,from,heading,body)");
   }
@@ -187,9 +187,9 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == XNode::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
-    REQUIRE(xDTD.getExternalReference().type == "PUBLIC");
-    REQUIRE(xDTD.getExternalReference().systemID == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
-    REQUIRE(xDTD.getExternalReference().publicID == "-//W3C//DTD XHTML 1.0 Transitional//EN");
+    REQUIRE(xDTD.getExternalReference().getType() == "PUBLIC");
+    REQUIRE(xDTD.getExternalReference().getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+    REQUIRE(xDTD.getExternalReference().getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
   }
 }
 TEST_CASE("Parse XML DTD with various element content specification errors.", "[XML][DTD][Parse][Error]")

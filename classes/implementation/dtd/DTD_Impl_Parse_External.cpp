@@ -118,14 +118,14 @@ void DTD_Impl::parseExternalContent(ISource &source)
   }
 }
 /// <summary>
-/// Parse externally defined DTD into XMLNodeDTD.
+/// Parse externally defined DTD into XDTD.
 /// </summary>
 void DTD_Impl::parseExternalReferenceContent()
 {
-  if (m_xDTD.getExternalReference().type == "SYSTEM") {
-    FileSource dtdFile(m_xDTD.getExternalReference().systemID);
+  if (m_xDTD.getExternalReference().getType() == "SYSTEM") {
+    FileSource dtdFile(m_xDTD.getExternalReference().getSystemID());
     parseExternalContent(dtdFile);
-  } else if (m_xDTD.getExternalReference().type == "PUBLIC") {
+  } else if (m_xDTD.getExternalReference().getType() == "PUBLIC") {
     // Public external DTD currently not supported (Use system id ?)
   }
 }
