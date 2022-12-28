@@ -54,7 +54,7 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityRefer
       if (m_currentEntities.count(mappedEntityName) > 0) {
         throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
       }
-      auto nextMappedName = get(mappedEntityName).internal;
+      auto nextMappedName = getEntityMapping(mappedEntityName).internal;
       if (!nextMappedName.empty()) {
         m_currentEntities.emplace(mappedEntityName);
         recurseOverEntityReference(nextMappedName, type);
@@ -79,6 +79,18 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
   }
   return (content);
 }
+/// <summary>
+/// Get entity reference from map.
+/// </summary>
+/// <param name="entityName">.</param>
+/// <returns>Reference to entity refernce in intermal map.</returns>
+XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
+{
+  if (!isPresent(entityName)) { m_entityMappings.emplace(std::make_pair(entityName, XMLEntityMapping{ "" })); }
+  auto entity = m_entityMappings.find(entityName);
+  if (entity != m_entityMappings.end()) { return (entity->second); }
+  throw XML_Lib::Error("Could not find entity reference in map.");
+}
 // ==============
 // PUBLIC METHODS
 // ==============
@@ -98,18 +110,7 @@ XML_EntityMapper::XML_EntityMapper()
 /// Entity mapper destructor.
 /// </summary>
 XML_EntityMapper::~XML_EntityMapper() {}
-/// <summary>
-/// Get entity reference from map.
-/// </summary>
-/// <param name="entityName">.</param>
-/// <returns></returns>
-XMLEntityMapping &XML_EntityMapper::get(const std::string &entityName)
-{
-  if (!isPresent(entityName)) { m_entityMappings.emplace(std::make_pair(entityName, XMLEntityMapping{ "" })); }
-  auto entity = m_entityMappings.find(entityName);
-  if (entity != m_entityMappings.end()) { return (entity->second); }
-  throw XML_Lib::Error("Could not find entity reference in map.");
-}
+
 /// <summary>
 /// Is an entry for an entity reference present in map.
 /// </summary>
@@ -129,7 +130,7 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
   std::string parsed{ entityReference.getUnparsed() };
   if (isPresent(entityReference.getUnparsed())) {
     // Internal so from memory.
-    auto entityMapping = get(entityReference.getUnparsed());
+    auto entityMapping = getEntityMapping(entityReference.getUnparsed());
     if (!entityMapping.internal.empty()) {
       parsed = entityMapping.internal;
     } else
@@ -171,6 +172,30 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, char typ
     }
   } while (matchFound);
   return (translated);
+}
+const std::string &XML_EntityMapper::getInternal(const std::string &entityName)
+{
+  return (getEntityMapping(entityName).internal);
+}
+const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
+{
+  return (getEntityMapping(entityName).notation);
+}
+const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
+{
+  return (getEntityMapping(entityName).external);
+}
+void XML_EntityMapper::setInternal(const std::string &entityName, const std::string &internal)
+{
+  getEntityMapping(entityName).internal = internal;
+}
+void XML_EntityMapper::setNotation(const std::string &entityName, const std::string &notation)
+{
+  getEntityMapping(entityName).notation = notation;
+}
+void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExternalReference &external)
+{
+  getEntityMapping(entityName).external = external;
 }
 /// <summary>
 /// Take an entity reference string, check whether it contains any infinitely

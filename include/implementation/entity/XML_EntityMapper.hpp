@@ -41,8 +41,13 @@ public:
   // ==============
   // Is entity reference mapping entry present ?
   [[nodiscard]] bool isPresent(const std::string &entityName) const override;
-  // Get entity reference mapping entry
-  XMLEntityMapping &get(const std::string &entityName) override;
+  // Entity reference get/set details
+  const std::string &getInternal(const std::string &entityName) override;
+  const std::string &getNotation(const std::string &entityName) override;
+  const XMLExternalReference &getExternal(const std::string &entityName) override;
+  void setInternal(const std::string &entityName, const std::string &internal) override;
+  void setNotation(const std::string &entityName, const std::string &notation) override;
+  void setExternal(const std::string &entityName, const XMLExternalReference &external) override;
   //  Get mapping for an entity reference
   XMLValue map(const XMLValue &entityReference) override;
   // Translate any entity reference in a string
@@ -64,6 +69,8 @@ private:
   // ===============
   void recurseOverEntityReference(const std::string &entityReference, XML_Lib::Char type);
   std::string getFileMappingContents(const std::string &fileName);
+  // Get entity reference mapping entry
+  XMLEntityMapping &getEntityMapping(const std::string &entityName);
   // =================
   // PRIVATE VARIABLES
   // =================

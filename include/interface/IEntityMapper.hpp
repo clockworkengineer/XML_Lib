@@ -27,10 +27,15 @@ public:
   IEntityMapper(IEntityMapper &&other) = delete;
   IEntityMapper &operator=(IEntityMapper &&other) = delete;
   virtual ~IEntityMapper() = default;
-  // ==================================
-  // Get entity reference mapping entry
-  // ==================================
-  virtual XMLEntityMapping &get(const std::string &entityName) = 0;
+  // ================================
+  // Entity reference get/set details
+  // ================================
+  virtual const std::string &getInternal(const std::string &entityName) = 0;
+  virtual const std::string &getNotation(const std::string &entityName) = 0;
+  virtual const XMLExternalReference &getExternal(const std::string &entityName) = 0;
+  virtual void setInternal(const std::string &entityName, const std::string &internal) = 0;
+  virtual void setNotation(const std::string &entityName, const std::string &notation) = 0;
+  virtual void setExternal(const std::string &entityName, const XMLExternalReference &external) = 0;
   // ===========================================
   // Is entity reference mapping entry present ?
   // ===========================================

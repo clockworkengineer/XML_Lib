@@ -223,12 +223,12 @@ void DTD_Impl::parseEntity(ISource &source)
   entityName += parseName(source) + ";";
   if (source.current() == '\'' || source.current() == '"') {
     XMLValue entityValue = parseValue(source);
-    m_xDTD.m_entityMapper.get(entityName).internal = entityValue.getParsed();
+    m_xDTD.m_entityMapper.setInternal(entityName, entityValue.getParsed());
   } else {
-    m_xDTD.m_entityMapper.get(entityName).external = parseExternalReference(source);
+    m_xDTD.m_entityMapper.setExternal(entityName, parseExternalReference(source));
     if (source.match(U"NDATA")) {
       source.ignoreWS();
-      m_xDTD.m_entityMapper.get(entityName).notation = parseName(source);
+      m_xDTD.m_entityMapper.setNotation(entityName, parseName(source));
     }
   }
 }
