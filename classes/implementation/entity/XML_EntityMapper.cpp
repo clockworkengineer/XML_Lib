@@ -88,26 +88,16 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 /// </summary>
 XML_EntityMapper::XML_EntityMapper()
 {
-  add("&amp;", XMLEntityMapping{ "&#x26;" });
-  add("&quot;", XMLEntityMapping{ "&#x22;" });
-  add("&apos;", XMLEntityMapping{ "&#x27;" });
-  add("&lt;", XMLEntityMapping{ "&#x3C;" });
-  add("&gt;", XMLEntityMapping{ "&#x3E;" });
+  m_entityMappings.emplace(std::make_pair("&amp;", XMLEntityMapping{ "&#x26;" }));
+  m_entityMappings.emplace(std::make_pair("&quot;", XMLEntityMapping{ "&#x22;" }));
+  m_entityMappings.emplace(std::make_pair("&apos;", XMLEntityMapping{ "&#x27;" }));
+  m_entityMappings.emplace(std::make_pair("&lt;", XMLEntityMapping{ "&#x3C;" }));
+  m_entityMappings.emplace(std::make_pair("&gt;", XMLEntityMapping{ "&#x3E;" }));
 }
 /// <summary>
 /// Entity mapper destructor.
 /// </summary>
 XML_EntityMapper::~XML_EntityMapper() {}
-/// <summary>
-/// Place entity reference into map.
-/// </summary>
-/// <param name="entityName">.</param>
-/// <param name="entityMapping">.</param>
-/// <returns></returns>
-void XML_EntityMapper::add(const std::string &entityName, const XMLEntityMapping &entityMapping)
-{
-  m_entityMappings.emplace(std::make_pair(entityName, entityMapping));
-}
 /// <summary>
 /// Get entity reference from map.
 /// </summary>
@@ -115,16 +105,11 @@ void XML_EntityMapper::add(const std::string &entityName, const XMLEntityMapping
 /// <returns></returns>
 XMLEntityMapping &XML_EntityMapper::get(const std::string &entityName)
 {
-  if (!isPresent(entityName)) { add(entityName, XMLEntityMapping{ "" }); }
+  if (!isPresent(entityName)) { m_entityMappings.emplace(std::make_pair(entityName, XMLEntityMapping{ "" })); }
   auto entity = m_entityMappings.find(entityName);
   if (entity != m_entityMappings.end()) { return (entity->second); }
   throw XML_Lib::Error("Could not find entity reference in map.");
 }
-/// <summary>
-/// Remove entity reference from map.
-/// </summary>
-/// <param name="entityName">.</param>
-void XML_EntityMapper::remove(const std::string &entityName) { m_entityMappings.erase(entityName); }
 /// <summary>
 /// Is an entry for an entity reference present in map.
 /// </summary>
@@ -134,11 +119,6 @@ bool XML_EntityMapper::isPresent(const std::string &entityName) const
 {
   return (m_entityMappings.count(entityName) != 0);
 }
-/// <summary>
-/// Get a traversal list of entity reference map.
-/// </summary>
-/// <returns></returns>
-std::map<std::string, XMLEntityMapping> &XML_EntityMapper::getList() { return (m_entityMappings); }
 /// <summary>
 /// Get mapping for an entity reference.
 /// </summary>
@@ -159,8 +139,8 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
       if (std::filesystem::exists(entityMapping.external.getSystemID())) {
         parsed = getFileMappingContents(entityMapping.external.getSystemID());
       } else {
-        throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '" + entityMapping.external.getSystemID()
-                          + "' does not exist.");
+        throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
+                          + entityMapping.external.getSystemID() + "' does not exist.");
       }
     }
 
@@ -199,11 +179,11 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, char typ
 /// a current set of used entities; throwing an exception if it is already
 /// being used.
 /// </summary>
-/// <param name="entityReference">.</param>
-/// <param name="type">.</param>
-void XML_EntityMapper::checkForRecursion(const std::string &entityReference)
+void XML_EntityMapper::checkForRecursion()
 {
-  if (!m_currentEntities.empty()) { throw Error("EntityMapper internal error."); }
-  recurseOverEntityReference(entityReference, entityReference[0]);
+  for (auto &entityName : m_entityMappings) {
+    if (!m_currentEntities.empty()) { throw Error("EntityMapper internal error."); }
+    recurseOverEntityReference(entityName.first, entityName.first[0]);
+  }
 }
 }// namespace XML_Lib

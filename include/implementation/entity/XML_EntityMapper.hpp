@@ -40,14 +40,11 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  void add(const std::string &entityName, const XMLEntityMapping &entityMapping) override;
   XMLEntityMapping &get(const std::string &entityName) override;
-  void remove(const std::string &entityName) override;
   [[nodiscard]] bool isPresent(const std::string &entityName) const override;
-  std::map<std::string, XMLEntityMapping> &getList() override;
   XMLValue map(const XMLValue &entityReference) override;
   [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
-  void checkForRecursion(const std::string &entityReference) override;
+  void checkForRecursion() override;
   // ================
   // PUBLIC VARIABLES
   // ================

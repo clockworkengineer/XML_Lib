@@ -342,9 +342,7 @@ void DTD_Impl::parseDTD(ISource &source)
   // Save away unparsed form of DTD
   m_xDTD.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
   // Make sure no defined entity contains recursion
-  for (auto &entityName : m_xDTD.m_entityMapper.getList()) {
-    m_xDTD.m_entityMapper.checkForRecursion(entityName.first);
-  }
+  m_xDTD.m_entityMapper.checkForRecursion();
   // Count lines in DTD
   std::string unparsedDTD = m_xDTD.unparsed();
   m_xDTD.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);

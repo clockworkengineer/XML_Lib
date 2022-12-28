@@ -27,26 +27,14 @@ public:
   IEntityMapper(IEntityMapper &&other) = delete;
   IEntityMapper &operator=(IEntityMapper &&other) = delete;
   virtual ~IEntityMapper() = default;
-  // ============================
-  // Add entity reference mapping
-  // ============================
-  virtual void add(const std::string &entityName, const XMLEntityMapping &entityMapping) = 0;
   // ==================================
   // Get entity reference mapping entry
   // ==================================
   virtual XMLEntityMapping &get(const std::string &entityName) = 0;
-  // ===============================
-  // Remove entity reference mapping
-  // ===============================
-  virtual void remove(const std::string &entityName) = 0;
   // ===========================================
   // Is entity reference mapping entry present ?
   // ===========================================
   [[nodiscard]] virtual bool isPresent(const std::string &entityName) const = 0;
-  // =================================
-  // Get entity reference mapping list
-  // =================================
-  virtual std::map<std::string, XMLEntityMapping> &getList() = 0;
   // ===================================
   // Get mapping for an entity reference
   // ===================================
@@ -58,7 +46,7 @@ public:
   // ==============================================
   // Check for a recursive entity reference mapping
   // ==============================================
-  virtual void checkForRecursion(const std::string &entityName) = 0;
+  virtual void checkForRecursion() = 0;
 };
 //
 }// namespace XML_Lib
