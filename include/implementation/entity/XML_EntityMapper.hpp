@@ -10,7 +10,6 @@
 // XML
 // ===
 #include "XML_Core.hpp"
-#include "XML_Sources.hpp"
 // ===========================
 // XML Entity Mapper interface
 // ===========================
@@ -40,10 +39,15 @@ public:
   // ==============
   // PUBLIC METHODS
   // ==============
-  XMLEntityMapping &get(const std::string &entityName) override;
+  // Is entity reference mapping entry present ?
   [[nodiscard]] bool isPresent(const std::string &entityName) const override;
+  // Get entity reference mapping entry
+  XMLEntityMapping &get(const std::string &entityName) override;
+  //  Get mapping for an entity reference
   XMLValue map(const XMLValue &entityReference) override;
+  // Translate any entity reference in a string
   [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
+  // Check for a recursive entity reference mapping
   void checkForRecursion() override;
   // ================
   // PUBLIC VARIABLES

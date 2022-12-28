@@ -12,10 +12,7 @@ namespace XML_Lib {
 // ==================
 struct XMLEntityMapping
 {
-  explicit XMLEntityMapping(std::string internal) : internal(std::move(internal)) {}
-  XMLEntityMapping(std::string internal, XMLExternalReference external, std::string notation)
-    : internal(std::move(internal)), external(std::move(external)), notation(std::move(notation))
-  {}
+  explicit XMLEntityMapping(const std::string &internal) : internal(internal) {}
   std::string internal{};
   XMLExternalReference external{ "" };
   std::string notation{};
