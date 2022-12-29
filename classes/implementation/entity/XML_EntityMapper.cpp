@@ -84,7 +84,7 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 /// </summary>
 /// <param name="entityName">.</param>
 /// <returns>Reference to entity refernce in intermal map.</returns>
-XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
+XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
 {
   if (!isPresent(entityName)) { m_entityMappings.emplace(std::make_pair(entityName, XMLEntityMapping{ "" })); }
   auto entity = m_entityMappings.find(entityName);

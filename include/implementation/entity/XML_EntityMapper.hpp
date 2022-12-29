@@ -27,6 +27,16 @@ public:
   // ==========================
   // PUBLIC TYPES AND CONSTANTS
   // ==========================
+  // ==================
+  // XML Entity mapping
+  // ==================
+  struct XMLEntityMapping
+  {
+    explicit XMLEntityMapping(const std::string &internal) : internal(internal) {}
+    std::string internal{};
+    XMLExternalReference external{ "" };
+    std::string notation{};
+  };
   // ======================
   // CONSTRUCTOR/DESTRUCTOR
   // ======================

@@ -59,7 +59,6 @@ set (XML_INCLUDES
     ./include/implementation/data/XML_ExternalReference.hpp
     ./include/implementation/dtd/DTD_Impl.hpp
     ./include/implementation/entity/XML_EntityMapper.hpp
-    ./include/implementation/entity/XML_EntityMapping.hpp
     ./include/implementation/io/XML_Sources.hpp
     ./include/implementation/io/XML_BufferSource.hpp
     ./include/implementation/io/XML_FileSource.hpp
