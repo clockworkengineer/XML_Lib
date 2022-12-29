@@ -1,7 +1,7 @@
 //
 // Class: XML_EntityMapper
 //
-// Description: XML entity mapper.
+// Description: XML entity refernce mapper.
 //
 // Dependencies:   C20++ - Language standard features used.
 //
@@ -37,11 +37,13 @@ namespace XML_Lib {
 /// until no more more are found it or the entity reference repeats in which case
 /// it will cause and infinite loop when decoding and is an error.
 /// </summary>
-/// <param name="entityReference">.</param>
-/// <param name="type">.</param>
-void XML_EntityMapper::recurseOverEntityReference(const std::string &entityReference, XML_Lib::Char type)
+/// <param name="entityName">Entity mapping name.</param>
+/// <param name="type">Entity mapping type.</param>
+void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
+  XML_Lib::Char type,
+  std::set<std::string> &currentEntities)
 {
-  BufferSource entitySource(entityReference);
+  BufferSource entitySource(entityName);
   while (entitySource.more()) {
     if (entitySource.current() == type) {
       std::string mappedEntityName = entitySource.current_to_bytes();
@@ -51,14 +53,14 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityRefer
         entitySource.next();
       }
       mappedEntityName += entitySource.current_to_bytes();
-      if (m_currentEntities.count(mappedEntityName) > 0) {
+      if (currentEntities.count(mappedEntityName) > 0) {
         throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
       }
       auto nextMappedName = getEntityMapping(mappedEntityName).internal;
       if (!nextMappedName.empty()) {
-        m_currentEntities.emplace(mappedEntityName);
-        recurseOverEntityReference(nextMappedName, type);
-        m_currentEntities.erase(mappedEntityName);
+        currentEntities.emplace(mappedEntityName);
+        recurseOverEntityReference(nextMappedName, type, currentEntities);
+        currentEntities.erase(mappedEntityName);
       }
     }
     entitySource.next();
@@ -68,7 +70,7 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityRefer
 /// Grab an entity reference mapping from an external file.
 /// </summary>
 /// <param name="fileName">.</param>
-/// <returns></returns>
+/// <returns>String containing contents of entity reference mapping file.</returns>
 std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName)
 {
   std::string content;
@@ -83,7 +85,7 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 /// Get entity reference from map.
 /// </summary>
 /// <param name="entityName">.</param>
-/// <returns>Reference to entity refernce in intermal map.</returns>
+/// <returns>Reference to entity mapping in intermal map.</returns>
 XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
 {
   if (!isPresent(entityName)) { m_entityMappings.emplace(std::make_pair(entityName, XMLEntityMapping{ "" })); }
@@ -96,10 +98,10 @@ XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std
 // ==============
 /// <summary>
 /// Entity mapper constructor.
-/// Initialise entity mapping table with defaults.
 /// </summary>
 XML_EntityMapper::XML_EntityMapper()
 {
+  /// Initialise entity mapping table with defaults.
   m_entityMappings.emplace(std::make_pair("&amp;", XMLEntityMapping{ "&#x26;" }));
   m_entityMappings.emplace(std::make_pair("&quot;", XMLEntityMapping{ "&#x22;" }));
   m_entityMappings.emplace(std::make_pair("&apos;", XMLEntityMapping{ "&#x27;" }));
@@ -110,7 +112,6 @@ XML_EntityMapper::XML_EntityMapper()
 /// Entity mapper destructor.
 /// </summary>
 XML_EntityMapper::~XML_EntityMapper() {}
-
 /// <summary>
 /// Is an entry for an entity reference present in map.
 /// </summary>
@@ -144,7 +145,6 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
                           + entityMapping.external.getSystemID() + "' does not exist.");
       }
     }
-
     return (XMLValue{ entityReference.getUnparsed(), parsed });
   }
   return (entityReference);
@@ -152,9 +152,9 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 /// <summary>
 /// Translate any entity reference found in a string.
 /// </summary>
-/// <param name="toTranslate">.</param>
-/// <param name="type">.</param>
-/// <returns></returns>
+/// <param name="toTranslate">Source string containing references to be translated.</param>
+/// <param name="type">Entity reference type.</param>
+/// <returns>Translated string.</returns>
 std::string XML_EntityMapper::translate(const std::string &toTranslate, char type) const
 {
   std::string translated = toTranslate;
@@ -173,6 +173,9 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, char typ
   } while (matchFound);
   return (translated);
 }
+/// <summary>
+/// Get entity mapping values.
+/// </summary>
 const std::string &XML_EntityMapper::getInternal(const std::string &entityName)
 {
   return (getEntityMapping(entityName).internal);
@@ -185,6 +188,9 @@ const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &ent
 {
   return (getEntityMapping(entityName).external);
 }
+/// <summary>
+/// Set entity mapping values.
+/// </summary>
 void XML_EntityMapper::setInternal(const std::string &entityName, const std::string &internal)
 {
   getEntityMapping(entityName).internal = internal;
@@ -206,9 +212,9 @@ void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExter
 /// </summary>
 void XML_EntityMapper::checkForRecursion()
 {
+  std::set<std::string> currentEntities{};
   for (auto &entityName : m_entityMappings) {
-    if (!m_currentEntities.empty()) { throw Error("EntityMapper internal error."); }
-    recurseOverEntityReference(entityName.first, entityName.first[0]);
+    recurseOverEntityReference(entityName.first, entityName.first[0], currentEntities);
   }
 }
 }// namespace XML_Lib

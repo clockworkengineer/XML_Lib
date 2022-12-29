@@ -77,14 +77,17 @@ private:
   // ===============
   // PRIVATE METHODS
   // ===============
-  void recurseOverEntityReference(const std::string &entityReference, XML_Lib::Char type);
+  //  Check for any recursion in a entity reference
+  void recurseOverEntityReference(const std::string &entityReference,
+    XML_Lib::Char type,
+    std::set<std::string> &currentEntities);
+  // Get contents of file that is pointed to by an entity reference
   std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry
   XMLEntityMapping &getEntityMapping(const std::string &entityName);
   // =================
   // PRIVATE VARIABLES
   // =================
-  std::set<std::string> m_currentEntities;
   std::map<std::string, XMLEntityMapping> m_entityMappings;
 };
 }// namespace XML_Lib
