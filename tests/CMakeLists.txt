@@ -1,19 +1,18 @@
 cmake_minimum_required(VERSION 3.22.1)
 
-project("XML_Lib Unit Tests" VERSION 0.0.1 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
+project("XML_Lib Unit Tests" VERSION 1.0.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 
 include(FetchContent)
 
 FetchContent_Declare(
     Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG        v3.0.1
+    GIT_TAG v3.4.0
 )
 
 FetchContent_MakeAvailable(Catch2)
 
 # Enable unit tests
-
 enable_testing()
 
 set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
