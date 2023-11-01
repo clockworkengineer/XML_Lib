@@ -1,16 +1,12 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <utility>
 #include <vector>
 #include <string>
 #include <memory>
 #include <algorithm>
 #include <unordered_map>
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ===================================================
 // Forward declarations for interfaces/classes/structs

@@ -3,31 +3,13 @@
 //
 // Description: XML parser core functionality.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "XML_Core.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 /// <summary>
 /// Check whether a character is valid for XML.
 /// </summary>
@@ -38,6 +20,7 @@ bool validChar(XML_Lib::Char c)
   return ((c == 0x09) || (c == kLineFeed) || (c == kCarriageReturn) || (c >= 0x20 && c <= 0xD7FF)
           || (c >= 0xE000 && c <= 0xFFFD) || (c >= 0x10000 && c <= 0x10FFFF));
 }
+
 /// <summary>
 /// Check whether character is a valid to start an XML name with.
 /// </summary>
@@ -51,6 +34,7 @@ bool validNameStartChar(XML_Lib::Char c)
           || (c >= 0x2C00 && c <= 0x2FEF) || (c >= 0x3001 && c <= 0xD7FF) || (c >= 0xF900 && c <= 0xFDCF)
           || (c >= 0xFDF0 && c <= 0xFFFD) || (c >= 0x10000 && c <= 0xEFFFF));
 }
+
 /// <summary>
 /// Check whether a character is valid for an XML name.
 /// </summary>
@@ -61,6 +45,7 @@ bool validNameChar(XML_Lib::Char c)
   return (validNameStartChar(c) || (c == '-') || (c == '.') || (c >= '0' && c <= '9') || (c == 0xB7)
           || (c >= 0x0300 && c <= 0x036F) || (c >= 0x203F && c <= 0x2040));
 }
+
 /// <summary>
 /// Check name that starts with xml is a valid reserved name.
 /// </summary>
@@ -70,6 +55,7 @@ bool validReservedName(const XML_Lib::String &name)
 {
   return ((name.find(U"xmlns") == 0) || (name.find(U"xml-stylesheet") == 0) || (name == U"xml"));
 }
+
 /// <summary>
 /// Validate XML tag/attribute names.
 /// </summary>
@@ -87,6 +73,7 @@ bool validName(const XML_Lib::String &name)
   }
   return (true);
 }
+
 /// <summary>
 /// Make sure that XML attribute value does not contain any illegal characters.
 /// </summary>
@@ -108,6 +95,7 @@ bool validAttributeValue(const XMLValue &value)
   }
   return (true);
 }
+
 /// <summary>
 /// Parse  and return XML name.
 /// </summary>
@@ -126,6 +114,7 @@ std::string parseName(ISource &source)
   }
   return (source.to_bytes(name));
 }
+
 /// <summary>
 /// Parse and return XML entity reference.
 /// </summary>
@@ -141,6 +130,7 @@ XMLValue parseEntityReference(ISource &source)
   source.next();
   return (XMLValue{ unparsed, unparsed });
 }
+
 /// <summary>
 /// Parse a character reference value (hex/dec) returning its value.
 /// </summary>
@@ -172,6 +162,7 @@ XMLValue parseCharacterReference(ISource &source)
   }
   throw SyntaxError(source.getPosition(), "Cannot convert character reference.");
 }
+
 /// <summary>
 /// Parse character value which can be either be a plain character,
 /// character reference or entity reference that maps to a string of
@@ -192,6 +183,7 @@ XMLValue parseCharacter(ISource &source)
   }
   throw SyntaxError(source.getPosition(), "Invalid character value encountered.");
 }
+
 /// <summary>
 /// Parse literal string value and return it.
 /// </summary>
@@ -221,6 +213,7 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
   }
   throw SyntaxError(source.getPosition(), "Invalid attribute value.");
 }
+
 /// <summary>
 /// Parse literal string value and return it.
 /// </summary>
@@ -243,6 +236,7 @@ XMLValue parseValue(ISource &source)
   }
   throw SyntaxError(source.getPosition(), "Invalid attribute value.");
 }
+
 /// <summary>
 /// Extract body of tag up until '>'.
 /// </summary>
@@ -258,6 +252,7 @@ std::string parseTagBody(ISource &source)
   }
   return (body);
 }
+
 /// <summary>
 /// Split a string into a vector of strings using the passed in delimeter.
 /// </summary>
@@ -272,6 +267,7 @@ std::vector<std::string> splitString(const std::string &stringToSplit, char deli
   while (std::getline(sourceStream, splitOffItem, delimeter)) { splitStrings.push_back(splitOffItem); }
   return splitStrings;
 }
+
 /// <summary>
 /// Trimm whitespace from beginning and end of a string.
 /// </summary>
@@ -287,6 +283,7 @@ std::string trimmString(const std::string &stringToTrimm)
     trimmedString.end());
   return (trimmedString);
 }
+
 /// <summary>
 /// Trimm whitespace from beginning and end of a string.
 /// </summary>

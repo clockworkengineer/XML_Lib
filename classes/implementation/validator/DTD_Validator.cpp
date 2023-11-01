@@ -3,34 +3,13 @@
 //
 // Description: XML DTD validator.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "DTD_Validator.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 /// <summary>
 /// Generate an exception for an element error.
 /// </summary>
@@ -40,6 +19,7 @@ void DTD_Validator::elementError(const XElement &xElement, const std::string &er
 {
   throw ValidationError(m_lineNumber, "Element <" + xElement.name() + "> " + error);
 }
+
 /// <summary>
 /// Check whether a token value is valid.
 /// </summary>
@@ -54,6 +34,7 @@ bool DTD_Validator::checkIsNMTOKENOK(const std::string &nmTokenValue)
   }
   return (true);
 }
+
 /// <summary>
 /// Check whether ID value is valid.
 /// </summary>
@@ -69,6 +50,7 @@ bool DTD_Validator::checkIsIDOK(const std::string &idValue)
   }
   return (true);
 }
+
 /// <summary>
 /// Check whether element contains characters.
 /// </summary>
@@ -81,6 +63,7 @@ bool DTD_Validator::checkIsPCDATA(const XNode &xNode)
   }
   return (!xNode.getContents().empty());
 }
+
 /// <summary>
 /// Check whether an element does not contain any content (is empty).
 /// </summary>
@@ -90,6 +73,7 @@ bool DTD_Validator::checkIsEMPTY(const XNode &xNode)
 {
   return (xNode.getChildren().empty() || xNode.getType() == XNode::Type::self);
 }
+
 /// <summary>
 ///
 /// Validate attribute value which can be:
@@ -117,8 +101,11 @@ void DTD_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribut
       }
     }
   }
-  if (!attributePresent) { xElement.addAttribute(attribute.name, { attribute.value.getParsed(), attribute.value.getParsed() }); }
+  if (!attributePresent) {
+    xElement.addAttribute(attribute.name, { attribute.value.getParsed(), attribute.value.getParsed() });
+  }
 }
+
 /// <summary>
 ///
 /// Validate a elements attribute type which can be one of the following.
@@ -203,11 +190,11 @@ void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute
     }
     if (enumeration.find(elementAttribute.getValue()) == enumeration.end()) {
       elementError(xElement,
-        "attribute '" + attribute.name + "' contains invalid enumeration value '" + elementAttribute.getValue()
-          + "'.");
+        "attribute '" + attribute.name + "' contains invalid enumeration value '" + elementAttribute.getValue() + "'.");
     }
   }
 }
+
 /// <summary>
 /// Check element has the correct attribute type(s) and value(s) associated with
 /// it.
@@ -221,6 +208,7 @@ void DTD_Validator::checkAttributes(const XNode &xNode)
     checkAttributeValue(xNode, attribute);
   }
 }
+
 /// <summary>
 /// Check elements structure.
 /// </summary>
@@ -249,9 +237,11 @@ void DTD_Validator::checkContentSpecification(const XNode &xNode)
   }
   if (!std::regex_match(elements, match)) {
     elementError(xElement,
-      "does not conform to the content specification " + m_xDTD.getElement(xElement.name()).content.getUnparsed() + ".");
+      "does not conform to the content specification " + m_xDTD.getElement(xElement.name()).content.getUnparsed()
+        + ".");
   }
 }
+
 /// <summary>
 /// Check elements content and associated attributes.
 /// </summary>
@@ -261,6 +251,7 @@ void DTD_Validator::checkElement(const XNode &xNode)
   checkContentSpecification(xNode);
   checkAttributes(xNode);
 }
+
 /// <summary>
 /// Recursively check elements of XML document.
 /// </summary>
@@ -301,6 +292,7 @@ void DTD_Validator::checkElements(const XNode &xNode)
     throw ValidationError(m_lineNumber, "Invalid XMLNode encountered during validation.");
   }
 }
+
 /// <summary>
 /// Check XML element by element and then check all ID values reference an
 /// element.
@@ -318,6 +310,7 @@ void DTD_Validator::checkAgainstDTD(const XNode &xNode)
     }
   }
 }
+
 /// <summary>
 /// Validate XML against its DTD. Throwing an exception if there is a
 /// issue with the XML that is being validated.

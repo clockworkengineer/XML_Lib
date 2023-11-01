@@ -1,12 +1,8 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
 #include <stdexcept>
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // =========
 // XML Error

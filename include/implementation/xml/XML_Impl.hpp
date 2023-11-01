@@ -1,7 +1,5 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
 #include <stdexcept>
 #include <memory>
@@ -17,9 +15,7 @@
 // DTD
 // ===
 #include "DTD.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ================
 // CLASS DEFINITION

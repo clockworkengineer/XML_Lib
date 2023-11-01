@@ -1,7 +1,5 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
 #include <map>
 #include <filesystem>
@@ -14,9 +12,7 @@
 // XML Entity Mapper interface
 // ===========================
 #include "IEntityMapper.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ================
 // CLASS DEFINITION

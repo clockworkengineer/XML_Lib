@@ -3,34 +3,13 @@
 //
 // Description: XML entity refernce mapper.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "XML_EntityMapper.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 /// <summary>
 /// Take an entity reference mapping and make sure it is not recursive by calling
 /// recurseOverEntityReference() repeatedly on any mapping found at the next level
@@ -66,6 +45,7 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
     entitySource.next();
   }
 }
+
 /// <summary>
 /// Grab an entity reference mapping from an external file.
 /// </summary>
@@ -81,6 +61,7 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
   }
   return (content);
 }
+
 /// <summary>
 /// Get entity reference from map.
 /// </summary>
@@ -93,9 +74,7 @@ XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std
   if (entity != m_entityMappings.end()) { return (entity->second); }
   throw XML_Lib::Error("Could not find entity reference in map.");
 }
-// ==============
-// PUBLIC METHODS
-// ==============
+
 /// <summary>
 /// Entity mapper constructor.
 /// </summary>
@@ -108,10 +87,12 @@ XML_EntityMapper::XML_EntityMapper()
   m_entityMappings.emplace(std::make_pair("&lt;", XMLEntityMapping{ "&#x3C;" }));
   m_entityMappings.emplace(std::make_pair("&gt;", XMLEntityMapping{ "&#x3E;" }));
 }
+
 /// <summary>
 /// Entity mapper destructor.
 /// </summary>
 XML_EntityMapper::~XML_EntityMapper() {}
+
 /// <summary>
 /// Is an entry for an entity reference present in map.
 /// </summary>
@@ -121,6 +102,7 @@ bool XML_EntityMapper::isPresent(const std::string &entityName) const
 {
   return (m_entityMappings.count(entityName) != 0);
 }
+
 /// <summary>
 /// Get mapping for an entity reference.
 /// </summary>
@@ -149,6 +131,7 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
   }
   return (entityReference);
 }
+
 /// <summary>
 /// Translate any entity reference found in a string.
 /// </summary>
@@ -173,6 +156,7 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, char typ
   } while (matchFound);
   return (translated);
 }
+
 /// <summary>
 /// Get entity mapping values.
 /// </summary>
@@ -188,6 +172,7 @@ const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &ent
 {
   return (getEntityMapping(entityName).external);
 }
+
 /// <summary>
 /// Set entity mapping values.
 /// </summary>
@@ -203,6 +188,7 @@ void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExter
 {
   getEntityMapping(entityName).external = external;
 }
+
 /// <summary>
 /// Take an entity reference string, check whether it contains any infinitely
 /// recursive definition and throw an exception if so. This is done by

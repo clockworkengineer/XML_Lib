@@ -1,7 +1,5 @@
 #pragma once
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ======
 // Prolog

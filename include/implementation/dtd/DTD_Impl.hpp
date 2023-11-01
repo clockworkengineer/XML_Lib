@@ -7,9 +7,7 @@
 // DTD
 // ===
 #include "DTD.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ================
 // CLASS DEFINITION

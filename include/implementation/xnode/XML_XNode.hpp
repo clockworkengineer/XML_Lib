@@ -1,14 +1,10 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <vector>
 #include <string>
 #include <memory>
 #include <stdexcept>
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ====
 // Base

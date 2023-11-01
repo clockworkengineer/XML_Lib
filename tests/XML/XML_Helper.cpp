@@ -27,6 +27,7 @@ std::string prefixPath(const std::string &file)
   std::filesystem::path currentPath = std::filesystem::current_path() / "files" / file;
   return (currentPath.string());
 }
+
 /// <summary>
 /// Open a XML file, read its contents (UTF8) into a string buffer
 //  and return the buffer.
@@ -41,6 +42,7 @@ std::string readXMLFromFileUTF8(const std::string &xmlFileName)
   xmlFileBuffer << xmlFile.rdbuf();
   return (xmlFileBuffer.str());
 }
+
 /// <summary>
 /// Open a XML file, read its contents (UTF16BE) into a string buffer
 //  and return the buffer.
@@ -61,6 +63,7 @@ std::u16string readXMLFromFileUTF16(const std::string &xmlFileName)
   }
   return (u16);
 }
+
 /// <summary>
 /// Create an XML file and write XML to it in UTF8 encoding.
 /// </summary>
@@ -75,6 +78,7 @@ void writeXMLToFileUTF8(const std::string &xmlFileName, const std::string &xmlSt
   xmlFile << xmlString;
   xmlFile.close();
 }
+
 /// <summary>
 /// Create an XML file and write XML to it in UTF16 encoding.
 /// </summary>
@@ -99,6 +103,7 @@ void writeXMLToFileUTF16(const std::string &xmlFileName, const std::u16string &x
   }
   xmlFile.close();
 }
+
 /// <summary>
 /// Convert CRLF to LF for source and check number of CR/LF left after with
 /// REQUIRE.
@@ -125,6 +130,7 @@ void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
   REQUIRE(lfCount == lfFinal);
   REQUIRE(crCount == crFinal);
 }
+
 /// <summary>
 /// Convert XML to an XMLObject, stringify the XMLObject and
 /// compare the result with the passed in XML with REQUIRE.

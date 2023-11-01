@@ -1,13 +1,9 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
 #include <algorithm>
 // ========
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // =======
 // Element

@@ -2,37 +2,16 @@
 // Class: XML_Impl
 //
 // Description:  Code to take an XML internal object description and produce
-// the XML text for it on a destination stream. Currently as UTF-8 encoded 
+// the XML text for it on a destination stream. Currently as UTF-8 encoded
 // text but this may change in future.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "XML_Impl.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 /// <summary>
 /// Recursively parse XNode passed in to produce XML output on a
 /// destination stream in UTF-8 encoding.
@@ -116,6 +95,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     throw XML_Lib::Error("Invalid XNode encountered during stringify.");
   }
 }
+
 /// <summary>
 /// Recursively parse XNode passed in to produce XML output on a
 /// destination stream in UTF-8 encoding.

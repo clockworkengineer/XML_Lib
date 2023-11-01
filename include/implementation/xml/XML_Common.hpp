@@ -1,7 +1,5 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <stdexcept>
 #include <filesystem>
 #include <map>
@@ -16,9 +14,7 @@
 // XML Entity Mapper interface
 // ===========================
 #include "IEntityMapper.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ==============
 // XML validation

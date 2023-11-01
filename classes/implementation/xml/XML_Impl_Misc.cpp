@@ -3,34 +3,13 @@
 //
 // Description: Miscellaneous XML class implementation code.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "XML_Impl.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 /// <summary>
 /// Parse entity reference as XML and add XNodes produced to the current XNode.
 /// </summary>
@@ -45,6 +24,7 @@ void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
   // Place into XNode (element) child list
   for (auto &xNodeChild : xElement->getChildren()) { xNode.addChild(xNodeChild); }
 }
+
 /// <summary>
 /// Reset content node whitespace flag if set.
 /// </summary>
@@ -57,6 +37,7 @@ void XML_Impl::resetWhiteSpace(XNode &xNode)
     }
   }
 }
+
 /// <summary>
 /// Add content XNode to elements child list.
 /// </summary>

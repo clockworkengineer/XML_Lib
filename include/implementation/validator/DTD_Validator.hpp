@@ -1,7 +1,5 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
 #include <set>
 #include <regex>
@@ -13,9 +11,7 @@
 // XML Validator interface
 // =======================
 #include "IValidator.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ================
 // CLASS DEFINITION

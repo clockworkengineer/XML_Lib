@@ -3,34 +3,13 @@
 //
 // Description: Parse XML DTD element content specifications.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "DTD_Impl.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 /// <summary>
 /// Is the next specification operator to be parsed choice '|' or sequence ','.
 /// </summary>
@@ -47,6 +26,7 @@ bool DTD_Impl::parseIsChoiceOrSequence(ISource &contentSpecSource)
   contentSpecSource.backup(contentSpecSource.position() - start);
   return (choice);
 }
+
 /// <summary>
 /// Parse element name, choice or sequence next in content specification.
 /// </summary>
@@ -69,6 +49,7 @@ void DTD_Impl::parseElementCP(ISource &contentSpecSource, IDestination &contentS
     contentSpecSource.ignoreWS();
   }
 }
+
 /// <summary>
 /// Parse content specification choice next.
 /// </summary>
@@ -88,6 +69,7 @@ void DTD_Impl::parseElementChoice(ISource &contentSpecSource, IDestination &cont
   contentSpecSource.next();
   contentSpecSource.ignoreWS();
 }
+
 /// <summary>
 /// Parse content specification sequence next.
 /// </summary>
@@ -106,6 +88,7 @@ void DTD_Impl::parseElementSequence(ISource &contentSpecSource, IDestination &co
   contentSpecSource.next();
   contentSpecSource.ignoreWS();
 }
+
 /// <summary>
 /// Parse content specification element name next.
 /// </summary>
@@ -123,6 +106,7 @@ void DTD_Impl::parseElementName(ISource &contentSpecSource, IDestination &conten
   contentSpecDestination.add(">)");
   contentSpecSource.ignoreWS();
 }
+
 /// <summary>
 /// Parse content specification element children.
 /// </summary>
@@ -146,6 +130,7 @@ void DTD_Impl::parseElementChildren(ISource &contentSpecSource, IDestination &co
     throw SyntaxError("Invalid element content specification.");
   }
 }
+
 /// <summary>
 /// Parse content specification mixed content.
 /// </summary>
@@ -183,6 +168,7 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
     throw SyntaxError("Invalid element content specification.");
   }
 }
+
 /// <summary>
 /// Parse elements content specification.
 /// </summary>

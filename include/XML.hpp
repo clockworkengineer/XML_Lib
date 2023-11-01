@@ -1,12 +1,8 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <memory>
 #include <string>
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ====================
 // FORWARD DECLARATIONS
@@ -48,7 +44,7 @@ public:
   // Parse XML source
   void parse(ISource &source);
   void parse(ISource &&source);
-  // Stringify XML object to destination text 
+  // Stringify XML object to destination text
   void stringify(IDestination &destination);
   void stringify(IDestination &&destination);
   // ================

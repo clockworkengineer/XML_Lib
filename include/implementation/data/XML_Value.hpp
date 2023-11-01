@@ -1,11 +1,7 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // =========
 // XML value
@@ -23,7 +19,7 @@ struct XMLValue
   [[nodiscard]] bool isReference() const { return (m_unparsed[0] == '&' && m_unparsed.back() == ';'); }
   [[nodiscard]] bool isEntityReference() const { return (isReference() && m_unparsed[1] != '#'); }
   [[nodiscard]] bool isCharacterReference() const { return (isReference() && m_unparsed[1] == '#'); }
-  // Get value 
+  // Get value
   const std::string &getUnparsed() const { return (m_unparsed); }
   const std::string &getParsed() const { return (m_parsed); }
 

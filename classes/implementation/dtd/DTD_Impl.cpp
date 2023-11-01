@@ -3,50 +3,29 @@
 //
 // Description: DTD class implementation.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "DTD_Impl.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
-// ==============
-// PUBLIC METHODS
-// ==============
+
 /// <summary>
 /// DTD_Impl constructor.
 /// </summary>
 DTD_Impl::DTD_Impl(XNode &xNode) : m_xDTD(XRef<XDTD>(xNode)) {}
+
 /// <summary>
 /// DTD_Impl destructor.
 /// </summary>
 DTD_Impl::~DTD_Impl() {}
+
 /// <summary>
 /// Parse DTD read from source stream.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parse(ISource &source) { parseDTD(source); }
+
 /// <summary>
 /// Create DTD text from an DTD object.
 /// </summary>

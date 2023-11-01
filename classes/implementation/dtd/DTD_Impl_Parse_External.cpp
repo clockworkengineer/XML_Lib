@@ -3,34 +3,13 @@
 //
 // Description: Parse external XML DTD.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "DTD_Impl.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 /// <summary>
 /// Parse conditional DTD (recursively if necessary).
 /// </summary>
@@ -82,6 +61,7 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
   source.next();
   source.ignoreWS();
 }
+
 /// <summary>
 /// Parse external DTD.
 /// </summary>
@@ -117,6 +97,7 @@ void DTD_Impl::parseExternalContent(ISource &source)
     source.ignoreWS();
   }
 }
+
 /// <summary>
 /// Parse externally defined DTD into XDTD.
 /// </summary>
@@ -129,6 +110,7 @@ void DTD_Impl::parseExternalReferenceContent()
     // Public external DTD currently not supported (Use system id ?)
   }
 }
+
 /// <summary>
 /// Parse an external reference.
 /// </summary>
@@ -147,6 +129,7 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source)
   }
   throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
 }
+
 /// <summary>
 /// Parse externally defined DTD.
 /// </summary>

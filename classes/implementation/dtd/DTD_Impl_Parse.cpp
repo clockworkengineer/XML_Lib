@@ -3,34 +3,13 @@
 //
 // Description: Parse XML DTD.
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
+
 #include "DTD_Impl.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 /// <summary>
 ///
 /// </summary>
@@ -42,6 +21,7 @@ void DTD_Impl::parseValidNotations(const std::string &notations)
     if (m_xDTD.getNotationCount(notation) == 0) { throw SyntaxError("NOTATION " + notation + " is not defined."); }
   }
 }
+
 /// <summary>
 /// Validate attribute description.
 /// </summary>
@@ -77,6 +57,7 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
     }
   }
 }
+
 /// <summary>
 /// Parse attribute of type enumeration.
 /// </summary>
@@ -102,6 +83,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
   source.ignoreWS();
   return (enumerationType);
 }
+
 /// <summary>
 /// Parse DTD attribute type field.
 /// </summary>
@@ -157,6 +139,7 @@ void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute)
   }
   throw SyntaxError(source.getPosition(), "Invalid attribute type specified.");
 }
+
 /// <summary>
 /// Parse DTD attribute value.
 /// </summary>
@@ -178,6 +161,7 @@ void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute)
     attribute.type |= XDTD::AttributeType::normal;
   }
 }
+
 /// <summary>
 /// Parse DTD attribute list.
 /// </summary>
@@ -196,6 +180,7 @@ void DTD_Impl::parseAttributeList(ISource &source)
     source.ignoreWS();
   }
 }
+
 /// <summary>
 /// Parse DTD notation.
 /// </summary>
@@ -207,6 +192,7 @@ void DTD_Impl::parseNotation(ISource &source)
   m_xDTD.addNotation(name, parseExternalReference(source));
   source.ignoreWS();
 }
+
 /// <summary>
 /// Parse DTD entity.
 /// </summary>
@@ -232,6 +218,7 @@ void DTD_Impl::parseEntity(ISource &source)
     }
   }
 }
+
 /// <summary>
 /// Parse an DTD element.
 /// </summary>
@@ -255,6 +242,7 @@ void DTD_Impl::parseElement(ISource &source)
   }
   source.ignoreWS();
 }
+
 /// <summary>
 /// Parse DTD comment.
 /// </summary>
@@ -263,6 +251,7 @@ void DTD_Impl::parseComment(ISource &source)
 {
   while (source.more() && !source.match(U"--")) { source.next(); }
 }
+
 /// <summary>
 /// Parse DTD parameter entity reference.
 /// </summary>
@@ -274,6 +263,7 @@ void DTD_Impl::parseParameterEntityReference(ISource &source)
   parseInternal(entitySource);
   source.ignoreWS();
 }
+
 /// <summary>
 /// Parse internally defined DTD.
 /// </summary>
@@ -302,6 +292,7 @@ void DTD_Impl::parseInternal(ISource &source)
     source.ignoreWS();
   }
 }
+
 /// <summary>
 /// Parse XML DTD. If the DTD contains an external reference then the DTD
 /// that points to is parsed after any internal DTD that may be specified

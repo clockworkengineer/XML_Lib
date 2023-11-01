@@ -9,36 +9,15 @@
 // Windows
 // =======
 #include "Windows.h"
-// =================
-// CLASS DEFINITIONS
-// =================
+
 // ++++++++++++++++++++++++++++++++++++++++++++
 // Switch off C++17 warning for conversion code
 // ++++++++++++++++++++++++++++++++++++++++++++
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include "Converter.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
-// ===============
-// PRIVATE METHODS
-// ===============
+
 static std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> m_UTF32;
 // ============================================================
 // Windows API for converting between byte and wide characters.
@@ -51,9 +30,7 @@ int BytesToWideChar(const char *bytes, int length, wchar_t *sideString = nullptr
 {
   return (MultiByteToWideChar(CP_UTF8, 0, bytes, length, sideString, wideStringLength));
 }
-// ==============
-// PUBLIC METHODS
-// ==============
+
 /// <summary>
 /// Convert to UTF-8 strings.
 /// </summary>
@@ -67,6 +44,7 @@ std::string Converter::toUtf8(const std::u16string &utf16) const
 }
 std::string Converter::toUtf8(char32_t utf32) const { return (m_UTF32.to_bytes(utf32)); }
 std::string Converter::toUtf8(const std::u32string &utf32) const { return (m_UTF32.to_bytes(utf32)); }
+
 /// <summary>
 /// Convert to UTF-16 strings.
 /// </summary>
@@ -76,6 +54,7 @@ std::u16string Converter::toUtf16(const std::string &utf8) const
   BytesToWideChar(utf8.c_str(), static_cast<int>(utf8.length()), &wideString[0], static_cast<int>(wideString.length()));
   return (std::u16string{ wideString.begin(), wideString.end() });
 }
+
 /// <summary>
 /// Convert to UTF-32 strings.
 /// </summary>

@@ -1,7 +1,5 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
 #include <stdexcept>
 #include <fstream>
@@ -9,9 +7,7 @@
 // Destination interface
 // =====================
 #include "IDestination.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ================
 // CLASS DEFINITION
@@ -32,7 +28,7 @@ public:
   BufferDestination &operator=(BufferDestination &&other) = delete;
   ~BufferDestination() = default;
   // ==============
-  // PUBLIC METHODS 
+  // PUBLIC METHODS
   // ==============
   void add(const std::string &bytes) override
   {

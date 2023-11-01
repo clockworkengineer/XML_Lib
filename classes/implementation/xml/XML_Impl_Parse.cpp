@@ -5,41 +5,20 @@
 // converted the characters to UTF-32 to make the process easier (any data once
 // parsed is stored in UTF-8 strings).
 //
-// Dependencies:   C20++ - Language standard features used.
+// Dependencies:   C++20 - Language standard features used.
 //
-// =================
-// CLASS DEFINITIONS
-// =================
-#include "XML_Impl.hpp"
-// ====================
-// CLASS IMPLEMENTATION
-// ====================
-// =================
-// LIBRARY NAMESPACE
-// =================
-namespace XML_Lib {
-// ===========================
-// PRIVATE TYPES AND CONSTANTS
-// ===========================
-// ==========================
-// PUBLIC TYPES AND CONSTANTS
-// ==========================
-// ========================
-// PRIVATE STATIC VARIABLES
-// ========================
-// =======================
-// PUBLIC STATIC VARIABLES
-// =======================
 
-// ===============
-// PRIVATE METHODS
-// ===============
+#include "XML_Impl.hpp"
+
+namespace XML_Lib {
+
 /// <summary>
 /// Parse a element tag name and set its value in current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Element tag name.</returns>
 std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source)); }
+
 /// <summary>
 /// Parse declaration attribute and validate its value.
 /// </summary>
@@ -62,6 +41,7 @@ std::string XML_Impl::parseDeclarationAttribute(ISource &source,
   if (!values.contains(result)) { throw SyntaxError("Unsupported XML " + name + " value '" + result + "' specified."); }
   return (result);
 }
+
 /// <summary>
 /// Parse a XML comment, create a XComment for it and add to list
 /// of elements for the current XElement.
@@ -78,6 +58,7 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
   if (!source.match(U">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
   return (XNode::make<XComment>(comment));
 }
+
 /// <summary>
 /// Parse a XML process instruction, create an XPI for it and add it to
 /// the list of elements under the current XElement.
@@ -94,6 +75,7 @@ std::unique_ptr<XNode> XML_Impl::parsePI(ISource &source)
   }
   return (XNode::make<XPI>(name, parameters));
 }
+
 /// <summary>
 /// Parse an XML CDATA section, create an XCDATA for it and add it to
 /// the list of elements under the current XElement.
@@ -112,6 +94,7 @@ std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
   }
   return (XNode::make<XCDATA>(cdata));
 }
+
 /// <summary>
 /// Parse list of attributes (name/value pairs) that exist in a tag and add them to
 /// the list of attributes associated with the current XElement.
@@ -141,6 +124,7 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
   }
   return (attributes);
 }
+
 /// <summary>
 /// Parse white space add to current XNodes child list.
 /// </summary>
@@ -155,6 +139,7 @@ void XML_Impl::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
   }
   addContentToElementChildList(xNode, whiteSpace);
 }
+
 /// <summary>
 /// Parse any element content that is found.
 /// </summary>
@@ -184,6 +169,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
     addContentToElementChildList(xNode, content.getParsed());
   }
 }
+
 /// <summary>
 /// Parse element content area, generating any XNode(s) and adding them
 /// to the list of the current XElement.
@@ -216,6 +202,7 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
     parseElementContent(source, xNode);
   }
 }
+
 /// <summary>
 /// Parse current XML element found.
 /// </summary>
@@ -278,6 +265,7 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
   }
   return (XNode::make<XDeclaration>(version, encoding, standalone));
 }
+
 /// <summary>
 /// Parse any XML tail that is present. This can include comments, PI and white space.
 /// </summary>
@@ -297,6 +285,7 @@ void XML_Impl::parseTail(ISource &source, XNode &xProlog)
     }
   }
 }
+
 /// <summary>
 /// Parse XML DTD and return any XNode created for it.
 /// </summary>
@@ -310,6 +299,7 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
   m_validator = std::make_unique<DTD_Validator>(*xNode);
   return (xNode);
 }
+
 /// <summary>
 /// Parse XML prolog and create the necessary element XNodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
@@ -344,6 +334,7 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
   if (!source.match(U"<")) { throw SyntaxError(source.getPosition(), "Missing root element."); }
   return (xProlog);
 }
+
 /// <summary>
 /// Parse XML from source stream.
 /// </summary>

@@ -1,15 +1,11 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
 // ===================
 // Character converter
 // ===================
 #include "Converter.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // =======================================================================
 // Interface for writing destination stream during XML/DTD stringification
@@ -38,6 +34,5 @@ public:
   // ========================
   virtual void add(const std::string &bytes) = 0;
   virtual void add(XML_Lib::Char c) = 0;
-
 };
 }// namespace XML_Lib

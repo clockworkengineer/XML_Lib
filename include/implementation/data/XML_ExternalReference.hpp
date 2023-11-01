@@ -1,11 +1,7 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ======================
 // XML External reference

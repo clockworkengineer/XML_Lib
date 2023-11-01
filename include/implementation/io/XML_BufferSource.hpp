@@ -1,7 +1,5 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <fstream>
 #include <string>
 #include <stdexcept>
@@ -9,9 +7,7 @@
 // Source interface
 // ================
 #include "ISource.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ================
 // CLASS DEFINITION

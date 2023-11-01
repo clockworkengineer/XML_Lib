@@ -1,12 +1,8 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <set>
 #include <map>
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ====================
 // FORWARD DECLARATIONS

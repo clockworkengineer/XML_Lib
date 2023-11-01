@@ -1,7 +1,5 @@
 #pragma once
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ================
 // Entity Reference
@@ -9,8 +7,7 @@ namespace XML_Lib {
 struct XEntityReference : XNode
 {
   // Constructors/Destructors
-  explicit XEntityReference(const XMLValue &value) : XNode(XNode::Type::entity), m_value(value)
-  {}
+  explicit XEntityReference(const XMLValue &value) : XNode(XNode::Type::entity), m_value(value) {}
   XEntityReference(const XEntityReference &other) = delete;
   XEntityReference &operator=(const XEntityReference &other) = delete;
   XEntityReference(XEntityReference &&other) = default;

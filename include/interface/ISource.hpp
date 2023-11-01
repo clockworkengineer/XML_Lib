@@ -1,16 +1,12 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <string>
 #include <cwctype>
 // ===================
 // Character converter
 // ===================
 #include "Converter.hpp"
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // ===================
 // Character constants

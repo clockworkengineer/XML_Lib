@@ -1,11 +1,7 @@
 #pragma once
-// =======
-// C++ STL
-// =======
+
 #include <type_traits>
-// =================
-// LIBRARY NAMESPACE
-// =================
+
 namespace XML_Lib {
 // =========================
 // XNode reference converter
