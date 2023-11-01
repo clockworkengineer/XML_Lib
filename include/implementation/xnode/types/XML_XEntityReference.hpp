@@ -1,9 +1,7 @@
 #pragma once
 
 namespace XML_Lib {
-// ================
-// Entity Reference
-// ================
+
 struct XEntityReference : XNode
 {
   // Constructors/Destructors

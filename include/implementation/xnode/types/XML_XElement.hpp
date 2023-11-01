@@ -2,12 +2,9 @@
 
 #include <string>
 #include <algorithm>
-// ========
 
 namespace XML_Lib {
-// =======
-// Element
-// =======
+
 struct XElement : XNode
 {
   // Constructors/Destructors

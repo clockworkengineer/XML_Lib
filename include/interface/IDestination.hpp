@@ -1,9 +1,7 @@
 #pragma once
 
 #include <string>
-// ===================
-// Character converter
-// ===================
+
 #include "Converter.hpp"
 
 namespace XML_Lib {

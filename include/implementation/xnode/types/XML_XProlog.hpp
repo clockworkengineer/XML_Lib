@@ -1,9 +1,7 @@
 #pragma once
 
 namespace XML_Lib {
-// ======
-// Prolog
-// ======
+
 struct XProlog : XNode
 {
   // Constructors/Destructors

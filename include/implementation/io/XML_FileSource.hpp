@@ -3,24 +3,14 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
-// ================
-// Source interface
-// ================
+
 #include "ISource.hpp"
 
 namespace XML_Lib {
-// ================
-// CLASS DEFINITION
-// ================
+
 class FileSource : public ISource
 {
 public:
-  // ==========================
-  // PUBLIC TYPES AND CONSTANTS
-  // ==========================
-  // ======================
-  // CONSTRUCTOR/DESTRUCTOR
-  // ======================
   explicit FileSource(const std::string &sourceFileName)
   {
     m_source.open(sourceFileName.c_str(), std::ios_base::binary);
@@ -36,9 +26,7 @@ public:
   FileSource(FileSource &&other) = delete;
   FileSource &operator=(FileSource &&other) = delete;
   ~FileSource() = default;
-  // ==============
-  // PUBLIC METHODS
-  // ==============
+
   XML_Lib::Char current() const override { return (m_source.peek()); }
   void next() override
   {
@@ -81,19 +69,8 @@ public:
     m_source.seekg(currentPosition, std::ios_base::beg);
     return (rangeBuffer);
   }
-  // ================
-  // PUBLIC VARIABLES
-  // ================
+
 private:
-  // ===========================
-  // PRIVATE TYPES AND CONSTANTS
-  // ===========================
-  // ===============
-  // PRIVATE METHODS
-  // ===============
-  // =================
-  // PRIVATE VARIABLES
-  // =================
   mutable std::ifstream m_source;
 };
 }// namespace XML_Lib

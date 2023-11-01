@@ -3,9 +3,7 @@
 #include <string>
 
 namespace XML_Lib {
-// ======================
-// XML External reference
-// ======================
+
 struct XMLExternalReference
 {
   // Constructors/Destructors

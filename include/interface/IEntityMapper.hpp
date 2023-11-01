@@ -4,9 +4,7 @@
 #include <map>
 
 namespace XML_Lib {
-// ====================
-// FORWARD DECLARATIONS
-// ====================
+
 #include "IEntityMapper_Forward.hpp"
 // ===========================
 // XML Entity mapper interface

@@ -2,9 +2,7 @@
 
 #include <string>
 #include <cwctype>
-// ===================
-// Character converter
-// ===================
+
 #include "Converter.hpp"
 
 namespace XML_Lib {

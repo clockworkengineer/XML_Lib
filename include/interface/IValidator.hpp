@@ -1,9 +1,7 @@
 #pragma once
 
 namespace XML_Lib {
-// =======================
-// XML validator interface
-// =======================
+
 class IValidator
 {
 public:

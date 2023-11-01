@@ -3,41 +3,27 @@
 #include <string>
 #include <stdexcept>
 #include <memory>
-// ===
-// XML
-// ===
+
 #include "XML.hpp"
 #include "XML_Config.hpp"
 #include "XML_Core.hpp"
 #include "DTD_Validator.hpp"
 #include "XML_EntityMapper.hpp"
-// ===
-// DTD
-// ===
+
 #include "DTD.hpp"
 
 namespace XML_Lib {
-// ================
-// CLASS DEFINITION
-// ================
+
 class XML_Impl
 {
 public:
-  // ==========================
-  // PUBLIC TYPES AND CONSTANTS
-  // ==========================
-  // ======================
-  // CONSTRUCTOR/DESTRUCTOR
-  // ======================
   XML_Impl();
   XML_Impl(const XML_Impl &other) = delete;
   XML_Impl &operator=(const XML_Impl &other) = delete;
   XML_Impl(XML_Impl &&other) = delete;
   XML_Impl &operator=(XML_Impl &&other) = delete;
   ~XML_Impl();
-  // ==============
-  // PUBLIC METHODS
-  // ==============
+
   XNode &dtd();
   XNode &prolog();
   XNode &root();
@@ -46,19 +32,8 @@ public:
   void stringify(IDestination &destination);
   void validate();
   std::string version();
-  // ================
-  // PUBLIC VARIABLES
-  // ================
+
 private:
-  // ===========================
-  // PRIVATE TYPES AND CONSTANTS
-  // ===========================
-  // ===========================================
-  // DISABLED CONSTRUCTORS/DESTRUCTORS/OPERATORS
-  // ===========================================
-  // ===============
-  // PRIVATE METHODS
-  // ===============
   void resetWhiteSpace(XNode &xNode);
   void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
   void addContentToElementChildList(XNode &xNode, const std::string &content);
@@ -84,9 +59,7 @@ private:
   std::unique_ptr<XNode> parseXML(ISource &source);
   void stringifyElements(XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
-  // =================
-  // PRIVATE VARIABLES
-  // =================
+
   std::unique_ptr<XNode> m_prolog;
   std::unique_ptr<IValidator> m_validator;
   std::unique_ptr<IEntityMapper> m_entityMapper;

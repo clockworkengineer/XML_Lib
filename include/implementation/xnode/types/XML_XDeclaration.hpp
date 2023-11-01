@@ -3,9 +3,7 @@
 #include <string>
 
 namespace XML_Lib {
-// ===========
-// Declaration
-// ===========
+
 struct XDeclaration : XNode
 {
   // Constructors/Destructors

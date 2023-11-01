@@ -3,9 +3,7 @@
 #include <string>
 
 namespace XML_Lib {
-// =======
-// Comment
-// =======
+
 struct XComment : XNode
 {
   // Constructors/Destructors

@@ -6,9 +6,7 @@
 #include <stdexcept>
 
 namespace XML_Lib {
-// ====
-// Base
-// ====
+
 struct XNode
 {
   // XNode Error

@@ -3,8 +3,7 @@
 #include <string>
 
 namespace XML_Lib {
-// CDATA
-// =====
+
 struct XCDATA : XNode
 {
   // Constructors/Destructors

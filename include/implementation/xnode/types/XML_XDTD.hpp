@@ -12,9 +12,7 @@ namespace XML_Lib {
 // Forward declarations for interfaces/classes/structs
 // ===================================================
 class IEntityMapper;
-// ===
-// DTD
-// ===
+
 struct XDTD : XNode
 {
   //

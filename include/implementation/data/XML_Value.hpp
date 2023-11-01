@@ -3,9 +3,7 @@
 #include <string>
 
 namespace XML_Lib {
-// =========
-// XML value
-// =========
+
 struct XMLValue
 {
   // Constructors/Destructors

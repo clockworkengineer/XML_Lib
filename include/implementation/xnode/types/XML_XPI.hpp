@@ -3,9 +3,7 @@
 #include <string>
 
 namespace XML_Lib {
-// ==
-// PI
-// ==
+
 struct XPI : XNode
 {
   // Constructors/Destructors

@@ -5,14 +5,10 @@
 #include <map>
 #include <set>
 #include <sstream>
-// ===
-// XML
-// ===
+
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
-// ===========================
-// XML Entity Mapper interface
-// ===========================
+
 #include "IEntityMapper.hpp"
 
 namespace XML_Lib {

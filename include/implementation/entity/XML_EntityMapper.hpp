@@ -4,28 +4,16 @@
 #include <map>
 #include <filesystem>
 #include <set>
-// ===
-// XML
-// ===
+
 #include "XML_Core.hpp"
-// ===========================
-// XML Entity Mapper interface
-// ===========================
+
 #include "IEntityMapper.hpp"
 
 namespace XML_Lib {
-// ================
-// CLASS DEFINITION
-// ================
+
 class XML_EntityMapper : public IEntityMapper
 {
 public:
-  // ==========================
-  // PUBLIC TYPES AND CONSTANTS
-  // ==========================
-  // ==================
-  // XML Entity mapping
-  // ==================
   struct XMLEntityMapping
   {
     explicit XMLEntityMapping(const std::string &internal) : internal(internal) {}
@@ -33,18 +21,15 @@ public:
     XMLExternalReference external{ "" };
     std::string notation{};
   };
-  // ======================
-  // CONSTRUCTOR/DESTRUCTOR
-  // ======================
+
+
   XML_EntityMapper();
   XML_EntityMapper(const XML_EntityMapper &other) = delete;
   XML_EntityMapper &operator=(const XML_EntityMapper &other) = delete;
   XML_EntityMapper(XML_EntityMapper &&other) = delete;
   XML_EntityMapper &operator=(XML_EntityMapper &&other) = delete;
   ~XML_EntityMapper();
-  // ==============
-  // PUBLIC METHODS
-  // ==============
+
   // Is entity reference mapping entry present ?
   [[nodiscard]] bool isPresent(const std::string &entityName) const override;
   // Entity reference get/set details
@@ -60,19 +45,8 @@ public:
   [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
   // Check for a recursive entity reference mapping
   void checkForRecursion() override;
-  // ================
-  // PUBLIC VARIABLES
-  // ================
+
 private:
-  // ===========================
-  // PRIVATE TYPES AND CONSTANTS
-  // ===========================
-  // ===========================================
-  // DISABLED CONSTRUCTORS/DESTRUCTORS/OPERATORS
-  // ===========================================
-  // ===============
-  // PRIVATE METHODS
-  // ===============
   //  Check for any recursion in a entity reference
   void recurseOverEntityReference(const std::string &entityReference,
     XML_Lib::Char type,
@@ -81,9 +55,7 @@ private:
   std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry
   XMLEntityMapping &getEntityMapping(const std::string &entityName);
-  // =================
-  // PRIVATE VARIABLES
-  // =================
+
   std::map<std::string, XMLEntityMapping> m_entityMappings;
 };
 }// namespace XML_Lib

@@ -1,26 +1,14 @@
 #pragma once
-// ========
-// XML Core
-// ========
+
 #include "XML_Core.hpp"
-// ===
-// DTD
-// ===
+
 #include "DTD.hpp"
 
 namespace XML_Lib {
-// ================
-// CLASS DEFINITION
-// ================
+
 class DTD_Impl
 {
 public:
-  // ==========================
-  // PUBLIC TYPES AND CONSTANTS
-  // ==========================
-  // ======================
-  // CONSTRUCTOR/DESTRUCTOR
-  // ======================
   explicit DTD_Impl(XNode &xNode);
   DTD_Impl() = delete;
   DTD_Impl(const DTD_Impl &other) = delete;
@@ -28,26 +16,13 @@ public:
   DTD_Impl(DTD_Impl &&other) = delete;
   DTD_Impl &operator=(DTD_Impl &&other) = delete;
   ~DTD_Impl();
-  // ==============
-  // PUBLIC METHODS
-  // ==============
+
   // Parse XML DTD from source
   void parse(ISource &source);
   // Stringify XML DTD to text destination
   void stringify(IDestination &destination);
-  // ================
-  // PUBLIC VARIABLES
-  // ================
+
 private:
-  // ===========================
-  // PRIVATE TYPES AND CONSTANTS
-  // ===========================
-  // ===========================================
-  // DISABLED CONSTRUCTORS/DESTRUCTORS/OPERATORS
-  // ===========================================
-  // ===============
-  // PRIVATE METHODS
-  // ===============
   void parseValidNotations(const std::string &notations);
   void parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute);
   void parseConditional(ISource &source, bool includeOff = true);
@@ -75,9 +50,7 @@ private:
   void parseExternal(ISource &source);
   void parseInternal(ISource &source);
   void parseDTD(ISource &source);
-  // =================
-  // PRIVATE VARIABLES
-  // =================
+
   XDTD &m_xDTD;
 };
 }// namespace XML_Lib

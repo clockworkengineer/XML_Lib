@@ -3,25 +3,17 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
-// ================
-// Source interface
-// ================
+
 #include "ISource.hpp"
 
 namespace XML_Lib {
-// ================
-// CLASS DEFINITION
-// ================
+
 class BufferSource : public ISource
 {
 public:
-  // ==========================
-  // PUBLIC TYPES AND CONSTANTS
-  // ==========================
   // Bits per byte
   static const int kBitsPerByte{ 8 };
-  // ======================
-  // CONSTRUCTOR/DESTRUCTOR
+
   // ======================
   explicit BufferSource(const std::u16string &sourceBuffer)// UTF16 source BE/LE
   {
@@ -47,9 +39,7 @@ public:
   BufferSource(BufferSource &&other) = delete;
   BufferSource &operator=(BufferSource &&other) = delete;
   ~BufferSource() = default;
-  // ==============
-  // PUBLIC METHODS
-  // ==============
+
   [[nodiscard]] XML_Lib::Char current() const override
   {
     if (more()) { return (m_buffer[m_position]); }
@@ -82,16 +72,8 @@ public:
     m_column = 1;
     m_position = 0;
   }
-  // ================
-  // PUBLIC VARIABLES
-  // ================
+
 private:
-  // ===========================
-  // PRIVATE TYPES AND CONSTANTS
-  // ===========================
-  // ===============
-  // PRIVATE METHODS
-  // ===============
   void convertCRLFToLF(XML_Lib::String &xmlString)
   {
     size_t pos = xmlString.find(U"\x0D\x0A");
@@ -100,9 +82,7 @@ private:
       pos = xmlString.find(U"\x0D\x0A", pos + 1);
     }
   }
-  // =================
-  // PRIVATE VARIABLES
-  // =================
+
   long m_position = 0;
   XML_Lib::String m_buffer;
 };
