@@ -3,17 +3,11 @@
 //
 // Description:
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
-// =======================
-// JSON class namespace
-// =======================
+
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
 {
   std::string xmlString;

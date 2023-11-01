@@ -3,17 +3,11 @@
 //
 // Description: Unit tests for DTD parsing.
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
-// =======================
-// JSON class namespace
-// =======================
+
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
 {
   std::string xmlString;

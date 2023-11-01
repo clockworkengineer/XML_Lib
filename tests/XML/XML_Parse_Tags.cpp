@@ -3,17 +3,11 @@
 //
 // Description:
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
-// =======================
-// JSON class namespace
-// =======================
+
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Checks for tag names", "[XML][Parse][Tags]")
 {
   std::string xmlString;

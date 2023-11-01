@@ -3,17 +3,11 @@
 //
 // Description:
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
-// =======================
-// JSON class namespace
-// =======================
+
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Parse XML with Unicode characters. ", "[XML][Parse][Unicode]")
 {
   std::string xmlString;

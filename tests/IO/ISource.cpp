@@ -4,17 +4,13 @@
 // Description: Unit tests for BufferSource, FileSource structures that implement
 // the ISource and IDestination interfaces used in XML parsing.
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
 // =======================
 // XML class namespace
 // =======================
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
 {
   SECTION("Create FileSource with testfile001.xml.", "[XML][Parse][FileSource]")

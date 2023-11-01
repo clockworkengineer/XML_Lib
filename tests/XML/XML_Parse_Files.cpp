@@ -3,17 +3,11 @@
 //
 // Description:
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
-// =======================
-// JSON class namespace
-// =======================
+
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Sample XML files to read and parse.", "[XML][Parse]")
 {
   auto testFile = GENERATE(values<std::string>({ "./files/testfile001.xml",

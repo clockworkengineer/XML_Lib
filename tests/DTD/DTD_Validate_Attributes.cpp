@@ -3,17 +3,11 @@
 //
 // Description: Unit tests for XML DTD attribute validation.
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
-// =======================
-// JSON class namespace
-// =======================
+
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][DTD][Validate][Attributes]")
 {
   std::string xmlString;

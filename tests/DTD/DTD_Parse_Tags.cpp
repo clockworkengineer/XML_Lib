@@ -3,17 +3,11 @@
 //
 // Description: Unit tests for DTD parsing.
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
-// =======================
-// JSON class namespace
-// =======================
+
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Parse][Tags][Error]")
 {
   std::string xmlString;

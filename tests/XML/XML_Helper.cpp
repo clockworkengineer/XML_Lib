@@ -3,9 +3,7 @@
 //
 // Description: Helper functions for XML unit tests.
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
 // =======================
 // XML class namespace

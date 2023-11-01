@@ -11,9 +11,7 @@
 // JSON class namespace
 // ====================
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Stringify]")
 {
   SECTION("Stringify XML with internal DTD", "[XML][DTD][Stringify]")

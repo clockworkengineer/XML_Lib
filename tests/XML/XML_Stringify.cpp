@@ -3,17 +3,11 @@
 //
 // Description:
 //
-// ================
-// Test definitions
-// =================
+
 #include "XML_Tests.hpp"
-// =======================
-// JSON class namespace
-// =======================
+
 using namespace XML_Lib;
-// ==========
-// Test cases
-// ==========
+
 TEST_CASE("Use XML to stringify previously parsed XML.", "[XML][Stringify]")
 {
   SECTION("Stringify XML UTF-8 declaration.", "[XML][Stringify]")
