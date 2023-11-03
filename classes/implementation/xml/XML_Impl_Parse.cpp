@@ -111,7 +111,7 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
       throw SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
     }
     source.ignoreWS();
-    XMLValue attributeValue = parseValue(source, *m_entityMapper);
+    XMLValue attributeValue = parseValue(source, *entityMapper);
     if (!validAttributeValue(attributeValue)) {
       throw SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
     }
@@ -149,7 +149,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
 {
   XMLValue content{ parseCharacter(source) };
   if (content.isReference()) {
-    if (content.isEntityReference()) { content = m_entityMapper->map(content); }
+    if (content.isEntityReference()) { content = entityMapper->map(content); }
     auto xEntityReference = XNode::make<XEntityReference>(content);
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
@@ -293,7 +293,7 @@ void XML_Impl::parseTail(ISource &source, XNode &xProlog)
 /// <returns>Pointer to DTD XNode.</returns>
 std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
 {
-  auto xNode = XNode::make<XDTD>(*m_entityMapper);
+  auto xNode = XNode::make<XDTD>(*entityMapper);
   DTD dtd{ *xNode };
   dtd.parse(source);
   m_validator = std::make_unique<DTD_Validator>(*xNode);

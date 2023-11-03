@@ -51,6 +51,6 @@ private:
   void parseInternal(ISource &source);
   void parseDTD(ISource &source);
 
-  XDTD &m_xDTD;
+  XDTD &xDTD;
 };
 }// namespace XML_Lib

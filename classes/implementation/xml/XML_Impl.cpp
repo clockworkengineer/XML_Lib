@@ -13,7 +13,7 @@ namespace XML_Lib {
 /// <summary>
 /// XML constructor.
 /// </summary>
-XML_Impl::XML_Impl() { m_entityMapper = std::make_unique<XML_EntityMapper>(); }
+XML_Impl::XML_Impl() { entityMapper = std::make_unique<XML_EntityMapper>(); }
 
 /// <summary>
 /// XML destructor.

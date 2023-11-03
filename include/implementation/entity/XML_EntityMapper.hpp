@@ -56,6 +56,6 @@ private:
   // Get entity reference mapping entry
   XMLEntityMapping &getEntityMapping(const std::string &entityName);
 
-  std::map<std::string, XMLEntityMapping> m_entityMappings;
+  std::map<std::string, XMLEntityMapping> entityMappings;
 };
 }// namespace XML_Lib

@@ -69,9 +69,9 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 /// <returns>Reference to entity mapping in intermal map.</returns>
 XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
 {
-  if (!isPresent(entityName)) { m_entityMappings.emplace(std::make_pair(entityName, XMLEntityMapping{ "" })); }
-  auto entity = m_entityMappings.find(entityName);
-  if (entity != m_entityMappings.end()) { return (entity->second); }
+  if (!isPresent(entityName)) { entityMappings.emplace(std::make_pair(entityName, XMLEntityMapping{ "" })); }
+  auto entity = entityMappings.find(entityName);
+  if (entity != entityMappings.end()) { return (entity->second); }
   throw XML_Lib::Error("Could not find entity reference in map.");
 }
 
@@ -81,11 +81,11 @@ XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std
 XML_EntityMapper::XML_EntityMapper()
 {
   /// Initialise entity mapping table with defaults.
-  m_entityMappings.emplace(std::make_pair("&amp;", XMLEntityMapping{ "&#x26;" }));
-  m_entityMappings.emplace(std::make_pair("&quot;", XMLEntityMapping{ "&#x22;" }));
-  m_entityMappings.emplace(std::make_pair("&apos;", XMLEntityMapping{ "&#x27;" }));
-  m_entityMappings.emplace(std::make_pair("&lt;", XMLEntityMapping{ "&#x3C;" }));
-  m_entityMappings.emplace(std::make_pair("&gt;", XMLEntityMapping{ "&#x3E;" }));
+  entityMappings.emplace(std::make_pair("&amp;", XMLEntityMapping{ "&#x26;" }));
+  entityMappings.emplace(std::make_pair("&quot;", XMLEntityMapping{ "&#x22;" }));
+  entityMappings.emplace(std::make_pair("&apos;", XMLEntityMapping{ "&#x27;" }));
+  entityMappings.emplace(std::make_pair("&lt;", XMLEntityMapping{ "&#x3C;" }));
+  entityMappings.emplace(std::make_pair("&gt;", XMLEntityMapping{ "&#x3E;" }));
 }
 
 /// <summary>
@@ -100,7 +100,7 @@ XML_EntityMapper::~XML_EntityMapper() {}
 /// <returns></returns>
 bool XML_EntityMapper::isPresent(const std::string &entityName) const
 {
-  return (m_entityMappings.count(entityName) != 0);
+  return (entityMappings.count(entityName) != 0);
 }
 
 /// <summary>
@@ -144,7 +144,7 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, char typ
   bool matchFound;
   do {
     matchFound = false;
-    for (auto &entity : m_entityMappings) {
+    for (auto &entity : entityMappings) {
       if (entity.first[0] == type) {
         if (size_t position = translated.find(entity.first); position != std::string::npos) {
           translated.replace(position, entity.first.length(), entity.second.internal);
@@ -199,7 +199,7 @@ void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExter
 void XML_EntityMapper::checkForRecursion()
 {
   std::set<std::string> currentEntities{};
-  for (auto &entityName : m_entityMappings) {
+  for (auto &entityName : entityMappings) {
     recurseOverEntityReference(entityName.first, entityName.first[0], currentEntities);
   }
 }

@@ -13,13 +13,12 @@ namespace XML_Lib {
 class DTD_Validator : public IValidator
 {
 public:
-  explicit DTD_Validator(XNode &xNode) : m_xDTD(XRef<XDTD>(xNode)) {}
+  explicit DTD_Validator(XNode &xNode) : xDTD(XRef<XDTD>(xNode)) {}
   DTD_Validator(const DTD_Validator &other) = delete;
   DTD_Validator &operator=(const DTD_Validator &other) = delete;
   DTD_Validator(DTD_Validator &&other) = delete;
   DTD_Validator &operator=(DTD_Validator &&other) = delete;
   ~DTD_Validator() override = default;
-
 
   void validate(const XNode &prolog) override;
 
@@ -37,9 +36,9 @@ private:
   bool checkIsEMPTY(const XNode &xNode);
   void checkAgainstDTD(const XNode &prolog);
 
-  std::set<std::string> m_assignedIDValues;
-  std::set<std::string> m_assignedIDREFValues;
-  long m_lineNumber = 1;
-  XDTD &m_xDTD;
+  std::set<std::string> assignedIDValues;
+  std::set<std::string> assignedIDREFValues;
+  long lineNumber = 1;
+  XDTD &xDTD;
 };
 }// namespace XML_Lib
