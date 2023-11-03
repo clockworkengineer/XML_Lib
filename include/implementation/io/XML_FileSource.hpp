@@ -13,11 +13,11 @@ class FileSource : public ISource
 public:
   explicit FileSource(const std::string &sourceFileName)
   {
-    m_source.open(sourceFileName.c_str(), std::ios_base::binary);
-    if (!m_source.is_open()) { throw Error("File input stream failed to open or does not exist."); }
+    source.open(sourceFileName.c_str(), std::ios_base::binary);
+    if (!source.is_open()) { throw Error("File input stream failed to open or does not exist."); }
     if (current() == kCarriageReturn) {
-      m_source.get();
-      if (current() != kLineFeed) { m_source.unget(); }
+      source.get();
+      if (current() != kLineFeed) { source.unget(); }
     }
   }
   FileSource() = default;
@@ -27,14 +27,14 @@ public:
   FileSource &operator=(FileSource &&other) = delete;
   ~FileSource() = default;
 
-  XML_Lib::Char current() const override { return (m_source.peek()); }
+  XML_Lib::Char current() const override { return (source.peek()); }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }
-    m_source.get();
+    source.get();
     if (current() == kCarriageReturn) {
-      m_source.get();
-      if (current() != kLineFeed) { m_source.unget(); }
+      source.get();
+      if (current() != kLineFeed) { source.unget(); }
     }
     m_column++;
     if (current() == kLineFeed) {
@@ -42,35 +42,35 @@ public:
       m_column = 1;
     }
   }
-  bool more() const override { return (m_source.peek() != EOF); }
+  bool more() const override { return (source.peek() != EOF); }
   void backup(long length) override
   {
-    if ((static_cast<long>(m_source.tellg()) - length >= 0) || (current() == (XML_Lib::Char)EOF)) {
-      m_source.clear();
-      m_source.seekg(-length, std::ios_base::cur);
+    if ((static_cast<long>(source.tellg()) - length >= 0) || (current() == (XML_Lib::Char)EOF)) {
+      source.clear();
+      source.seekg(-length, std::ios_base::cur);
     } else {
-      m_source.seekg(0, std::ios_base::beg);
+      source.seekg(0, std::ios_base::beg);
     }
   }
-  long position() const override { return (static_cast<long>(m_source.tellg())); }
+  long position() const override { return (static_cast<long>(source.tellg())); }
   void reset() override
   {
     m_lineNo = 1;
     m_column = 1;
-    m_source.clear();
-    m_source.seekg(0, std::ios_base::beg);
+    source.clear();
+    source.seekg(0, std::ios_base::beg);
   }
   std::string getRange(long start, long end) override
   {
     std::string rangeBuffer(static_cast<std::size_t>(end) - start, ' ');
-    long currentPosition = (long)m_source.tellg();
-    m_source.seekg(start, std::ios_base::beg);
-    m_source.read(&rangeBuffer[0], static_cast<std::streamsize>(end) - start);
-    m_source.seekg(currentPosition, std::ios_base::beg);
+    long currentPosition = (long)source.tellg();
+    source.seekg(start, std::ios_base::beg);
+    source.read(&rangeBuffer[0], static_cast<std::streamsize>(end) - start);
+    source.seekg(currentPosition, std::ios_base::beg);
     return (rangeBuffer);
   }
 
 private:
-  mutable std::ifstream m_source;
+  mutable std::ifstream source;
 };
 }// namespace XML_Lib

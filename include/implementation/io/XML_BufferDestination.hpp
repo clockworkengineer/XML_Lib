@@ -20,13 +20,13 @@ public:
 
   void add(const std::string &bytes) override
   {
-    for (auto b : bytes) { m_buffer.push_back(b); }
+    for (auto b : bytes) { buffer.push_back(b); }
   }
   void add(const XML_Lib::Char ch) override { add(toUtf8(ch)); }
-  [[nodiscard]] std::string getBuffer() const { return (m_buffer); }
+  [[nodiscard]] std::string getBuffer() const { return (buffer); }
 
 private:
 
-  std::string m_buffer;
+  std::string buffer;
 };
 }// namespace XML_Lib
