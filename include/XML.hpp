@@ -4,9 +4,7 @@
 #include <string>
 
 namespace XML_Lib {
-// ====================
-// FORWARD DECLARATIONS
-// ====================
+
 #include "XML_Forward.hpp"
 
 class XML
@@ -39,8 +37,6 @@ public:
   void stringify(IDestination &&destination);
 
 private:
-  // ===============
-
-  const std::unique_ptr<XML_Impl> m_implementation;
+  const std::unique_ptr<XML_Impl> implementation;
 };
 }// namespace XML_Lib

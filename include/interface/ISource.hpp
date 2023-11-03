@@ -3,7 +3,7 @@
 #include <string>
 #include <cwctype>
 
-#include "Converter.hpp"
+#include "IConverter.hpp"
 
 namespace XML_Lib {
 // ===================
@@ -14,7 +14,7 @@ constexpr char kLineFeed{ 0x0A };
 // ==========================================================
 // Interface for reading source stream during XML/DTD parsing
 // ==========================================================
-class ISource : protected Converter
+class ISource : protected IConverter
 {
 public:
   // =============

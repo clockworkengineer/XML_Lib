@@ -49,7 +49,7 @@ set(XML_INCLUDES
   ./include/DTD.hpp
   ./include/forward/DTD_Forward.hpp
   ./include/forward/XML_Forward.hpp
-  ./include/interface/Converter.hpp
+  ./include/interface/IConverter.hpp
   ./include/interface/ISource.hpp
   ./include/interface/IDestination.hpp
   ./include/interface/IEntityMapper.hpp

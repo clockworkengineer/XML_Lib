@@ -16,7 +16,7 @@ namespace XML_Lib {
 /// <summary>
 /// XML constructor.
 /// </summary>
-XML::XML() : m_implementation(std::make_unique<XML_Impl>()) {}
+XML::XML() : implementation(std::make_unique<XML_Impl>()) {}
 
 /// <summary>
 /// XML destructor.
@@ -27,49 +27,49 @@ XML::~XML() {}
 /// Get XML_Lib version.
 /// </summary>
 /// <returns>Library version string.</returns>
-std::string XML::version() { return (m_implementation->version()); }
+std::string XML::version() { return (implementation->version()); }
 
 /// <summary>
 /// Return reference to any internal DTD for parsed XML.
 /// </summary>
 /// <returns>Reference to DTD XNode.</returns>
-XNode &XML::dtd() { return (m_implementation->dtd()); }
+XNode &XML::dtd() { return (implementation->dtd()); }
 
 /// <summary>
 /// Return prolog node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to prolog XNode.</returns>
-XNode &XML::prolog() { return (m_implementation->prolog()); }
+XNode &XML::prolog() { return (implementation->prolog()); }
 
 /// <summary>
 /// Return declaration node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to declaration XNode.</returns>
-XNode &XML::declaration() { return (m_implementation->declaration()); }
+XNode &XML::declaration() { return (implementation->declaration()); }
 
 /// <summary>
 /// Return root node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to root element XNode.</returns>
-XNode &XML::root() { return (m_implementation->root()); }
+XNode &XML::root() { return (implementation->root()); }
 
 /// <summary>
 /// Validate XML against any DTD provided to see whether it is valid. If an
 /// exception is thrown then there is a validation issue and the XML is not valid.
 /// </summary>
-void XML::validate() { m_implementation->validate(); }
+void XML::validate() { implementation->validate(); }
 
 /// <summary>
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well formed).
 /// </summary>
-void XML::parse(ISource &source) { m_implementation->parse(source); }
-void XML::parse(ISource &&source) { m_implementation->parse(source); }
+void XML::parse(ISource &source) { implementation->parse(source); }
+void XML::parse(ISource &&source) { implementation->parse(source); }
 
 /// <summary>
 /// Create XML text from an XML object.
 /// </summary>
 /// <param name="destination">XML destination stream.</param>
-void XML::stringify(IDestination &destination) { m_implementation->stringify(destination); }
-void XML::stringify(IDestination &&destination) { m_implementation->stringify(destination); }
+void XML::stringify(IDestination &destination) { implementation->stringify(destination); }
+void XML::stringify(IDestination &&destination) { implementation->stringify(destination); }
 }// namespace XML_Lib

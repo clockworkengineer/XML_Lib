@@ -9,7 +9,7 @@
 #include <codecvt>
 #include <locale>
 
-#include "Converter.hpp"
+#include "IConverter.hpp"
 
 namespace XML_Lib {
 

@@ -15,7 +15,7 @@ namespace XML_Lib {
 /// <summary>
 /// DTD constructor.
 /// </summary>
-DTD::DTD(XNode &xNode) : m_implementation(std::make_unique<DTD_Impl>(xNode)) {}
+DTD::DTD(XNode &xNode) : implementation(std::make_unique<DTD_Impl>(xNode)) {}
 
 /// <summary>
 /// DTD destructor.
@@ -26,12 +26,12 @@ DTD::~DTD() {}
 /// Parse DTD read from source stream.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
-void DTD::parse(ISource &source) { m_implementation->parse(source); }
+void DTD::parse(ISource &source) { implementation->parse(source); }
 
 /// <summary>
 /// Create DTD text from an DTD object.
 /// </summary>
 /// <param name="destination">DTD destination stream.</param>
-void DTD::stringify(IDestination &destination) { m_implementation->stringify(destination); }
+void DTD::stringify(IDestination &destination) { implementation->stringify(destination); }
 
 }// namespace XML_Lib

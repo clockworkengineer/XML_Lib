@@ -3,9 +3,7 @@
 #include <memory>
 
 namespace XML_Lib {
-// ====================
-// FORWARD DECLARATIONS
-// ====================
+
 #include "DTD_Forward.hpp"
 
 class DTD
@@ -25,8 +23,6 @@ public:
   void stringify(IDestination &destination);
 
 private:
-  // ===============
-
-  const std::unique_ptr<DTD_Impl> m_implementation;
+  const std::unique_ptr<DTD_Impl> implementation;
 };
 }// namespace XML_Lib

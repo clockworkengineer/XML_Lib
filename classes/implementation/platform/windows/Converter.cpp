@@ -14,7 +14,7 @@
 // Switch off C++17 warning for conversion code
 // ++++++++++++++++++++++++++++++++++++++++++++
 #define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
-#include "Converter.hpp"
+#include "IConverter.hpp"
 
 namespace XML_Lib {
 
@@ -34,21 +34,21 @@ int BytesToWideChar(const char *bytes, int length, wchar_t *sideString = nullptr
 /// <summary>
 /// Convert to UTF-8 strings.
 /// </summary>
-std::string Converter::toUtf8(char16_t utf16) const { return (toUtf8(std::u16string(utf16, 1))); }
-std::string Converter::toUtf8(const std::u16string &utf16) const
+std::string IConverter::toUtf8(char16_t utf16) const { return (toUtf8(std::u16string(utf16, 1))); }
+std::string IConverter::toUtf8(const std::u16string &utf16) const
 {
   std::wstring wideString{ utf16.begin(), utf16.end() };
   std::string bytes(WideCharToBytes(&wideString[0], static_cast<int>(wideString.length())), 0);
   WideCharToBytes(&wideString[0], -1, &bytes[0], static_cast<int>(bytes.length()));
   return bytes;
 }
-std::string Converter::toUtf8(char32_t utf32) const { return (m_UTF32.to_bytes(utf32)); }
-std::string Converter::toUtf8(const std::u32string &utf32) const { return (m_UTF32.to_bytes(utf32)); }
+std::string IConverter::toUtf8(char32_t utf32) const { return (m_UTF32.to_bytes(utf32)); }
+std::string IConverter::toUtf8(const std::u32string &utf32) const { return (m_UTF32.to_bytes(utf32)); }
 
 /// <summary>
 /// Convert to UTF-16 strings.
 /// </summary>
-std::u16string Converter::toUtf16(const std::string &utf8) const
+std::u16string IConverter::toUtf16(const std::string &utf8) const
 {
   std::wstring wideString(BytesToWideChar(utf8.c_str(), static_cast<int>(utf8.length())), 0);
   BytesToWideChar(utf8.c_str(), static_cast<int>(utf8.length()), &wideString[0], static_cast<int>(wideString.length()));
@@ -58,6 +58,6 @@ std::u16string Converter::toUtf16(const std::string &utf8) const
 /// <summary>
 /// Convert to UTF-32 strings.
 /// </summary>
-std::u32string Converter::toUtf32(const std::string &utf8) const { return (m_UTF32.from_bytes(utf8)); }
-std::u32string Converter::toUtf32(const std::u16string &utf16) const { return (toUtf32(toUtf8(utf16))); }
+std::u32string IConverter::toUtf32(const std::string &utf8) const { return (m_UTF32.from_bytes(utf8)); }
+std::u32string IConverter::toUtf32(const std::u16string &utf16) const { return (toUtf32(toUtf8(utf16))); }
 }// namespace XML_Lib

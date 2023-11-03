@@ -12,18 +12,18 @@ using Char = String::value_type;
 // ===============
 // Converter class
 // ===============
-class Converter
+class IConverter
 {
 public:
   // ========================
   // Constructors/destructors
   // ========================
-  Converter() = default;
-  Converter(const Converter &other) = delete;
-  Converter &operator=(const Converter &other) = delete;
-  Converter(Converter &&other) = delete;
-  Converter &operator=(Converter &&other) = delete;
-  virtual ~Converter() = default;
+  IConverter() = default;
+  IConverter(const IConverter &other) = delete;
+  IConverter &operator=(const IConverter &other) = delete;
+  IConverter(IConverter &&other) = delete;
+  IConverter &operator=(IConverter &&other) = delete;
+  virtual ~IConverter() = default;
   // ==================
   // Conversion methods
   // ==================
