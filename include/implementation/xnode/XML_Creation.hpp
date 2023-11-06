@@ -80,7 +80,7 @@ inline const XElement &XElement::operator[](const std::string &name) const
 {
   if (getType() <= XNode::Type::element) {
     for (const auto &element : XRef<XElement>(*this).getChildren()) {
-      if (XRef<XElement>(*element).m_name == name) { return (XRef<XElement>(*element)); }
+      if (XRef<XElement>(*element).elementName == name) { return (XRef<XElement>(*element)); }
     }
   }
   throw XNode::Error("Invalid index used to access array.");

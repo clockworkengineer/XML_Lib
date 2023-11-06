@@ -8,7 +8,7 @@ struct XPI : XNode
 {
   // Constructors/Destructors
   XPI(const std::string &name, const std::string &parameters)
-    : XNode(XNode::Type::pi), m_name(name), m_parameters(parameters)
+    : XNode(XNode::Type::pi), piName(name), piParameters(parameters)
   {}
   XPI(const XPI &other) = delete;
   XPI &operator=(const XPI &other) = delete;
@@ -16,12 +16,12 @@ struct XPI : XNode
   XPI &operator=(XPI &&other) = default;
   ~XPI() = default;
   // Return reference to name
-  [[nodiscard]] const std::string &name() const { return (m_name); }
+  [[nodiscard]] const std::string &name() const { return (piName); }
   // Return reference to parameters
-  [[nodiscard]] const std::string &parameters() const { return (m_parameters); }
+  [[nodiscard]] const std::string &parameters() const { return (piParameters); }
 
 private:
-  std::string m_name;
-  std::string m_parameters;
+  std::string piName;
+  std::string piParameters;
 };
 }// namespace XML_Lib
