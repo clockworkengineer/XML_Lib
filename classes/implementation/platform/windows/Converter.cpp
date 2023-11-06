@@ -18,7 +18,7 @@
 
 namespace XML_Lib {
 
-static std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> m_UTF32;
+static std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> utf32Convert;
 // ============================================================
 // Windows API for converting between byte and wide characters.
 // ============================================================
@@ -42,8 +42,8 @@ std::string IConverter::toUtf8(const std::u16string &utf16) const
   WideCharToBytes(&wideString[0], -1, &bytes[0], static_cast<int>(bytes.length()));
   return bytes;
 }
-std::string IConverter::toUtf8(char32_t utf32) const { return (m_UTF32.to_bytes(utf32)); }
-std::string IConverter::toUtf8(const std::u32string &utf32) const { return (m_UTF32.to_bytes(utf32)); }
+std::string IConverter::toUtf8(char32_t utf32) const { return (utf32Convert.to_bytes(utf32)); }
+std::string IConverter::toUtf8(const std::u32string &utf32) const { return (utf32Convert.to_bytes(utf32)); }
 
 /// <summary>
 /// Convert to UTF-16 strings.
@@ -58,6 +58,6 @@ std::u16string IConverter::toUtf16(const std::string &utf8) const
 /// <summary>
 /// Convert to UTF-32 strings.
 /// </summary>
-std::u32string IConverter::toUtf32(const std::string &utf8) const { return (m_UTF32.from_bytes(utf8)); }
+std::u32string IConverter::toUtf32(const std::string &utf8) const { return (utf32Convert.from_bytes(utf8)); }
 std::u32string IConverter::toUtf32(const std::u16string &utf16) const { return (toUtf32(toUtf8(utf16))); }
 }// namespace XML_Lib
