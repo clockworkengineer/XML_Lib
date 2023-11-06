@@ -323,7 +323,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "Joe Smith");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
   SECTION("XML with a DTD with invalid conditional value.", "[XML][DTD][Parse][Conditional]")
   {
@@ -364,7 +364,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "Joe Smith");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
   SECTION("XML with a DTD with conditional controlled entity reference value (IGNORE) containing an entity definition.",
     "[XML][DTD][Parse][Conditional]")
@@ -379,7 +379,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "");
   }
   SECTION("XML with a DTD with nested conditionals that are both INCLUDE.", "[XML][DTD][Parse][Conditional]")
   {
@@ -393,7 +393,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "Joe Smith");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
   SECTION(
     "XML with a DTD with nested conditionals that are both INCLUDE and two entities.", "[XML][DTD][Parse][Conditional]")
@@ -408,8 +408,8 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "Joe Smith");
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example1;") == "Joe Smith 1");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
   }
   SECTION("XML with a DTD with nested conditionals that are  outter INCLUDE inner IGNORE plus two entities.",
     "[XML][DTD][Parse][Conditional]")
@@ -424,8 +424,8 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "");
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example1;") == "Joe Smith 1");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
   }
   SECTION("XML with a DTD with nested conditionals that are  outter IGNORE inner INCLUDE plus two entities.",
     "[XML][DTD][Parse][Conditional]")
@@ -440,8 +440,8 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example1;") == "");
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "");
   }
   SECTION(
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (switch on).",
@@ -457,8 +457,8 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == (XDTD::Type::internal | XDTD::Type::external));
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "Joe Smith");
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example1;") == "Joe Smith 1");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
   }
   SECTION(
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (switch off).",
@@ -474,8 +474,8 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == (XDTD::Type::internal | XDTD::Type::external));
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example;") == "");
-    REQUIRE(xDTD.m_entityMapper.getInternal("&example1;") == "");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "");
+    REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "");
   }
   SECTION(
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (invalid "

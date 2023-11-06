@@ -164,13 +164,13 @@ void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute
       }
     }
   } else if ((attribute.type & XDTD::AttributeType::entity) != 0) {
-    if (!xDTD.m_entityMapper.isPresent("&" + elementAttribute.getValue() + ";")) {
+    if (!xDTD.getEntityMapper().isPresent("&" + elementAttribute.getValue() + ";")) {
       elementError(xElement,
         "ENTITY attribute '" + attribute.name + "' value '" + elementAttribute.getValue() + "' is not defined.");
     }
   } else if ((attribute.type & XDTD::AttributeType::entities) != 0) {
     for (auto &entity : splitString(elementAttribute.getValue(), ' ')) {
-      if (!xDTD.m_entityMapper.isPresent("&" + entity + ";")) {
+      if (!xDTD.getEntityMapper().isPresent("&" + entity + ";")) {
         elementError(xElement, "ENTITIES attribute '" + attribute.name + "' value '" + entity + "' is not defined.");
       }
     }

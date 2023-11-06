@@ -111,7 +111,9 @@ struct XDTD : XNode
   }
   [[nodiscard]] long getLineCount() const { return (m_lineCount); }
   void setLineCount(long lineCount) { m_lineCount = lineCount; }
-  IEntityMapper &m_entityMapper;
+
+  IEntityMapper &getEntityMapper() const { return (m_entityMapper); }
+
 
 private:
   uint16_t m_type{};
@@ -121,5 +123,6 @@ private:
   std::unordered_map<std::string, XDTD::Element> m_elements;
   std::unordered_map<std::string, XMLExternalReference> m_notations;
   std::string m_unparsed;
+  IEntityMapper &m_entityMapper;
 };
 }// namespace XML_Lib

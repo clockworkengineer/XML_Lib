@@ -21,7 +21,7 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
   source.ignoreWS();
   if (includeOn) {
     if (source.current() == '%') {
-      conditionalValue = xDTD.m_entityMapper.map(parseEntityReference(source)).getParsed();
+      conditionalValue = xDTD.getEntityMapper().map(parseEntityReference(source)).getParsed();
     } else if (source.match(U"INCLUDE")) {
       conditionalValue = "INCLUDE";
     } else if (source.match(U"IGNORE")) {
@@ -70,16 +70,16 @@ void DTD_Impl::parseExternalContent(ISource &source)
 {
   while (source.more()) {
     if (source.match(U"<!ENTITY")) {
-      BufferSource dtdTranslatedSource(xDTD.m_entityMapper.translate(parseTagBody(source)));
+      BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
       parseEntity(dtdTranslatedSource);
     } else if (source.match(U"<!ELEMENT")) {
-      BufferSource dtdTranslatedSource(xDTD.m_entityMapper.translate(parseTagBody(source)));
+      BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
       parseElement(dtdTranslatedSource);
     } else if (source.match(U"<!ATTLIST")) {
-      BufferSource dtdTranslatedSource(xDTD.m_entityMapper.translate(parseTagBody(source)));
+      BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
       parseAttributeList(dtdTranslatedSource);
     } else if (source.match(U"<!NOTATION")) {
-      BufferSource dtdTranslatedSource(xDTD.m_entityMapper.translate(parseTagBody(source)));
+      BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
       parseNotation(dtdTranslatedSource);
     } else if (source.match(U"<!--")) {
       parseComment(source);
@@ -120,11 +120,11 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source)
 {
   if (source.match(U"SYSTEM")) {
     source.ignoreWS();
-    return (XMLExternalReference{ "SYSTEM", parseValue(source, xDTD.m_entityMapper).getParsed(), "" });
+    return (XMLExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" });
   } else if (source.match(U"PUBLIC")) {
     source.ignoreWS();
-    std::string publicID{ parseValue(source, xDTD.m_entityMapper).getParsed() };
-    std::string systemID{ parseValue(source, xDTD.m_entityMapper).getParsed() };
+    std::string publicID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
+    std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     return (XMLExternalReference{ "PUBLIC", systemID, publicID });
   }
   throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");

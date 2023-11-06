@@ -153,11 +153,11 @@ void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute)
     attribute.type |= XDTD::AttributeType::implied;
   } else if (source.match(U"#FIXED")) {
     source.ignoreWS();
-    attribute.value = parseValue(source, xDTD.m_entityMapper);
+    attribute.value = parseValue(source, xDTD.getEntityMapper());
     attribute.type |= XDTD::AttributeType::fixed;
   } else {
     source.ignoreWS();
-    attribute.value = parseValue(source, xDTD.m_entityMapper);
+    attribute.value = parseValue(source, xDTD.getEntityMapper());
     attribute.type |= XDTD::AttributeType::normal;
   }
 }
@@ -209,12 +209,12 @@ void DTD_Impl::parseEntity(ISource &source)
   entityName += parseName(source) + ";";
   if (source.current() == '\'' || source.current() == '"') {
     XMLValue entityValue = parseValue(source);
-    xDTD.m_entityMapper.setInternal(entityName, entityValue.getParsed());
+    xDTD.getEntityMapper().setInternal(entityName, entityValue.getParsed());
   } else {
-    xDTD.m_entityMapper.setExternal(entityName, parseExternalReference(source));
+    xDTD.getEntityMapper().setExternal(entityName, parseExternalReference(source));
     if (source.match(U"NDATA")) {
       source.ignoreWS();
-      xDTD.m_entityMapper.setNotation(entityName, parseName(source));
+      xDTD.getEntityMapper().setNotation(entityName, parseName(source));
     }
   }
 }
@@ -259,7 +259,7 @@ void DTD_Impl::parseComment(ISource &source)
 void DTD_Impl::parseParameterEntityReference(ISource &source)
 {
   XMLValue parameterEntity = parseEntityReference(source);
-  BufferSource entitySource(xDTD.m_entityMapper.translate(parameterEntity.getUnparsed()));
+  BufferSource entitySource(xDTD.getEntityMapper().translate(parameterEntity.getUnparsed()));
   parseInternal(entitySource);
   source.ignoreWS();
 }
@@ -333,7 +333,7 @@ void DTD_Impl::parseDTD(ISource &source)
   // Save away unparsed form of DTD
   xDTD.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
   // Make sure no defined entity contains recursion
-  xDTD.m_entityMapper.checkForRecursion();
+  xDTD.getEntityMapper().checkForRecursion();
   // Count lines in DTD
   std::string unparsedDTD = xDTD.unparsed();
   xDTD.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);
