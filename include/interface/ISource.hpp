@@ -88,7 +88,7 @@ public:
   // ==================================
   // Get current source stream position
   // ==================================
-  std::pair<long, long> getPosition() const { return (std::make_pair(m_lineNo, m_column)); }
+  std::pair<long, long> getPosition() const { return (std::make_pair(lineNo, columnNo)); }
   // =============================================
   // Read bytes representing the current character
   // =============================================
@@ -107,7 +107,7 @@ public:
   String from_bytes(const std::string &from) { return (toUtf32(from)); }
 
 protected:
-  long m_lineNo = 1;
-  long m_column = 1;
+  long lineNo = 1;
+  long columnNo = 1;
 };
 }// namespace XML_Lib

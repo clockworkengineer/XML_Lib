@@ -24,14 +24,14 @@ public:
         ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
       }
     }
-    m_buffer = toUtf32(utf16xml);
-    convertCRLFToLF(m_buffer);
+    buffer = toUtf32(utf16xml);
+    convertCRLFToLF(buffer);
   }
   explicit BufferSource(const std::string &sourceBuffer)
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
-    m_buffer = toUtf32(sourceBuffer);
-    convertCRLFToLF(m_buffer);
+    buffer = toUtf32(sourceBuffer);
+    convertCRLFToLF(buffer);
   }
   BufferSource() = default;
   BufferSource(const BufferSource &other) = delete;
@@ -42,35 +42,35 @@ public:
 
   [[nodiscard]] XML_Lib::Char current() const override
   {
-    if (more()) { return (m_buffer[m_position]); }
+    if (more()) { return (buffer[bufferPosition]); }
     return (static_cast<XML_Lib::Char>(EOF));
   }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }
-    m_position++;
-    m_column++;
+    bufferPosition++;
+    columnNo++;
     if (current() == kLineFeed) {
-      m_lineNo++;
-      m_column = 1;
+      lineNo++;
+      columnNo = 1;
     }
   }
-  [[nodiscard]] bool more() const override { return (m_position < static_cast<long>(m_buffer.size())); }
+  [[nodiscard]] bool more() const override { return (bufferPosition < static_cast<long>(buffer.size())); }
   void backup(long length) override
   {
-    m_position -= length;
-    if (m_position < 0) { m_position = 0; }
+    bufferPosition -= length;
+    if (bufferPosition < 0) { bufferPosition = 0; }
   }
-  [[nodiscard]] long position() const override { return (m_position); }
+  [[nodiscard]] long position() const override { return (bufferPosition); }
   std::string getRange(long start, long end) override
   {
-    return (toUtf8(m_buffer.substr(start, static_cast<std::size_t>(end) - start)));
+    return (toUtf8(buffer.substr(start, static_cast<std::size_t>(end) - start)));
   }
   void reset() override
   {
-    m_lineNo = 1;
-    m_column = 1;
-    m_position = 0;
+    lineNo = 1;
+    columnNo = 1;
+    bufferPosition = 0;
   }
 
 private:
@@ -83,7 +83,7 @@ private:
     }
   }
 
-  long m_position = 0;
-  XML_Lib::String m_buffer;
+  long bufferPosition = 0;
+  XML_Lib::String buffer;
 };
 }// namespace XML_Lib

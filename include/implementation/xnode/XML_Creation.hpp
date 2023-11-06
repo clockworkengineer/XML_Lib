@@ -18,7 +18,7 @@ inline const XNode &XNode::operator[](int index) const
 // =================
 inline const XNode &XNode::operator[](const std::string &name) const
 {
-  if (m_type <= XNode::Type::element) {
+  if (getType() <= XNode::Type::element) {
     for (const auto &element : XRef<XElement>(*this).getChildren()) {
       if (XRef<XElement>(*element).name() == name) { return (*element); }
     }
@@ -30,31 +30,31 @@ inline const XNode &XNode::operator[](const std::string &name) const
 // ===============
 inline void XNode::addChild(std::unique_ptr<XNode> &child)
 {
-  if (m_children == nullptr) { m_children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
-  m_children->push_back(std::move(child));
+  if (children == nullptr) { children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
+  children->push_back(std::move(child));
 }
 inline void XNode::addChild(std::unique_ptr<XNode> &&child)
 {
-  if (m_children == nullptr) { m_children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
-  m_children->push_back(std::move(child));
+  if (children == nullptr) { children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
+  children->push_back(std::move(child));
 }
 // ============================
 // Get XNode children reference
 // ============================
 inline std::vector<std::unique_ptr<XNode>> &XNode::getChildren()
 {
-  if (m_children == nullptr) {
+  if (children == nullptr) {
     return (no_children);
   } else {
-    return (*m_children);
+    return (*children);
   }
 };
 inline const std::vector<std::unique_ptr<XNode>> &XNode::getChildren() const
 {
-  if (m_children == nullptr) {
+  if (children == nullptr) {
     return (no_children);
   } else {
-    return (*m_children);
+    return (*children);
   }
 }
 // =====================

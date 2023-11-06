@@ -17,14 +17,14 @@ struct XNode
   // XNode Types
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
   // Constructors/Destructors
-  explicit XNode(Type nodeType = Type::base) : m_type(nodeType) {}
+  explicit XNode(Type nodeType = Type::base) : xNodeType(nodeType) {}
   XNode(const XNode &other) = delete;
   XNode &operator=(const XNode &other) = delete;
   XNode(XNode &&other) = default;
   XNode &operator=(XNode &&other) = default;
   ~XNode() = default;
   // Get/Set XNode type
-  [[nodiscard]] Type getType() const { return (m_type); }
+  [[nodiscard]] Type getType() const { return (xNodeType); }
   // Return XNode contents
   [[nodiscard]] std::string getContents() const;
   // XNode Index overloads
@@ -44,9 +44,9 @@ struct XNode
 
 private:
   // XNode Type
-  Type m_type;
+  Type xNodeType;
   // XNode Children
-  std::unique_ptr<std::vector<std::unique_ptr<XNode>>> m_children;
+  std::unique_ptr<std::vector<std::unique_ptr<XNode>>> children;
   // Default XNode has no children
   inline static std::vector<std::unique_ptr<XNode>> no_children;
 };

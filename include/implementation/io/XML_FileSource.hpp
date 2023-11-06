@@ -36,10 +36,10 @@ public:
       source.get();
       if (current() != kLineFeed) { source.unget(); }
     }
-    m_column++;
+    columnNo++;
     if (current() == kLineFeed) {
-      m_lineNo++;
-      m_column = 1;
+      lineNo++;
+      columnNo = 1;
     }
   }
   bool more() const override { return (source.peek() != EOF); }
@@ -55,8 +55,8 @@ public:
   long position() const override { return (static_cast<long>(source.tellg())); }
   void reset() override
   {
-    m_lineNo = 1;
-    m_column = 1;
+    lineNo = 1;
+    columnNo = 1;
     source.clear();
     source.seekg(0, std::ios_base::beg);
   }
