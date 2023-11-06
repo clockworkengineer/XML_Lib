@@ -66,63 +66,63 @@ struct XDTD : XNode
     std::vector<Attribute> attributes;
   };
   // Constructors/Destructors
-  explicit XDTD(IEntityMapper &entityMapper) : XNode(XNode::Type::dtd), m_entityMapper(entityMapper) {}
+  explicit XDTD(IEntityMapper &entityMapper) : XNode(XNode::Type::dtd), entityMapper(entityMapper) {}
   XDTD(const XDTD &other) = delete;
   XDTD &operator=(const XDTD &other) = delete;
   XDTD(XDTD &&other) = default;
   XDTD &operator=(XDTD &&other) = delete;
   ~XDTD() = default;
-  [[nodiscard]] std::string unparsed() const { return (m_unparsed); }
-  void setUnparsed(const std::string &unparsed) { m_unparsed = unparsed; }
-  [[nodiscard]] uint16_t getType() const { return (m_type); }
-  void setType(uint16_t type) { m_type = type; }
-  [[nodiscard]] std::string getRootName() const { return (m_name); }
-  void setRootName(const std::string &name) { m_name = name; }
-  [[nodiscard]] XMLExternalReference getExternalReference() const { return (m_external); }
-  void setExternalReference(const XMLExternalReference &reference) { m_external = reference; }
+  [[nodiscard]] std::string unparsed() const { return (unparsedDTD); }
+  void setUnparsed(const std::string &unparsed) { unparsedDTD = unparsed; }
+  [[nodiscard]] uint16_t getType() const { return (dtdNodeType); }
+  void setType(uint16_t type) { dtdNodeType = type; }
+  [[nodiscard]] std::string getRootName() const { return (dtdNodeName); }
+  void setRootName(const std::string &name) { dtdNodeName = name; }
+  [[nodiscard]] XMLExternalReference getExternalReference() const { return (externalReference); }
+  void setExternalReference(const XMLExternalReference &reference) { externalReference = reference; }
   [[nodiscard]] bool isElementPresent(const std::string &elementName) const
   {
-    return (m_elements.find(elementName) != m_elements.end());
+    return (elements.find(elementName) != elements.end());
   }
   XDTD::Element &getElement(const std::string &elementName)
   {
-    auto element = m_elements.find(elementName);
-    if (element != m_elements.end()) { return (element->second); }
+    auto element = elements.find(elementName);
+    if (element != elements.end()) { return (element->second); }
     throw XNode::Error("Could not find notation name.");
   }
   void addElement(const std::string &elementName, const XDTD::Element &element)
   {
-    m_elements.emplace(elementName, element);
+    elements.emplace(elementName, element);
   }
-  [[nodiscard]] long getElementCount() const { return (static_cast<long>(m_elements.size())); }
+  [[nodiscard]] long getElementCount() const { return (static_cast<long>(elements.size())); }
   XMLExternalReference &getNotation(const std::string &notationName)
   {
-    auto notation = m_notations.find(notationName);
-    if (notation != m_notations.end()) { return (notation->second); }
+    auto notation = notations.find(notationName);
+    if (notation != notations.end()) { return (notation->second); }
     throw XNode::Error("Could not find notation name.");
   }
   void addNotation(const std::string &notationName, const XMLExternalReference &notation)
   {
-    m_notations.emplace(notationName, notation);
+    notations.emplace(notationName, notation);
   }
   [[nodiscard]] long getNotationCount(const std::string &notationName) const
   {
-    return (static_cast<long>(m_notations.count(notationName)));
+    return (static_cast<long>(notations.count(notationName)));
   }
-  [[nodiscard]] long getLineCount() const { return (m_lineCount); }
-  void setLineCount(long lineCount) { m_lineCount = lineCount; }
+  [[nodiscard]] long getLineCount() const { return (lineCount); }
+  void setLineCount(long newLineCount) { lineCount = newLineCount; }
 
-  IEntityMapper &getEntityMapper() const { return (m_entityMapper); }
+  IEntityMapper &getEntityMapper() const { return (entityMapper); }
 
 
 private:
-  uint16_t m_type{};
-  long m_lineCount{};
-  std::string m_name;
-  XMLExternalReference m_external{ "" };
-  std::unordered_map<std::string, XDTD::Element> m_elements;
-  std::unordered_map<std::string, XMLExternalReference> m_notations;
-  std::string m_unparsed;
-  IEntityMapper &m_entityMapper;
+  uint16_t dtdNodeType{};
+  long lineCount{};
+  std::string dtdNodeName;
+  XMLExternalReference externalReference{ "" };
+  std::unordered_map<std::string, XDTD::Element> elements;
+  std::unordered_map<std::string, XMLExternalReference> notations;
+  std::string unparsedDTD;
+  IEntityMapper &entityMapper;
 };
 }// namespace XML_Lib
