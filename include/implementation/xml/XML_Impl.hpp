@@ -60,8 +60,8 @@ private:
   void stringifyElements(XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
 
-  std::unique_ptr<XNode> m_prolog;
-  std::unique_ptr<IValidator> m_validator;
+  std::unique_ptr<XNode> xmlProlog;
+  std::unique_ptr<IValidator> validator;
   std::unique_ptr<IEntityMapper> entityMapper;
 };
 }// namespace XML_Lib

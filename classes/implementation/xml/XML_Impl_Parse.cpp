@@ -296,7 +296,7 @@ std::unique_ptr<XNode> XML_Impl::parseDTD(ISource &source)
   auto xNode = XNode::make<XDTD>(*entityMapper);
   DTD dtd{ *xNode };
   dtd.parse(source);
-  m_validator = std::make_unique<DTD_Validator>(*xNode);
+  validator = std::make_unique<DTD_Validator>(*xNode);
   return (xNode);
 }
 
