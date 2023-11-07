@@ -9,9 +9,9 @@ namespace XML_Lib {
 // ====================
 using String = std::u32string;
 using Char = String::value_type;
-// ===============
-// Converter class
-// ===============
+// =================================
+// Interface for character converter
+// =================================
 class IConverter
 {
 public:

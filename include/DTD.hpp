@@ -9,6 +9,7 @@ namespace XML_Lib {
 class DTD
 {
 public:
+  // Constructors/Destructors
   explicit DTD(XNode &xNode);
   DTD() = delete;
   DTD(const DTD &other) = delete;

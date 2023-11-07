@@ -17,6 +17,7 @@ namespace XML_Lib {
 class XML_Impl
 {
 public:
+  // Constructors/Destructors
   XML_Impl();
   XML_Impl(const XML_Impl &other) = delete;
   XML_Impl &operator=(const XML_Impl &other) = delete;

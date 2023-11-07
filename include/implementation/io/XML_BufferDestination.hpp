@@ -11,6 +11,7 @@ namespace XML_Lib {
 class BufferDestination : public IDestination
 {
 public:
+  // Constructors/Destructors
   BufferDestination() = default;
   BufferDestination(const BufferDestination &other) = delete;
   BufferDestination &operator=(const BufferDestination &other) = delete;

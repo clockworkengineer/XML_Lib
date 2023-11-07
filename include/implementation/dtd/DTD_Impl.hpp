@@ -9,6 +9,7 @@ namespace XML_Lib {
 class DTD_Impl
 {
 public:
+  // Constructors/Destructors
   explicit DTD_Impl(XNode &xNode);
   DTD_Impl() = delete;
   DTD_Impl(const DTD_Impl &other) = delete;
@@ -16,7 +17,6 @@ public:
   DTD_Impl(DTD_Impl &&other) = delete;
   DTD_Impl &operator=(DTD_Impl &&other) = delete;
   ~DTD_Impl();
-
   // Parse XML DTD from source
   void parse(ISource &source);
   // Stringify XML DTD to text destination
@@ -51,6 +51,6 @@ private:
   void parseInternal(ISource &source);
   void parseDTD(ISource &source);
 
-  XDTD &xDTD;
+  XDTD &dtdRoot;
 };
 }// namespace XML_Lib

@@ -14,7 +14,7 @@ public:
   // Bits per byte
   static const int kBitsPerByte{ 8 };
 
-  // ======================
+  // Constructors/Destructors
   explicit BufferSource(const std::u16string &sourceBuffer)// UTF16 source BE/LE
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }

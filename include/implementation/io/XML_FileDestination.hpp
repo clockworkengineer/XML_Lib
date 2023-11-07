@@ -11,6 +11,7 @@ namespace XML_Lib {
 class FileDestination : public IDestination
 {
 public:
+  // Constructors/Destructors
   explicit FileDestination(const std::string &destinationFileName)
   {
     destination.open(destinationFileName.c_str(), std::ios_base::binary);

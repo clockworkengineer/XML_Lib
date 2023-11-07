@@ -10,6 +10,7 @@ namespace XML_Lib {
 class XML
 {
 public:
+  // Constructors/Destructors
   XML();
   XML(const XML &other) = delete;
   XML &operator=(const XML &other) = delete;

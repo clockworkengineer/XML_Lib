@@ -11,6 +11,7 @@ namespace XML_Lib {
 class FileSource : public ISource
 {
 public:
+  // Constructors/Destructors
   explicit FileSource(const std::string &sourceFileName)
   {
     source.open(sourceFileName.c_str(), std::ios_base::binary);

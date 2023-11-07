@@ -13,6 +13,7 @@ namespace XML_Lib {
 class DTD_Validator : public IValidator
 {
 public:
+  // Constructors/Destructors
   explicit DTD_Validator(XNode &xNode) : xDTD(XRef<XDTD>(xNode)) {}
   DTD_Validator(const DTD_Validator &other) = delete;
   DTD_Validator &operator=(const DTD_Validator &other) = delete;

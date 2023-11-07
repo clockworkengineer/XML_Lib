@@ -1,7 +1,9 @@
 #pragma once
 
 namespace XML_Lib {
-
+// ===============================
+// Interface for DTD XML validator
+// ===============================
 class IValidator
 {
 public:
@@ -14,9 +16,9 @@ public:
   IValidator(IValidator &&other) = delete;
   IValidator &operator=(IValidator &&other) = delete;
   virtual ~IValidator() = default;
-  // ========================
-  // Validate XML against DTD
-  // ========================
+  // =======================
+  // Validate XML using DTD
+  // =======================
   virtual void validate(const XNode &xNode) = 0;
 };
 

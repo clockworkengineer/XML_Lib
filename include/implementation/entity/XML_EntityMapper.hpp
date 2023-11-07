@@ -14,6 +14,7 @@ namespace XML_Lib {
 class XML_EntityMapper : public IEntityMapper
 {
 public:
+  // Entity mapping data
   struct XMLEntityMapping
   {
     explicit XMLEntityMapping(const std::string &internal) : internal(internal) {}
@@ -22,7 +23,7 @@ public:
     std::string notation{};
   };
 
-
+  // Constructors/Destructors
   XML_EntityMapper();
   XML_EntityMapper(const XML_EntityMapper &other) = delete;
   XML_EntityMapper &operator=(const XML_EntityMapper &other) = delete;
