@@ -47,7 +47,7 @@ XNode &XML_Impl::dtd()
 /// Return XML prolog XNode.
 /// </summary>
 /// <returns>Reference to prolog XNode.</returns>
-XNode &XML_Impl::prolog() { return (*xmlProlog); }
+XNode &XML_Impl::prolog() { return (*xmlRoot); }
 
 /// <summary>
 /// Return XML declaration XNode.
@@ -71,7 +71,7 @@ XNode &XML_Impl::root()
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well formed).
 /// </summary>
-void XML_Impl::parse(ISource &source) { xmlProlog = parseXML(source); }
+void XML_Impl::parse(ISource &source) { xmlRoot = parseXML(source); }
 
 /// <summary>
 /// Validate XML against any DTD provided to see whether it is valid. If an

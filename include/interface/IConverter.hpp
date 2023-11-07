@@ -15,6 +15,13 @@ using Char = String::value_type;
 class IConverter
 {
 public:
+  // ==================
+  // IConverter Error
+  // ==================
+  struct Error : public std::runtime_error
+  {
+    Error(std::string const &message) : std::runtime_error("IConverter Error: " + message) {}
+  };
   // ========================
   // Constructors/destructors
   // ========================

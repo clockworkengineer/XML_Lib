@@ -6,12 +6,20 @@
 namespace XML_Lib {
 
 #include "IEntityMapper_Forward.hpp"
+
 // ===========================
 // XML Entity mapper interface
 // ===========================
 class IEntityMapper
 {
 public:
+  // ==================
+  // IEntityMapper Error
+  // ==================
+  struct Error : public std::runtime_error
+  {
+    Error(std::string const &message) : std::runtime_error("IEntityMapper Error: " + message) {}
+  };
   // ========================
   // Constructors/destructors
   // ========================

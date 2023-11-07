@@ -101,5 +101,5 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
 /// destination stream in UTF-8 encoding.
 /// </summary>
 /// <param name="destination">XML destination stream.</param>
-void XML_Impl::stringifyXML(IDestination &destination) { stringifyElements(*xmlProlog, destination); }
+void XML_Impl::stringifyXML(IDestination &destination) { stringifyElements(*xmlRoot, destination); }
 }// namespace XML_Lib

@@ -61,7 +61,7 @@ private:
   void stringifyElements(XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
 
-  std::unique_ptr<XNode> xmlProlog;
+  std::unique_ptr<XNode> xmlRoot;
   std::unique_ptr<IValidator> validator;
   std::unique_ptr<IEntityMapper> entityMapper;
 };

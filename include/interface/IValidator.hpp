@@ -7,6 +7,13 @@ namespace XML_Lib {
 class IValidator
 {
 public:
+  // ==================
+  // IValidator Error
+  // ==================
+  struct Error : public std::runtime_error
+  {
+    Error(std::string const &message) : std::runtime_error("IValidator Error: " + message) {}
+  };
   // ========================
   // Constructors/destructors
   // ========================
