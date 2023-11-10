@@ -57,7 +57,7 @@ set(XML_INCLUDES
   ./include/implementation/data/XML_Value.hpp
   ./include/implementation/data/XML_Attribute.hpp
   ./include/implementation/data/XML_ExternalReference.hpp
-  ./include/implementation/dtd/DTD_Impl.hpp
+  ./include/implementation/DTD_Impl.hpp
   ./include/implementation/entity/XML_EntityMapper.hpp
   ./include/implementation/io/XML_Sources.hpp
   ./include/implementation/io/XML_BufferSource.hpp
@@ -66,10 +66,9 @@ set(XML_INCLUDES
   ./include/implementation/io/XML_BufferDestination.hpp
   ./include/implementation/io/XML_FileDestination.hpp
   ./include/implementation/validator/DTD_Validator.hpp
-  ./include/implementation/xml/XML_Error.hpp
-  ./include/implementation/xml/XML_Impl.hpp
-  ./include/implementation/xml/XML_Common.hpp
-  ./include/implementation/xml/XML_Core.hpp
+  ./include/implementation/XML_Impl.hpp
+  ./include/implementation/XML_Common.hpp
+  ./include/implementation/XML_Core.hpp
   ./include/implementation/xnode/XML_XNode.hpp
   ./include/implementation/xnode/XML_Reference.hpp
   ./include/implementation/xnode/XML_Creation.hpp
@@ -92,11 +91,9 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/include/interface
   ${PROJECT_SOURCE_DIR}/include/implementation
   ${PROJECT_SOURCE_DIR}/include/implementation/data
-  ${PROJECT_SOURCE_DIR}/include/implementation/dtd
   ${PROJECT_SOURCE_DIR}/include/implementation/entity
   ${PROJECT_SOURCE_DIR}/include/implementation/io
   ${PROJECT_SOURCE_DIR}/include/implementation/validator
-  ${PROJECT_SOURCE_DIR}/include/implementation/xml
   ${PROJECT_SOURCE_DIR}/include/implementation/xnode
   ${PROJECT_SOURCE_DIR}/include/implementation/xnode/types
   ${PROJECT_BINARY_DIR})

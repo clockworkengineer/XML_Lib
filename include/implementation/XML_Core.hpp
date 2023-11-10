@@ -2,7 +2,6 @@
 // ==========
 // XML Common
 // ==========
-#include "XML_Error.hpp"
 #include "XML_Value.hpp"
 #include "XML_Attribute.hpp"
 #include "XML_ExternalReference.hpp"

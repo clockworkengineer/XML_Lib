@@ -2,10 +2,32 @@
 
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 namespace XML_Lib {
 
 #include "XML_Forward.hpp"
+
+struct Error : public std::runtime_error
+{
+  Error(std::string const &message) : std::runtime_error("XML Error: " + message) {}
+};
+
+struct SyntaxError : public std::runtime_error
+{
+  SyntaxError(const std::string &message) : std::runtime_error("XML Syntax Error: " + message) {}
+  explicit SyntaxError(const std::pair<long, long> &position, const std::string &message = "")
+    : std::runtime_error("XML Syntax Error [Line: " + std::to_string(position.first)
+                         + " Column: " + std::to_string(position.second) + "] " + message)
+  {}
+};
+
+struct ValidationError : public std::runtime_error
+{
+  explicit ValidationError(long lineNumber, const std::string &message = "")
+    : std::runtime_error("XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + message)
+  {}
+};
 
 class XML
 {

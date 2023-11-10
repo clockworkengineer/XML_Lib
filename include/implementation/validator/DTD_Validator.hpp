@@ -4,8 +4,8 @@
 #include <set>
 #include <regex>
 
+#include "XML.hpp"
 #include "XML_Core.hpp"
-
 #include "IValidator.hpp"
 
 namespace XML_Lib {

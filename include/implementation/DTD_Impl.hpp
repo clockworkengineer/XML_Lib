@@ -1,7 +1,7 @@
 #pragma once
 
+#include "XML.hpp"
 #include "XML_Core.hpp"
-
 #include "DTD.hpp"
 
 namespace XML_Lib {

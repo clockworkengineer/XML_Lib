@@ -5,8 +5,8 @@
 #include <filesystem>
 #include <set>
 
+#include "XML.hpp"
 #include "XML_Core.hpp"
-
 #include "IEntityMapper.hpp"
 
 namespace XML_Lib {
