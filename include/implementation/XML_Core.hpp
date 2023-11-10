@@ -1,6 +1,6 @@
 #pragma once
 // ==========
-// XML Common
+// XML Core
 // ==========
 #include "XML_Value.hpp"
 #include "XML_Attribute.hpp"

@@ -29,7 +29,7 @@ void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
 /// Reset content node whitespace flag if set.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void XML_Impl::resetWhiteSpace(XNode &xNode)
+void XML_Impl::resetWhiteSpace(const XNode &xNode)
 {
   if (!xNode.getChildren().empty()) {
     if (xNode.getChildren().back()->getType() == XNode::Type::content) {

@@ -35,7 +35,7 @@ public:
   std::string version();
 
 private:
-  void resetWhiteSpace(XNode &xNode);
+  void resetWhiteSpace(const XNode &xNode);
   void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
   void addContentToElementChildList(XNode &xNode, const std::string &content);
   std::string parseDeclarationAttribute(ISource &source,

@@ -67,11 +67,11 @@ set(XML_INCLUDES
   ./include/implementation/io/XML_FileDestination.hpp
   ./include/implementation/validator/DTD_Validator.hpp
   ./include/implementation/XML_Impl.hpp
-  ./include/implementation/XML_Common.hpp
   ./include/implementation/XML_Core.hpp
   ./include/implementation/xnode/XML_XNode.hpp
   ./include/implementation/xnode/XML_Reference.hpp
   ./include/implementation/xnode/XML_Creation.hpp
+  ./include/implementation/xnode/XML_Common.hpp
   ./include/implementation/xnode/types/XML_XProlog.hpp
   ./include/implementation/xnode/types/XML_XDeclaration.hpp
   ./include/implementation/xnode/types/XML_XContent.hpp
