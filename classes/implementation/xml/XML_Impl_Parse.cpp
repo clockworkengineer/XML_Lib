@@ -34,11 +34,11 @@ std::string XML_Impl::parseDeclarationAttribute(ISource &source,
 {
   std::string result;
   source.ignoreWS();
-  if (!source.match(U"=")) { throw SyntaxError(source.getPosition(), "Missing '=' after " + name + "."); }
+  if (!source.match(U"=")) { throw XML::SyntaxError(source.getPosition(), "Missing '=' after " + name + "."); }
   source.ignoreWS();
   result = parseValue(source).getParsed();
   if (toUpper) { result = toUpperString(result); }
-  if (!values.contains(result)) { throw SyntaxError("Unsupported XML " + name + " value '" + result + "' specified."); }
+  if (!values.contains(result)) { throw XML::SyntaxError("Unsupported XML " + name + " value '" + result + "' specified."); }
   return (result);
 }
 
@@ -55,7 +55,7 @@ std::unique_ptr<XNode> XML_Impl::parseComment(ISource &source)
     comment += source.current_to_bytes();
     source.next();
   }
-  if (!source.match(U">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
+  if (!source.match(U">")) { throw XML::SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
   return (XNode::make<XComment>(comment));
 }
 
@@ -87,7 +87,7 @@ std::unique_ptr<XNode> XML_Impl::parseCDATA(ISource &source)
   std::string cdata;
   while (source.more() && !source.match(U"]]>")) {
     if (source.match(U"<![CDATA[")) {
-      throw SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed.");
+      throw XML::SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed.");
     }
     cdata += source.current_to_bytes();
     source.next();
@@ -108,18 +108,18 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
   while (source.more() && source.current() != '?' && source.current() != '/' && source.current() != '>') {
     std::string attributeName = parseName(source);
     if (!source.match(U"=")) {
-      throw SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
+      throw XML::SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
     }
     source.ignoreWS();
     XMLValue attributeValue = parseValue(source, *entityMapper);
     if (!validAttributeValue(attributeValue)) {
-      throw SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
+      throw XML::SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
     }
     if (!attributeNames.contains(attributeName)) {
       attributes.emplace_back(attributeName, attributeValue);
       attributeNames.insert(attributeName);
     } else {
-      throw SyntaxError(source.getPosition(), "Attribute defined more than once within start tag.");
+      throw XML::SyntaxError(source.getPosition(), "Attribute defined more than once within start tag.");
     }
   }
   return (attributes);
@@ -190,14 +190,14 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
     XElement &xNodeChildElement = XRef<XElement>(*xNode.getChildren().back());
     if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
-        throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
+        throw XML::SyntaxError(source.getPosition(), "Namespace used but not defined.");
       }
     }
   } else {
     if (source.match(U"</")) {
-      throw SyntaxError(source.getPosition(), "Missing closing tag.");
+      throw XML::SyntaxError(source.getPosition(), "Missing closing tag.");
     } else if (source.match(U"]]>")) {
-      throw SyntaxError(source.getPosition(), "']]>' invalid in element content area.");
+      throw XML::SyntaxError(source.getPosition(), "']]>' invalid in element content area.");
     }
     parseElementContent(source, xNode);
   }
@@ -233,7 +233,7 @@ std::unique_ptr<XNode>
     // Self closing element tag
     return (XNode::make<XElement>(name, attributes, namespaces, XNode::Type::self));
   }
-  throw SyntaxError(source.getPosition(), "Missing closing tag.");
+  throw XML::SyntaxError(source.getPosition(), "Missing closing tag.");
 }
 
 /// <summary>
@@ -252,16 +252,16 @@ std::unique_ptr<XNode> XML_Impl::parseDeclaration(ISource &source)
     if (source.match(U"version")) {
       version = parseDeclarationAttribute(source, "version", { "1.0", "2.0" });
     } else {
-      throw SyntaxError(source.getPosition(), "Version missing from declaration.");
+      throw XML::SyntaxError(source.getPosition(), "Version missing from declaration.");
     }
     if (source.match(U"encoding")) {
       encoding = parseDeclarationAttribute(source, "encoding", { "UTF-8", "UTF-16" }, true);
     }
     if (source.match(U"standalone")) { standalone = parseDeclarationAttribute(source, "standalone", { "yes", "no" }); }
     if (source.match(U"encoding")) {
-      throw SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes.");
+      throw XML::SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes.");
     }
-    if (!source.match(U"?>")) { throw SyntaxError(source.getPosition(), "Declaration end tag not found."); }
+    if (!source.match(U"?>")) { throw XML::SyntaxError(source.getPosition(), "Declaration end tag not found."); }
   }
   return (XNode::make<XDeclaration>(version, encoding, standalone));
 }
@@ -281,7 +281,7 @@ void XML_Impl::parseTail(ISource &source, XNode &xProlog)
     } else if (source.isWS()) {
       parseWhiteSpaceToContent(source, xProlog);
     } else {
-      throw SyntaxError(source.getPosition(), "Extra content at the end of document.");
+      throw XML::SyntaxError(source.getPosition(), "Extra content at the end of document.");
     }
   }
 }
@@ -321,17 +321,17 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
     } else if (source.match(U"<!DOCTYPE")) {
       for (auto &element : xProlog->getChildren()) {
         if (element->getType() == XNode::Type::dtd) {
-          throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
+          throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
         }
       }
       xProlog->addChild(parseDTD(source));
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {
-      throw SyntaxError(source.getPosition(), "Content detected before root element.");
+      throw XML::SyntaxError(source.getPosition(), "Content detected before root element.");
     }
   }
-  if (!source.match(U"<")) { throw SyntaxError(source.getPosition(), "Missing root element."); }
+  if (!source.match(U"<")) { throw XML::SyntaxError(source.getPosition(), "Missing root element."); }
   return (xProlog);
 }
 

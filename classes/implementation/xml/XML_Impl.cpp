@@ -40,7 +40,7 @@ XNode &XML_Impl::dtd()
   for (auto &element : prolog().getChildren()) {
     if (element->getType() == XNode::Type::dtd) { return (*element); }
   }
-  throw XML_Lib::Error("No DTD found.");
+  throw XML::Error("No DTD found.");
 }
 
 /// <summary>
@@ -64,7 +64,7 @@ XNode &XML_Impl::root()
   for (auto &element : prolog().getChildren()) {
     if ((element->getType() == XNode::Type::root) || (element->getType() == XNode::Type::self)) { return (*element); }
   }
-  throw XML_Lib::Error("No root element found.");
+  throw XML::Error("No root element found.");
 }
 
 /// <summary>

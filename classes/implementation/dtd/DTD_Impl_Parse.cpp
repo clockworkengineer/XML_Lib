@@ -18,7 +18,7 @@ namespace XML_Lib {
 void DTD_Impl::parseValidNotations(const std::string &notations)
 {
   for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|')) {
-    if (dtdRoot.getNotationCount(notation) == 0) { throw SyntaxError("NOTATION " + notation + " is not defined."); }
+    if (dtdRoot.getNotationCount(notation) == 0) { throw XML::SyntaxError("NOTATION " + notation + " is not defined."); }
   }
 }
 
@@ -31,12 +31,12 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
 {
   // Attribute cannot be ID and fixed
   if (dtdAttribute.type == (XDTD::AttributeType::id | XDTD::AttributeType::fixed)) {
-    throw SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
+    throw XML::SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
   }
   // Only one ID attribute allowed per element
   else if ((dtdAttribute.type & XDTD::AttributeType::id) != 0) {
     if (dtdRoot.getElement(elementName).idAttributePresent) {
-      throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
+      throw XML::SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
     }
     dtdRoot.getElement(elementName).idAttributePresent = true;
   }
@@ -47,12 +47,12 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
       if (options.find(option) == options.end()) {
         options.insert(option);
       } else {
-        throw SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name
+        throw XML::SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name
                           + "' occurs more than once in its definition.");
       }
     }
     if (options.find(dtdAttribute.value.getParsed()) == options.end()) {
-      throw SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
+      throw XML::SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
                         + dtdAttribute.name + "' is invalid.");
     }
   }
@@ -76,7 +76,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
     enumerationType += parseName(source);
   }
   if (source.current() != ')') {
-    throw SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type.");
+    throw XML::SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type.");
   }
   enumerationType += source.current_to_bytes();
   source.next();
@@ -137,7 +137,7 @@ void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute)
     }
     return;
   }
-  throw SyntaxError(source.getPosition(), "Invalid attribute type specified.");
+  throw XML::SyntaxError(source.getPosition(), "Invalid attribute type specified.");
 }
 
 /// <summary>
@@ -285,9 +285,9 @@ void DTD_Impl::parseInternal(ISource &source)
       parseParameterEntityReference(source);
       continue;
     } else {
-      throw SyntaxError(source.getPosition(), "Invalid DTD tag.");
+      throw XML::SyntaxError(source.getPosition(), "Invalid DTD tag.");
     }
-    if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
+    if (source.current() != '>') { throw XML::SyntaxError(source.getPosition(), "Missing '>' terminator."); }
     source.next();
     source.ignoreWS();
   }
@@ -318,7 +318,7 @@ void DTD_Impl::parseDTD(ISource &source)
   }
   // Missing '>' after external DTD reference
   else if (source.current() != '>') {
-    throw SyntaxError(source.getPosition(), "Missing '>' terminator.");
+    throw XML::SyntaxError(source.getPosition(), "Missing '>' terminator.");
   }
   // Move to the next component in XML prolog
   else {

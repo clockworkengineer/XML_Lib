@@ -92,7 +92,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     break;
   }
   default:
-    throw XML_Lib::Error("Invalid XNode encountered during stringify.");
+    throw XML::Error("Invalid XNode encountered during stringify.");
   }
 }
 
