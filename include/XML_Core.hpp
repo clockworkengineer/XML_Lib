@@ -1,7 +1,9 @@
 #pragma once
+
 // ==========
 // XML Core
 // ==========
+
 #include "XML_Value.hpp"
 #include "XML_Attribute.hpp"
 #include "XML_ExternalReference.hpp"
@@ -18,3 +20,4 @@
 #include "XML_Reference.hpp"
 #include "XML_Creation.hpp"
 #include "XML_Common.hpp"
+#include "XML_interfaces.hpp"

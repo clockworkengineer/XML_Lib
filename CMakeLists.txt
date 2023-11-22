@@ -46,6 +46,8 @@ list(APPEND XML_SOURCES "./classes/implementation/platform/${PLATFORM}/Converter
 set(XML_INCLUDES
   XML_Config.hpp
   ./include/XML.hpp
+  ./include/XML_Core.hpp
+  ./include/XML_Interfaces.hpp
   ./include/DTD.hpp
   ./include/forward/DTD_Forward.hpp
   ./include/forward/XML_Forward.hpp
@@ -67,7 +69,6 @@ set(XML_INCLUDES
   ./include/implementation/io/XML_FileDestination.hpp
   ./include/implementation/validator/DTD_Validator.hpp
   ./include/implementation/XML_Impl.hpp
-  ./include/implementation/XML_Core.hpp
   ./include/implementation/xnode/XML_XNode.hpp
   ./include/implementation/xnode/XML_Reference.hpp
   ./include/implementation/xnode/XML_Creation.hpp

@@ -9,8 +9,6 @@
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
 
-#include "IEntityMapper.hpp"
-
 namespace XML_Lib {
 // ==============
 // XML validation
