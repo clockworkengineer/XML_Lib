@@ -4,7 +4,13 @@
 
 namespace XML_Lib {
 
-#include "DTD_Forward.hpp"
+// ===================================================
+// Forward declarations for interfaces/classes/structs
+// ===================================================
+class DTD_Impl;
+class ISource;
+class IDestination;
+struct XNode;
 
 class DTD
 {

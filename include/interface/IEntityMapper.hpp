@@ -5,7 +5,11 @@
 
 namespace XML_Lib {
 
-#include "IEntityMapper_Forward.hpp"
+// ===================================================
+// Forward declarations for interfaces/classes/structs
+// ===================================================
+struct XMLEntityMapping;
+struct XMLValue;
 
 // ===========================
 // XML Entity mapper interface

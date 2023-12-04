@@ -47,15 +47,13 @@ set(XML_INCLUDES
   XML_Config.hpp
   ./include/XML.hpp
   ./include/XML_Core.hpp
-  ./include/XML_Interfaces.hpp
   ./include/DTD.hpp
-  ./include/forward/DTD_Forward.hpp
-  ./include/forward/XML_Forward.hpp
   ./include/interface/IConverter.hpp
   ./include/interface/ISource.hpp
   ./include/interface/IDestination.hpp
   ./include/interface/IEntityMapper.hpp
   ./include/interface/IValidator.hpp
+  ./include/interface/XML_Interfaces.hpp
   ./include/implementation/data/XML_Value.hpp
   ./include/implementation/data/XML_Attribute.hpp
   ./include/implementation/data/XML_ExternalReference.hpp
