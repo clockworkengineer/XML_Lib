@@ -36,11 +36,10 @@ set(XML_SOURCES
   ./classes/implementation/common/XML_Common.cpp
   ./classes/implementation/validator/DTD_Validator.cpp
   ./classes/implementation/entity/XML_EntityMapper.cpp
-  ./classes/implementation/platform/${PLATFORM}/Converter.cpp
 )
 
 # Platform specific sources
-list(APPEND XML_SOURCES "./classes/implementation/platform/${PLATFORM}/Converter.cpp")
+list(APPEND XML_SOURCES "./classes/implementation/converter/${PLATFORM}/XML_Converter.cpp")
 
 # XML  includes
 set(XML_INCLUDES
@@ -48,7 +47,6 @@ set(XML_INCLUDES
   ./include/XML.hpp
   ./include/XML_Core.hpp
   ./include/DTD.hpp
-  ./include/interface/IConverter.hpp
   ./include/interface/ISource.hpp
   ./include/interface/IDestination.hpp
   ./include/interface/IEntityMapper.hpp
@@ -86,7 +84,6 @@ set(XML_INCLUDES
 add_library(${XML_LIBRARY_NAME} ${XML_SOURCES} ${XML_INCLUDES})
 target_include_directories(${XML_LIBRARY_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/include
-  ${PROJECT_SOURCE_DIR}/include/forward
   ${PROJECT_SOURCE_DIR}/include/interface
   ${PROJECT_SOURCE_DIR}/include/implementation
   ${PROJECT_SOURCE_DIR}/include/implementation/data

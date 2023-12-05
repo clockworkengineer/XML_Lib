@@ -2,13 +2,13 @@
 
 #include <string>
 
-#include "IConverter.hpp"
+#include "XML_Converter.hpp"
 
 namespace XML_Lib {
 // =======================================================================
 // Interface for writing destination stream during XML/DTD stringification
 // =======================================================================
-class IDestination : protected IConverter
+class IDestination
 {
 public:
   // ==================
@@ -32,5 +32,8 @@ public:
   // ========================
   virtual void add(const std::string &bytes) = 0;
   virtual void add(XML_Lib::Char c) = 0;
+
+protected:
+  XML_Converter converter;
 };
 }// namespace XML_Lib

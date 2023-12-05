@@ -12,25 +12,25 @@ using Char = String::value_type;
 // =================================
 // Interface for character converter
 // =================================
-class IConverter
+class XML_Converter
 {
 public:
   // ==================
-  // IConverter Error
+  // XML_Converter Error
   // ==================
   struct Error : public std::runtime_error
   {
-    Error(std::string const &message) : std::runtime_error("IConverter Error: " + message) {}
+    Error(std::string const &message) : std::runtime_error("XML_Converter Error: " + message) {}
   };
   // ========================
   // Constructors/destructors
   // ========================
-  IConverter() = default;
-  IConverter(const IConverter &other) = delete;
-  IConverter &operator=(const IConverter &other) = delete;
-  IConverter(IConverter &&other) = delete;
-  IConverter &operator=(IConverter &&other) = delete;
-  virtual ~IConverter() = default;
+  XML_Converter() = default;
+  XML_Converter(const XML_Converter &other) = delete;
+  XML_Converter &operator=(const XML_Converter &other) = delete;
+  XML_Converter(XML_Converter &&other) = delete;
+  XML_Converter &operator=(XML_Converter &&other) = delete;
+  virtual ~XML_Converter() = default;
   // ==================
   // Conversion methods
   // ==================
