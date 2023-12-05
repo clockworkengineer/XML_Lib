@@ -27,11 +27,6 @@ public:
   // ========================
   // Constructors/destructors
   // ========================
-  IEntityMapper() = default;
-  IEntityMapper(const IEntityMapper &other) = delete;
-  IEntityMapper &operator=(const IEntityMapper &other) = delete;
-  IEntityMapper(IEntityMapper &&other) = delete;
-  IEntityMapper &operator=(IEntityMapper &&other) = delete;
   virtual ~IEntityMapper() = default;
   // ================================
   // Entity reference get/set details

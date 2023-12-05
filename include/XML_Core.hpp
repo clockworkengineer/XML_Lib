@@ -21,3 +21,4 @@
 #include "XML_Creation.hpp"
 #include "XML_Common.hpp"
 #include "XML_interfaces.hpp"
+#include "XML_EntityMapper.hpp"

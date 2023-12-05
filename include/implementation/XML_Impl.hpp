@@ -4,13 +4,12 @@
 #include <stdexcept>
 #include <memory>
 
-#include "XML.hpp"
 #include "XML_Config.hpp"
+#include "XML.hpp"
 #include "XML_Core.hpp"
-#include "DTD_Validator.hpp"
-#include "XML_EntityMapper.hpp"
 
 #include "DTD.hpp"
+#include "DTD_Validator.hpp"
 
 namespace XML_Lib {
 

@@ -17,11 +17,6 @@ public:
   // ========================
   // Constructors/destructors
   // ========================
-  IValidator() = default;
-  IValidator(const IValidator &other) = delete;
-  IValidator &operator=(const IValidator &other) = delete;
-  IValidator(IValidator &&other) = delete;
-  IValidator &operator=(IValidator &&other) = delete;
   virtual ~IValidator() = default;
   // =======================
   // Validate XML using DTD
