@@ -18,6 +18,7 @@ public:
   DTD_Impl(DTD_Impl &&other) = delete;
   DTD_Impl &operator=(DTD_Impl &&other) = delete;
   ~DTD_Impl();
+  
   // Parse XML DTD from source
   void parse(ISource &source);
   // Stringify XML DTD to text destination

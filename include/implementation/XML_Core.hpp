@@ -20,5 +20,5 @@
 #include "XML_Reference.hpp"
 #include "XML_Creation.hpp"
 #include "XML_Common.hpp"
-#include "XML_interfaces.hpp"
+#include "XML_Interfaces.hpp"
 #include "XML_EntityMapper.hpp"
