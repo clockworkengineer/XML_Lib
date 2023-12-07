@@ -45,13 +45,13 @@ list(APPEND XML_SOURCES "./classes/implementation/converter/${PLATFORM}/XML_Conv
 set(XML_INCLUDES
   XML_Config.hpp
   ./include/XML.hpp
-  ./include/XML_Core.hpp
   ./include/DTD.hpp
   ./include/interface/ISource.hpp
   ./include/interface/IDestination.hpp
   ./include/interface/IEntityMapper.hpp
   ./include/interface/IValidator.hpp
   ./include/interface/XML_Interfaces.hpp
+  ./include/implementation/XML_Core.hpp
   ./include/implementation/data/XML_Value.hpp
   ./include/implementation/data/XML_Attribute.hpp
   ./include/implementation/data/XML_ExternalReference.hpp
