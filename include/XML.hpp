@@ -4,6 +4,8 @@
 #include <string>
 #include <stdexcept>
 
+#include "XML_Config.hpp"
+
 namespace XML_Lib {
 
 // ===================================================

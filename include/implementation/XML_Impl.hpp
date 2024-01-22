@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <memory>
 
-#include "XML_Config.hpp"
 #include "XML.hpp"
 #include "XML_Core.hpp"
 
