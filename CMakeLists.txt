@@ -69,15 +69,15 @@ set(XML_INCLUDES
   ./include/implementation/xnode/XML_Reference.hpp
   ./include/implementation/xnode/XML_Creation.hpp
   ./include/implementation/xnode/XML_Common.hpp
-  ./include/implementation/xnode/types/XML_XProlog.hpp
-  ./include/implementation/xnode/types/XML_XDeclaration.hpp
-  ./include/implementation/xnode/types/XML_XContent.hpp
-  ./include/implementation/xnode/types/XML_XCDATA.hpp
-  ./include/implementation/xnode/types/XML_XEntityReference.hpp
-  ./include/implementation/xnode/types/XML_XElement.hpp
-  ./include/implementation/xnode/types/XML_XComment.hpp
-  ./include/implementation/xnode/types/XML_XPI.hpp
-  ./include/implementation/xnode/types/XML_XDTD.hpp
+  ./include/implementation/variants/XML_XProlog.hpp
+  ./include/implementation/variants/XML_XDeclaration.hpp
+  ./include/implementation/variants/XML_XContent.hpp
+  ./include/implementation/variants/XML_XCDATA.hpp
+  ./include/implementation/variants/XML_XEntityReference.hpp
+  ./include/implementation/variants/XML_XElement.hpp
+  ./include/implementation/variants/XML_XComment.hpp
+  ./include/implementation/variants/XML_XPI.hpp
+  ./include/implementation/variants/XML_XDTD.hpp
 )
 
 # XML library
@@ -91,7 +91,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/include/implementation/io
   ${PROJECT_SOURCE_DIR}/include/implementation/validator
   ${PROJECT_SOURCE_DIR}/include/implementation/xnode
-  ${PROJECT_SOURCE_DIR}/include/implementation/xnode/types
+  ${PROJECT_SOURCE_DIR}/include/implementation/variants
   ${PROJECT_BINARY_DIR})
 
 # Add tests
