@@ -46,8 +46,6 @@ private:
   // XNode Type
   Type xNodeType;
   // XNode Children
-  std::unique_ptr<std::vector<std::unique_ptr<XNode>>> children;
-  // Default XNode has no children
-  inline static std::vector<std::unique_ptr<XNode>> no_children;
+  std::vector<std::unique_ptr<XNode>> children;
 };
 }// namespace XML_Lib

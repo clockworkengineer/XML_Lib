@@ -30,32 +30,22 @@ inline const XNode &XNode::operator[](const std::string &name) const
 // ===============
 inline void XNode::addChild(std::unique_ptr<XNode> &child)
 {
-  if (children == nullptr) { children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
-  children->push_back(std::move(child));
+  children.push_back(std::move(child));
 }
 inline void XNode::addChild(std::unique_ptr<XNode> &&child)
 {
-  if (children == nullptr) { children = std::make_unique<std::vector<std::unique_ptr<XNode>>>(); }
-  children->push_back(std::move(child));
+  children.push_back(std::move(child));
 }
 // ============================
 // Get XNode children reference
 // ============================
 inline std::vector<std::unique_ptr<XNode>> &XNode::getChildren()
 {
-  if (children == nullptr) {
-    return (no_children);
-  } else {
-    return (*children);
-  }
+    return (children);
 };
 inline const std::vector<std::unique_ptr<XNode>> &XNode::getChildren() const
 {
-  if (children == nullptr) {
-    return (no_children);
-  } else {
-    return (*children);
-  }
+    return (children);
 }
 // =====================
 // XElement index access
