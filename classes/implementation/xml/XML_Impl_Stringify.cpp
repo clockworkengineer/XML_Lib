@@ -22,20 +22,20 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
 {
   switch (xNode.getType()) {
   // XML prolog
-  case XNode::Type::prolog: {
+  case Variant::Type::prolog: {
     for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
     break;
   }
   // XML declaration
-  case XNode::Type::declaration: {
+  case Variant::Type::declaration: {
     XDeclaration &xNodeDeclaration = XRef<XDeclaration>(declaration());
     destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
                     + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
     break;
   }
   // XML root or child elements
-  case XNode::Type::root:
-  case XNode::Type::element: {
+  case Variant::Type::root:
+  case Variant::Type::element: {
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
@@ -47,7 +47,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     break;
   }
   // Self closing element
-  case XNode::Type::self: {
+  case Variant::Type::self: {
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
@@ -57,37 +57,37 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     break;
   }
   // XML comments
-  case XNode::Type::comment: {
+  case Variant::Type::comment: {
     XComment &xNodeComment = XRef<XComment>(xNode);
     destination.add("<!--" + xNodeComment.comment() + "-->");
     break;
   }
   // XML element content
-  case XNode::Type::content: {
+  case Variant::Type::content: {
     XContent &xNodeContent = XRef<XContent>(xNode);
     destination.add(xNodeContent.getContent());
     break;
   }
   // XML character entity
-  case XNode::Type::entity: {
+  case Variant::Type::entity: {
     XEntityReference &xNodeEntity = XRef<XEntityReference>(xNode);
     destination.add(xNodeEntity.value().getUnparsed());
     break;
   }
   // XML processing instruction
-  case XNode::Type::pi: {
+  case Variant::Type::pi: {
     XPI &xNodePI = XRef<XPI>(xNode);
     destination.add("<?" + xNodePI.name() + " " + xNodePI.parameters() + "?>");
     break;
   }
   // XML CDATA section
-  case XNode::Type::cdata: {
+  case Variant::Type::cdata: {
     XCDATA &xNodeCDATA = XRef<XCDATA>(xNode);
     destination.add("<![CDATA[" + xNodeCDATA.CDATA() + "]]>");
     break;
   }
   // XML DTD
-  case XNode::Type::dtd: {
+  case Variant::Type::dtd: {
     destination.add(XRef<XDTD>(dtd()).unparsed());
     break;
   }

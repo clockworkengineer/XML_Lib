@@ -61,7 +61,7 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     XML xml;
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == XNode::Type::dtd);
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == Variant::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(XRef<XElement>(xml.root())).name());
     REQUIRE(xDTD.getRootName() == "TVSCHEDULE");
@@ -121,7 +121,7 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     XML xml;
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[1]).getType() == XNode::Type::dtd);
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[1]).getType() == Variant::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(XRef<XElement>(xml.root())).name());
     REQUIRE(xDTD.getRootName() == "CATALOG");
@@ -179,7 +179,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     XML xml;
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == XNode::Type::dtd);
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == Variant::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.isElementPresent("person") == true);
     REQUIRE(xDTD.getElement("person").attributes.size() == 1);
@@ -343,7 +343,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == XNode::Type::dtd);
+    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == Variant::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.isElementPresent("mountain") == true);
     REQUIRE(xDTD.getElement("mountain").attributes.size() == 2);

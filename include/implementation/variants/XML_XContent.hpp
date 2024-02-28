@@ -4,10 +4,10 @@
 
 namespace XML_Lib {
 
-struct XContent : XNode
+struct XContent : Variant
 {
   // Constructors/Destructors
-  explicit XContent(bool whiteSpaceDefault = true) : XNode(XNode::Type::content), whiteSpace(whiteSpaceDefault) {}
+  explicit XContent(bool whiteSpaceDefault = true) : Variant(Variant::Type::content), whiteSpace(whiteSpaceDefault) {}
   XContent(const XContent &other) = delete;
   XContent &operator=(const XContent &other) = delete;
   XContent(XContent &&other) = default;

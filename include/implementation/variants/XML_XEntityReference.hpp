@@ -2,10 +2,10 @@
 
 namespace XML_Lib {
 
-struct XEntityReference : XNode
+struct XEntityReference : Variant
 {
   // Constructors/Destructors
-  explicit XEntityReference(const XMLValue &value) : XNode(XNode::Type::entity), entityReferenceValue(value) {}
+  explicit XEntityReference(const XMLValue &value) : Variant(Variant::Type::entity), entityReferenceValue(value) {}
   XEntityReference(const XEntityReference &other) = delete;
   XEntityReference &operator=(const XEntityReference &other) = delete;
   XEntityReference(XEntityReference &&other) = default;

@@ -78,6 +78,7 @@ set(XML_INCLUDES
   ./include/implementation/variants/XML_XComment.hpp
   ./include/implementation/variants/XML_XPI.hpp
   ./include/implementation/variants/XML_XDTD.hpp
+  ./include/implementation/variants/XML_Variant.hpp
 )
 
 # XML library
