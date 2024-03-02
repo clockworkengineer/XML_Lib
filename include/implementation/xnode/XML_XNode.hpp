@@ -32,11 +32,11 @@ struct XNode
   [[nodiscard]] const XNode &operator[](int index) const;
   [[nodiscard]] const XNode &operator[](const std::string &name) const;
   // Add child
-  void addChild(std::unique_ptr<XNode> &child);
-  void addChild(std::unique_ptr<XNode> &&child);
+  void addChild(std::unique_ptr<XNode> &child) { xmlVariant->addChild(child); }
+  void addChild(std::unique_ptr<XNode> &&child) { xmlVariant->addChild(child); }
   // Get XNode children reference
-  std::vector<std::unique_ptr<XNode>> &getChildren();
-  const std::vector<std::unique_ptr<XNode>> &getChildren() const;
+  std::vector<std::unique_ptr<XNode>> &getChildren() { return (xmlVariant->getChildren()); }
+  const std::vector<std::unique_ptr<XNode>> &getChildren() const { return (xmlVariant->getChildren()); }
   // Get reference to JNode variant
   Variant &getVariant() { return (*xmlVariant); }
   const Variant &getVariant() const { return (*xmlVariant); }
@@ -48,9 +48,8 @@ struct XNode
 
 private:
   // XNode Type
-  // Variant::Type xNodeType;
   std::unique_ptr<Variant> xmlVariant;
   // XNode Children
-  std::vector<std::unique_ptr<XNode>> children;
+  // std::vector<std::unique_ptr<XNode>> children;
 };
 }// namespace XML_Lib

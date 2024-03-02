@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 namespace XML_Lib {
 // ====
 // Base
@@ -17,8 +18,16 @@ struct Variant
 
   // Get/Set XNode type
   [[nodiscard]] Type getType() const { return (xmlNodeType); }
+  // Get XNode children reference
+  std::vector<std::unique_ptr<XNode>> &getChildren() { return (children); }
+  const std::vector<std::unique_ptr<XNode>> &getChildren() const { return (children); }
+  // Add child
+  void addChild(std::unique_ptr<XNode> &child) { children.push_back(std::move(child)); }
+  void addChild(std::unique_ptr<XNode> &&child) { children.push_back(std::move(child)); }
 
 private:
   Variant::Type xmlNodeType;
+  // XNode Children
+  std::vector<std::unique_ptr<XNode>> children;
 };
 }// namespace XML_Lib
