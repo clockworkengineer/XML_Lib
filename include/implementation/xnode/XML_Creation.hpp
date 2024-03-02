@@ -72,19 +72,19 @@ inline const XElement &XElement::operator[]([[maybe_unused]] const std::string &
 inline std::string XNode::getContents() const
 {
   std::string result;
-  // for (const auto &node : getChildren()) {
-  //   if (node->getType() == Variant::Type::content) {
-  //     result += XRef<XContent>(*node).getContent();
-  //   } else if (node->getType() == Variant::Type::entity) {
-  //     if (!XRef<XEntityReference>(*node).getChildren().empty()) {
-  //       result += XRef<XEntityReference>(*node).getContents();
-  //     } else {
-  //       result += XRef<XEntityReference>(*node).value().getParsed();
-  //     }
-  //   } else if (node->getType() == Variant::Type::cdata) {
-  //     result += XRef<XCDATA>(*node).CDATA();
-  //   }
-  // }
+  for (const auto &node : getChildren()) {
+    if (node->getType() == Variant::Type::content) {
+      result += XRef<XContent>(*node).getContent();
+    } else if (node->getType() == Variant::Type::entity) {
+      if (!XRef<XEntityReference>(*node).getChildren().empty()) {
+        result += node->getContents();
+      } else {
+        result += XRef<XEntityReference>(*node).value().getParsed();
+      }
+    } else if (node->getType() == Variant::Type::cdata) {
+      result += XRef<XCDATA>(*node).CDATA();
+    }
+  }
   return (result);
 }
 }// namespace XML_Lib

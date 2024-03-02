@@ -32,11 +32,11 @@ TEST_CASE("Parse CDATA section.", "[XML][Parse][CDATA]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
+    REQUIRE(xml.root().getContents() == "\n   <message> Welcome to TutorialsPoint </message>   ");
     REQUIRE(XRef<XCDATA>(*xml.root().getChildren()[1]).CDATA() == "<message> Welcome to TutorialsPoint </message>");
   }
   SECTION("Parse XML root containing CDDATA containing nested CDATA ", "[XML][Parse][CDATA]")
-  {    REQUIRE(xml.root().getContents() == "\n   <message> Welcome to TutorialsPoint </message>   ");
-
+  {
     xmlString =
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
       " <root>\n"
