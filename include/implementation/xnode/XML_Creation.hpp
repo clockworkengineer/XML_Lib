@@ -43,15 +43,15 @@ inline const XNode &XNode::operator[](const std::string &name) const
 // =====================
 inline const XElement &XElement::operator[]([[maybe_unused]] int index) const
 {
-  // int number = 0;
-  // if ((index >= 0) && (index < (static_cast<int>(XRef<XElement>(*this).getChildren().size())))) {
-  //   for (const auto &child : XRef<XNode>(*this).getChildren()) {
-  //     if (XRef<XNode>(*child).getType() <= Variant::Type::element) {
-  //       if (number == index) { return (XRef<XElement>(*child)); }
-  //       number++;
-  //     }
-  //   }
-  // }
+  int number = 0;
+  if ((index >= 0) && (index < (static_cast<int>(getChildren().size())))) {
+    for (const auto &child : getChildren()) {
+      if (child->getType() <= Variant::Type::element) {
+        if (number == index) { return (XRef<XElement>(*child)); }
+        number++;
+      }
+    }
+  }
   throw XNode::Error("Invalid index used to access array.");
 }
 // ====================
