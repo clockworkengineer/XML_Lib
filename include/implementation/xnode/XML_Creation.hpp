@@ -28,16 +28,6 @@ inline const XNode &XNode::operator[](const std::string &name) const
   }
   throw XNode::Error("Invalid index used to access array.");
 }
-// ===============
-// Add child XNode
-// ===============
-// inline void XNode::addChild(std::unique_ptr<XNode> &child) { children.push_back(std::move(child)); }
-// inline void XNode::addChild(std::unique_ptr<XNode> &&child) { children.push_back(std::move(child)); }
-// ============================
-// Get XNode children reference
-// ============================
-// inline std::vector<std::unique_ptr<XNode>> &XNode::getChildren() { return (children); };
-// inline const std::vector<std::unique_ptr<XNode>> &XNode::getChildren() const { return (children); }
 // =====================
 // XElement index access
 // =====================
@@ -59,17 +49,17 @@ inline const XElement &XElement::operator[]([[maybe_unused]] int index) const
 // ====================
 inline const XElement &XElement::operator[]([[maybe_unused]] const std::string &name) const
 {
-  // if (getType() <= Variant::Type::element) {
-  //   for (const auto &element : XRef<XElement>(*this).getChildren()) {
-  //     if (XRef<XElement>(*element).elementName == name) { return (XRef<XElement>(*element)); }
-  //   }
-  // }
+  if (getType() <= Variant::Type::element) {
+    for (const auto &element : getChildren()) {
+      if (XRef<XElement>(*element).elementName == name) { return (XRef<XElement>(*element)); }
+    }
+  }
   throw XNode::Error("Invalid index used to access array.");
 }
 // ==================
 // XNode get contents
 // ==================
-inline std::string XNode::getContents() const
+inline std::string Variant::getContents() const
 {
   std::string result;
   for (const auto &node : getChildren()) {

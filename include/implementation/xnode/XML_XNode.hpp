@@ -14,8 +14,6 @@ struct XNode
   {
     Error(const std::string &message) : std::runtime_error("XNode Error: " + message) {}
   };
-  // // XNode Types
-  // enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
   // Constructors/Destructors
   XNode() = default;
   template<typename T> explicit XNode(T value);
@@ -27,7 +25,7 @@ struct XNode
   // Get XNode type
   [[nodiscard]] Variant::Type getType() const { return (xmlVariant->getType()); }
   // Return XNode contents
-  [[nodiscard]] std::string getContents() const;
+  [[nodiscard]] std::string getContents() const { return(xmlVariant->getContents()); }
   // XNode Index overloads
   [[nodiscard]] const XNode &operator[](int index) const;
   [[nodiscard]] const XNode &operator[](const std::string &name) const;
@@ -49,7 +47,5 @@ struct XNode
 private:
   // XNode Type
   std::unique_ptr<Variant> xmlVariant;
-  // XNode Children
-  // std::vector<std::unique_ptr<XNode>> children;
 };
 }// namespace XML_Lib

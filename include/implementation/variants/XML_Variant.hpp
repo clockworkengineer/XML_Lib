@@ -24,10 +24,34 @@ struct Variant
   // Add child
   void addChild(std::unique_ptr<XNode> &child) { children.push_back(std::move(child)); }
   void addChild(std::unique_ptr<XNode> &&child) { children.push_back(std::move(child)); }
+  // Return Variant contents
+  [[nodiscard]] std::string getContents() const;
 
 private:
   Variant::Type xmlNodeType;
   // XNode Children
   std::vector<std::unique_ptr<XNode>> children;
 };
+
+// // ==================
+// // XNode get contents
+// // ==================
+// inline std::string Variant::getContents() const
+// {
+//   std::string result;
+//   for (const auto &node : getChildren()) {
+//     if (node->getType() == Variant::Type::content) {
+//       result += XRef<XContent>(*node).getContent();
+//     } else if (node->getType() == Variant::Type::entity) {
+//       if (!XRef<XEntityReference>(*node).getChildren().empty()) {
+//         result += node->getContents();
+//       } else {
+//         result += XRef<XEntityReference>(*node).value().getParsed();
+//       }
+//     } else if (node->getType() == Variant::Type::cdata) {
+//       result += XRef<XCDATA>(*node).CDATA();
+//     }
+//   }
+//   return (result);
+// }
 }// namespace XML_Lib
