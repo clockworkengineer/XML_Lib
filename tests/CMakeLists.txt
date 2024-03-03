@@ -20,10 +20,10 @@ set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
 set(TEST_SOURCES
     ./IO/ISource.cpp
     ./IO/IDestination.cpp
-#    ./XML/XML_Parse_Misc.cpp
+ #   ./XML/XML_Parse_Misc.cpp
     ./XML/XML_Parse_Declaration.cpp
     ./XML/XML_Parse_Tags.cpp
-#    ./XML/XML_Parse_Root.cpp
+    ./XML/XML_Parse_Root.cpp
     ./XML/XML_Parse_Files.cpp
     ./XML/XML_Parse_Attributes.cpp
 #    ./XML/XML_Parse_Comments.cpp
