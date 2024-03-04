@@ -40,7 +40,7 @@ set(TEST_SOURCES
     ./DTD/DTD_Parse_Tags.cpp
     ./DTD/DTD_Stringify.cpp
     ./DTD/DTD_Validate_Elements.cpp
- #   ./DTD/DTD_Validate_Attributes.cpp
+    ./DTD/DTD_Validate_Attributes.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})

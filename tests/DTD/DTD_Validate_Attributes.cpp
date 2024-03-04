@@ -183,7 +183,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == Variant::Type::dtd);
+    REQUIRE(xml.prolog().getChildren()[2]->getType() == Variant::Type::dtd);
     REQUIRE(xDTD.isElementPresent("person") == true);
     REQUIRE(xDTD.getElement("person").attributes.size() == 1);
     REQUIRE(xDTD.getElement("person").attributes[0].name == "gender");
@@ -192,7 +192,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE(xDTD.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(xDTD.getElement("person").attributes[0].value.getParsed() == "F");
     REQUIRE(xDTD.getRootName() == "queue");
-    REQUIRE(xDTD.getRootName() == XRef<XElement>(XRef<XElement>(xml.root())).name());
+    REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(XRef<XElement>(xml.root())[0].name() == "person");
     REQUIRE(XRef<XElement>(xml.root())[0].getAttributeList().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[0].getAttribute("gender").getValue() == "M");
