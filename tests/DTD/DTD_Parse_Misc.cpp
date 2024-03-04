@@ -72,7 +72,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     XML xml;
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[1]).getType() == XNode::Type::dtd);
+    REQUIRE(xml.prolog().getChildren()[1]->getType() == Variant::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE(xDTD.getNotation("GIF").getType() == "SYSTEM");
     REQUIRE(xDTD.getNotation("GIF").getSystemID() == "GIF");
@@ -130,7 +130,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     XML xml;
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == XNode::Type::dtd);
+    REQUIRE(xml.prolog().getChildren()[2]->getType() == Variant::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(xDTD.getElement("address").name == "address");
@@ -159,7 +159,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     XML xml;
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == XNode::Type::dtd);
+    REQUIRE(xml.prolog().getChildren()[2]->getType() == Variant::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(xDTD.getExternalReference().getType() == "SYSTEM");
@@ -178,7 +178,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     XML xml;
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(XRef<XNode>(*xml.prolog().getChildren()[2]).getType() == XNode::Type::dtd);
+    REQUIRE(xml.prolog().getChildren()[2]->getType() == Variant::Type::dtd);
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(xDTD.getExternalReference().getType() == "PUBLIC");

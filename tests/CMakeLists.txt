@@ -34,7 +34,7 @@ set(TEST_SOURCES
     ./XML/XML_Parse_Namespace.cpp
     ./XML/XML_Stringify.cpp
     ./XML/XML_Helper.cpp
- #   ./DTD/DTD_Parse_Misc.cpp
+    ./DTD/DTD_Parse_Misc.cpp
  #   ./DTD/DTD_Parse_Entity.cpp
  #   ./DTD/DTD_Parse_Attributes.cpp
     ./DTD/DTD_Parse_Tags.cpp
