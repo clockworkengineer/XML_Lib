@@ -13,7 +13,7 @@ namespace XML_Lib {
 // ===================================================
 class IEntityMapper;
 
-struct XDTD : XNode
+struct XDTD : Variant
 {
   //
   // DTD Type
@@ -66,7 +66,7 @@ struct XDTD : XNode
     std::vector<Attribute> attributes;
   };
   // Constructors/Destructors
-  explicit XDTD(IEntityMapper &entityMapper) : XNode(XNode::Type::dtd), entityMapper(entityMapper) {}
+  explicit XDTD(IEntityMapper &entityMapper) : Variant(Variant::Type::dtd), entityMapper(entityMapper) {}
   XDTD(const XDTD &other) = delete;
   XDTD &operator=(const XDTD &other) = delete;
   XDTD(XDTD &&other) = default;

@@ -5,15 +5,15 @@
 
 namespace XML_Lib {
 
-struct XElement : XNode
+struct XElement : Variant
 {
   // Constructors/Destructors
-  XElement(XNode::Type nodeType = XNode::Type::element) : XNode(nodeType) {}
+  XElement(Variant::Type nodeType = Variant::Type::element) : Variant(nodeType) {}
   XElement(const std::string &name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces,
-    XNode::Type nodeType = XNode::Type::element)
-    : XNode(nodeType), elementName(name), attributes(attributes), namespaces(namespaces)
+    Variant::Type nodeType = Variant::Type::element)
+    : Variant(nodeType), elementName(name), attributes(attributes), namespaces(namespaces)
   {}
   XElement(const XElement &other) = delete;
   XElement &operator=(const XElement &other) = delete;

@@ -4,11 +4,11 @@
 
 namespace XML_Lib {
 
-struct XDeclaration : XNode
+struct XDeclaration : Variant
 {
   // Constructors/Destructors
   XDeclaration(const std::string &version, const std::string &encoding, const std::string &standalone)
-    : XNode(XNode::Type::declaration), xmlVersion(version), xmlEncoding(encoding), xmlStandalone(standalone)
+    : Variant(Variant::Type::declaration), xmlVersion(version), xmlEncoding(encoding), xmlStandalone(standalone)
   {}
   XDeclaration(const XDeclaration &other) = delete;
   XDeclaration &operator=(const XDeclaration &other) = delete;

@@ -50,7 +50,7 @@ private:
   void parseElementContents(ISource &source, XNode &xNode);
   std::unique_ptr<XNode> parseElement(ISource &source,
     const std::vector<XMLAttribute> &outerNamespaces,
-    XNode::Type xNodeType = XNode::Type::element);
+    Variant::Type xNodeType = Variant::Type::element);
   std::unique_ptr<XNode> parseDeclaration(ISource &source);
   std::unique_ptr<XNode> parseDTD(ISource &source);
   std::unique_ptr<XNode> parseProlog(ISource &source);

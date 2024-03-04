@@ -9,36 +9,36 @@ namespace XML_Lib {
 template<typename T> void CheckXNodeType(const XNode &xNode)
 {
   if constexpr (std::is_same_v<T, XProlog>) {
-    if (xNode.getType() != XNode::Type::prolog) { throw XNode::Error("Node not a prolog."); }
+    if (xNode.getType() != Variant::Type::prolog) { throw XNode::Error("Node not a prolog."); }
   } else if constexpr (std::is_same_v<T, XDeclaration>) {
-    if (xNode.getType() != XNode::Type::declaration) { throw XNode::Error("Node not a declaration."); }
+    if (xNode.getType() != Variant::Type::declaration) { throw XNode::Error("Node not a declaration."); }
   } else if constexpr (std::is_same_v<T, XElement>) {
-    if ((xNode.getType() != XNode::Type::root) && (xNode.getType() != XNode::Type::self)
-        && (xNode.getType() != XNode::Type::element)) {
+    if ((xNode.getType() != Variant::Type::root) && (xNode.getType() != Variant::Type::self)
+        && (xNode.getType() != Variant::Type::element)) {
       throw XNode::Error("Node not a element.");
     }
   } else if constexpr (std::is_same_v<T, XContent>) {
-    if (xNode.getType() != XNode::Type::content) { throw XNode::Error("Node not content."); }
+    if (xNode.getType() != Variant::Type::content) { throw XNode::Error("Node not content."); }
   } else if constexpr (std::is_same_v<T, XEntityReference>) {
-    if (xNode.getType() != XNode::Type::entity) { throw XNode::Error("Node not an entity."); }
+    if (xNode.getType() != Variant::Type::entity) { throw XNode::Error("Node not an entity."); }
   } else if constexpr (std::is_same_v<T, XComment>) {
-    if (xNode.getType() != XNode::Type::comment) { throw XNode::Error("Node not a comment."); }
+    if (xNode.getType() != Variant::Type::comment) { throw XNode::Error("Node not a comment."); }
   } else if constexpr (std::is_same_v<T, XCDATA>) {
-    if (xNode.getType() != XNode::Type::cdata) { throw XNode::Error("Node not CDATA."); }
+    if (xNode.getType() != Variant::Type::cdata) { throw XNode::Error("Node not CDATA."); }
   } else if constexpr (std::is_same_v<T, XPI>) {
-    if (xNode.getType() != XNode::Type::pi) { throw XNode::Error("Node not a PI."); }
+    if (xNode.getType() != Variant::Type::pi) { throw XNode::Error("Node not a PI."); }
   } else if constexpr (std::is_same_v<T, XDTD>) {
-    if (xNode.getType() != XNode::Type::dtd) { throw XNode::Error("Node not DTD."); }
+    if (xNode.getType() != Variant::Type::dtd) { throw XNode::Error("Node not DTD."); }
   }
 }
 template<typename T> T &XRef(XNode &xNode)
 {
   CheckXNodeType<T>(xNode);
-  return (static_cast<T &>(xNode));
+  return (static_cast<T &>(xNode.getVariant()));
 }
-template<typename T> const T &XRef(const XNode &xNode)
+template<typename T> const T &XRef(const XNode &xNode) 
 {
   CheckXNodeType<T>(xNode);
-  return (static_cast<const T &>(xNode));
+  return (static_cast<const T &>(xNode.getVariant()));
 }
 }// namespace XML_Lib

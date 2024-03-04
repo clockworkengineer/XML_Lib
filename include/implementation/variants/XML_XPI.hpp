@@ -4,11 +4,11 @@
 
 namespace XML_Lib {
 
-struct XPI : XNode
+struct XPI : Variant
 {
   // Constructors/Destructors
   XPI(const std::string &name, const std::string &parameters)
-    : XNode(XNode::Type::pi), piName(name), piParameters(parameters)
+    : Variant(Variant::Type::pi), piName(name), piParameters(parameters)
   {}
   XPI(const XPI &other) = delete;
   XPI &operator=(const XPI &other) = delete;

@@ -38,7 +38,9 @@ std::string XML_Impl::parseDeclarationAttribute(ISource &source,
   source.ignoreWS();
   result = parseValue(source).getParsed();
   if (toUpper) { result = toUpperString(result); }
-  if (!values.contains(result)) { throw XML::SyntaxError("Unsupported XML " + name + " value '" + result + "' specified."); }
+  if (!values.contains(result)) {
+    throw XML::SyntaxError("Unsupported XML " + name + " value '" + result + "' specified.");
+  }
   return (result);
 }
 
@@ -210,7 +212,7 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 /// <param name="outerNamespaces">Current list of outerNamespaces.</param>
 /// <returns>Pointer to element XNode.</returns>
 std::unique_ptr<XNode>
-  XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, XNode::Type xNodeType)
+  XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, Variant::Type xNodeType)
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
@@ -228,10 +230,10 @@ std::unique_ptr<XNode>
     // Normal element tag
     auto xNode = XNode::make<XElement>(name, attributes, namespaces, xNodeType);
     while (source.more() && !source.match(U"</")) { parseElementContents(source, *xNode); }
-    if (source.match(source.from_bytes(xNode->name()) + U">")) { return (xNode); }
+    if (source.match(source.from_bytes(XRef<XElement>(*xNode).name()) + U">")) { return (xNode); }
   } else if (source.match(U"/>")) {
     // Self closing element tag
-    return (XNode::make<XElement>(name, attributes, namespaces, XNode::Type::self));
+    return (XNode::make<XElement>(name, attributes, namespaces, Variant::Type::self));
   }
   throw XML::SyntaxError(source.getPosition(), "Missing closing tag.");
 }
@@ -320,7 +322,7 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
       parseWhiteSpaceToContent(source, *xProlog);
     } else if (source.match(U"<!DOCTYPE")) {
       for (auto &element : xProlog->getChildren()) {
-        if (element->getType() == XNode::Type::dtd) {
+        if (element->getType() == Variant::Type::dtd) {
           throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
         }
       }
@@ -341,7 +343,7 @@ std::unique_ptr<XNode> XML_Impl::parseProlog(ISource &source)
 std::unique_ptr<XNode> XML_Impl::parseXML(ISource &source)
 {
   auto xProlog = parseProlog(source);
-  xProlog->addChild(parseElement(source, {}, XNode::Type::root));
+  xProlog->addChild(parseElement(source, {}, Variant::Type::root));
   parseTail(source, *xProlog);
   return (xProlog);
 }
