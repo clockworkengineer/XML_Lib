@@ -230,17 +230,17 @@ void DTD_Validator::checkContentSpecification(const XNode &xNode)
   if (xDTD.getElement(xElement.name()).content.getParsed() == "ANY") { return; }
   std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
   std::string elements;
-  // for (auto &element : xElement.getChildren()) {
-  //   if ((element->getType() == Variant::Type::element) || (element->getType() == Variant::Type::self)) {
-  //     elements += "<" + XRef<XElement>(*element).name() + ">";
-  //   } else if (element->getType() == Variant::Type::content) {
-  //     if (!XRef<XContent>(*element).isWhiteSpace()) { elements += "<#PCDATA>"; }
-  //   }
-  // }
-  // if (!std::regex_match(elements, match)) {
-  //   elementError(xElement,
-  //     "does not conform to the content specification " + xDTD.getElement(xElement.name()).content.getUnparsed() + ".");
-  // }
+  for (auto &element : xElement.getChildren()) {
+    if ((element->getType() == Variant::Type::element) || (element->getType() == Variant::Type::self)) {
+      elements += "<" + XRef<XElement>(*element).name() + ">";
+    } else if (element->getType() == Variant::Type::content) {
+      if (!XRef<XContent>(*element).isWhiteSpace()) { elements += "<#PCDATA>"; }
+    }
+  }
+  if (!std::regex_match(elements, match)) {
+    elementError(xElement,
+      "does not conform to the content specification " + xDTD.getElement(xElement.name()).content.getUnparsed() + ".");
+  }
 }
 
 /// <summary>
