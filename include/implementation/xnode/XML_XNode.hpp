@@ -45,7 +45,7 @@ struct XNode
   }
 
 private:
-  // XNode Type
+  // XNode Variant
   std::unique_ptr<Variant> xmlVariant;
 };
 }// namespace XML_Lib
