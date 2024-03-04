@@ -24,7 +24,6 @@ public:
   {
     Error(std::string const &message) : std::runtime_error("XML Error: " + message) {}
   };
-
   struct SyntaxError : public std::runtime_error
   {
     SyntaxError(const std::string &message) : std::runtime_error("XML Syntax Error: " + message) {}
@@ -33,14 +32,12 @@ public:
                            + " Column: " + std::to_string(position.second) + "] " + message)
     {}
   };
-
   struct ValidationError : public std::runtime_error
   {
     explicit ValidationError(long lineNumber, const std::string &message = "")
       : std::runtime_error("XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + message)
     {}
   };
-
   // Constructors/Destructors
   XML();
   XML(const XML &other) = delete;
@@ -48,7 +45,6 @@ public:
   XML(XML &&other) = delete;
   XML &operator=(XML &&other) = delete;
   ~XML();
-
   // Get reference to DTD XNode
   XNode &dtd();
   // Get reference to proglog XNode

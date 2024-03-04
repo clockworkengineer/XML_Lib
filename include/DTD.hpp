@@ -23,7 +23,6 @@ public:
   DTD(DTD &&other) = delete;
   DTD &operator=(DTD &&other) = delete;
   ~DTD();
-
   // Parse XML DTD from source
   void parse(ISource &source);
   // Stringify XML DTD to text destination
