@@ -12,7 +12,7 @@ public:
   // ==================
   struct Error : public std::runtime_error
   {
-    Error(std::string const &message) : std::runtime_error("IValidator Error: " + message) {}
+    Error(const std::string &message) : std::runtime_error("IValidator Error: " + message) {}
   };
   // ========================
   // Constructors/destructors

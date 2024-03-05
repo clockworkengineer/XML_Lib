@@ -20,7 +20,7 @@ public:
   // ==================
   struct Error : public std::runtime_error
   {
-    Error(std::string const &message) : std::runtime_error("XML_Converter Error: " + message) {}
+    Error(const std::string &message) : std::runtime_error("XML_Converter Error: " + message) {}
   };
   // ========================
   // Constructors/destructors
