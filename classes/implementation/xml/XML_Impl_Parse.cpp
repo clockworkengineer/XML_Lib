@@ -166,7 +166,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
         resetWhiteSpace(xNode);
       }
     }
-    xNode.addChild(std::move(xEntityReference));
+    xNode.addChildren(std::move(xEntityReference));
   } else {
     addContentToElementChildList(xNode, content.getParsed());
   }
@@ -181,14 +181,14 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
 void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 {
   if (source.match(U"<!--")) {
-    xNode.addChild(parseComment(source));
+    xNode.addChildren(parseComment(source));
   } else if (source.match(U"<?")) {
-    xNode.addChild(parsePI(source));
+    xNode.addChildren(parsePI(source));
   } else if (source.match(U"<![CDATA[")) {
     resetWhiteSpace(xNode);
-    xNode.addChild(parseCDATA(source));
+    xNode.addChildren(parseCDATA(source));
   } else if (source.match(U"<")) {
-    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNamespaceList()));
+    xNode.addChildren(parseElement(source, XRef<XElement>(xNode).getNamespaceList()));
     XElement &xNodeChildElement = XRef<XElement>(xNode.getChildren().back());
     if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
@@ -211,8 +211,7 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 /// <param name="source">XML source stream.</param>
 /// <param name="outerNamespaces">Current list of outerNamespaces.</param>
 /// <returns>Pointer to element XNode.</returns>
-XNode 
-  XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, Variant::Type xNodeType)
+XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, Variant::Type xNodeType)
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
@@ -277,9 +276,9 @@ void XML_Impl::parseTail(ISource &source, XNode &xProlog)
 {
   while (source.more()) {
     if (source.match(U"<!--")) {
-      xProlog.addChild(parseComment(source));
+      xProlog.addChildren(parseComment(source));
     } else if (source.match(U"<?")) {
-      xProlog.addChild(parsePI(source));
+      xProlog.addChildren(parsePI(source));
     } else if (source.isWS()) {
       parseWhiteSpaceToContent(source, xProlog);
     } else {
@@ -312,12 +311,12 @@ XNode XML_Impl::parseDTD(ISource &source)
 XNode XML_Impl::parseProlog(ISource &source)
 {
   auto xProlog = XNode::make<XProlog>();
-  xProlog.addChild(parseDeclaration(source));
+  xProlog.addChildren(parseDeclaration(source));
   while (source.more()) {
     if (source.match(U"<!--")) {
-      xProlog.addChild(parseComment(source));
+      xProlog.addChildren(parseComment(source));
     } else if (source.match(U"<?")) {
-      xProlog.addChild(parsePI(source));
+      xProlog.addChildren(parsePI(source));
     } else if (source.isWS()) {
       parseWhiteSpaceToContent(source, xProlog);
     } else if (source.match(U"<!DOCTYPE")) {
@@ -326,7 +325,7 @@ XNode XML_Impl::parseProlog(ISource &source)
           throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
         }
       }
-      xProlog.addChild(parseDTD(source));
+      xProlog.addChildren(parseDTD(source));
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {
@@ -343,7 +342,7 @@ XNode XML_Impl::parseProlog(ISource &source)
 XNode XML_Impl::parseXML(ISource &source)
 {
   auto xProlog = parseProlog(source);
-  xProlog.addChild(parseElement(source, {}, Variant::Type::root));
+  xProlog.addChildren(parseElement(source, {}, Variant::Type::root));
   parseTail(source, xProlog);
   return (xProlog);
 }

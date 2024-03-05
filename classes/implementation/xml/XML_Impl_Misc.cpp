@@ -22,7 +22,7 @@ void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
   // Parse entity XML
   while (entitySource.more()) { parseElementContents(entitySource, xNode); }
   // Place into XNode (element) child list
-  for (auto &xNodeChild : xElement.getChildren()) { xNode.addChild(xNodeChild); }
+  for (auto &xNodeChild : xElement.getChildren()) { xNode.addChildren(xNodeChild); }
 }
 
 /// <summary>
@@ -54,8 +54,8 @@ void XML_Impl::addContentToElementChildList(XNode &xNode, const std::string &con
         isWhiteSpace = false;
       }
     }
-    auto test = std::move(XNode::make<XContent>(isWhiteSpace)); 
-    xNode.addChild(test);
+    auto test = std::move(XNode::make<XContent>(isWhiteSpace));
+    xNode.addChildren(test);
   }
   XContent &xmlContent = XRef<XContent>(xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {

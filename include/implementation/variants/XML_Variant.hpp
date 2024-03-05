@@ -15,15 +15,14 @@ struct Variant
   Variant(Variant &&other) = default;
   Variant &operator=(Variant &&other) = default;
   virtual ~Variant() = default;
-
   // Get/Set XNode type
   [[nodiscard]] Type getType() const { return (xmlNodeType); }
   // Get XNode children reference
   std::vector<XNode> &getChildren() { return (children); }
   const std::vector<XNode> &getChildren() const { return (children); }
   // Add child
-  void addChild(XNode &child) { children.push_back(std::move(child)); }
-  void addChild(XNode &&child) { children.push_back(std::move(child)); }
+  void addChildren(XNode &child) { children.push_back(std::move(child)); }
+  void addChildren(XNode &&child) { children.push_back(std::move(child)); }
   // Return Variant contents
   [[nodiscard]] std::string getContents() const;
 
