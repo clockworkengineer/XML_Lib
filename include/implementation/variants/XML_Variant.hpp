@@ -19,11 +19,11 @@ struct Variant
   // Get/Set XNode type
   [[nodiscard]] Type getType() const { return (xmlNodeType); }
   // Get XNode children reference
-  std::vector<std::unique_ptr<XNode>> &getChildren() { return (children); }
-  const std::vector<std::unique_ptr<XNode>> &getChildren() const { return (children); }
+  std::vector<XNode> &getChildren() { return (children); }
+  const std::vector<XNode> &getChildren() const { return (children); }
   // Add child
-  void addChild(std::unique_ptr<XNode> &child) { children.push_back(std::move(child)); }
-  void addChild(std::unique_ptr<XNode> &&child) { children.push_back(std::move(child)); }
+  void addChild(XNode &child) { children.push_back(std::move(child)); }
+  void addChild(XNode &&child) { children.push_back(std::move(child)); }
   // Return Variant contents
   [[nodiscard]] std::string getContents() const;
 
@@ -31,7 +31,7 @@ private:
   // Variant type
   Variant::Type xmlNodeType;
   // XNode Children
-  std::vector<std::unique_ptr<XNode>> children;
+  std::vector<XNode> children;
 };
 
 }// namespace XML_Lib

@@ -38,7 +38,7 @@ std::string XML_Impl::version()
 XNode &XML_Impl::dtd()
 {
   for (auto &element : prolog().getChildren()) {
-    if (element->getType() == Variant::Type::dtd) { return (*element); }
+    if (element.getType() == Variant::Type::dtd) { return (element); }
   }
   throw XML::Error("No DTD found.");
 }
@@ -47,13 +47,13 @@ XNode &XML_Impl::dtd()
 /// Return XML prolog XNode.
 /// </summary>
 /// <returns>Reference to prolog XNode.</returns>
-XNode &XML_Impl::prolog() { return (*xmlRoot); }
+XNode &XML_Impl::prolog() { return (xmlRoot); }
 
 /// <summary>
 /// Return XML declaration XNode.
 /// </summary>
 /// <returns>Reference to declaration XNode.</returns>
-XNode &XML_Impl::declaration() { return (*prolog().getChildren()[0]); }
+XNode &XML_Impl::declaration() { return (prolog().getChildren()[0]); }
 
 /// <summary>
 /// Return XML root element XNode.
@@ -62,8 +62,8 @@ XNode &XML_Impl::declaration() { return (*prolog().getChildren()[0]); }
 XNode &XML_Impl::root()
 {
   for (auto &element : prolog().getChildren()) {
-    if ((element->getType() == Variant::Type::root) || (element->getType() == Variant::Type::self)) {
-      return (*element);
+    if ((element.getType() == Variant::Type::root) || (element.getType() == Variant::Type::self)) {
+      return (element);
     }
   }
   throw XML::Error("No root element found.");

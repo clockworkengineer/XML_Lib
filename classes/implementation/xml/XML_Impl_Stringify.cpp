@@ -23,7 +23,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
   switch (xNode.getType()) {
   // XML prolog
   case Variant::Type::prolog: {
-    for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
+    for (auto &element : xNode.getChildren()) { stringifyElements(element, destination); }
     break;
   }
   // XML declaration
@@ -42,7 +42,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
       destination.add(" " + attr.getName() + "=\"" + attr.getUnparsed() + "\"");
     }
     destination.add(">");
-    for (auto &element : xNode.getChildren()) { stringifyElements(*element, destination); }
+    for (auto &element : xNode.getChildren()) { stringifyElements(element, destination); }
     destination.add("</" + xElement.name() + ">");
     break;
   }
@@ -101,5 +101,5 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
 /// destination stream in UTF-8 encoding.
 /// </summary>
 /// <param name="destination">XML destination stream.</param>
-void XML_Impl::stringifyXML(IDestination &destination) { stringifyElements(*xmlRoot, destination); }
+void XML_Impl::stringifyXML(IDestination &destination) { stringifyElements(xmlRoot, destination); }
 }// namespace XML_Lib

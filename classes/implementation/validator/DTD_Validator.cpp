@@ -59,7 +59,7 @@ bool DTD_Validator::checkIsIDOK(const std::string &idValue)
 bool DTD_Validator::checkIsPCDATA(const XNode &xNode)
 {
   for (const auto &element : xNode.getChildren()) {
-    if ((element->getType() == Variant::Type::element) || (element->getType() == Variant::Type::self)) {
+    if ((element.getType() == Variant::Type::element) || (element.getType() == Variant::Type::self)) {
       return (false);
     }
   }
@@ -231,10 +231,10 @@ void DTD_Validator::checkContentSpecification(const XNode &xNode)
   std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
   std::string elements;
   for (auto &element : xElement.getChildren()) {
-    if ((element->getType() == Variant::Type::element) || (element->getType() == Variant::Type::self)) {
-      elements += "<" + XRef<XElement>(*element).name() + ">";
-    } else if (element->getType() == Variant::Type::content) {
-      if (!XRef<XContent>(*element).isWhiteSpace()) { elements += "<#PCDATA>"; }
+    if ((element.getType() == Variant::Type::element) || (element.getType() == Variant::Type::self)) {
+      elements += "<" + XRef<XElement>(element).name() + ">";
+    } else if (element.getType() == Variant::Type::content) {
+      if (!XRef<XContent>(element).isWhiteSpace()) { elements += "<#PCDATA>"; }
     }
   }
   if (!std::regex_match(elements, match)) {
@@ -261,7 +261,7 @@ void DTD_Validator::checkElements(const XNode &xNode)
 {
   switch (xNode.getType()) {
   case Variant::Type::prolog:
-    for (auto &element : xNode.getChildren()) { checkElements(*element); }
+    for (auto &element : xNode.getChildren()) { checkElements(element); }
     break;
   case Variant::Type::declaration:
     // Nothing for present
@@ -273,7 +273,7 @@ void DTD_Validator::checkElements(const XNode &xNode)
         lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
-    for (auto &element : xNode.getChildren()) { checkElements(*element); }
+    for (auto &element : xNode.getChildren()) { checkElements(element); }
     break;
   case Variant::Type::self:
     checkElement(xNode);
