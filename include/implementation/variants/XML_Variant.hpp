@@ -17,6 +17,7 @@ struct Variant
   virtual ~Variant() = default;
   // Get/Set XNode type
   [[nodiscard]] Type getType() const { return (xmlNodeType); }
+
   // Get XNode children reference
   std::vector<XNode> &getChildren() { return (children); }
   const std::vector<XNode> &getChildren() const { return (children); }

@@ -26,7 +26,7 @@ inline const XNode &XNode::operator[](const std::string &name) const
 // =====================
 // XElement index access
 // =====================
-inline const XElement &XElement::operator[]([[maybe_unused]] int index) const
+inline const XElement &XElement::operator[](int index) const
 {
   int number = 0;
   if ((index >= 0) && (index < (static_cast<int>(getChildren().size())))) {
@@ -42,7 +42,7 @@ inline const XElement &XElement::operator[]([[maybe_unused]] int index) const
 // ====================
 // XElement name access
 // ====================
-inline const XElement &XElement::operator[]([[maybe_unused]] const std::string &name) const
+inline const XElement &XElement::operator[](const std::string &name) const
 {
   if (getType() <= Variant::Type::element) {
     for (const auto &element : getChildren()) {
