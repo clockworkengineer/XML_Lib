@@ -22,7 +22,7 @@ public:
   // XML error types
   struct Error : public std::runtime_error
   {
-    Error(std::string const &message) : std::runtime_error("XML Error: " + message) {}
+    Error(const std::string &message) : std::runtime_error("XML Error: " + message) {}
   };
   struct SyntaxError : public std::runtime_error
   {

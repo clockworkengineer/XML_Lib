@@ -71,22 +71,22 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     BufferSource source{ xmlString };
     XML xml;
     xml.parse(source);
-    REQUIRE(xml.root().getChildren()[0]->getType() == Variant::Type::content);
-    REQUIRE(XRef<XContent>(*xml.root().getChildren()[0]).isWhiteSpace() == true);
-    REQUIRE(xml.root().getChildren()[1]->getChildren()[0]->getType() == Variant::Type::content);
-    REQUIRE(XRef<XContent>((*xml.root().getChildren()[1])[0]).isWhiteSpace() == false);
-    REQUIRE(xml.root().getChildren()[2]->getChildren()[0]->getType() == Variant::Type::content);
-    REQUIRE(XRef<XContent>((*xml.root().getChildren()[2])[0]).isWhiteSpace() == true);
-    REQUIRE(xml.root().getChildren()[3]->getChildren()[0]->getType() == Variant::Type::content);
-    REQUIRE(XRef<XContent>((*xml.root().getChildren()[3])[0]).isWhiteSpace() == false);
-    REQUIRE(xml.root().getChildren()[3]->getChildren()[1]->getType() == Variant::Type::entity);
-    REQUIRE(xml.root().getChildren()[3]->getChildren()[2]->getType() == Variant::Type::content);
-    REQUIRE(XRef<XContent>((*xml.root().getChildren()[3])[2]).isWhiteSpace() == false);
-    REQUIRE(xml.root().getChildren()[4]->getChildren()[0]->getType() == Variant::Type::content);
-    REQUIRE(XRef<XContent>((*xml.root().getChildren()[4])[0]).isWhiteSpace() == false);
-    REQUIRE(xml.root().getChildren()[4]->getChildren()[1]->getType() == Variant::Type::cdata);
-    REQUIRE(xml.root().getChildren()[4]->getChildren()[2]->getType() == Variant::Type::content);
-    REQUIRE(XRef<XContent>((*xml.root().getChildren()[4])[2]).isWhiteSpace() == false);
+    REQUIRE(xml.root().getChildren()[0].getType() == Variant::Type::content);
+    REQUIRE(XRef<XContent>(xml.root().getChildren()[0]).isWhiteSpace() == true);
+    REQUIRE(xml.root().getChildren()[1].getChildren()[0].getType() == Variant::Type::content);
+    REQUIRE(XRef<XContent>((xml.root().getChildren()[1])[0]).isWhiteSpace() == false);
+    REQUIRE(xml.root().getChildren()[2].getChildren()[0].getType() == Variant::Type::content);
+    REQUIRE(XRef<XContent>((xml.root().getChildren()[2])[0]).isWhiteSpace() == true);
+    REQUIRE(xml.root().getChildren()[3].getChildren()[0].getType() == Variant::Type::content);
+    REQUIRE(XRef<XContent>((xml.root().getChildren()[3])[0]).isWhiteSpace() == false);
+    REQUIRE(xml.root().getChildren()[3].getChildren()[1].getType() == Variant::Type::entity);
+    REQUIRE(xml.root().getChildren()[3].getChildren()[2].getType() == Variant::Type::content);
+    REQUIRE(XRef<XContent>((xml.root().getChildren()[3])[2]).isWhiteSpace() == false);
+    REQUIRE(xml.root().getChildren()[4].getChildren()[0].getType() == Variant::Type::content);
+    REQUIRE(XRef<XContent>((xml.root().getChildren()[4])[0]).isWhiteSpace() == false);
+    REQUIRE(xml.root().getChildren()[4].getChildren()[1].getType() == Variant::Type::cdata);
+    REQUIRE(xml.root().getChildren()[4].getChildren()[2].getType() == Variant::Type::content);
+    REQUIRE(XRef<XContent>((xml.root().getChildren()[4])[2]).isWhiteSpace() == false);
   }
 }
 TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XMLNode][R-Value Reference]")

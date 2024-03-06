@@ -69,6 +69,7 @@ set(XML_INCLUDES
   ./include/implementation/xnode/XML_Reference.hpp
   ./include/implementation/xnode/XML_Creation.hpp
   ./include/implementation/xnode/XML_Common.hpp
+  ./include/implementation/xnode/XML_Index.hpp
   ./include/implementation/variants/XML_XProlog.hpp
   ./include/implementation/variants/XML_XDeclaration.hpp
   ./include/implementation/variants/XML_XContent.hpp

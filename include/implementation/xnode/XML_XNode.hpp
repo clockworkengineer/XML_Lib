@@ -25,23 +25,23 @@ struct XNode
   // Get XNode type
   [[nodiscard]] Variant::Type getType() const { return (xmlVariant->getType()); }
   // Return XNode contents
-  [[nodiscard]] std::string getContents() const { return(xmlVariant->getContents()); }
+  [[nodiscard]] std::string getContents() const { return (xmlVariant->getContents()); }
   // XNode Index overloads
   [[nodiscard]] const XNode &operator[](int index) const;
   [[nodiscard]] const XNode &operator[](const std::string &name) const;
   // Add child
-  void addChild(std::unique_ptr<XNode> &child) { xmlVariant->addChild(child); }
-  void addChild(std::unique_ptr<XNode> &&child) { xmlVariant->addChild(child); }
+  void addChildren(XNode &child) { xmlVariant->addChildren(child); }
+  void addChildren(XNode &&child) { xmlVariant->addChildren(child); }
   // Get XNode children reference
-  std::vector<std::unique_ptr<XNode>> &getChildren() { return (xmlVariant->getChildren()); }
-  const std::vector<std::unique_ptr<XNode>> &getChildren() const { return (xmlVariant->getChildren()); }
-  // Get reference to JNode variant
+  std::vector<XNode> &getChildren() { return (xmlVariant->getChildren()); }
+  const std::vector<XNode> &getChildren() const { return (xmlVariant->getChildren()); }
+  // Get reference to XNode  variant
   Variant &getVariant() { return (*xmlVariant); }
   const Variant &getVariant() const { return (*xmlVariant); }
   // Make XNode
-  template<typename T, typename... Args> static std::unique_ptr<XNode> make(Args &&...args)
+  template<typename T, typename... Args> static XNode make(Args &&...args)
   {
-    return (std::make_unique<XNode>(std::make_unique<T>(std::forward<Args>(args)...)));
+    return (XNode{ std::make_unique<T>(std::forward<Args>(args)...) });
   }
 
 private:

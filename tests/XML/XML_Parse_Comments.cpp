@@ -53,13 +53,13 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
     REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
     REQUIRE(XRef<XElement>(xml.root()).getChildren().size() == 13);
-    REQUIRE(XRef<XComment>(*XRef<XElement>(xml.root()).getChildren()[1]).comment() == "Address one ");
+    REQUIRE(XRef<XComment>(XRef<XElement>(xml.root()).getChildren()[1]).comment() == "Address one ");
     REQUIRE(XRef<XElement>(xml.root())[0].name() == "Address");
     REQUIRE(XRef<XElement>(xml.root())[0].getContents() == "    This is some contents 1   ");
-    REQUIRE(XRef<XComment>(*XRef<XElement>(xml.root()).getChildren()[5]).comment() == "Address two ");
+    REQUIRE(XRef<XComment>(XRef<XElement>(xml.root()).getChildren()[5]).comment() == "Address two ");
     REQUIRE(XRef<XElement>(xml.root())[1].name() == "Address");
     REQUIRE(XRef<XElement>(xml.root())[1].getContents() == "    This is some contents 2   ");
-    REQUIRE(XRef<XComment>(*XRef<XElement>(xml.root()).getChildren()[9]).comment() == "Address three ");
+    REQUIRE(XRef<XComment>(XRef<XElement>(xml.root()).getChildren()[9]).comment() == "Address three ");
     REQUIRE(XRef<XElement>(xml.root())[2].name() == "Address");
     REQUIRE(XRef<XElement>(xml.root())[2].getContents() == "    This is some contents 3   ");
   }

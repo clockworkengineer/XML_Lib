@@ -16,7 +16,7 @@ public:
   // ==================
   struct Error : public std::runtime_error
   {
-    Error(std::string const &message) : std::runtime_error("IDestination Error: " + message) {}
+    Error(const std::string &message) : std::runtime_error("IDestination Error: " + message) {}
   };
   // ========================
   // Constructors/destructors
