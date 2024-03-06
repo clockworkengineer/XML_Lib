@@ -19,6 +19,7 @@
 #include "XML_XPI.hpp"
 #include "XML_XDTD.hpp"
 #include "XML_Reference.hpp"
+#include "XML_Index.hpp"
 #include "XML_Creation.hpp"
 #include "XML_Common.hpp"
 #include "XML_Interfaces.hpp"
