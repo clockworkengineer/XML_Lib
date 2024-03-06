@@ -38,7 +38,7 @@ std::string XML_Impl::version()
 XNode &XML_Impl::dtd()
 {
   for (auto &element : prolog().getChildren()) {
-    if (element.getType() == Variant::Type::dtd) { return (element); }
+    if (element.isDTD()) { return (element); }
   }
   throw XML::Error("No DTD found.");
 }
@@ -62,7 +62,7 @@ XNode &XML_Impl::declaration() { return (prolog().getChildren()[0]); }
 XNode &XML_Impl::root()
 {
   for (auto &element : prolog().getChildren()) {
-    if ((element.getType() == Variant::Type::root) || (element.getType() == Variant::Type::self)) {
+    if (element.isRoot() || element.isSelf()) {
       return (element);
     }
   }

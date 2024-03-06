@@ -17,17 +17,17 @@ struct Variant
   virtual ~Variant() = default;
   // Get/Set XNode type
   [[nodiscard]] Type getType() const { return (xmlNodeType); }
-  [[nodiscard]] bool isProlog() { return (xmlNodeType == Type::prolog); }
-  [[nodiscard]] bool isDeclaration() { return (xmlNodeType == Type::declaration); }
-  [[nodiscard]] bool isRoot() { return (xmlNodeType == Type::root); }
-  [[nodiscard]] bool isSelf() { return (xmlNodeType == Type::self); }
-  [[nodiscard]] bool isElement() { return (xmlNodeType == Type::element); }
-  [[nodiscard]] bool isContent() { return (xmlNodeType == Type::content); }
-  [[nodiscard]] bool isEntity() { return (xmlNodeType == Type::entity); }
-  [[nodiscard]] bool isComment() { return (xmlNodeType == Type::comment); }
-  [[nodiscard]] bool isCDATA() { return (xmlNodeType == Type::cdata); }
-  [[nodiscard]] bool isPI() { return (xmlNodeType == Type::pi); }
-  [[nodiscard]] bool isDTD() { return (xmlNodeType == Type::dtd); }
+  [[nodiscard]] bool isProlog() const { return (xmlNodeType == Type::prolog); }
+  [[nodiscard]] bool isDeclaration() const { return (xmlNodeType == Type::declaration); }
+  [[nodiscard]] bool isRoot() const { return (xmlNodeType == Type::root); }
+  [[nodiscard]] bool isSelf() const { return (xmlNodeType == Type::self); }
+  [[nodiscard]] bool isElement() const { return (xmlNodeType == Type::element); }
+  [[nodiscard]] bool isContent() const { return (xmlNodeType == Type::content); }
+  [[nodiscard]] bool isEntity() const { return (xmlNodeType == Type::entity); }
+  [[nodiscard]] bool isComment() const { return (xmlNodeType == Type::comment); }
+  [[nodiscard]] bool isCDATA() const { return (xmlNodeType == Type::cdata); }
+  [[nodiscard]] bool isPI() const { return (xmlNodeType == Type::pi); }
+  [[nodiscard]] bool isDTD() const { return (xmlNodeType == Type::dtd); }
   // Get XNode children reference
   std::vector<XNode> &getChildren() { return (children); }
   const std::vector<XNode> &getChildren() const { return (children); }

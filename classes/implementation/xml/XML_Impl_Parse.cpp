@@ -321,7 +321,7 @@ XNode XML_Impl::parseProlog(ISource &source)
       parseWhiteSpaceToContent(source, xProlog);
     } else if (source.match(U"<!DOCTYPE")) {
       for (auto &element : xProlog.getChildren()) {
-        if (element.getType() == Variant::Type::dtd) {
+        if (element.isDTD()) {
           throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
         }
       }

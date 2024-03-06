@@ -24,17 +24,17 @@ struct XNode
   ~XNode() = default;
   // Get XNode type
   [[nodiscard]] Variant::Type getType() const { return (xmlVariant->getType()); }
-  [[nodiscard]] bool isProlog() { return (xmlVariant->isProlog()); }
-  [[nodiscard]] bool isDeclaration() { return (xmlVariant->isDeclaration()); }
-  [[nodiscard]] bool isRoot() { return (xmlVariant->isRoot()); }
-  [[nodiscard]] bool isSelf() { return (xmlVariant->isSelf()); }
-  [[nodiscard]] bool isElement() { return (xmlVariant->isElement()); }
-  [[nodiscard]] bool isContent() { return (xmlVariant->isContent()); }
-  [[nodiscard]] bool isEntity() { return (xmlVariant->isEntity()); }
-  [[nodiscard]] bool isComment() { return (xmlVariant->isComment()); }
-  [[nodiscard]] bool isCDATA() { return (xmlVariant->isCDATA()); }
-  [[nodiscard]] bool isPI() { return (xmlVariant->isPI()); }
-  [[nodiscard]] bool isDTD() { return (isDTD()); }
+  [[nodiscard]] bool isProlog() const { return (xmlVariant->isProlog()); }
+  [[nodiscard]] bool isDeclaration() const { return (xmlVariant->isDeclaration()); }
+  [[nodiscard]] bool isRoot() const { return (xmlVariant->isRoot()); }
+  [[nodiscard]] bool isSelf() const { return (xmlVariant->isSelf()); }
+  [[nodiscard]] bool isElement() const { return (xmlVariant->isElement()); }
+  [[nodiscard]] bool isContent() const { return (xmlVariant->isContent()); }
+  [[nodiscard]] bool isEntity() const { return (xmlVariant->isEntity()); }
+  [[nodiscard]] bool isComment() const { return (xmlVariant->isComment()); }
+  [[nodiscard]] bool isCDATA() const { return (xmlVariant->isCDATA()); }
+  [[nodiscard]] bool isPI() const { return (xmlVariant->isPI()); }
+  [[nodiscard]] bool isDTD() const { return (xmlVariant->isDTD()); }
   // Return XNode contents
   [[nodiscard]] std::string getContents() const { return (xmlVariant->getContents()); }
   // XNode Index overloads

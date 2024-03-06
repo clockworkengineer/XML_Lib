@@ -16,17 +16,17 @@ template<typename T> XNode::XNode(T value)
 inline std::string Variant::getContents() const
 {
   std::string result;
-  for (const auto &node : getChildren()) {
-    if (node.getType() == Variant::Type::content) {
-      result += XRef<XContent>(node).getContent();
-    } else if (node.getType() == Variant::Type::entity) {
-      if (!XRef<XEntityReference>(node).getChildren().empty()) {
-        result += node.getContents();
+  for (const auto &xNode : getChildren()) {
+    if (xNode.isContent()) {
+      result += XRef<XContent>(xNode).getContent();
+    } else if (xNode.isEntity()) {
+      if (!XRef<XEntityReference>(xNode).getChildren().empty()) {
+        result += xNode.getContents();
       } else {
-        result += XRef<XEntityReference>(node).value().getParsed();
+        result += XRef<XEntityReference>(xNode).value().getParsed();
       }
-    } else if (node.getType() == Variant::Type::cdata) {
-      result += XRef<XCDATA>(node).CDATA();
+    } else if (xNode.isCDATA()) {
+      result += XRef<XCDATA>(xNode).CDATA();
     }
   }
   return (result);
