@@ -17,6 +17,7 @@ struct Variant
   virtual ~Variant() = default;
   // Get/Set XNode type
   [[nodiscard]] Type getType() const { return (xmlNodeType); }
+  [[nodiscard]] bool isIndexable() const { return (xmlNodeType <= Type::element); }
   [[nodiscard]] bool isProlog() const { return (xmlNodeType == Type::prolog); }
   [[nodiscard]] bool isDeclaration() const { return (xmlNodeType == Type::declaration); }
   [[nodiscard]] bool isRoot() const { return (xmlNodeType == Type::root); }

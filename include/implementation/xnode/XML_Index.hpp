@@ -16,7 +16,7 @@ inline const XNode &XNode::operator[](int index) const
 // =================
 inline const XNode &XNode::operator[](const std::string &name) const
 {
-  if (getType() <= Variant::Type::element) {
+  if (isIndexable()) {
     for (const auto &element : getChildren()) {
       if (XRef<XElement>(element).name() == name) { return (element); }
     }
@@ -31,7 +31,7 @@ inline const XElement &XElement::operator[](int index) const
   int number = 0;
   if ((index >= 0) && (index < (static_cast<int>(getChildren().size())))) {
     for (const auto &child : getChildren()) {
-      if (child.getType() <= Variant::Type::element) {
+      if (child.isIndexable()) {
         if (number == index) { return (XRef<XElement>(child)); }
         number++;
       }
@@ -44,7 +44,7 @@ inline const XElement &XElement::operator[](int index) const
 // ====================
 inline const XElement &XElement::operator[](const std::string &name) const
 {
-  if (getType() <= Variant::Type::element) {
+  if (isIndexable()) {
     for (const auto &element : getChildren()) {
       if (XRef<XElement>(element).elementName == name) { return (XRef<XElement>(element)); }
     }
