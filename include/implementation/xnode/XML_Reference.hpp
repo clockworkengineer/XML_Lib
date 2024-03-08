@@ -6,7 +6,7 @@ namespace XML_Lib {
 // =========================
 // XNode reference converter
 // =========================
-template<typename T> void CheckXNodeType(const XNode &xNode)
+template<typename T> void checkXNodeType(const XNode &xNode)
 {
   if constexpr (std::is_same_v<T, XProlog>) {
     if (!xNode.isProlog()) { throw XNode::Error("Node not a prolog."); }
@@ -30,12 +30,12 @@ template<typename T> void CheckXNodeType(const XNode &xNode)
 }
 template<typename T> T &XRef(XNode &xNode)
 {
-  CheckXNodeType<T>(xNode);
+  checkXNodeType<T>(xNode);
   return (static_cast<T &>(xNode.getVariant()));
 }
 template<typename T> const T &XRef(const XNode &xNode)
 {
-  CheckXNodeType<T>(xNode);
+  checkXNodeType<T>(xNode);
   return (static_cast<const T &>(xNode.getVariant()));
 }
 }// namespace XML_Lib

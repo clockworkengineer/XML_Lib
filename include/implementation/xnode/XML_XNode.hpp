@@ -22,8 +22,7 @@ struct XNode
   XNode(XNode &&other) = default;
   XNode &operator=(XNode &&other) = default;
   ~XNode() = default;
-  // Get XNode type
-  [[nodiscard]] Variant::Type getType() const { return (xmlVariant->getType()); }
+  // Check what XNode variant
   [[nodiscard]] bool isIndexable() const { return (xmlVariant->isIndexable()); }
   [[nodiscard]] bool isProlog() const { return (xmlVariant->isProlog()); }
   [[nodiscard]] bool isDeclaration() const { return (xmlVariant->isDeclaration()); }

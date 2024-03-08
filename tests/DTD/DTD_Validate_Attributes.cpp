@@ -183,7 +183,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(xml.prolog().getChildren()[2].getType() == Variant::Type::dtd);
+    REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
     REQUIRE(xDTD.isElementPresent("person") == true);
     REQUIRE(xDTD.getElement("person").attributes.size() == 1);
     REQUIRE(xDTD.getElement("person").attributes[0].name == "gender");

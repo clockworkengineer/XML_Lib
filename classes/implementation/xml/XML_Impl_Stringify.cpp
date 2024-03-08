@@ -20,22 +20,18 @@ namespace XML_Lib {
 /// <param name="destination">XML destination stream.</param>
 void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
 {
-  switch (xNode.getType()) {
   // XML prolog
-  case Variant::Type::prolog: {
+  if (xNode.isProlog()) {
     for (auto &element : xNode.getChildren()) { stringifyElements(element, destination); }
-    break;
   }
   // XML declaration
-  case Variant::Type::declaration: {
+  else if (xNode.isDeclaration()) {
     XDeclaration &xNodeDeclaration = XRef<XDeclaration>(declaration());
     destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
                     + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
-    break;
   }
   // XML root or child elements
-  case Variant::Type::root:
-  case Variant::Type::element: {
+  else if (xNode.isRoot() || xNode.isElement()) {
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
@@ -44,54 +40,46 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
     destination.add(">");
     for (auto &element : xNode.getChildren()) { stringifyElements(element, destination); }
     destination.add("</" + xElement.name() + ">");
-    break;
   }
   // Self closing element
-  case Variant::Type::self: {
+  else if (xNode.isSelf()) {
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
       destination.add(" " + attr.getName() + "=\"" + attr.getUnparsed() + "\"");
     }
     destination.add("/>");
-    break;
   }
   // XML comments
-  case Variant::Type::comment: {
+  else if (xNode.isComment()) {
     XComment &xNodeComment = XRef<XComment>(xNode);
     destination.add("<!--" + xNodeComment.comment() + "-->");
-    break;
   }
   // XML element content
-  case Variant::Type::content: {
+  else if (xNode.isContent()) {
     XContent &xNodeContent = XRef<XContent>(xNode);
     destination.add(xNodeContent.getContent());
-    break;
   }
   // XML character entity
-  case Variant::Type::entity: {
+  else if (xNode.isEntity()) {
     XEntityReference &xNodeEntity = XRef<XEntityReference>(xNode);
     destination.add(xNodeEntity.value().getUnparsed());
-    break;
   }
   // XML processing instruction
-  case Variant::Type::pi: {
+  else if (xNode.isPI()) {
     XPI &xNodePI = XRef<XPI>(xNode);
     destination.add("<?" + xNodePI.name() + " " + xNodePI.parameters() + "?>");
-    break;
   }
   // XML CDATA section
-  case Variant::Type::cdata: {
+  else if (xNode.isCDATA()) {
     XCDATA &xNodeCDATA = XRef<XCDATA>(xNode);
     destination.add("<![CDATA[" + xNodeCDATA.CDATA() + "]]>");
-    break;
+
   }
   // XML DTD
-  case Variant::Type::dtd: {
+  else if (xNode.isDTD()) {
     destination.add(XRef<XDTD>(dtd()).unparsed());
-    break;
-  }
-  default:
+  } else {
     throw XML::Error("Invalid XNode encountered during stringify.");
   }
 }

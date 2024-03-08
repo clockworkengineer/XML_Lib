@@ -59,9 +59,7 @@ bool DTD_Validator::checkIsIDOK(const std::string &idValue)
 bool DTD_Validator::checkIsPCDATA(const XNode &xNode)
 {
   for (const auto &element : xNode.getChildren()) {
-    if ((element.getType() == Variant::Type::element) || (element.getType() == Variant::Type::self)) {
-      return (false);
-    }
+    if ((element.isElement()) || (element.isSelf())) { return (false); }
   }
   return (!xNode.getContents().empty());
 }
@@ -71,10 +69,7 @@ bool DTD_Validator::checkIsPCDATA(const XNode &xNode)
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <returns>true if element empty otherwise false.</returns>
-bool DTD_Validator::checkIsEMPTY(const XNode &xNode)
-{
-  return (xNode.getChildren().empty() || xNode.getType() == Variant::Type::self);
-}
+bool DTD_Validator::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren().empty() || xNode.isSelf()); }
 
 /// <summary>
 ///
@@ -231,9 +226,9 @@ void DTD_Validator::checkContentSpecification(const XNode &xNode)
   std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
   std::string elements;
   for (auto &element : xElement.getChildren()) {
-    if ((element.getType() == Variant::Type::element) || (element.getType() == Variant::Type::self)) {
+    if ((element.isElement()) || (element.isSelf())) {
       elements += "<" + XRef<XElement>(element).name() + ">";
-    } else if (element.getType() == Variant::Type::content) {
+    } else if (element.isContent()) {
       if (!XRef<XContent>(element).isWhiteSpace()) { elements += "<#PCDATA>"; }
     }
   }
@@ -259,37 +254,28 @@ void DTD_Validator::checkElement(const XNode &xNode)
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Validator::checkElements(const XNode &xNode)
 {
-  switch (xNode.getType()) {
-  case Variant::Type::prolog:
+  if (xNode.isProlog()) {
     for (auto &element : xNode.getChildren()) { checkElements(element); }
-    break;
-  case Variant::Type::declaration:
+  } else if (xNode.isDeclaration()) {
     // Nothing for present
-    break;
-  case Variant::Type::root:
-  case Variant::Type::element:
-    if (xNode.getType() == Variant::Type::root && XRef<XElement>(xNode).name() != xDTD.getRootName()) {
+    ;
+  } else if (xNode.isRoot() || xNode.isElement()) {
+    if (xNode.isRoot() && XRef<XElement>(xNode).name() != xDTD.getRootName()) {
       throw XML::ValidationError(
         lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
     for (auto &element : xNode.getChildren()) { checkElements(element); }
-    break;
-  case Variant::Type::self:
+  } else if (xNode.isSelf()) {
     checkElement(xNode);
-    break;
-  case Variant::Type::comment:
-  case Variant::Type::entity:
-  case Variant::Type::pi:
-  case Variant::Type::cdata:
-  case Variant::Type::dtd:
-    break;
-  case Variant::Type::content:
+  } else if (xNode.isComment() || xNode.isEntity() || xNode.isPI() || xNode.isCDATA() || xNode.isDTD()) {
+    // Nothing for present
+    ;
+  } else if (xNode.isContent()) {
     for (auto &ch : XRef<XContent>(xNode).getContent()) {
       if (ch == kLineFeed) { lineNumber++; }
     }
-    break;
-  default:
+  } else {
     throw XML::ValidationError(lineNumber, "Invalid XMLNode encountered during validation.");
   }
 }
