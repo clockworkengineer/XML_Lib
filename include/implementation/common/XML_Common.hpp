@@ -10,12 +10,6 @@
 #include "XML_Destinations.hpp"
 
 namespace XML_Lib {
-// ==============
-// XML validation
-// ==============
-bool validNameStartChar(XML_Lib::Char c);
-bool validNameChar(XML_Lib::Char c);
-bool validAttributeValue(const XMLValue &value);
 // ===========
 // XML parsing
 // ===========

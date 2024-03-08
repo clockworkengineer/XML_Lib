@@ -33,6 +33,8 @@ set(XML_SOURCES
   ./classes/implementation/dtd/DTD_Impl_Parse.cpp
   ./classes/implementation/dtd/DTD_Impl_Parse_Content.cpp
   ./classes/implementation/dtd/DTD_Impl_Parse_External.cpp
+  ./classes/implementation/common/XML_Character.cpp
+  ./classes/implementation/common/XML_Parse.cpp
   ./classes/implementation/common/XML_Common.cpp
   ./classes/implementation/validator/DTD_Validator.cpp
   ./classes/implementation/entity/XML_EntityMapper.cpp
@@ -52,6 +54,9 @@ set(XML_INCLUDES
   ./include/interface/IValidator.hpp
   ./include/interface/XML_Interfaces.hpp
   ./include/implementation/XML_Core.hpp
+  ./include/implementation/common/XML_Character.hpp
+  ./include/implementation/common/XML_Parse.hpp
+  ./include/implementation/common/XML_Common.hpp
   ./include/implementation/data/XML_Value.hpp
   ./include/implementation/data/XML_Attribute.hpp
   ./include/implementation/data/XML_ExternalReference.hpp
@@ -68,7 +73,6 @@ set(XML_INCLUDES
   ./include/implementation/xnode/XML_XNode.hpp
   ./include/implementation/xnode/XML_Reference.hpp
   ./include/implementation/xnode/XML_Creation.hpp
-  ./include/implementation/xnode/XML_Common.hpp
   ./include/implementation/xnode/XML_Index.hpp
   ./include/implementation/variants/XML_XProlog.hpp
   ./include/implementation/variants/XML_XDeclaration.hpp
@@ -88,6 +92,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/include/interface
   ${PROJECT_SOURCE_DIR}/include/implementation
+  ${PROJECT_SOURCE_DIR}/include/implementation/common
   ${PROJECT_SOURCE_DIR}/include/implementation/data
   ${PROJECT_SOURCE_DIR}/include/implementation/entity
   ${PROJECT_SOURCE_DIR}/include/implementation/io
