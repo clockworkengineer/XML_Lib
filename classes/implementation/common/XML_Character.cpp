@@ -1,7 +1,7 @@
 //
 // Class: XML
 //
-// Description: XML parser core functionality.
+// Description: XML character validation core functionality.
 //
 // Dependencies:   C++20 - Language standard features used.
 //

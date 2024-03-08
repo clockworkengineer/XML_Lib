@@ -25,4 +25,4 @@
 #include "XML_EntityMapper.hpp"
 #include "XML_Character.hpp"
 #include "XML_Parse.hpp"
-#include "XML_Common.hpp"
+#include "XML_Utility.hpp"
