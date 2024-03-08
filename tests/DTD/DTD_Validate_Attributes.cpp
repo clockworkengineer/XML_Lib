@@ -125,7 +125,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     XML xml;
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(XRef<XElement>(xml.root()).getType() == Variant::Type::root);
+    REQUIRE_FALSE(!xml.root().isRoot());
     REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[1].getAttribute("number").getValue() == "2001");
     REQUIRE(XRef<XElement>(xml.root())[2].getAttributeList().size() == 1);
@@ -153,7 +153,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     XML xml;
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE(XRef<XElement>(xml.root()).getType() == Variant::Type::root);
+    REQUIRE_FALSE(!xml.root().isRoot());
     REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[1].getAttribute("number").getValue() == "2002");
     REQUIRE(XRef<XElement>(xml.root())[2].getAttributeList().size() == 1);

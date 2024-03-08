@@ -46,7 +46,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
-    REQUIRE(XRef<XElement>(xml.root()).getType() == Variant::Type::root);
+    REQUIRE_FALSE(!xml.root().isRoot());
     REQUIRE(XRef<XElement>(xml.root())[4].name() == "footer");
     REQUIRE(XRef<XElement>(xml.root())[4].getContents()
             == reinterpret_cast<const char *>(u8"Writer: Donald Duck.\u00A0Copyright: W3Schools."));
