@@ -11,6 +11,8 @@
 
 namespace XML_Lib {
 
+XMLValue parseCharacterReference(ISource &source);
+
 /// <summary>
 /// Check whether a character is valid for XML.
 /// </summary>
