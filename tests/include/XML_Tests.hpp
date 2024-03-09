@@ -9,8 +9,6 @@
 #include "XML.hpp"
 #include "XML_Core.hpp"
 #include "DTD.hpp"
-#include "XML_Sources.hpp"
-#include "XML_Destinations.hpp"
 // ============
 // STL includes
 // ============
