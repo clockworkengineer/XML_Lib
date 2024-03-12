@@ -7,8 +7,10 @@ namespace XML_Lib {
 struct Variant
 {
   // XNode Types
+protected:
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
   // Constructors/Destructors
+public:
   explicit Variant(Variant::Type nodeType = Variant::Type::base) : xmlNodeType(nodeType) {}
   Variant(const Variant &other) = default;
   Variant &operator=(const Variant &other) = default;

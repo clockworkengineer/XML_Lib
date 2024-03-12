@@ -48,9 +48,7 @@ private:
   XNode parsePI(ISource &source);
   void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
   void parseElementContents(ISource &source, XNode &xNode);
-  XNode parseElement(ISource &source,
-    const std::vector<XMLAttribute> &outerNamespaces,
-    Variant::Type xNodeType = Variant::Type::element);
+  XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, bool root = false);
   XNode parseDeclaration(ISource &source);
   XNode parseDTD(ISource &source);
   XNode parseProlog(ISource &source);

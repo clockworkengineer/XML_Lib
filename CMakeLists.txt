@@ -80,6 +80,8 @@ set(XML_INCLUDES
   ./include/implementation/variants/XML_XCDATA.hpp
   ./include/implementation/variants/XML_XEntityReference.hpp
   ./include/implementation/variants/XML_XElement.hpp
+  ./include/implementation/variants/XML_XRoot.hpp
+  ./include/implementation/variants/XML_XSelf.hpp
   ./include/implementation/variants/XML_XComment.hpp
   ./include/implementation/variants/XML_XPI.hpp
   ./include/implementation/variants/XML_XDTD.hpp

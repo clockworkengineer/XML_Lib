@@ -211,7 +211,7 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 /// <param name="source">XML source stream.</param>
 /// <param name="outerNamespaces">Current list of outerNamespaces.</param>
 /// <returns>Pointer to element XNode.</returns>
-XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, Variant::Type xNodeType)
+XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, bool root)
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
@@ -226,13 +226,18 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
   }
   // Create element XNode
   if (source.match(U">")) {
+    XNode xNode;
     // Normal element tag
-    auto xNode = XNode::make<XElement>(name, attributes, namespaces, xNodeType);
+    if (root) {
+      xNode = XNode::make<XRoot>(name, attributes, namespaces);
+    } else {
+      xNode = XNode::make<XElement>(name, attributes, namespaces);
+    }
     while (source.more() && !source.match(U"</")) { parseElementContents(source, xNode); }
     if (source.match(source.from_bytes(XRef<XElement>(xNode).name()) + U">")) { return (xNode); }
   } else if (source.match(U"/>")) {
     // Self closing element tag
-    return (XNode::make<XElement>(name, attributes, namespaces, Variant::Type::self));
+    return (XNode::make<XSelf>(name, attributes, namespaces));
   }
   throw XML::SyntaxError(source.getPosition(), "Missing closing tag.");
 }
@@ -321,9 +326,7 @@ XNode XML_Impl::parseProlog(ISource &source)
       parseWhiteSpaceToContent(source, xProlog);
     } else if (source.match(U"<!DOCTYPE")) {
       for (auto &element : xProlog.getChildren()) {
-        if (element.isDTD()) {
-          throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.");
-        }
+        if (element.isDTD()) { throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
       }
       xProlog.addChildren(parseDTD(source));
     } else if (source.current() == '<') {
@@ -342,7 +345,7 @@ XNode XML_Impl::parseProlog(ISource &source)
 XNode XML_Impl::parseXML(ISource &source)
 {
   auto xProlog = parseProlog(source);
-  xProlog.addChildren(parseElement(source, {}, Variant::Type::root));
+  xProlog.addChildren(parseElement(source, {}, true));
   parseTail(source, xProlog);
   return (xProlog);
 }

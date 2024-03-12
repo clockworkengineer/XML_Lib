@@ -15,6 +15,8 @@
 #include "XML_XCDATA.hpp"
 #include "XML_XEntityReference.hpp"
 #include "XML_XElement.hpp"
+#include "XML_XRoot.hpp"
+#include "XML_XSelf.hpp"
 #include "XML_XComment.hpp"
 #include "XML_XPI.hpp"
 #include "XML_XDTD.hpp"
