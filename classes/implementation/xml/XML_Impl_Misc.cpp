@@ -17,7 +17,7 @@ namespace XML_Lib {
 /// <param name="entityReference">Entity reference to be parsed for XML.</param>
 void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference)
 {
-  auto xElement = std::move(XNode::make<XElement>());
+  auto xElement = XNode::make<XElement>();
   BufferSource entitySource(entityReference.getParsed());
   // Parse entity XML
   while (entitySource.more()) { parseElementContents(entitySource, xNode); }
