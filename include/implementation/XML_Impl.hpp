@@ -57,6 +57,7 @@ private:
   void stringifyElements(XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
 
+  bool hasDTD{ false };
   XNode xmlRoot;
   std::unique_ptr<IValidator> validator;
   std::unique_ptr<IEntityMapper> entityMapper;

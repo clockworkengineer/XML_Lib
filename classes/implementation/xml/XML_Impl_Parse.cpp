@@ -325,10 +325,9 @@ XNode XML_Impl::parseProlog(ISource &source)
     } else if (source.isWS()) {
       parseWhiteSpaceToContent(source, xProlog);
     } else if (source.match(U"<!DOCTYPE")) {
-      for (auto &element : xProlog.getChildren()) {
-        if (element.isDTD()) { throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
-      }
+      if (hasDTD) { throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
       xProlog.addChildren(parseDTD(source));
+      hasDTD = true;
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {
