@@ -31,24 +31,19 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
                     + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
   }
   // XML root or child elements
-  else if (xNode.isRoot() || xNode.isElement()) {
+  else if (xNode.isRoot() || xNode.isElement() || xNode.isSelf()) {
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto attr : xElement.getAttributeList()) {
       destination.add(" " + attr.getName() + "=\"" + attr.getUnparsed() + "\"");
     }
-    destination.add(">");
-    for (auto &element : xNode.getChildren()) { stringifyElements(element, destination); }
-    destination.add("</" + xElement.name() + ">");
-  }
-  // Self closing element
-  else if (xNode.isSelf()) {
-    XElement &xElement = XRef<XElement>(xNode);
-    destination.add("<" + xElement.name());
-    for (auto attr : xElement.getAttributeList()) {
-      destination.add(" " + attr.getName() + "=\"" + attr.getUnparsed() + "\"");
+    if (!xNode.isSelf()) {
+      destination.add(">");
+      for (auto &element : xNode.getChildren()) { stringifyElements(element, destination); }
+      destination.add("</" + xElement.name() + ">");
+    } else {
+      destination.add("/>");
     }
-    destination.add("/>");
   }
   // XML comments
   else if (xNode.isComment()) {
