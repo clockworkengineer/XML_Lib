@@ -18,7 +18,7 @@ namespace XML_Lib {
 /// <param name="source">XML source stream.</param>
 /// <param name="XProlog">XMLprolog XNode.</param>
 /// <returns>True then items parsed.</returns>
-bool XML_Impl::parseHeadAndTail(ISource &source, XNode &xProlog)
+bool XML_Impl::parseCommentsInstructionsAndWhiteSpace(ISource &source, XNode &xProlog)
 {
   if (source.match(U"<!--")) {
     xProlog.addChildren(parseComment(source));
@@ -301,7 +301,7 @@ XNode XML_Impl::parseDeclaration(ISource &source)
 void XML_Impl::parseTail(ISource &source, XNode &xProlog)
 {
   while (source.more()) {
-    if (!parseHeadAndTail(source, xProlog)) {
+    if (!parseCommentsInstructionsAndWhiteSpace(source, xProlog)) {
       throw XML::SyntaxError(source.getPosition(), "Extra content at the end of document.");
     }
   }
@@ -335,10 +335,10 @@ XNode XML_Impl::parseProlog(ISource &source)
   auto xProlog = XNode::make<XProlog>();
   xProlog.addChildren(parseDeclaration(source));
   while (source.more()) {
-    if (parseHeadAndTail(source, xProlog)) {
-      continue;
-    } else if (source.match(U"<!DOCTYPE")) {
+    if (source.match(U"<!DOCTYPE")) {
       xProlog.addChildren(parseDTD(source));
+    } else if (parseCommentsInstructionsAndWhiteSpace(source, xProlog)) {
+      continue;
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {

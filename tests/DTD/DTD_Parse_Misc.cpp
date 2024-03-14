@@ -534,6 +534,6 @@ TEST_CASE("Parse XML with more than DTD declaration", "[XML][DTD][Parse]")
       "</note>\n";
     BufferSource source{ xmlString };
     XML xml;
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 8 Column: 14] More than one DOCTYPE declaration.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 8 Column: 11] More than one DOCTYPE declaration.");
   }
 }

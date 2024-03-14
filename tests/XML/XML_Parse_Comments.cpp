@@ -117,7 +117,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source{ xmlString };
     XML xml;
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 2 Column: 30] Missing closing '>' for comment line.");
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 32] Missing closing '>' for comment line.");
   }
   SECTION("A simple single line comment ending with -- is illegal", "[XML][Parse][Comments]")
   {
@@ -128,6 +128,6 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     BufferSource source{ xmlString };
     XML xml;
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 2 Column: 31] Missing closing '>' for comment line.");
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 33] Missing closing '>' for comment line.");
   }
 }
