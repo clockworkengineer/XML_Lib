@@ -13,6 +13,27 @@
 namespace XML_Lib {
 
 /// <summary>
+/// Parse any comments, PI or whitespace in prolog or at end of XML file.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="XProlog">XMLprolog XNode.</param>
+/// <returns>True then items parsed.</returns>
+bool XML_Impl::parseHeadAndTail(ISource &source, XNode &xProlog)
+{
+  if (source.match(U"<!--")) {
+    xProlog.addChildren(parseComment(source));
+    return (true);
+  } else if (source.match(U"<?")) {
+    xProlog.addChildren(parsePI(source));
+    return (true);
+  } else if (source.isWS()) {
+    parseWhiteSpaceToContent(source, xProlog);
+    return (true);
+  }
+  return (false);
+}
+
+/// <summary>
 /// Parse a element tag name and set its value in current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
@@ -280,13 +301,7 @@ XNode XML_Impl::parseDeclaration(ISource &source)
 void XML_Impl::parseTail(ISource &source, XNode &xProlog)
 {
   while (source.more()) {
-    if (source.match(U"<!--")) {
-      xProlog.addChildren(parseComment(source));
-    } else if (source.match(U"<?")) {
-      xProlog.addChildren(parsePI(source));
-    } else if (source.isWS()) {
-      parseWhiteSpaceToContent(source, xProlog);
-    } else {
+    if (!parseHeadAndTail(source, xProlog)) {
       throw XML::SyntaxError(source.getPosition(), "Extra content at the end of document.");
     }
   }
@@ -299,10 +314,12 @@ void XML_Impl::parseTail(ISource &source, XNode &xProlog)
 /// <returns>Pointer to DTD XNode.</returns>
 XNode XML_Impl::parseDTD(ISource &source)
 {
+  if (hasDTD) { throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
   auto xNode = XNode::make<XDTD>(*entityMapper);
   DTD dtd{ xNode };
   dtd.parse(source);
   validator = std::make_unique<DTD_Validator>(xNode);
+  hasDTD = true;
   return (xNode);
 }
 
@@ -318,16 +335,10 @@ XNode XML_Impl::parseProlog(ISource &source)
   auto xProlog = XNode::make<XProlog>();
   xProlog.addChildren(parseDeclaration(source));
   while (source.more()) {
-    if (source.match(U"<!--")) {
-      xProlog.addChildren(parseComment(source));
-    } else if (source.match(U"<?")) {
-      xProlog.addChildren(parsePI(source));
-    } else if (source.isWS()) {
-      parseWhiteSpaceToContent(source, xProlog);
+    if (parseHeadAndTail(source, xProlog)) {
+      continue;
     } else if (source.match(U"<!DOCTYPE")) {
-      if (hasDTD) { throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
       xProlog.addChildren(parseDTD(source));
-      hasDTD = true;
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {

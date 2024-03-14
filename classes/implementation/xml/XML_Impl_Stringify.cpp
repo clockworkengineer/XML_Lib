@@ -22,7 +22,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
 {
   // XML prolog
   if (xNode.isProlog()) {
-    for (auto &element : xNode.getChildren()) { stringifyElements(element, destination); }
+    for (auto &child : xNode.getChildren()) { stringifyElements(child, destination); }
   }
   // XML declaration
   else if (xNode.isDeclaration()) {
@@ -34,12 +34,12 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
   else if (xNode.isRoot() || xNode.isElement() || xNode.isSelf()) {
     XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
-    for (auto attr : xElement.getAttributeList()) {
-      destination.add(" " + attr.getName() + "=\"" + attr.getUnparsed() + "\"");
+    for (auto &attribute : xElement.getAttributeList()) {
+      destination.add(" " + attribute.getName() + "=\"" + attribute.getUnparsed() + "\"");
     }
     if (!xNode.isSelf()) {
       destination.add(">");
-      for (auto &element : xNode.getChildren()) { stringifyElements(element, destination); }
+      for (auto &child : xNode.getChildren()) { stringifyElements(child, destination); }
       destination.add("</" + xElement.name() + ">");
     } else {
       destination.add("/>");

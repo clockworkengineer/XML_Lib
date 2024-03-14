@@ -40,6 +40,7 @@ private:
     const std::string &name,
     const std::set<std::string> &values,
     bool toUpper);
+  bool parseHeadAndTail(ISource &source, XNode &xProlog);
   void parseElementContent(ISource &source, XNode &xNode);
   std::string parseTagName(ISource &source);
   std::vector<XMLAttribute> parseAttributes(ISource &source);
