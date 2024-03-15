@@ -66,6 +66,6 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     BufferSource source{ xmlString };
     XML xml;
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 2 Column: 54] Attribute defined more than once within start tag.");
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 50] Attribute defined more than once within start tag.");
   }
 }

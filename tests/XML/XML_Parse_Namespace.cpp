@@ -98,7 +98,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     BufferSource source{ xmlString };
     XML xml;
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 1 Column: 94] Attribute defined more than once within start tag.");
+      xml.parse(source), "XML Syntax Error [Line: 1 Column: 57] Attribute defined more than once within start tag.");
   }
   SECTION("A root document defining one namespace tha is overridden by a child", "[XML][Parse][Namespace]")
   {

@@ -133,17 +133,16 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
     if (!source.match(U"=")) {
       throw XML::SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
     }
+    if (attributeNames.contains(attributeName)) {
+      throw XML::SyntaxError(source.getPosition(), "Attribute defined more than once within start tag.");
+    }
     source.ignoreWS();
     XMLValue attributeValue = parseValue(source, *entityMapper);
     if (!validAttributeValue(attributeValue)) {
       throw XML::SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
     }
-    if (!attributeNames.contains(attributeName)) {
-      attributes.emplace_back(attributeName, attributeValue);
-      attributeNames.insert(attributeName);
-    } else {
-      throw XML::SyntaxError(source.getPosition(), "Attribute defined more than once within start tag.");
-    }
+    attributes.emplace_back(attributeName, attributeValue);
+    attributeNames.insert(attributeName);
   }
   return (attributes);
 }
