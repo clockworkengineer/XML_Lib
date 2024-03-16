@@ -40,7 +40,7 @@ private:
     const std::string &name,
     const std::set<std::string> &values,
     bool toUpper);
-  bool parseCommentsInstructionsAndWhiteSpace(ISource &source, XNode &xProlog);
+  bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
   void parseElementContent(ISource &source, XNode &xNode);
   std::string parseTagName(ISource &source);
   std::vector<XMLAttribute> parseAttributes(ISource &source);
@@ -55,7 +55,7 @@ private:
   XNode parseProlog(ISource &source);
   void parseTail(ISource &source, XNode &xProlog);
   XNode parseXML(ISource &source);
-  void stringifyElements(XNode &xNode, IDestination &destination);
+  void stringifyElements(const XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
 
   bool hasDTD{ false };

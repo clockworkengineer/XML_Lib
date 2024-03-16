@@ -89,4 +89,5 @@ void XML_Impl::validate()
 /// </summary>
 /// <param name="destination">XML destination stream.</param>
 void XML_Impl::stringify(IDestination &destination) { stringifyXML(destination); }
+
 }// namespace XML_Lib

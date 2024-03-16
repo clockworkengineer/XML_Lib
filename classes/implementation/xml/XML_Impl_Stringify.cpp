@@ -18,7 +18,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xNode">XNode to convert into XML.</param>
 /// <param name="destination">XML destination stream.</param>
-void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
+void XML_Impl::stringifyElements(const XNode &xNode, IDestination &destination)
 {
   // XML prolog
   if (xNode.isProlog()) {
@@ -32,7 +32,7 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
   }
   // XML root or child elements
   else if (xNode.isRoot() || xNode.isElement() || xNode.isSelf()) {
-    XElement &xElement = XRef<XElement>(xNode);
+    const XElement &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto &attribute : xElement.getAttributeList()) {
       destination.add(" " + attribute.getName() + "=\"" + attribute.getUnparsed() + "\"");
@@ -47,29 +47,28 @@ void XML_Impl::stringifyElements(XNode &xNode, IDestination &destination)
   }
   // XML comments
   else if (xNode.isComment()) {
-    XComment &xNodeComment = XRef<XComment>(xNode);
+    const XComment &xNodeComment = XRef<XComment>(xNode);
     destination.add("<!--" + xNodeComment.comment() + "-->");
   }
   // XML element content
   else if (xNode.isContent()) {
-    XContent &xNodeContent = XRef<XContent>(xNode);
+    const XContent &xNodeContent = XRef<XContent>(xNode);
     destination.add(xNodeContent.getContent());
   }
   // XML character entity
   else if (xNode.isEntity()) {
-    XEntityReference &xNodeEntity = XRef<XEntityReference>(xNode);
+    const XEntityReference &xNodeEntity = XRef<XEntityReference>(xNode);
     destination.add(xNodeEntity.value().getUnparsed());
   }
   // XML processing instruction
   else if (xNode.isPI()) {
-    XPI &xNodePI = XRef<XPI>(xNode);
+    const XPI &xNodePI = XRef<XPI>(xNode);
     destination.add("<?" + xNodePI.name() + " " + xNodePI.parameters() + "?>");
   }
   // XML CDATA section
   else if (xNode.isCDATA()) {
-    XCDATA &xNodeCDATA = XRef<XCDATA>(xNode);
+    const XCDATA &xNodeCDATA = XRef<XCDATA>(xNode);
     destination.add("<![CDATA[" + xNodeCDATA.CDATA() + "]]>");
-
   }
   // XML DTD
   else if (xNode.isDTD()) {
