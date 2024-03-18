@@ -34,7 +34,7 @@ int BytesToWideChar(const char *bytes, int length, wchar_t *sideString = nullptr
 /// <summary>
 /// Convert to UTF-8 strings.
 /// </summary>
-std::string XML_Converter::toUtf8(char16_t utf16) const { return (toUtf8(std::u16string(utf16, 1))); }
+std::string XML_Converter::toUtf8(char16_t utf16) const { return (toUtf8(std::u16string(1, utf16))); }
 std::string XML_Converter::toUtf8(const std::u16string &utf16) const
 {
   std::wstring wideString{ utf16.begin(), utf16.end() };
