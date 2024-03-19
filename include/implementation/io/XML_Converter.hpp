@@ -7,7 +7,12 @@ namespace XML_Lib {
 // ====================
 // Internal String Type
 // ====================
+#define U16
+#if defined(U16)
+using String = std::u16string;
+#else if defined(U32)
 using String = std::u32string;
+#endif
 using Char = String::value_type;
 // =================================
 // Interface for character converter

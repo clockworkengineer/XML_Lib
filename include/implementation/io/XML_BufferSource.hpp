@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <stdexcept>
+#include <type_traits>
 
 #include "ISource.hpp"
 
@@ -24,13 +25,21 @@ public:
         ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
       }
     }
+#if defined(U16)
+    buffer = utf16xml;
+#else defined(U32)
     buffer = converter.toUtf32(utf16xml);
+#endif
     convertCRLFToLF(buffer);
   }
   explicit BufferSource(const std::string &sourceBuffer)
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
+#if defined(U16)
+    buffer = converter.toUtf16(sourceBuffer);
+#else
     buffer = converter.toUtf32(sourceBuffer);
+#endif
     convertCRLFToLF(buffer);
   }
   BufferSource() = default;
@@ -76,10 +85,10 @@ public:
 private:
   void convertCRLFToLF(XML_Lib::String &xmlString)
   {
-    size_t pos = xmlString.find(U"\x0D\x0A");
+    size_t pos = xmlString.find(u"\x0D\x0A");
     while (pos != std::string::npos) {
-      xmlString.replace(pos, 2, U"\x0A");
-      pos = xmlString.find(U"\x0D\x0A", pos + 1);
+      xmlString.replace(pos, 2, u"\x0A");
+      pos = xmlString.find(u"\x0D\x0A", pos + 1);
     }
   }
 

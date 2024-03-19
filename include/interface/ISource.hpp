@@ -109,8 +109,11 @@ public:
   // ================================
   // Convert from byte string (UTF-8)
   // ================================
+#if defined(U16)
+  String from_bytes(const std::string &from) { return (converter.toUtf16(from)); }
+#else
   String from_bytes(const std::string &from) { return (converter.toUtf32(from)); }
-
+#endif
 protected:
   long lineNo = 1;
   long columnNo = 1;
