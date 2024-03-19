@@ -132,7 +132,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
       xmlResult += source.current();
       source.next();
     }
-    REQUIRE(xmlResult == u"<root>TestTestTest</root>");
+    REQUIRE(xmlResult == U"<root>TestTestTest</root>");
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
   }
   SECTION("Check that FileSource ignoreWS() at end of file does not throw but next() does.", "[XML][Parse][FileSource]")
@@ -307,7 +307,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
       xmlResult += source.current();
       source.next();
     }
-    REQUIRE(xmlResult == u"<root>TestTestTest</root>");
+    REQUIRE(xmlResult == U"<root>TestTestTest</root>");
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
   }
   SECTION(

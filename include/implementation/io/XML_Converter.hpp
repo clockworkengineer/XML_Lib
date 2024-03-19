@@ -7,7 +7,7 @@ namespace XML_Lib {
 // ====================
 // Internal String Type
 // ====================
-#define U16
+#define U32
 #if defined(U16)
 using String = std::u16string;
 #else if defined(U32)

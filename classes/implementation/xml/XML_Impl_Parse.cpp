@@ -254,7 +254,7 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
       xNode = XNode::make<XElement>(name, attributes, namespaces);
     }
     while (source.more() && !source.match("</")) { parseElementContents(source, xNode); }
-    if (source.match(source.from_bytes(XRef<XElement>(xNode).name()) + u">")) { return (xNode); }
+    if (source.match(source.from_bytes(XRef<XElement>(xNode).name()) + U">")) { return (xNode); }
   } else if (source.match("/>")) {
     // Self closing element tag
     return (XNode::make<XSelf>(name, attributes, namespaces));
