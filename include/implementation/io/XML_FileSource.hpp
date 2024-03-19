@@ -28,7 +28,7 @@ public:
   FileSource &operator=(FileSource &&other) = delete;
   ~FileSource() = default;
 
-  XML_Lib::Char current() const override { return (source.peek()); }
+  XML_Lib::Char current() const override { return (static_cast<XML_Lib::Char>(source.peek())); }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }

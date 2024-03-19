@@ -50,7 +50,7 @@ std::string toUpperString(const std::string &stringToUpper)
 {
   std::string upperCaseString{ stringToUpper };
   std::transform(upperCaseString.begin(), upperCaseString.end(), upperCaseString.begin(), [](unsigned int c) {
-    return static_cast<char>(std::toupper(c));
+    return static_cast<XML_Lib::Char>(std::toupper(c));
   });
   return (upperCaseString);
 }
