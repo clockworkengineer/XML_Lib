@@ -74,8 +74,8 @@ XMLValue parseCharacterReference(ISource &source)
   }
   result = std::strtol(reference.c_str(), &end, result);
   if (*end == '\0') {
-    if (!validChar(result)) { throw XML::SyntaxError(source.getPosition(), "Character reference invalid character."); }
-    return (XMLValue{ unparsed, source.to_bytes(result) });
+    if (!validChar(static_cast<XML_Lib::Char>(result))) { throw XML::SyntaxError(source.getPosition(), "Character reference invalid character."); }
+    return (XMLValue{ unparsed, source.to_bytes(static_cast<XML_Lib::Char>(result)) });
   }
   throw XML::SyntaxError(source.getPosition(), "Cannot convert character reference.");
 }
