@@ -56,7 +56,7 @@ bool validNameChar(XML_Lib::Char c)
 /// <returns>true then valid otherwise false.</returns>
 bool validReservedName(const XML_Lib::String &name)
 {
-  return ((name.find(U"xmlns") == 0) || (name.find(U"xml-stylesheet") == 0) || (name == U"xml"));
+  return ((name.find(STR("xmlns")) == 0) || (name.find(STR("xml-stylesheet")) == 0) || (name == STR("xml")));
 }
 
 /// <summary>
@@ -71,7 +71,7 @@ bool validName(const XML_Lib::String &name)
   std::transform(localName.begin(), localName.end(), localName.begin(), [](XML_Lib::Char c) {
     return static_cast<XML_Lib::Char>(std::tolower(static_cast<int>(c)));
   });
-  if (localName.find(U"xml") == 0 && !(validReservedName(localName))) { return (false); }
+  if (localName.find(STR("xml")) == 0 && !(validReservedName(localName))) { return (false); }
   if (!validNameStartChar(localName[0])) { return (false); }
   for (auto it = localName.begin() + 1; it != localName.end(); it++) {
     if (!validNameChar(*it)) { return (false); }

@@ -10,8 +10,10 @@ namespace XML_Lib {
 #define U32
 #if defined(U16)
 using String = std::u16string;
+#define STR(value) (u##value)
 #else if defined(U32)
 using String = std::u32string;
+#define STR(value) (U##value)
 #endif
 using Char = String::value_type;
 // =================================

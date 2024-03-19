@@ -85,10 +85,10 @@ public:
 private:
   void convertCRLFToLF(XML_Lib::String &xmlString)
   {
-    size_t pos = xmlString.find(U"\x0D\x0A");
+    size_t pos = xmlString.find(STR("\x0D\x0A"));
     while (pos != std::string::npos) {
-      xmlString.replace(pos, 2, U"\x0A");
-      pos = xmlString.find(U"\x0D\x0A", pos + 1);
+      xmlString.replace(pos, 2, STR("\x0A"));
+      pos = xmlString.find(STR("\x0D\x0A"), pos + 1);
     }
   }
 
