@@ -58,7 +58,9 @@ XMLValue parseCharacterReference(ISource &source)
     unparsed += source.current_to_bytes();
     source.next();
   }
-  if (source.current() != ';') { throw XML::SyntaxError(source.getPosition(), "Invalidly formed  character reference."); }
+  if (source.current() != ';') {
+    throw XML::SyntaxError(source.getPosition(), "Invalidly formed  character reference.");
+  }
   source.next();
   unparsed += ';';
   std::string reference{ unparsed };
@@ -87,7 +89,7 @@ XMLValue parseCharacterReference(ISource &source)
 /// <returns>Character value.</returns>
 XMLValue parseCharacter(ISource &source)
 {
-  if (source.match(U"&#")) {
+  if (source.match("&#")) {
     return (parseCharacterReference(source));
   } else if (source.current() == '&') {
     return (parseEntityReference(source));

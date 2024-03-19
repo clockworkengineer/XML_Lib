@@ -18,7 +18,9 @@ namespace XML_Lib {
 void DTD_Impl::parseValidNotations(const std::string &notations)
 {
   for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|')) {
-    if (dtdRoot.getNotationCount(notation) == 0) { throw XML::SyntaxError("NOTATION " + notation + " is not defined."); }
+    if (dtdRoot.getNotationCount(notation) == 0) {
+      throw XML::SyntaxError("NOTATION " + notation + " is not defined.");
+    }
   }
 }
 
@@ -48,12 +50,12 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
         options.insert(option);
       } else {
         throw XML::SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name
-                          + "' occurs more than once in its definition.");
+                               + "' occurs more than once in its definition.");
       }
     }
     if (options.find(dtdAttribute.value.getParsed()) == options.end()) {
       throw XML::SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
-                        + dtdAttribute.name + "' is invalid.");
+                             + dtdAttribute.name + "' is invalid.");
     }
   }
 }
@@ -92,39 +94,39 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
 /// <returns>Attribute type as string (UTF-8 encoded).</returns>
 void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute)
 {
-  if (source.match(U"CDATA")) {
+  if (source.match("CDATA")) {
     attribute.type = XDTD::AttributeType::cdata;
     source.ignoreWS();
     return;
-  } else if (source.match(U"IDREFS")) {
+  } else if (source.match("IDREFS")) {
     attribute.type = XDTD::AttributeType::idrefs;
     source.ignoreWS();
     return;
-  } else if (source.match(U"IDREF")) {
+  } else if (source.match("IDREF")) {
     attribute.type = XDTD::AttributeType::idref;
     source.ignoreWS();
     return;
-  } else if (source.match(U"ID")) {
+  } else if (source.match("ID")) {
     attribute.type = XDTD::AttributeType::id;
     source.ignoreWS();
     return;
-  } else if (source.match(U"NMTOKENS")) {
+  } else if (source.match("NMTOKENS")) {
     attribute.type = XDTD::AttributeType::nmtokens;
     source.ignoreWS();
     return;
-  } else if (source.match(U"NMTOKEN")) {
+  } else if (source.match("NMTOKEN")) {
     attribute.type = XDTD::AttributeType::nmtoken;
     source.ignoreWS();
     return;
-  } else if (source.match(U"ENTITY")) {
+  } else if (source.match("ENTITY")) {
     attribute.type = XDTD::AttributeType::entity;
     source.ignoreWS();
     return;
-  } else if (source.match(U"ENTITIES")) {
+  } else if (source.match("ENTITIES")) {
     attribute.type = XDTD::AttributeType::entities;
     source.ignoreWS();
     return;
-  } else if (source.match(U"NOTATION")) {
+  } else if (source.match("NOTATION")) {
     attribute.type = XDTD::AttributeType::notation;
     source.ignoreWS();
   }
@@ -147,11 +149,11 @@ void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute)
 /// <param name="attribute">Attribute description.</param>
 void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute)
 {
-  if (source.match(U"#REQUIRED")) {
+  if (source.match("#REQUIRED")) {
     attribute.type |= XDTD::AttributeType::required;
-  } else if (source.match(U"#IMPLIED")) {
+  } else if (source.match("#IMPLIED")) {
     attribute.type |= XDTD::AttributeType::implied;
-  } else if (source.match(U"#FIXED")) {
+  } else if (source.match("#FIXED")) {
     source.ignoreWS();
     attribute.value = parseValue(source, dtdRoot.getEntityMapper());
     attribute.type |= XDTD::AttributeType::fixed;
@@ -212,7 +214,7 @@ void DTD_Impl::parseEntity(ISource &source)
     dtdRoot.getEntityMapper().setInternal(entityName, entityValue.getParsed());
   } else {
     dtdRoot.getEntityMapper().setExternal(entityName, parseExternalReference(source));
-    if (source.match(U"NDATA")) {
+    if (source.match("NDATA")) {
       source.ignoreWS();
       dtdRoot.getEntityMapper().setNotation(entityName, parseName(source));
     }
@@ -227,9 +229,9 @@ void DTD_Impl::parseElement(ISource &source)
 {
   source.ignoreWS();
   std::string elementName = parseName(source);
-  if (source.match(U"EMPTY")) {
+  if (source.match("EMPTY")) {
     dtdRoot.addElement(elementName, XDTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
-  } else if (source.match(U"ANY")) {
+  } else if (source.match("ANY")) {
     dtdRoot.addElement(elementName, XDTD::Element(elementName, XMLValue{ "ANY", "ANY" }));
   } else {
     std::string unparsed;
@@ -249,7 +251,7 @@ void DTD_Impl::parseElement(ISource &source)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseComment(ISource &source)
 {
-  while (source.more() && !source.match(U"--")) { source.next(); }
+  while (source.more() && !source.match("--")) { source.next(); }
 }
 
 /// <summary>
@@ -270,16 +272,16 @@ void DTD_Impl::parseParameterEntityReference(ISource &source)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseInternal(ISource &source)
 {
-  while (source.more() && !source.match(U"]>")) {
-    if (source.match(U"<!ENTITY")) {
+  while (source.more() && !source.match("]>")) {
+    if (source.match("<!ENTITY")) {
       parseEntity(source);
-    } else if (source.match(U"<!ELEMENT")) {
+    } else if (source.match("<!ELEMENT")) {
       parseElement(source);
-    } else if (source.match(U"<!ATTLIST")) {
+    } else if (source.match("<!ATTLIST")) {
       parseAttributeList(source);
-    } else if (source.match(U"<!NOTATION")) {
+    } else if (source.match("<!NOTATION")) {
       parseNotation(source);
-    } else if (source.match(U"<!--")) {
+    } else if (source.match("<!--")) {
       parseComment(source);
     } else if (source.current() == '%') {
       parseParameterEntityReference(source);

@@ -150,26 +150,26 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
-    REQUIRE_FALSE(source.match(U"<root> "));
-    REQUIRE_FALSE(!source.match(U"<root>"));
+    REQUIRE_FALSE(source.match("<root> "));
+    REQUIRE_FALSE(!source.match("<root>"));
     REQUIRE(source.current() == 'M');
-    REQUIRE_FALSE(!source.match(U"Match1"));
+    REQUIRE_FALSE(!source.match("Match1"));
     REQUIRE(source.current() == ' ');
     source.ignoreWS();
     REQUIRE(source.current() == 'M');
-    REQUIRE_FALSE(source.match(U"Match3"));
-    REQUIRE_FALSE(!source.match(U"Match2"));
+    REQUIRE_FALSE(source.match("Match3"));
+    REQUIRE_FALSE(!source.match("Match2"));
     source.ignoreWS();
     REQUIRE(source.current() == '2');
-    REQUIRE_FALSE(!source.match(U"2hctam"));
+    REQUIRE_FALSE(!source.match("2hctam"));
     REQUIRE(source.current() == ' ');
     source.ignoreWS();
-    REQUIRE_FALSE(!source.match(U"MMAATTCCHHHXML_Lib"));
+    REQUIRE_FALSE(!source.match("MMAATTCCHHHXML_Lib"));
     REQUIRE(source.current() == ' ');
     source.next();
     REQUIRE(source.current() == '&');
     source.next();
-    REQUIRE_FALSE(!source.match(U"</root>"));
+    REQUIRE_FALSE(!source.match("</root>"));
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
   }
@@ -178,7 +178,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
-    source.match(U"<root>Match1");
+    source.match("<root>Match1");
     REQUIRE(source.current() == ' ');
     source.backup(12);
     REQUIRE(source.current() == '<');
@@ -324,26 +324,26 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
-    REQUIRE_FALSE(source.match(U"<root> "));
-    REQUIRE_FALSE(!source.match(U"<root>"));
+    REQUIRE_FALSE(source.match("<root> "));
+    REQUIRE_FALSE(!source.match("<root>"));
     REQUIRE(source.current() == 'M');
-    REQUIRE_FALSE(!source.match(U"Match1"));
+    REQUIRE_FALSE(!source.match("Match1"));
     REQUIRE(source.current() == ' ');
     source.ignoreWS();
     REQUIRE(source.current() == 'M');
-    REQUIRE_FALSE(source.match(U"Match3"));
-    REQUIRE_FALSE(!source.match(U"Match2"));
+    REQUIRE_FALSE(source.match("Match3"));
+    REQUIRE_FALSE(!source.match("Match2"));
     source.ignoreWS();
     REQUIRE(source.current() == '2');
-    REQUIRE_FALSE(!source.match(U"2hctam"));
+    REQUIRE_FALSE(!source.match("2hctam"));
     REQUIRE(source.current() == ' ');
     source.ignoreWS();
-    REQUIRE_FALSE(!source.match(U"MMAATTCCHHHXML_Lib"));
+    REQUIRE_FALSE(!source.match("MMAATTCCHHHXML_Lib"));
     REQUIRE(source.current() == ' ');
     source.next();
     REQUIRE(source.current() == '&');
     source.next();
-    REQUIRE_FALSE(!source.match(U"</root>"));
+    REQUIRE_FALSE(!source.match("</root>"));
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
   }
@@ -351,7 +351,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
-    source.match(U"<root>Match1");
+    source.match("<root>Match1");
     REQUIRE(source.current() == ' ');
     source.backup(12);
     REQUIRE(source.current() == '<');
@@ -388,10 +388,10 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
-    while (source.more() && !source.match(U"Match")) { source.next(); }
+    while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     long start = source.position();
-    while (source.more() && !source.match(U"Match2")) { source.next(); }
+    while (source.more() && !source.match("Match2")) { source.next(); }
     REQUIRE(source.position() == 22);
     REQUIRE(source.getRange(start, source.position()) == "1    Match2");
     REQUIRE(source.position() == 22);
@@ -401,10 +401,10 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
-    while (source.more() && !source.match(U"Match")) { source.next(); }
+    while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     long start = source.position();
-    while (source.more() && !source.match(U"Match2")) { source.next(); }
+    while (source.more() && !source.match("Match2")) { source.next(); }
     REQUIRE(source.position() == 22);
     REQUIRE(source.getRange(start, source.position()) == "1    Match2");
     REQUIRE(source.position() == 22);
@@ -414,11 +414,11 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
-    while (source.more() && !source.match(U"Match")) { source.next(); }
+    while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     source.reset();
     REQUIRE(source.position() == 0);
-    while (source.more() && !source.match(U"Match")) { source.next(); }
+    while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
   }
   SECTION("Check that FileSource reset() works correctly.", "[XML][Parse][FileSource]")
@@ -426,11 +426,11 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
-    while (source.more() && !source.match(U"Match")) { source.next(); }
+    while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     source.reset();
     REQUIRE(source.position() == 0);
-    while (source.more() && !source.match(U"Match")) { source.next(); }
+    while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
   }
 }

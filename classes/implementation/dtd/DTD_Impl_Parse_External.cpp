@@ -22,9 +22,9 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
   if (includeOn) {
     if (source.current() == '%') {
       conditionalValue = dtdRoot.getEntityMapper().map(parseEntityReference(source)).getParsed();
-    } else if (source.match(U"INCLUDE")) {
+    } else if (source.match("INCLUDE")) {
       conditionalValue = "INCLUDE";
-    } else if (source.match(U"IGNORE")) {
+    } else if (source.match("IGNORE")) {
       conditionalValue = "IGNORE";
     }
   } else {
@@ -32,12 +32,14 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
   }
   source.ignoreWS();
   if (conditionalValue == "INCLUDE") {
-    if (source.current() != '[') { throw XML::SyntaxError(source.getPosition(), "Missing opening '[' from conditional."); }
+    if (source.current() != '[') {
+      throw XML::SyntaxError(source.getPosition(), "Missing opening '[' from conditional.");
+    }
     source.next();
     source.ignoreWS();
     std::string conditionalDTD;
-    while (source.more() && !source.match(U"]]")) {
-      if (source.match(U"<![")) {
+    while (source.more() && !source.match("]]")) {
+      if (source.match("<![")) {
         parseConditional(source);
       } else {
         conditionalDTD += source.current_to_bytes();
@@ -47,8 +49,8 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
     BufferSource conditionalDTDSource(conditionalDTD);
     parseExternalContent(conditionalDTDSource);
   } else if (conditionalValue == "IGNORE") {
-    while (source.more() && !source.match(U"]]")) {
-      if (source.match(U"<![")) {
+    while (source.more() && !source.match("]]")) {
+      if (source.match("<![")) {
         parseConditional(source, false);
       } else {
         source.next();
@@ -69,24 +71,24 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
 void DTD_Impl::parseExternalContent(ISource &source)
 {
   while (source.more()) {
-    if (source.match(U"<!ENTITY")) {
+    if (source.match("<!ENTITY")) {
       BufferSource dtdTranslatedSource(dtdRoot.getEntityMapper().translate(parseTagBody(source)));
       parseEntity(dtdTranslatedSource);
-    } else if (source.match(U"<!ELEMENT")) {
+    } else if (source.match("<!ELEMENT")) {
       BufferSource dtdTranslatedSource(dtdRoot.getEntityMapper().translate(parseTagBody(source)));
       parseElement(dtdTranslatedSource);
-    } else if (source.match(U"<!ATTLIST")) {
+    } else if (source.match("<!ATTLIST")) {
       BufferSource dtdTranslatedSource(dtdRoot.getEntityMapper().translate(parseTagBody(source)));
       parseAttributeList(dtdTranslatedSource);
-    } else if (source.match(U"<!NOTATION")) {
+    } else if (source.match("<!NOTATION")) {
       BufferSource dtdTranslatedSource(dtdRoot.getEntityMapper().translate(parseTagBody(source)));
       parseNotation(dtdTranslatedSource);
-    } else if (source.match(U"<!--")) {
+    } else if (source.match("<!--")) {
       parseComment(source);
     } else if (source.current() == '%') {
       parseParameterEntityReference(source);
       continue;
-    } else if (source.match(U"<![")) {
+    } else if (source.match("<![")) {
       parseConditional(source);
       continue;
     } else {
@@ -118,10 +120,10 @@ void DTD_Impl::parseExternalReferenceContent()
 /// <returns>External reference.</returns>
 XMLExternalReference DTD_Impl::parseExternalReference(ISource &source)
 {
-  if (source.match(U"SYSTEM")) {
+  if (source.match("SYSTEM")) {
     source.ignoreWS();
     return (XMLExternalReference{ "SYSTEM", parseValue(source, dtdRoot.getEntityMapper()).getParsed(), "" });
-  } else if (source.match(U"PUBLIC")) {
+  } else if (source.match("PUBLIC")) {
     source.ignoreWS();
     std::string publicID{ parseValue(source, dtdRoot.getEntityMapper()).getParsed() };
     std::string systemID{ parseValue(source, dtdRoot.getEntityMapper()).getParsed() };

@@ -86,7 +86,7 @@ bool validAttributeValue(const XMLValue &value)
 {
   BufferSource valueSource(value.getParsed());
   while (valueSource.more()) {
-    if (valueSource.match(U"&#")) {
+    if (valueSource.match("&#")) {
       parseCharacterReference(valueSource);
     } else if (valueSource.current() == '&') {
       parseEntityReference(valueSource);

@@ -70,12 +70,22 @@ public:
   // =================================================================
   // Is current string a match at the current source stream position ?
   // =================================================================
-  bool match(const String &targetString)
+  bool match(const String &target)
   {
     long index = 0;
-    while (more() && current() == targetString[index]) {
+    while (more() && current() == target[index]) {
       next();
-      if (++index == (long)targetString.length()) { return (true); }
+      if (++index == (long)target.length()) { return (true); }
+    }
+    backup(index);
+    return (false);
+  }
+  bool match(const char *target)
+  {
+    long index = 0;
+    while (more() && (current() == static_cast<XML_Lib::Char>(target[index]))) {
+      next();
+      if (++index == (long)strlen(target)) { return (true); }
     }
     backup(index);
     return (false);
