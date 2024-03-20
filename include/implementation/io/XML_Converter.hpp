@@ -11,7 +11,7 @@ namespace XML_Lib {
 #if defined(U16)
 using String = std::u16string;
 #define STR(value) (u##value)
-#else if defined(U32)
+#elif defined(U32)
 using String = std::u32string;
 #define STR(value) (U##value)
 #endif

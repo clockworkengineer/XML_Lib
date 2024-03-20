@@ -2,6 +2,7 @@
 
 #include <string>
 #include <cwctype>
+#include <cstring>
 
 #include "XML_Converter.hpp"
 
@@ -85,7 +86,7 @@ public:
     long index = 0;
     while (more() && (current() == static_cast<XML_Lib::Char>(target[index]))) {
       next();
-      if (++index == (long)strlen(target)) { return (true); }
+      if (++index == (long)std::strlen(target)) { return (true); }
     }
     backup(index);
     return (false);

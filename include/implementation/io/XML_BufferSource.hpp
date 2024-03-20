@@ -27,7 +27,7 @@ public:
     }
 #if defined(U16)
     buffer = utf16xml;
-#else defined(U32)
+#elif defined(U32)
     buffer = converter.toUtf32(utf16xml);
 #endif
     convertCRLFToLF(buffer);
