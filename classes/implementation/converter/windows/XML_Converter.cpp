@@ -10,15 +10,10 @@
 // =======
 #include "Windows.h"
 
-// ++++++++++++++++++++++++++++++++++++++++++++
-// Switch off C++17 warning for conversion code
-// ++++++++++++++++++++++++++++++++++++++++++++
-#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
 #include "XML_Converter.hpp"
 
 namespace XML_Lib {
 
-static std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> utf32Convert;
 // ============================================================
 // Windows API for converting between byte and wide characters.
 // ============================================================
