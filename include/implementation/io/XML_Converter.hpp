@@ -7,14 +7,9 @@ namespace XML_Lib {
 // ====================
 // Internal String Type
 // ====================
-#define U32
-#if defined(U16)
+#define U16
 using String = std::u16string;
 #define STR(value) (u##value)
-#elif defined(U32)
-using String = std::u32string;
-#define STR(value) (U##value)
-#endif
 using Char = String::value_type;
 // =================================
 // Interface for character converter
@@ -44,13 +39,8 @@ public:
   // UTF-8
   std::string toUtf8(char16_t utf16) const;
   std::string toUtf8(const std::u16string &utf16) const;
-  std::string toUtf8(char32_t utf32) const;
-  std::string toUtf8(const std::u32string &utf32) const;
   // UTF-16
   std::u16string toUtf16(const std::string &utf8) const;
-  std::u16string toUtf32(const std::u32string &utf32) const;
-  // UTF-32
-  std::u32string toUtf32(const std::string &utf8) const;
-  std::u32string toUtf32(const std::u16string &utf16) const;
+  std::u16string toUtf16(const std::u32string &utf32) const;
 };
 }// namespace XML_Lib

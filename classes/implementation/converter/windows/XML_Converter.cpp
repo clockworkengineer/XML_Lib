@@ -42,9 +42,6 @@ std::string XML_Converter::toUtf8(const std::u16string &utf16) const
   WideCharToBytes(&wideString[0], -1, &bytes[0], static_cast<int>(bytes.length()));
   return bytes;
 }
-std::string XML_Converter::toUtf8(char32_t utf32) const { return (utf32Convert.to_bytes(utf32)); }
-std::string XML_Converter::toUtf8(const std::u32string &utf32) const { return (utf32Convert.to_bytes(utf32)); }
-
 /// <summary>
 /// Convert to UTF-16 strings.
 /// </summary>
@@ -54,10 +51,4 @@ std::u16string XML_Converter::toUtf16(const std::string &utf8) const
   BytesToWideChar(utf8.c_str(), static_cast<int>(utf8.length()), &wideString[0], static_cast<int>(wideString.length()));
   return (std::u16string{ wideString.begin(), wideString.end() });
 }
-
-/// <summary>
-/// Convert to UTF-32 strings.
-/// </summary>
-std::u32string XML_Converter::toUtf32(const std::string &utf8) const { return (utf32Convert.from_bytes(utf8)); }
-std::u32string XML_Converter::toUtf32(const std::u16string &utf16) const { return (toUtf32(toUtf8(utf16))); }
 }// namespace XML_Lib

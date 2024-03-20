@@ -25,21 +25,13 @@ public:
         ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
       }
     }
-#if defined(U16)
     buffer = utf16xml;
-#elif defined(U32)
-    buffer = converter.toUtf32(utf16xml);
-#endif
     convertCRLFToLF(buffer);
   }
   explicit BufferSource(const std::string &sourceBuffer)
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
-#if defined(U16)
     buffer = converter.toUtf16(sourceBuffer);
-#else
-    buffer = converter.toUtf32(sourceBuffer);
-#endif
     convertCRLFToLF(buffer);
   }
   BufferSource() = default;
