@@ -28,10 +28,9 @@ public:
     buffer = utf16xml;
     convertCRLFToLF(buffer);
   }
-  explicit BufferSource(const std::string &sourceBuffer)
+  explicit BufferSource(const std::string &sourceBuffer) : buffer {converter.toUtf16(sourceBuffer)}
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
-    buffer = converter.toUtf16(sourceBuffer);
     convertCRLFToLF(buffer);
   }
   BufferSource() = default;

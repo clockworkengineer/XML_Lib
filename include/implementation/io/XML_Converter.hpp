@@ -7,7 +7,6 @@ namespace XML_Lib {
 // ====================
 // Internal String Type
 // ====================
-#define U16
 using String = std::u16string;
 #define STR(value) (u##value)
 using Char = String::value_type;
