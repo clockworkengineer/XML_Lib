@@ -41,6 +41,5 @@ public:
   std::string toUtf8(const std::u16string &utf16) const;
   // UTF-16
   std::u16string toUtf16(const std::string &utf8) const;
-  std::u16string toUtf16(const std::u32string &utf32) const;
 };
 }// namespace XML_Lib
