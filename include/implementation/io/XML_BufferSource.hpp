@@ -28,7 +28,7 @@ public:
     buffer = utf16xml;
     convertCRLFToLF(buffer);
   }
-  explicit BufferSource(const std::string &sourceBuffer) : buffer {converter.toUtf16(sourceBuffer)}
+  explicit BufferSource(const std::string &sourceBuffer) : buffer {toUtf16(sourceBuffer)}
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     convertCRLFToLF(buffer);
@@ -64,7 +64,7 @@ public:
   [[nodiscard]] long position() const override { return (bufferPosition); }
   std::string getRange(long start, long end) override
   {
-    return (converter.toUtf8(buffer.substr(start, static_cast<std::size_t>(end) - start)));
+    return (toUtf8(buffer.substr(start, static_cast<std::size_t>(end) - start)));
   }
   void reset() override
   {

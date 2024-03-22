@@ -24,7 +24,7 @@ public:
   FileDestination &operator=(FileDestination &&other) = delete;
   ~FileDestination() = default;
 
-  void add(XML_Lib::Char c) override { add(converter.toUtf8(c)); }
+  void add(XML_Lib::Char c) override { add(toUtf8(c)); }
   void add(const std::string &bytes) override
   {
     destination.write(bytes.c_str(), static_cast<std::streamsize>(bytes.length()));

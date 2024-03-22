@@ -28,7 +28,5 @@ public:
   virtual void add(const std::string &bytes) = 0;
   virtual void add(XML_Lib::Char c) = 0;
 
-protected:
-  XML_Converter converter;
 };
 }// namespace XML_Lib

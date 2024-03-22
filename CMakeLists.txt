@@ -41,7 +41,7 @@ set(XML_SOURCES
 )
 
 # Platform specific sources
-list(APPEND XML_SOURCES "./classes/implementation/converter/${PLATFORM}/XML_Converter.cpp")
+list(APPEND XML_SOURCES "./classes/implementation/common/converter/${PLATFORM}/XML_Converter.cpp")
 
 # XML  includes
 set(XML_INCLUDES
@@ -55,6 +55,7 @@ set(XML_INCLUDES
   ./include/interface/XML_Interfaces.hpp
   ./include/implementation/XML_Core.hpp
   ./include/implementation/common/XML_Character.hpp
+  ./include/implementation/common/XML_Converter.hpp
   ./include/implementation/common/XML_Parse.hpp
   ./include/implementation/common/XML_Utility.hpp
   ./include/implementation/data/XML_Value.hpp

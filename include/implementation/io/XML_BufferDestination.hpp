@@ -23,7 +23,7 @@ public:
   {
     for (auto b : bytes) { buffer.push_back(b); }
   }
-  void add(const XML_Lib::Char ch) override { add(converter.toUtf8(ch)); }
+  void add(const XML_Lib::Char ch) override { add(toUtf8(ch)); }
   [[nodiscard]] std::string getBuffer() const { return (buffer); }
 
 private:

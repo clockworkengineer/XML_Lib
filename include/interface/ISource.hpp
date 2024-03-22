@@ -98,22 +98,21 @@ public:
   // =============================================
   // Read bytes representing the current character
   // =============================================
-  std::string current_to_bytes() { return (converter.toUtf8(current())); }
+  std::string current_to_bytes() { return (toUtf8(current())); }
   // ==============================
   // Convert to byte string (UTF-8)
   // ==============================
-  std::string to_bytes(const String &from) { return (converter.toUtf8(from)); }
+  std::string to_bytes(const String &from) { return (toUtf8(from)); }
   // ==============================
   // Convert to byte string (UTF-8)
   // ==============================
-  std::string to_bytes(const Char from) { return (converter.toUtf8(from)); }
+  std::string to_bytes(const Char from) { return (toUtf8(from)); }
   // ================================
   // Convert from byte string (UTF-8)
   // ================================
-  String from_bytes(const std::string &from) { return (converter.toUtf16(from)); }
+  String from_bytes(const std::string &from) { return (toUtf16(from)); }
 protected:
   long lineNo = 1;
   long columnNo = 1;
-  XML_Converter converter;
 };
 }// namespace XML_Lib
