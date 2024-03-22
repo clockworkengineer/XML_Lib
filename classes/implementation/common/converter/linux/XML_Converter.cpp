@@ -3,7 +3,7 @@
 //
 // Description: Convert characters to/from UTF8/UTF16/UTF32.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include <codecvt>
@@ -14,7 +14,6 @@
 namespace XML_Lib {
 
 static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> utf16Convert;
-static std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> utf32Convert;
 
 /// <summary>
 /// Convert to UTF-8 strings.

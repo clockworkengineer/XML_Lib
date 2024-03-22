@@ -5,7 +5,7 @@
 // converted the characters to UTF-32 to make the process easier (any data once
 // parsed is stored in UTF-8 strings).
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include "XML_Impl.hpp"
@@ -16,7 +16,7 @@ namespace XML_Lib {
 /// Parse any comments, PI or whitespace in prolog or at end of XML file.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="XProlog">XMLprolog XNode.</param>
+/// <param name="xProlog">XMLprolog XNode.</param>
 /// <returns>True then items parsed.</returns>
 bool XML_Impl::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
 {
@@ -254,7 +254,7 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
       xNode = XNode::make<XElement>(name, attributes, namespaces);
     }
     while (source.more() && !source.match("</")) { parseElementContents(source, xNode); }
-    if (source.match(toUtf16(XRef<XElement>(xNode).name()) + STR(">"))) { return (xNode); }
+    if (source.match(toUtf16(XRef<XElement>(xNode).name()) + u">")) { return (xNode); }
   } else if (source.match("/>")) {
     // Self closing element tag
     return (XNode::make<XSelf>(name, attributes, namespaces));

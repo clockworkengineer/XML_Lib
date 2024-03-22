@@ -3,7 +3,7 @@
 //
 // Description: DTD class implementation.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include "DTD_Impl.hpp"

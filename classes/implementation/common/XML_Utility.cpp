@@ -3,7 +3,7 @@
 //
 // Description: XML utility core functionality.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include "XML.hpp"

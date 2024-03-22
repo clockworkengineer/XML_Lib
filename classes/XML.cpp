@@ -6,7 +6,7 @@
 // be manipulated, interrogated and saved back to a text form (stringify). For more
 // information on the XML standard check out https://www.w3.org/TR/REC-xml/.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include "XML_Impl.hpp"

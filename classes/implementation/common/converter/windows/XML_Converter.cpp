@@ -1,13 +1,10 @@
 //
 // Class: Converter
 //
-// Description: Convert characters to/from UTF8/UTF16/UTF32.
+// Description: Convert characters to/from UTF8/UTF16.
 //
 // Dependencies:  Windows - character conversion API.
 //
-// =======
-// Windows
-// =======
 
 #include "Windows.h"
 

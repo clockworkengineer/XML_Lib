@@ -3,7 +3,7 @@
 //
 // Description: XML character validation core functionality.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used.
 //
 
 #include "XML.hpp"
@@ -56,7 +56,7 @@ bool validNameChar(XML_Lib::Char c)
 /// <returns>true then valid otherwise false.</returns>
 bool validReservedName(const XML_Lib::String &name)
 {
-  return ((name.find(STR("xmlns")) == 0) || (name.find(STR("xml-stylesheet")) == 0) || (name == STR("xml")));
+  return ((name.find(u"xmlns") == 0) || (name.find(u"xml-stylesheet") == 0) || (name == u"xml"));
 }
 
 /// <summary>
@@ -71,7 +71,7 @@ bool validName(const XML_Lib::String &name)
   std::transform(localName.begin(), localName.end(), localName.begin(), [](XML_Lib::Char c) {
     return static_cast<XML_Lib::Char>(std::tolower(static_cast<int>(c)));
   });
-  if (localName.find(STR("xml")) == 0 && !(validReservedName(localName))) { return (false); }
+  if (localName.find(u"xml") == 0 && !(validReservedName(localName))) { return (false); }
   if (!validNameStartChar(localName[0])) { return (false); }
   for (auto it = localName.begin() + 1; it != localName.end(); it++) {
     if (!validNameChar(*it)) { return (false); }

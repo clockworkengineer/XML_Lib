@@ -3,7 +3,7 @@
 //
 // Description: XML class implementation api layer.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include "XML_Impl.hpp"

@@ -5,7 +5,7 @@
 // the XML text for it on a destination stream. Currently as UTF-8 encoded
 // text but this may change in future.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include "XML_Impl.hpp"

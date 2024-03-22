@@ -1,14 +1,10 @@
 #pragma once
 
-#include <codecvt>
-#include <locale>
-
 namespace XML_Lib {
 // ====================
 // Internal String Type
 // ====================
 using String = std::u16string;
-#define STR(value) (u##value)
 using Char = String::value_type;
 // ==================
 // Conversion methods

@@ -3,7 +3,7 @@
 //
 // Description: XML entity refernce mapper.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include "XML_EntityMapper.hpp"

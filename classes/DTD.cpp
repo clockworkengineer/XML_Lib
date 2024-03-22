@@ -5,7 +5,7 @@
 // that the XML maybe be validated against it and flagged as well-formed if it passes.
 // For more information on the XML standard check out https://www.w3.org/TR/REC-xml/.
 //
-// Dependencies:   C++20 - Language standard features used.
+// Dependencies: C++20 - Language standard features used..
 //
 
 #include "DTD_Impl.hpp"
