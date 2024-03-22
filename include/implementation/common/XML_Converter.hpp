@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace XML_Lib {
 // ====================
 // Internal String Type
