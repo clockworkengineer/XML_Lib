@@ -19,7 +19,7 @@ static std::wstring_convert<std::codecvt_utf8_utf16<char32_t>, char32_t> utf32Co
 /// <summary>
 /// Convert to UTF-8 strings.
 /// </summary>
-std::string toUtf8(char16_t utf16) { return (toUtf8(std::u16string(utf16, 1))); }
+std::string toUtf8(char16_t utf16) { return (toUtf8(std::u16string(1, utf16))); }
 std::string toUtf8(const std::u16string &utf16) { return (utf16Convert.to_bytes(utf16)); }
 /// <summary>
 /// Convert to UTF-16 strings.
