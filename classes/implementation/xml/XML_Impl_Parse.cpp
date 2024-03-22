@@ -2,7 +2,7 @@
 // Class: XML_Impl
 //
 // Description: XML parser code. All parsing of characters takes place having
-// converted the characters to UTF-32 to make the process easier (any data once
+// converted the characters to UTF-16 to make the process easier (any data once
 // parsed is stored in UTF-8 strings).
 //
 // Dependencies: C++20 - Language standard features used..
@@ -48,21 +48,19 @@ std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source))
 /// <param name="values">Set of valid attribute values.</param>
 /// <param name="toUpper">==true then convert attribute value all to uppercase.</param>
 /// <returns>Valid attribute value.</returns>
-std::string XML_Impl::parseDeclarationAttribute(ISource &source,
-  const std::string &name,
-  const std::set<std::string> &values,
-  bool toUpper = false)
+std::string
+  XML_Impl::parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values)
 {
-  std::string result;
+  std::string value;
   source.ignoreWS();
   if (!source.match("=")) { throw XML::SyntaxError(source.getPosition(), "Missing '=' after " + name + "."); }
   source.ignoreWS();
-  result = parseValue(source).getParsed();
-  if (toUpper) { result = toUpperString(result); }
-  if (!values.contains(result)) {
-    throw XML::SyntaxError("Unsupported XML " + name + " value '" + result + "' specified.");
+  value = parseValue(source).getParsed();
+  if (name == "encoding") { value = toUpperString(value); }
+  if (!values.contains(value)) {
+    throw XML::SyntaxError("Unsupported XML " + name + " value '" + value + "' specified.");
   }
-  return (result);
+  return (value);
 }
 
 /// <summary>
@@ -276,13 +274,11 @@ XNode XML_Impl::parseDeclaration(ISource &source)
   if (source.match("<?xml")) {
     source.ignoreWS();
     if (source.match("version")) {
-      version = parseDeclarationAttribute(source, "version", { "1.0", "2.0" });
+      version = parseDeclarationAttribute(source, "version", { "1.0", "1.1" });
     } else {
       throw XML::SyntaxError(source.getPosition(), "Version missing from declaration.");
     }
-    if (source.match("encoding")) {
-      encoding = parseDeclarationAttribute(source, "encoding", { "UTF-8", "UTF-16" }, true);
-    }
+    if (source.match("encoding")) { encoding = parseDeclarationAttribute(source, "encoding", { "UTF-8", "UTF-16" }); }
     if (source.match("standalone")) { standalone = parseDeclarationAttribute(source, "standalone", { "yes", "no" }); }
     if (source.match("encoding")) {
       throw XML::SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes.");

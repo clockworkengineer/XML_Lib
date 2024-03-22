@@ -43,9 +43,9 @@ std::string trimmString(const std::string &stringToTrimm)
 }
 
 /// <summary>
-/// Trimm whitespace from beginning and end of a string.
+/// Convert a string to all uppercase.
 /// </summary>
-/// <param name="stringToTrimm">String to trimm.</param>
+/// <param name="stringToTrimm">String to convert.</param>
 std::string toUpperString(const std::string &stringToUpper)
 {
   std::string upperCaseString{ stringToUpper };
@@ -53,5 +53,18 @@ std::string toUpperString(const std::string &stringToUpper)
     return static_cast<XML_Lib::Char>(std::toupper(c));
   });
   return (upperCaseString);
+}
+
+/// <summary>
+/// Convert a string to all lowercase.
+/// </summary>
+/// <param name="stringToTrimm">String to convert.</param>
+std::string toLowerString(const std::string &stringToLower)
+{
+  std::string lowerCaseString{ stringToLower };
+  std::transform(lowerCaseString.begin(), lowerCaseString.end(), lowerCaseString.begin(), [](unsigned int c) {
+    return static_cast<XML_Lib::Char>(std::tolower(c));
+  });
+  return (lowerCaseString);
 }
 }// namespace  XML_Lib

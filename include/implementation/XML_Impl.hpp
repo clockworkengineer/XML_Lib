@@ -33,13 +33,8 @@ public:
   std::string version();
 
 private:
-  void resetWhiteSpace(XNode &xNode);
-  void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
-  void addContentToElementChildList(XNode &xNode, const std::string &content);
-  std::string parseDeclarationAttribute(ISource &source,
-    const std::string &name,
-    const std::set<std::string> &values,
-    bool toUpper);
+  // XML Parser
+  std::string parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
   bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
   void parseElementContent(ISource &source, XNode &xNode);
   std::string parseTagName(ISource &source);
@@ -55,8 +50,13 @@ private:
   XNode parseProlog(ISource &source);
   void parseTail(ISource &source, XNode &xProlog);
   XNode parseXML(ISource &source);
+  // XML Stringification
   void stringifyElements(const XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
+  // Miscellaneous
+  void resetWhiteSpace(XNode &xNode);
+  void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
+  void addContentToElementChildList(XNode &xNode, const std::string &content);
 
   bool hasDTD{ false };
   XNode xmlRoot;
