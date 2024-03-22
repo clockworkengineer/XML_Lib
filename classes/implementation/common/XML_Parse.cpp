@@ -25,9 +25,9 @@ std::string parseName(ISource &source)
   }
   source.ignoreWS();
   if (!validName(name)) {
-    throw XML::SyntaxError(source.getPosition(), "Invalid name '" + source.to_bytes(name) + "' encountered.");
+    throw XML::SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered.");
   }
-  return (source.to_bytes(name));
+  return (toUtf8(name));
 }
 
 /// <summary>
@@ -37,7 +37,7 @@ std::string parseName(ISource &source)
 /// <returns>Parsed entity reference value.</returns>
 XMLValue parseEntityReference(ISource &source)
 {
-  std::string unparsed{ source.current_to_bytes() };
+  std::string unparsed{ toUtf8(source.current()) };
   source.next();
   unparsed += parseName(source);
   if (source.current() != ';') { throw XML::SyntaxError(source.getPosition(), "Invalidly formed entity reference."); }
@@ -55,7 +55,7 @@ XMLValue parseCharacterReference(ISource &source)
 {
   std::string unparsed{ "&#" };
   while (source.more() && source.current() != ';') {
-    unparsed += source.current_to_bytes();
+    unparsed += toUtf8(source.current());
     source.next();
   }
   if (source.current() != ';') {
@@ -75,7 +75,7 @@ XMLValue parseCharacterReference(ISource &source)
   result = std::strtol(reference.c_str(), &end, result);
   if (*end == '\0') {
     if (!validChar(static_cast<XML_Lib::Char>(result))) { throw XML::SyntaxError(source.getPosition(), "Character reference invalid character."); }
-    return (XMLValue{ unparsed, source.to_bytes(static_cast<XML_Lib::Char>(result)) });
+    return (XMLValue{ unparsed, toUtf8(static_cast<XML_Lib::Char>(result)) });
   }
   throw XML::SyntaxError(source.getPosition(), "Cannot convert character reference.");
 }
@@ -94,7 +94,7 @@ XMLValue parseCharacter(ISource &source)
   } else if (source.current() == '&') {
     return (parseEntityReference(source));
   } else if (validChar(source.current())) {
-    std::string character{ source.current_to_bytes() };
+    std::string character{ toUtf8(source.current()) };
     source.next();
     return (XMLValue{ character, character });
   }
@@ -164,7 +164,7 @@ std::string parseTagBody(ISource &source)
   source.ignoreWS();
   std::string body;
   while (source.more() && source.current() != '>') {
-    body += source.current_to_bytes();
+    body += toUtf8(source.current());
     source.next();
   }
   return (body);

@@ -42,7 +42,7 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
       if (source.match("<![")) {
         parseConditional(source);
       } else {
-        conditionalDTD += source.current_to_bytes();
+        conditionalDTD += toUtf8(source.current());
         source.next();
       }
     }

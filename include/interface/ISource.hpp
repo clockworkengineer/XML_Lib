@@ -95,22 +95,7 @@ public:
   // Get current source stream position
   // ==================================
   std::pair<long, long> getPosition() const { return (std::make_pair(lineNo, columnNo)); }
-  // =============================================
-  // Read bytes representing the current character
-  // =============================================
-  std::string current_to_bytes() { return (toUtf8(current())); }
-  // ==============================
-  // Convert to byte string (UTF-8)
-  // ==============================
-  std::string to_bytes(const String &from) { return (toUtf8(from)); }
-  // ==============================
-  // Convert to byte string (UTF-8)
-  // ==============================
-  std::string to_bytes(const Char from) { return (toUtf8(from)); }
-  // ================================
-  // Convert from byte string (UTF-8)
-  // ================================
-  String from_bytes(const std::string &from) { return (toUtf16(from)); }
+
 protected:
   long lineNo = 1;
   long columnNo = 1;

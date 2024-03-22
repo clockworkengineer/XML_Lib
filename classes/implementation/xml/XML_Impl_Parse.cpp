@@ -75,7 +75,7 @@ XNode XML_Impl::parseComment(ISource &source)
 {
   std::string comment;
   while (source.more() && !source.match("--")) {
-    comment += source.current_to_bytes();
+    comment += toUtf8(source.current());
     source.next();
   }
   if (!source.match(">")) { throw XML::SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
@@ -93,7 +93,7 @@ XNode XML_Impl::parsePI(ISource &source)
   std::string name{ parseName(source) };
   std::string parameters;
   while (source.more() && !source.match("?>")) {
-    parameters += source.current_to_bytes();
+    parameters += toUtf8(source.current());
     source.next();
   }
   return (XNode::make<XPI>(name, parameters));
@@ -112,7 +112,7 @@ XNode XML_Impl::parseCDATA(ISource &source)
     if (source.match("<![CDATA[")) {
       throw XML::SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed.");
     }
-    cdata += source.current_to_bytes();
+    cdata += toUtf8(source.current());
     source.next();
   }
   return (XNode::make<XCDATA>(cdata));
@@ -156,7 +156,7 @@ void XML_Impl::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 {
   std::string whiteSpace;
   while (source.more() && source.isWS()) {
-    whiteSpace += source.current_to_bytes();
+    whiteSpace += toUtf8(source.current());
     source.next();
   }
   addContentToElementChildList(xNode, whiteSpace);
@@ -254,7 +254,7 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
       xNode = XNode::make<XElement>(name, attributes, namespaces);
     }
     while (source.more() && !source.match("</")) { parseElementContents(source, xNode); }
-    if (source.match(source.from_bytes(XRef<XElement>(xNode).name()) + STR(">"))) { return (xNode); }
+    if (source.match(toUtf16(XRef<XElement>(xNode).name()) + STR(">"))) { return (xNode); }
   } else if (source.match("/>")) {
     // Self closing element tag
     return (XNode::make<XSelf>(name, attributes, namespaces));

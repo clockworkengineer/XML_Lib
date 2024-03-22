@@ -4,7 +4,6 @@
 // XML Core
 // ==========
 
-#include "XML_Converter.hpp"
 #include "XML_Variant.hpp"
 #include "XML_XNode.hpp"
 #include "XML_Value.hpp"
@@ -31,3 +30,4 @@
 #include "XML_Utility.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
+#include "XML_Converter.hpp"

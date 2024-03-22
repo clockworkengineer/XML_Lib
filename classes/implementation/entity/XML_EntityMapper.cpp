@@ -25,13 +25,13 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
   BufferSource entitySource(entityName);
   while (entitySource.more()) {
     if (entitySource.current() == type) {
-      std::string mappedEntityName = entitySource.current_to_bytes();
+      std::string mappedEntityName = toUtf8(entitySource.current());
       entitySource.next();
       while (entitySource.more() && entitySource.current() != ';') {
-        mappedEntityName += entitySource.current_to_bytes();
+        mappedEntityName += toUtf8(entitySource.current());
         entitySource.next();
       }
-      mappedEntityName += entitySource.current_to_bytes();
+      mappedEntityName += toUtf8(entitySource.current());
       if (currentEntities.count(mappedEntityName) > 0) {
         throw XML::SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
       }
@@ -56,7 +56,7 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
   std::string content;
   FileSource entitySource{ fileName };
   while (entitySource.more()) {
-    content += entitySource.current_to_bytes();
+    content += toUtf8(entitySource.current());
     entitySource.next();
   }
   return (content);

@@ -67,12 +67,12 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
 /// <returns>Enumeration string.</returns>
 std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
 {
-  std::string enumerationType(source.current_to_bytes());
+  std::string enumerationType(toUtf8(source.current()));
   source.next();
   source.ignoreWS();
   enumerationType += parseName(source);
   while (source.more() && source.current() == '|') {
-    enumerationType += source.current_to_bytes();
+    enumerationType += toUtf8(source.current());
     source.next();
     source.ignoreWS();
     enumerationType += parseName(source);
@@ -80,7 +80,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
   if (source.current() != ')') {
     throw XML::SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type.");
   }
-  enumerationType += source.current_to_bytes();
+  enumerationType += toUtf8(source.current());
   source.next();
   source.ignoreWS();
   return (enumerationType);
@@ -236,7 +236,7 @@ void DTD_Impl::parseElement(ISource &source)
   } else {
     std::string unparsed;
     while (source.more() && (source.current() != '<') && (source.current() != '>')) {
-      unparsed += source.current_to_bytes();
+      unparsed += toUtf8(source.current());
       source.next();
     }
     dtdRoot.addElement(
