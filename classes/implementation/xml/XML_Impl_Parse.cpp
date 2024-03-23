@@ -236,15 +236,9 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
   const std::vector<XMLAttribute> attributes{ parseAttributes(source) };
   // Add any new namespaces
   std::vector<XMLAttribute> namespaces{ outerNamespaces };
-  for (const auto &attribute : attributes) {
-    if (attribute.getName().starts_with("xmlns")) {
-      namespaces.emplace_back((attribute.getName().size() > 5) ? attribute.getName().substr(6) : ":",
-        XMLValue{ attribute.getUnparsed(), attribute.getValue() });
-    }
-  }
+  addNewNameSpaces(attributes, namespaces);
   // Create element XNode
-  if (source.match(">")) {
-    XNode xNode;
+  if (XNode xNode; source.match(">")) {
     // Normal element tag
     if (root) {
       xNode = XNode::make<XRoot>(name, attributes, namespaces);

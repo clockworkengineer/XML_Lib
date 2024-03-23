@@ -32,9 +32,7 @@ void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
 void XML_Impl::resetWhiteSpace(XNode &xNode)
 {
   if (!xNode.getChildren().empty()) {
-    if (xNode.getChildren().back().isContent()) {
-      XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false);
-    }
+    if (xNode.getChildren().back().isContent()) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
   }
 }
 
@@ -49,10 +47,7 @@ void XML_Impl::addContentToElementChildList(XNode &xNode, const std::string &con
   if (xNode.getChildren().empty() || !xNode.getChildren().back().isContent()) {
     bool isWhiteSpace = true;
     if (!xNode.getChildren().empty()) {
-      if ((xNode.getChildren().back().isCDATA())
-          || (xNode.getChildren().back().isEntity())) {
-        isWhiteSpace = false;
-      }
+      if ((xNode.getChildren().back().isCDATA()) || (xNode.getChildren().back().isEntity())) { isWhiteSpace = false; }
     }
     xNode.addChildren(XNode::make<XContent>(isWhiteSpace));
   }
@@ -66,5 +61,20 @@ void XML_Impl::addContentToElementChildList(XNode &xNode, const std::string &con
     }
   }
   xmlContent.addContent(content);
+}
+
+/// <summary>
+/// Add new namespaces to current global list.
+/// </summary>
+/// <param name="attributes">Current element attrutes..</param>
+/// <param name="namespaces">Current global namespace list.</param>
+void XML_Impl::addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<XMLAttribute> &namespaces)
+{
+  for (const auto &attribute : attributes) {
+    if (attribute.getName().starts_with("xmlns")) {
+      namespaces.emplace_back((attribute.getName().size() > 5) ? attribute.getName().substr(6) : ":",
+        XMLValue{ attribute.getUnparsed(), attribute.getValue() });
+    }
+  }
 }
 }// namespace XML_Lib

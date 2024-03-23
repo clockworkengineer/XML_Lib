@@ -57,6 +57,7 @@ private:
   void resetWhiteSpace(XNode &xNode);
   void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
   void addContentToElementChildList(XNode &xNode, const std::string &content);
+  void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<XMLAttribute> &namespaces);
 
   bool hasDTD{ false };
   XNode xmlRoot;
