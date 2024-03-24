@@ -17,9 +17,9 @@ namespace XML_Lib {
 /// <param name="stringToSplit">String to split up.</param>
 /// <param name="delimeter">Character delimeter to split on.</param>
 /// <returns>Vector of split strings.</returns>
-std::vector<std::string> splitString(const std::string &stringToSplit, char delimeter)
+std::vector<std::string> splitString(const std::string &target, char delimeter)
 {
-  std::stringstream sourceStream(stringToSplit);
+  std::stringstream sourceStream(target);
   std::string splitOffItem;
   std::vector<std::string> splitStrings;
   while (std::getline(sourceStream, splitOffItem, delimeter)) { splitStrings.push_back(splitOffItem); }
@@ -30,9 +30,9 @@ std::vector<std::string> splitString(const std::string &stringToSplit, char deli
 /// Trimm whitespace from beginning and end of a string.
 /// </summary>
 /// <param name="stringToTrimm">String to trimm.</param>
-std::string trimmString(const std::string &stringToTrimm)
+std::string trimmString(const std::string &target)
 {
-  std::string trimmedString{ stringToTrimm };
+  std::string trimmedString{ target };
   trimmedString.erase(trimmedString.begin(),
     std::find_if(trimmedString.begin(), trimmedString.end(), [](unsigned char ch) { return !std::iswspace(ch); }));
   trimmedString.erase(
@@ -46,9 +46,9 @@ std::string trimmString(const std::string &stringToTrimm)
 /// Convert a string to all uppercase.
 /// </summary>
 /// <param name="stringToTrimm">String to convert.</param>
-std::string toUpperString(const std::string &stringToUpper)
+std::string toUpperString(const std::string &target)
 {
-  std::string upperCaseString{ stringToUpper };
+  std::string upperCaseString{ target };
   std::transform(upperCaseString.begin(), upperCaseString.end(), upperCaseString.begin(), [](unsigned int c) {
     return static_cast<XML_Lib::Char>(std::toupper(c));
   });
@@ -59,9 +59,9 @@ std::string toUpperString(const std::string &stringToUpper)
 /// Convert a string to all lowercase.
 /// </summary>
 /// <param name="stringToTrimm">String to convert.</param>
-std::string toLowerString(const std::string &stringToLower)
+std::string toLowerString(const std::string &target)
 {
-  std::string lowerCaseString{ stringToLower };
+  std::string lowerCaseString{ target };
   std::transform(lowerCaseString.begin(), lowerCaseString.end(), lowerCaseString.begin(), [](unsigned int c) {
     return static_cast<XML_Lib::Char>(std::tolower(c));
   });
