@@ -128,7 +128,7 @@ XNode XML_Impl::parseCDATA(ISource &source)
 std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
 {
   std::vector<XMLAttribute> attributes;
-  while (source.more() && source.current() != '?' && source.current() != '/' && source.current() != '>') {
+  while (source.more() &&  source.current() != '/' && source.current() != '>') {
     std::string attributeName { parseName(source) };
     if (!source.match("=")) {
       throw XML::SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
