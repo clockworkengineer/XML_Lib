@@ -51,16 +51,17 @@ std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source))
 std::string
   XML_Impl::parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values)
 {
-  std::string value;
   source.ignoreWS();
-  if (!source.match("=")) { throw XML::SyntaxError(source.getPosition(), "Missing '=' after " + name + "."); }
-  source.ignoreWS();
-  value = parseValue(source).getParsed();
-  if (name == "encoding") { value = toUpperString(value); }
-  if (!values.contains(value)) {
-    throw XML::SyntaxError("Unsupported XML " + name + " value '" + value + "' specified.");
+  if (source.match("=")) {
+    source.ignoreWS();
+    std::string value{ parseValue(source).getParsed() };
+    if (name == "encoding") { value = toUpperString(value); }
+    if (!values.contains(value)) {
+      throw XML::SyntaxError("Unsupported XML " + name + " value '" + value + "' specified.");
+    }
+    return (value);
   }
-  return (value);
+  throw XML::SyntaxError(source.getPosition(), "Missing '=' after " + name + ".");
 }
 
 /// <summary>
