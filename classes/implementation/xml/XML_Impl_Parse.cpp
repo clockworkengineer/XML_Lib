@@ -348,10 +348,10 @@ XNode XML_Impl::parseXML(ISource &source)
   auto xProlog = parseProlog(source);
   if (source.match("<")) {
     xProlog.addChild(parseElement(source, {}, true));
-    parseEpilog(source, xProlog);
   } else {
     throw XML::SyntaxError(source.getPosition(), "Missing root element.");
   }
+  parseEpilog(source, xProlog);
   return (xProlog);
 }
 }// namespace XML_Lib
