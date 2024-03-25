@@ -128,13 +128,15 @@ XNode XML_Impl::parseCDATA(ISource &source)
 std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
 {
   std::vector<XMLAttribute> attributes;
-  std::set<std::string> attributeNames;
   while (source.more() && source.current() != '?' && source.current() != '/' && source.current() != '>') {
-    std::string attributeName = parseName(source);
+    std::string attributeName { parseName(source) };
     if (!source.match("=")) {
       throw XML::SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
     }
-    if (attributeNames.contains(attributeName)) {
+    if (std::find_if(attributes.rbegin(),
+          attributes.rend(),
+          [&attributeName](const XMLAttribute &attr) { return (attr.getName() == attributeName); })
+        != attributes.rend()) {
       throw XML::SyntaxError(source.getPosition(), "Attribute defined more than once within start tag.");
     }
     source.ignoreWS();
@@ -143,7 +145,6 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
       throw XML::SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
     }
     attributes.emplace_back(attributeName, attributeValue);
-    attributeNames.insert(attributeName);
   }
   return (attributes);
 }
