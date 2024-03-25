@@ -13,7 +13,7 @@
 namespace XML_Lib {
 
 /// <summary>
-/// Parse any comments, PI or whitespace in prolog or at end of XML file.
+/// Parse any comments, PI or whitespace in prolog/epilog of XML file.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xProlog">XMLprolog XNode.</param>
@@ -21,10 +21,10 @@ namespace XML_Lib {
 bool XML_Impl::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
 {
   if (source.match("<!--")) {
-    xProlog.addChildren(parseComment(source));
+    xProlog.addChild(parseComment(source));
     return (true);
   } else if (source.match("<?")) {
-    xProlog.addChildren(parsePI(source));
+    xProlog.addChild(parsePI(source));
     return (true);
   } else if (source.isWS()) {
     parseWhiteSpaceToContent(source, xProlog);
@@ -51,17 +51,19 @@ std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source))
 std::string
   XML_Impl::parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values)
 {
+  std::string value;
   source.ignoreWS();
   if (source.match("=")) {
     source.ignoreWS();
-    std::string value{ parseValue(source).getParsed() };
+    value = parseValue(source).getParsed();
     if (name == "encoding") { value = toUpperString(value); }
     if (!values.contains(value)) {
       throw XML::SyntaxError("Unsupported XML " + name + " value '" + value + "' specified.");
     }
-    return (value);
+  } else {
+    throw XML::SyntaxError(source.getPosition(), "Missing '=' after " + name + ".");
   }
-  throw XML::SyntaxError(source.getPosition(), "Missing '=' after " + name + ".");
+  return (value);
 }
 
 /// <summary>
@@ -185,7 +187,7 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
         resetWhiteSpace(xNode);
       }
     }
-    xNode.addChildren(std::move(xEntityReference));
+    xNode.addChild(std::move(xEntityReference));
   } else {
     addContentToElementChildList(xNode, content.getParsed());
   }
@@ -200,14 +202,14 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
 void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
 {
   if (source.match("<!--")) {
-    xNode.addChildren(parseComment(source));
+    xNode.addChild(parseComment(source));
   } else if (source.match("<?")) {
-    xNode.addChildren(parsePI(source));
+    xNode.addChild(parsePI(source));
   } else if (source.match("<![CDATA[")) {
     resetWhiteSpace(xNode);
-    xNode.addChildren(parseCDATA(source));
+    xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
-    xNode.addChildren(parseElement(source, XRef<XElement>(xNode).getNamespaceList()));
+    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNamespaceList()));
     XElement &xNodeChildElement = XRef<XElement>(xNode.getChildren().back());
     if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
@@ -288,7 +290,7 @@ XNode XML_Impl::parseDeclaration(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xProlog">Prolog XNode.</param>
-void XML_Impl::parseTail(ISource &source, XNode &xProlog)
+void XML_Impl::parseEpilog(ISource &source, XNode &xProlog)
 {
   while (source.more()) {
     if (!parseCommentsPIAndWhiteSpace(source, xProlog)) {
@@ -323,10 +325,10 @@ XNode XML_Impl::parseDTD(ISource &source)
 XNode XML_Impl::parseProlog(ISource &source)
 {
   auto xProlog = XNode::make<XProlog>();
-  xProlog.addChildren(parseDeclaration(source));
+  xProlog.addChild(parseDeclaration(source));
   while (source.more()) {
     if (source.match("<!DOCTYPE")) {
-      xProlog.addChildren(parseDTD(source));
+      xProlog.addChild(parseDTD(source));
     } else if (parseCommentsPIAndWhiteSpace(source, xProlog)) {
       continue;
     } else if (source.current() == '<') {
@@ -335,7 +337,6 @@ XNode XML_Impl::parseProlog(ISource &source)
       throw XML::SyntaxError(source.getPosition(), "Content detected before root element.");
     }
   }
-  if (!source.match("<")) { throw XML::SyntaxError(source.getPosition(), "Missing root element."); }
   return (xProlog);
 }
 
@@ -345,8 +346,12 @@ XNode XML_Impl::parseProlog(ISource &source)
 XNode XML_Impl::parseXML(ISource &source)
 {
   auto xProlog = parseProlog(source);
-  xProlog.addChildren(parseElement(source, {}, true));
-  parseTail(source, xProlog);
+  if (source.match("<")) {
+    xProlog.addChild(parseElement(source, {}, true));
+    parseEpilog(source, xProlog);
+  } else {
+    throw XML::SyntaxError(source.getPosition(), "Missing root element.");
+  }
   return (xProlog);
 }
 }// namespace XML_Lib

@@ -48,7 +48,7 @@ private:
   XNode parseDeclaration(ISource &source);
   XNode parseDTD(ISource &source);
   XNode parseProlog(ISource &source);
-  void parseTail(ISource &source, XNode &xProlog);
+  void parseEpilog(ISource &source, XNode &xProlog);
   XNode parseXML(ISource &source);
   // XML Stringification
   void stringifyElements(const XNode &xNode, IDestination &destination);
