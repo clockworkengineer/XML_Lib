@@ -128,21 +128,21 @@ XNode XML_Impl::parseCDATA(ISource &source)
 std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
 {
   std::vector<XMLAttribute> attributes;
-  while (source.more() &&  source.current() != '/' && source.current() != '>') {
-    std::string attributeName { parseName(source) };
+  while (source.more() && source.current() != '/' && source.current() != '>') {
+    std::string attributeName{ parseName(source) };
     if (!source.match("=")) {
       throw XML::SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
-    }
-    if (std::find_if(attributes.rbegin(),
-          attributes.rend(),
-          [&attributeName](const XMLAttribute &attr) { return (attr.getName() == attributeName); })
-        != attributes.rend()) {
-      throw XML::SyntaxError(source.getPosition(), "Attribute defined more than once within start tag.");
     }
     source.ignoreWS();
     XMLValue attributeValue = parseValue(source, *entityMapper);
     if (!validAttributeValue(attributeValue)) {
       throw XML::SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
+    }
+    if (std::find_if(attributes.rbegin(),
+          attributes.rend(),
+          [&attributeName](const XMLAttribute &attr) { return (attr.getName() == attributeName); })
+        != attributes.rend()) {
+      throw XML::SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag.");
     }
     attributes.emplace_back(attributeName, attributeValue);
   }
