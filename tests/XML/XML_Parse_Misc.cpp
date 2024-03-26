@@ -33,8 +33,6 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     BufferDestination destination;
     REQUIRE_THROWS(xml.stringify(destination), "XML Error: No XML has been parsed.");
   }
-  //  Check parse empty buffer source
-  //  Check parse empty file source
 }
 TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
 {

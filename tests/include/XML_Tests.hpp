@@ -20,6 +20,7 @@
 #define kGeneratedXMLFile "generated.xml"
 #define kSingleXMLFile "testfile001.xml"
 #define kNonExistantXMLFile "doesntexist.xml"
+#define KEmptyXMLFile "empty.xml"
 // ==========================
 // Unit test helper functions
 // ==========================

@@ -51,7 +51,7 @@ private:
   void parseEpilog(ISource &source, XNode &xProlog);
   XNode parseXML(ISource &source);
   // XML Stringification
-  void stringifyElements(const XNode &xNode, IDestination &destination);
+  void stringifyXML(const XNode &xNode, IDestination &destination);
   void stringifyXML(IDestination &destination);
   // Miscellaneous
   void resetWhiteSpace(XNode &xNode);

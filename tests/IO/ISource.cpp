@@ -11,27 +11,31 @@
 // =======================
 using namespace XML_Lib;
 
-TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
+TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
 {
-  SECTION("Create FileSource with testfile001.xml.", "[XML][Parse][FileSource]")
+  SECTION("Create FileSource with testfile001.xml.", "[XML][FileSource]")
   {
     REQUIRE_NOTHROW(FileSource(prefixPath(kSingleXMLFile)));
   }
-  SECTION("Create FileSource with non existants file.", "[XML][Parse][FileSource][Exception]")
+  SECTION("Create FileSource with empty.xml.", "[XML][FileSource]")
+  {
+    REQUIRE_NOTHROW(FileSource(prefixPath(KEmptyXMLFile)));
+  }
+  SECTION("Create FileSource with non existants file.", "[XML][FileSource][Exception]")
   {
     REQUIRE_THROWS_AS(FileSource(prefixPath(kNonExistantXMLFile)), ISource::Error);
     REQUIRE_THROWS_WITH(FileSource(prefixPath(kNonExistantXMLFile)),
       "ISource Error: File input stream failed to open or does not exist.");
   }
   SECTION(
-    "Create FileSource with testfile001.xml. and positioned on the correct first character", "[XML][Parse][FileSource]")
+    "Create FileSource with testfile001.xml. and positioned on the correct first character", "[XML][FileSource]")
   {
     FileSource source{ prefixPath(kSingleXMLFile) };
     REQUIRE_FALSE(!source.more());
     REQUIRE(source.current() == '<');
   }
   SECTION("Create FileSource with testfile001.xml and then check move positions to correct next character",
-    "[XML][Parse][FileSource]")
+    "[XML][FileSource]")
   {
     FileSource source{ prefixPath(kSingleXMLFile) };
     source.next();
@@ -39,7 +43,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     REQUIRE(source.current() == '?');
   }
   SECTION("Create FileSource with testfile001.xml  move past last character, check it and the bytes moved.",
-    "[XML][Parse][FileSource]")
+    "[XML][FileSource]")
   {
     FileSource source{ prefixPath(kSingleXMLFile) };
     long length = 0;
@@ -52,7 +56,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
   }
   std::string xmlString;
   SECTION("Check that FileSource is  performing CRLF to LF conversion on windows format data correctly.",
-    "[XML][Parse][FileSource]")
+    "[XML][FileSource]")
   {
     xmlString =
       "\r\r\n<!DOCTYPE REPORT [\r\n"
@@ -87,7 +91,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     verifyCRLFCount(source, 28, 3);
   }
   SECTION("Check that FileSource is  performing CRLF to LF conversion on linux format data correctly.",
-    "[XML][Parse][FileSource]")
+    "[XML][FileSource]")
   {
     xmlString =
       "\r \n<!DOCTYPE REPORT [\n"
@@ -121,7 +125,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     verifyCRLFCount(source, 28, 3);
   }
-  SECTION("Check that FileSource is ignoring whitespace correctly.", "[XML][Parse][FileSource]")
+  SECTION("Check that FileSource is ignoring whitespace correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
@@ -135,7 +139,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     REQUIRE(xmlResult == u"<root>TestTestTest</root>");
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
   }
-  SECTION("Check that FileSource ignoreWS() at end of file does not throw but next() does.", "[XML][Parse][FileSource]")
+  SECTION("Check that FileSource ignoreWS() at end of file does not throw but next() does.", "[XML][FileSource]")
   {
     xmlString = "<root>Test Test Test Test</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
@@ -145,7 +149,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     REQUIRE_THROWS_AS(source.next(), ISource::Error);
     REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
   }
-  SECTION("Check that FileSource match works correctly when match found or not.", "[XML][Parse][FileSource]")
+  SECTION("Check that FileSource match works correctly when match found or not.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
@@ -173,7 +177,7 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
   }
-  SECTION("Check that FileSource backup works and doesn't go negative.", "[XML][Parse][FileSource]")
+  SECTION("Check that FileSource backup works and doesn't go negative.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
@@ -192,24 +196,24 @@ TEST_CASE("ISource (File) interface.", "[XML][Parse][FileSource]")
     REQUIRE(source.current() == '>');
   }
 }
-TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", "[XML][Parse][BufferSource]")
+TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", "[XML][BufferSource]")
 {
   std::string buffer{ readXMLFromFileUTF8(prefixPath(kSingleXMLFile)) };
-  SECTION("Create BufferSource.", "[XML][Parse][BufferSource]") { REQUIRE_NOTHROW(BufferSource(buffer)); }
-  SECTION("Create BufferSource with empty buffer.", "[XML][Parse][BufferSource][Exception]")
+  SECTION("Create BufferSource.", "[XML][BufferSource]") { REQUIRE_NOTHROW(BufferSource(buffer)); }
+  SECTION("Create BufferSource with empty buffer.", "[XML][BufferSource][Exception]")
   {
     REQUIRE_THROWS_AS(BufferSource(""), ISource::Error);
     REQUIRE_THROWS_WITH(BufferSource(""), "ISource Error: Empty source buffer passed to be parsed.");
   }
   SECTION("Create BufferSource with testfile001.xml and that it is positioned on the correct first character",
-    "[XML][Parse][BufferSource]")
+    "[XML][BufferSource]")
   {
     BufferSource source(buffer);
     REQUIRE_FALSE(!source.more());
     REQUIRE((char)source.current() == '<');
   }
   SECTION("Create BufferSource with testfile001.xml and then check more positions to correct next character",
-    "[XML][Parse][BufferSource]")
+    "[XML][BufferSource]")
   {
     BufferSource source(buffer);
     source.next();
@@ -217,7 +221,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE((char)source.current() == '?');
   }
   SECTION("Create BufferSource with testfile001.xml move past last character, check it and the bytes moved.",
-    "[XML][Parse][BufferSource]")
+    "[XML][BufferSource]")
   {
     BufferSource source(buffer);
     long length = 0;
@@ -230,7 +234,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   }
   std::string xmlString;
   SECTION("Check that BufferSource is  performing CRLF to LF conversion on windows format data correctly.",
-    "[XML][Parse][BufferSource]")
+    "[XML][BufferSource]")
   {
     xmlString =
       "\r\r\n<!DOCTYPE REPORT [\r\n"
@@ -264,7 +268,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     verifyCRLFCount(source, 28, 3);
   }
   SECTION("Check that BufferSource is  performing CRLF to LF conversion on linux format data correctly.",
-    "[XML][Parse][BufferSource]")
+    "[XML][BufferSource]")
   {
     xmlString =
       "\r \n<!DOCTYPE REPORT [\n"
@@ -297,7 +301,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     BufferSource source{ xmlString };
     verifyCRLFCount(source, 28, 3);
   }
-  SECTION("Check that BufferSource is ignoring whitespace correctly.", "[XML][Parse][BufferSource]")
+  SECTION("Check that BufferSource is ignoring whitespace correctly.", "[XML][BufferSource]")
   {
     xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
     BufferSource source{ xmlString };
@@ -311,7 +315,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
   }
   SECTION(
-    "Check that BufefrSource ignoreWS() at end of file does not throw but next() does.", "[XML][Parse][BufferSource]")
+    "Check that BufefrSource ignoreWS() at end of file does not throw but next() does.", "[XML][BufferSource]")
   {
     xmlString = "<root>Test Test Test Test</root>";
     BufferSource source{ xmlString };
@@ -320,7 +324,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE_THROWS_AS(source.next(), ISource::Error);
     REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
   }
-  SECTION("Check that BufferSource match works correctly when match found or not.", "[XML][Parse][BufferSource]")
+  SECTION("Check that BufferSource match works correctly when match found or not.", "[XML][BufferSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
@@ -347,7 +351,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
   }
-  SECTION("Check that BufferSource backup works and doesn't go negative.", "[XML][Parse][BufferSource]")
+  SECTION("Check that BufferSource backup works and doesn't go negative.", "[XML][BufferSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
@@ -362,7 +366,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     source.backup(1);
     REQUIRE(source.current() == '>');
   }
-  SECTION("Check that BufferSource is reporting correct line/column number in an error.", "[XML][Parse][BufferSource]")
+  SECTION("Check that BufferSource is reporting correct line/column number in an error.", "[XML][BufferSource]")
   {
     xmlString =
       "<?xml version=\"1.0\"?>\n"
@@ -384,7 +388,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     XML xml;
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 7 Column: 2] Missing '>' terminator.");
   }
-  SECTION("Check that BufferSource position() and getRange works correctly.", "[XML][Parse][BufferSource]")
+  SECTION("Check that BufferSource position() and getRange works correctly.", "[XML][BufferSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
@@ -396,7 +400,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE(source.getRange(start, source.position()) == "1    Match2");
     REQUIRE(source.position() == 22);
   }
-  SECTION("Check that FileSource position() and getRange works correctly.", "[XML][Parse][FileSource]")
+  SECTION("Check that FileSource position() and getRange works correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
@@ -410,7 +414,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE(source.position() == 22);
   }
 
-  SECTION("Check that BufferSource reset() works correctly.", "[XML][Parse][BufferSource]")
+  SECTION("Check that BufferSource reset() works correctly.", "[XML][BufferSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
@@ -421,7 +425,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
   }
-  SECTION("Check that FileSource reset() works correctly.", "[XML][Parse][FileSource]")
+  SECTION("Check that FileSource reset() works correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
