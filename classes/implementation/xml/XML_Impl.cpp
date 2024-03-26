@@ -49,45 +49,52 @@ XNode &XML_Impl::dtd()
 /// Return XML prolog XNode.
 /// </summary>
 /// <returns>Reference to prolog XNode.</returns>
-XNode &XML_Impl::prolog() { return (xmlRoot); }
-
-/// <summary>
-/// Return XML declaration XNode.
-/// </summary>
-/// <returns>Reference to declaration XNode.</returns>
-XNode &XML_Impl::declaration() { return (prolog().getChildren()[0]); }
-
-/// <summary>
-/// Return XML root element XNode.
-/// </summary>
-/// <returns>Reference to root element XNode.</returns>
-XNode &XML_Impl::root()
+XNode &XML_Impl::prolog()
 {
-  for (auto &element : prolog().getChildren()) {
-    if (element.isRoot() || element.isSelf()) { return (element); }
+  if (!xmlRoot.isEmpty()) {
+    return (xmlRoot);
+  } else {
+    throw XML::Error("No XML has been parsed.");
   }
-  throw XML::Error("No root element found.");
 }
 
-/// <summary>
-/// Parse XML read from source stream into internal object generating an exception
-/// if a syntax error in the XML is found (not well formed).
-/// </summary>
-void XML_Impl::parse(ISource &source) { xmlRoot = parseXML(source); }
+  /// <summary>
+  /// Return XML declaration XNode.
+  /// </summary>
+  /// <returns>Reference to declaration XNode.</returns>
+  XNode &XML_Impl::declaration() { return (prolog().getChildren()[0]); }
 
-/// <summary>
-/// Validate XML against any DTD provided to see whether it is valid. If an
-/// exception is thrown then there is a validation issue and the XML is not valid.
-/// </summary>
-void XML_Impl::validate()
-{
-  if (validator.get() != nullptr) { validator->validate(prolog()); }
-}
+  /// <summary>
+  /// Return XML root element XNode.
+  /// </summary>
+  /// <returns>Reference to root element XNode.</returns>
+  XNode &XML_Impl::root()
+  {
+    for (auto &element : prolog().getChildren()) {
+      if (element.isRoot() || element.isSelf()) { return (element); }
+    }
+    throw XML::Error("No root element found.");
+  }
 
-/// <summary>
-/// Create XML text on destination stream from an XML object.
-/// </summary>
-/// <param name="destination">XML destination stream.</param>
-void XML_Impl::stringify(IDestination &destination) { stringifyXML(destination); }
+  /// <summary>
+  /// Parse XML read from source stream into internal object generating an exception
+  /// if a syntax error in the XML is found (not well formed).
+  /// </summary>
+  void XML_Impl::parse(ISource & source) { xmlRoot = parseXML(source); }
+
+  /// <summary>
+  /// Validate XML against any DTD provided to see whether it is valid. If an
+  /// exception is thrown then there is a validation issue and the XML is not valid.
+  /// </summary>
+  void XML_Impl::validate()
+  {
+    if (validator.get() != nullptr) { validator->validate(prolog()); }
+  }
+
+  /// <summary>
+  /// Create XML text on destination stream from an XML object.
+  /// </summary>
+  /// <param name="destination">XML destination stream.</param>
+  void XML_Impl::stringify(IDestination & destination) { stringifyXML(destination); }
 
 }// namespace XML_Lib

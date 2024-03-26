@@ -41,7 +41,7 @@ public:
 
 private:
   // Variant type
-  Variant::Type xmlNodeType;
+  Variant::Type xmlNodeType{ Type::base };
   // XNode Children
   std::vector<XNode> children;
 };

@@ -11,17 +11,26 @@ using namespace XML_Lib;
 TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
 {
   XML xml;
-  SECTION("Check XML Lib version.", "[XML][XNode][Version]")
+  SECTION("Check XML Lib version.", "[XML][XNode][Version]") { REQUIRE(xml.version() == "XML_Lib Version 1.0.0"); }
+  SECTION("Check prolog with no parsed XML.", "[XML][Prolog][No XML]")
   {
-    REQUIRE(xml.version() == "XML_Lib Version 1.0.0");
+    REQUIRE_THROWS(xml.prolog(), "XML Error: No XML has been parsed.");
   }
-  SECTION("Check prolog with no parsed XML.", "[XML][Prolog][No XML]") { REQUIRE_NOTHROW(xml.prolog()); }
-  // SECTION("Check declaration with no parsed XML.", "[XML][Declaration][No XML]") { REQUIRE_NOTHROW(xml.declaration()); }
-  // SECTION("Check root with no parsed XML.", "[XML][Root][No XML]") { REQUIRE_NOTHROW(xml.root()); }
-  // SECTION("Check DTD with no parsed XML.", "[XML][DTD][No XML]") { REQUIRE_NOTHROW(xml.dtd()); }
-  // Check parse empty buffer source
-  // Check parse empty file source
-  // Check stringify no parsed XML
+  SECTION("Check declaration with no parsed XML.", "[XML][Declaration][No XML]")
+  {
+    REQUIRE_THROWS(xml.declaration(), "XML Error: No XML has been parsed.");
+  }
+  SECTION("Check root with no parsed XML.", "[XML][Root][No XML]")
+  {
+    REQUIRE_THROWS(xml.root(), "XML Error: No XML has been parsed.");
+  }
+  SECTION("Check DTD with no parsed XML.", "[XML][DTD][No XML]")
+  {
+    REQUIRE_THROWS(xml.root(), "XML Error: No XML has been parsed.");
+  }
+  //  Check parse empty buffer source
+  //  Check parse empty file source
+  //  Check stringify no parsed XML
 }
 TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
 {
