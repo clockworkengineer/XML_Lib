@@ -26,11 +26,15 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
   }
   SECTION("Check DTD with no parsed XML.", "[XML][DTD][No XML]")
   {
-    REQUIRE_THROWS(xml.root(), "XML Error: No XML has been parsed.");
+    REQUIRE_THROWS(xml.dtd(), "XML Error: No XML has been parsed.");
+  }
+  SECTION("Check stringify with no parsed XML.", "[XML][Stringify][No XML]")
+  {
+    BufferDestination destination;
+    REQUIRE_THROWS(xml.stringify(destination), "XML Error: No XML has been parsed.");
   }
   //  Check parse empty buffer source
   //  Check parse empty file source
-  //  Check stringify no parsed XML
 }
 TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
 {
