@@ -8,6 +8,21 @@
 
 using namespace XML_Lib;
 
+TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
+{
+  XML xml;
+  SECTION("Check XML Lib version.", "[XML][XNode][Version]")
+  {
+    REQUIRE(xml.version() == "XML_Lib Version 1.0.0");
+  }
+  SECTION("Check prolog with no parsed XML.", "[XML][Prolog][No XML]") { REQUIRE_NOTHROW(xml.prolog()); }
+  // SECTION("Check declaration with no parsed XML.", "[XML][Declaration][No XML]") { REQUIRE_NOTHROW(xml.declaration()); }
+  // SECTION("Check root with no parsed XML.", "[XML][Root][No XML]") { REQUIRE_NOTHROW(xml.root()); }
+  // SECTION("Check DTD with no parsed XML.", "[XML][DTD][No XML]") { REQUIRE_NOTHROW(xml.dtd()); }
+  // Check parse empty buffer source
+  // Check parse empty file source
+  // Check stringify no parsed XML
+}
 TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
 {
   std::string xmlString;
@@ -89,10 +104,10 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     REQUIRE(XRef<XContent>((xml.root().getChildren()[4])[2]).isWhiteSpace() == false);
   }
 }
-TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XMLNode][R-Value Reference]")
+TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XNode][R-Value Reference]")
 {
   XML xml;
-  SECTION("Parse with R-Value reference (Buffer).", "[XML][XMLNode][R-Value Reference]")
+  SECTION("Parse with R-Value reference (Buffer).", "[XML][XNode][R-Value Reference]")
   {
     xml.parse(
       BufferSource{ "<?xml version=\"1.0\"?>"

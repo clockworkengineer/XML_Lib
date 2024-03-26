@@ -27,7 +27,7 @@ XML_Impl::~XML_Impl() {}
 std::string XML_Impl::version()
 {
   std::stringstream versionString;
-  versionString << "XML_Lib Version  " << XML_VERSION_MAJOR << "." << XML_VERSION_MINOR << "." << XML_VERSION_PATCH;
+  versionString << "XML_Lib Version " << XML_VERSION_MAJOR << "." << XML_VERSION_MINOR << "." << XML_VERSION_PATCH;
   return (versionString.str());
 }
 
