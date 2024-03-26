@@ -21,11 +21,9 @@ struct XElement : Variant
   XElement &operator=(XElement &&other) = default;
   ~XElement() = default;
   // Is an attribute present ?
-  [[nodiscard]] bool isAttributePresent(const std::string &name) const
+  [[nodiscard]] bool isAttributePresent(const std::string &attributeName) const
   {
-    return (std::find_if(attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) {
-      return (attr.getName() == name);
-    }) != attributes.rend());
+    return (XMLAttribute::isAttrubutePresent(attributes,attributeName));
   }
   // Add an attribute
   void addAttribute(const std::string &name, const XMLValue &value) const { attributes.emplace_back(name, value); }

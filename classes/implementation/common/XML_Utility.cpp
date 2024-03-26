@@ -50,7 +50,7 @@ std::string toUpperString(const std::string &target)
 {
   std::string upperCaseString{ target };
   std::transform(upperCaseString.begin(), upperCaseString.end(), upperCaseString.begin(), [](unsigned int c) {
-    return static_cast<XML_Lib::Char>(std::toupper(c));
+    return static_cast<char>(std::toupper(c));
   });
   return (upperCaseString);
 }
@@ -63,7 +63,7 @@ std::string toLowerString(const std::string &target)
 {
   std::string lowerCaseString{ target };
   std::transform(lowerCaseString.begin(), lowerCaseString.end(), lowerCaseString.begin(), [](unsigned int c) {
-    return static_cast<XML_Lib::Char>(std::tolower(c));
+    return static_cast<char>(std::tolower(c));
   });
   return (lowerCaseString);
 }

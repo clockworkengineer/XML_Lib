@@ -138,10 +138,7 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
     if (!validAttributeValue(attributeValue)) {
       throw XML::SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
     }
-    if (std::find_if(attributes.rbegin(),
-          attributes.rend(),
-          [&attributeName](const XMLAttribute &attr) { return (attr.getName() == attributeName); })
-        != attributes.rend()) {
+    if (XMLAttribute::isAttrubutePresent(attributes, attributeName)) {
       throw XML::SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag.");
     }
     attributes.emplace_back(attributeName, attributeValue);
