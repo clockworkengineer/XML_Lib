@@ -9,8 +9,8 @@ struct Variant
   // XNode Types
 protected:
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
-  // Constructors/Destructors
 public:
+  // Constructors/Destructors
   explicit Variant(Variant::Type nodeType = Variant::Type::base) : xmlNodeType(nodeType) {}
   Variant(const Variant &other) = default;
   Variant &operator=(const Variant &other) = default;
@@ -34,8 +34,8 @@ public:
   std::vector<XNode> &getChildren() { return (children); }
   const std::vector<XNode> &getChildren() const { return (children); }
   // Add child
-  void addChildren(XNode &child) { children.push_back(std::move(child)); }
-  void addChildren(XNode &&child) { children.push_back(std::move(child)); }
+  void addChild(XNode &child) { children.push_back(std::move(child)); }
+  void addChild(XNode &&child) { children.push_back(std::move(child)); }
   // Return Variant contents
   [[nodiscard]] std::string getContents() const;
 

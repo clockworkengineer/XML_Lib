@@ -42,8 +42,8 @@ struct XNode
   [[nodiscard]] const XNode &operator[](int index) const;
   [[nodiscard]] const XNode &operator[](const std::string &name) const;
   // Add child
-  void addChild(XNode &child) { xmlVariant->addChildren(child); }
-  void addChild(XNode &&child) { xmlVariant->addChildren(child); }
+  void addChild(XNode &child) { xmlVariant->addChild(child); }
+  void addChild(XNode &&child) { xmlVariant->addChild(child); }
   // Get XNode children reference
   std::vector<XNode> &getChildren() { return (xmlVariant->getChildren()); }
   const std::vector<XNode> &getChildren() const { return (xmlVariant->getChildren()); }
