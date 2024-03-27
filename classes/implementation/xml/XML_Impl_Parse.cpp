@@ -162,11 +162,11 @@ void XML_Impl::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 }
 
 /// <summary>
-/// Parse any element content that is found.
+/// Parse any content that is found inside an element.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
-void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
+void XML_Impl::parseContent(ISource &source, XNode &xNode)
 {
   XMLValue content{ parseCharacter(source) };
   if (content.isReference()) {
@@ -192,12 +192,13 @@ void XML_Impl::parseElementContent(ISource &source, XNode &xNode)
 }
 
 /// <summary>
-/// Parse element content area, generating any XNode(s) and adding them
-/// to the list of the current XElement.
+/// Parse element internal area, generating any XNode(s) and adding them
+/// to the child list of the current XElement. This can be anything from
+/// comments, program instructions, CDATA, nested elements or even content.
 /// </summary>
 /// <param name="source">XMl source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
-void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
+void XML_Impl::parseElementInternal(ISource &source, XNode &xNode)
 {
   if (source.match("<!--")) {
     xNode.addChild(parseComment(source));
@@ -220,7 +221,7 @@ void XML_Impl::parseElementContents(ISource &source, XNode &xNode)
     } else if (source.match("]]>")) {
       throw XML::SyntaxError(source.getPosition(), "']]>' invalid in element content area.");
     }
-    parseElementContent(source, xNode);
+    parseContent(source, xNode);
   }
 }
 
@@ -246,7 +247,7 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
     } else {
       xNode = XNode::make<XElement>(name, attributes, namespaces);
     }
-    while (source.more() && !source.match("</")) { parseElementContents(source, xNode); }
+    while (source.more() && !source.match("</")) { parseElementInternal(source, xNode); }
     if (source.match(toUtf16(XRef<XElement>(xNode).name()) + u">")) { return (xNode); }
   } else if (source.match("/>")) {
     // Self closing element tag

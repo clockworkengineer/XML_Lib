@@ -36,14 +36,14 @@ private:
   // XML Parser
   std::string parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
   bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
-  void parseElementContent(ISource &source, XNode &xNode);
+  void parseContent(ISource &source, XNode &xNode);
   std::string parseTagName(ISource &source);
   std::vector<XMLAttribute> parseAttributes(ISource &source);
   XNode parseComment(ISource &source);
   XNode parseCDATA(ISource &source);
   XNode parsePI(ISource &source);
   void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
-  void parseElementContents(ISource &source, XNode &xNode);
+  void parseElementInternal(ISource &source, XNode &xNode);
   XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, bool root = false);
   XNode parseDeclaration(ISource &source);
   XNode parseDTD(ISource &source);

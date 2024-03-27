@@ -17,7 +17,7 @@ public:
   DTD_Impl(DTD_Impl &&other) = delete;
   DTD_Impl &operator=(DTD_Impl &&other) = delete;
   ~DTD_Impl();
-  
+
   // Parse XML DTD from source
   void parse(ISource &source);
   // Stringify XML DTD to text destination
@@ -37,7 +37,7 @@ private:
   void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpec);
   void parseElementName(ISource &contentSpecSource, IDestination &contentSpec);
   void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpec);
-  XMLValue parseElementContentSpecification(const std::string &elementName, const XMLValue &contentSpec);
+  XMLValue parseElementInternalpecification(const std::string &elementName, const XMLValue &contentSpec);
   void parseExternalReferenceContent();
   void parseAttributeList(ISource &source);
   void parseNotation(ISource &source);

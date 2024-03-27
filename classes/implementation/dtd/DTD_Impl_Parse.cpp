@@ -240,7 +240,7 @@ void DTD_Impl::parseElement(ISource &source)
       source.next();
     }
     dtdRoot.addElement(
-      elementName, XDTD::Element(elementName, parseElementContentSpecification(elementName, XMLValue{ unparsed, "" })));
+      elementName, XDTD::Element(elementName, parseElementInternalpecification(elementName, XMLValue{ unparsed, "" })));
   }
   source.ignoreWS();
 }

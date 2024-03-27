@@ -20,7 +20,7 @@ void XML_Impl::processEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
   auto xElement = XNode::make<XElement>();
   BufferSource entitySource(entityReference.getParsed());
   // Parse entity XML
-  while (entitySource.more()) { parseElementContents(entitySource, xNode); }
+  while (entitySource.more()) { parseElementInternal(entitySource, xNode); }
   // Place into XNode (element) child list
   for (auto &xNodeChild : xElement.getChildren()) { xNode.addChild(xNodeChild); }
 }
