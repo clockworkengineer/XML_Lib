@@ -44,7 +44,7 @@ private:
   XNode parsePI(ISource &source);
   void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
   void parseElementInternal(ISource &source, XNode &xNode);
-  XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, bool root = false);
+  XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces);
   XNode parseDeclaration(ISource &source);
   XNode parseDTD(ISource &source);
   XNode parseProlog(ISource &source);
@@ -60,6 +60,7 @@ private:
   void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<XMLAttribute> &namespaces);
 
   bool hasDTD{ false };
+  bool hasRoot { false };
   XNode xmlRoot;
   std::unique_ptr<IValidator> validator;
   std::unique_ptr<IEntityMapper> entityMapper;

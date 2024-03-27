@@ -231,7 +231,7 @@ void XML_Impl::parseElementInternal(ISource &source, XNode &xNode)
 /// <param name="source">XML source stream.</param>
 /// <param name="outerNamespaces">Current list of outerNamespaces.</param>
 /// <returns>Pointer to element XNode.</returns>
-XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, bool root)
+XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces)
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
@@ -242,8 +242,9 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
   // Create element XNode
   if (XNode xNode; source.match(">")) {
     // Normal element tag
-    if (root) {
+    if (!hasRoot) {
       xNode = XNode::make<XRoot>(name, attributes, namespaces);
+      hasRoot=true;
     } else {
       xNode = XNode::make<XElement>(name, attributes, namespaces);
     }
@@ -346,7 +347,7 @@ XNode XML_Impl::parseXML(ISource &source)
 {
   auto xProlog = parseProlog(source);
   if (source.match("<")) {
-    xProlog.addChild(parseElement(source, {}, true));
+    xProlog.addChild(parseElement(source, {}));
   } else {
     throw XML::SyntaxError(source.getPosition(), "Missing root element.");
   }

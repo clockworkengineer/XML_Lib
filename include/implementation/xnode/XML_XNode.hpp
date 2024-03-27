@@ -35,7 +35,7 @@ struct XNode
   [[nodiscard]] bool isComment() const { return (xmlVariant->isComment()); }
   [[nodiscard]] bool isCDATA() const { return (xmlVariant->isCDATA()); }
   [[nodiscard]] bool isPI() const { return (xmlVariant->isPI()); }
-  [[nodiscard]] bool isDTD() const { return (xmlVariant->isDTD()); }
+  [[nodiscard]] bool isDTD() const { return ( xmlVariant->isDTD()); }
   // Return XNode contents
   [[nodiscard]] std::string getContents() const { return (xmlVariant->getContents()); }
   // XNode Index overloads
