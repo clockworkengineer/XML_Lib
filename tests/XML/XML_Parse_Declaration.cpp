@@ -11,7 +11,7 @@ using namespace XML_Lib;
 TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]")
 {
   std::string xmlString;
-  SECTION("Parse XML declaration. ", "[XML]")
+  SECTION("Parse XML declaration. ", "[XML][Parse][Declaration]")
   {
     xmlString =
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
@@ -151,5 +151,16 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     BufferSource source{ xmlString };
     XML xml;
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 2] Missing root element.");
+  }
+  SECTION("Parse XML with no declaration but a root element. ", "[XML][Parse][Declaration]")
+  {
+    xmlString = "<root></root>\n";
+    BufferSource source{ xmlString };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
+    REQUIRE(XRef<XRoot>(xml.root()).name() == "root");
   }
 }
