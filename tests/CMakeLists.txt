@@ -25,7 +25,7 @@ set(TEST_SOURCES
     ./XML/XML_Parse_Tags.cpp
     ./XML/XML_Parse_Root.cpp
     ./XML/XML_Parse_Files.cpp
-    ./XML/XML_Parse_Attributes.cpp
+    ./XML/XML_Lib_Tests_Parse_Attributes.cpp
     ./XML/XML_Parse_Comments.cpp
     ./XML/XML_Parse_Unicode.cpp
     ./XML/XML_Parse_Entities.cpp
