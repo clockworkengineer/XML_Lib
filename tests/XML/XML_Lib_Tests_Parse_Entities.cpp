@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_Parse_Entities
 //
 // Description:
 //
@@ -10,76 +10,69 @@ using namespace XML_Lib;
 
 TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][Entities]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("Parse entity &amp; in contents area", "[XML][Parse][Entities]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-      "<root> &amp; </root>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<root> &amp; </root>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getContents() == " & ");
   }
   SECTION("Parse entity &quot; in contents area", "[XML][Parse][Entities]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-      " <root> &quot; </root>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      " <root> &quot; </root>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getContents() == " \" ");
   }
   SECTION("Parse entities &apos; &lt; &gt; in contents area", "[XML][Parse][Entities]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-      " <root> &apos; &lt; &gt; </root>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      " <root> &apos; &lt; &gt; </root>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getContents() == " ' < > ");
   }
   SECTION("Parse reference &#x00A5; in contents area", "[XML][Parse][Entities]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-      " <root> &#x00A5; </root>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      " <root> &#x00A5; </root>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getContents() == " ¥ ");
   }
   SECTION("Parse reference &#163; in contents area", "[XML][Parse][Entities]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-      "<root> &#163; </root>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<root> &#163; </root>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getContents() == " £ ");
   }
   SECTION("Parse entity &amp;&quot;&apos;&gt;&lt; in attribute value", "[XML][Parse][Entities]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
       " <root attr1=\" &amp;&quot;&apos;&gt;&lt; \">\n"
-      "</root>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 1);
     REQUIRE(XRef<XElement>(xml.root()).getAttribute("attr1").getValue() == " &#x26;&#x22;&#x27;&#x3E;&#x3C; ");
   }
   SECTION("Parse references &#x00A5;&#163 in attribute value", "[XML][Parse][Entities]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-      " <root attr1=\" &#x00A5;&#163; \"></root>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      " <root attr1=\" &#x00A5;&#163; \"></root>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 1);
     REQUIRE(XRef<XElement>(xml.root()).getAttribute("attr1").getValue() == " ¥£ ");

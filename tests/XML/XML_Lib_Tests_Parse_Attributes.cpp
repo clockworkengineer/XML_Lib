@@ -77,7 +77,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 25] Invalid attribute value.");
   }
-    SECTION("Element that has an invalid attribute name.", "[XML][Parse][[Attributes]")
+  SECTION("Element that has an invalid attribute name.", "[XML][Parse][[Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -86,4 +86,24 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 25] Invalid name '1number' encountered.");
   }
+  SECTION("Element that has an attribute that uses double quotes for value.", "[XML][Parse][[Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook number=\"15\">\n"
+      "</AddressBook>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  // Attribute contains qouble quotes
+  // SECTION("Element that has an attribute that uses double quotes in value.", "[XML][Parse][[Attributes]")
+  // {
+  //   BufferSource source{
+  //     "<?xml version=\"1.0\"?>\n"
+  //     "<gangster name='George \"Shotgun\" Ziegler'></gangster>\n"
+  //   };
+  //   REQUIRE_NOTHROW(xml.parse(source));
+  // }
+  // Attribute contains single quotes
+  // Attribute contains character entities.
 }
