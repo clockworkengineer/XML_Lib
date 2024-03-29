@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_Parse_Misc
 //
 // Description:
 //
@@ -36,34 +36,30 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
 }
 TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("Parse UTF16 encoded file LE ", "[XML][Parse][UTF16]")
   {
     BufferSource source(readXMLFromFileUTF16("./files/testfile008.xml"));
-    XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Parse UTF16 encoded file BE ", "[XML][Parse][UTF16]")
   {
     BufferSource source(readXMLFromFileUTF16("./files/testfile009.xml"));
-    XML xml;
     REQUIRE_NOTHROW(xml.parse(source));
   }
 }
 TEST_CASE("Use name for accessing elements", "[XML][Access][ByName]")
 {
-  std::string xmlString;
-  SECTION("Address book access", "[XML][Access][ByName]")
+  XML xml;
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>"
       "<AddressBook>"
       "<Address>"
       "Flat A, West Road, Wolverhampton, W1SSX9"
       "</Address>"
-      "</AddressBook>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</AddressBook>"
+    };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
     REQUIRE(XRef<XElement>(xml.root()["Address"]).name() == "Address");
@@ -72,10 +68,10 @@ TEST_CASE("Use name for accessing elements", "[XML][Access][ByName]")
 }
 TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("Content node only whitespace if it contains ONLY whitespace.", "[XML][Parse][Whitespace]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<AddressBook>\n"
       "<Address>\n  \n"
@@ -93,9 +89,9 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
       "<Address>\n"
       "&amp;        "
       "</Address>"
-      "</AddressBook>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</AddressBook>"
+    };
+
     xml.parse(source);
     REQUIRE_FALSE(!xml.root().getChildren()[0].isContent());
     REQUIRE(XRef<XContent>(xml.root().getChildren()[0]).isWhiteSpace() == true);
