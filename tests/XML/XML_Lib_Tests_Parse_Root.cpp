@@ -10,14 +10,14 @@ using namespace XML_Lib;
 
 TEST_CASE("Parse declaration, root element and check parsed information ", "[XML][Parse][Root]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("Empty root element <contact-info> ", "[XML][Parse]")
   {
-    xmlString =
+
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
-      "<contact-info></contact-info>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<contact-info></contact-info>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
@@ -27,11 +27,10 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
   }
   SECTION("Empty root element <AddressBook> ", "[XML][Parse][Root]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
-      "<AddressBook> </AddressBook>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<AddressBook> </AddressBook>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
@@ -41,13 +40,12 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
   }
   SECTION("Root element <AddressBook> and one child <Address> with contents ", "[XML][Parse][Root]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<AddressBook>\n"
       "<Address>    This is some contents    </Address>\n"
-      "</AddressBook>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</AddressBook>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
@@ -59,7 +57,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
   }
   SECTION("Root element <AddressBook> with multiple sibling <Address> elements and contents ", "[XML][Parse][Root]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<AddressBook>\n"
       "<Address>\n"
@@ -71,9 +69,8 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "<Address>\n"
       "    This is some contents 3   "
       "</Address>\n"
-      "</AddressBook>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</AddressBook>\n"
+    };
     xml.parse(source);
     REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");

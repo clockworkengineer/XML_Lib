@@ -22,17 +22,17 @@ set(TEST_SOURCES
     ./IO/IDestination.cpp
     ./XML/XML_Lib_Tests_Parse_Misc.cpp
     ./XML/XML_Lib_Tests_Parse_Declaration.cpp
-    ./XML/XML_Parse_Tags.cpp
-    ./XML/XML_Parse_Root.cpp
+    ./XML/XML_Lib_Tests_Parse_Tags.cpp
+    ./XML/XML_Lib_Tests_Parse_Root.cpp
     ./XML/XML_Lib_Tests_Parse_Files.cpp
     ./XML/XML_Lib_Tests_Parse_Attributes.cpp
     ./XML/XML_Lib_Tests_Parse_Comments.cpp
-    ./XML/XML_Parse_Unicode.cpp
+    ./XML/XML_Lib_Tests_Parse_Unicode.cpp
     ./XML/XML_Lib_Tests_Parse_Entities.cpp
     ./XML/XML_Lib_Tests_Parse_PI.cpp
     ./XML/XML_Lib_Tests_Parse_CDATA.cpp
     ./XML/XML_Lib_Tests_Parse_Namespace.cpp
-    ./XML/XML_Stringify.cpp
+    ./XML/XML_Lib_Tests_Stringify.cpp
     ./XML/XML_Helper.cpp
     ./DTD/DTD_Parse_Misc.cpp
     ./DTD/DTD_Parse_Entity.cpp
