@@ -74,7 +74,9 @@ XMLValue parseCharacterReference(ISource &source)
   }
   result = std::strtol(reference.c_str(), &end, result);
   if (*end == '\0') {
-    if (!validChar(static_cast<XML_Lib::Char>(result))) { throw XML::SyntaxError(source.getPosition(), "Character reference invalid character."); }
+    if (!validChar(static_cast<XML_Lib::Char>(result))) {
+      throw XML::SyntaxError(source.getPosition(), "Character reference invalid character.");
+    }
     return (XMLValue{ unparsed, toUtf8(static_cast<XML_Lib::Char>(result)) });
   }
   throw XML::SyntaxError(source.getPosition(), "Cannot convert character reference.");
@@ -126,7 +128,7 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
     }
     source.next();
     source.ignoreWS();
-    return (XMLValue{ unparsed, parsed });
+    return (XMLValue{ unparsed, parsed, static_cast<char>(quote) });
   }
   throw XML::SyntaxError(source.getPosition(), "Invalid attribute value.");
 }
@@ -149,7 +151,7 @@ XMLValue parseValue(ISource &source)
     }
     source.next();
     source.ignoreWS();
-    return (XMLValue{ unparsed, parsed });
+    return (XMLValue{ unparsed, parsed, static_cast<char>(quote) });
   }
   throw XML::SyntaxError(source.getPosition(), "Invalid attribute value.");
 }

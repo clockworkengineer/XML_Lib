@@ -96,14 +96,22 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE_NOTHROW(xml.parse(source));
   }
   // Attribute contains qouble quotes
-  // SECTION("Element that has an attribute that uses double quotes in value.", "[XML][Parse][[Attributes]")
-  // {
-  //   BufferSource source{
-  //     "<?xml version=\"1.0\"?>\n"
-  //     "<gangster name='George \"Shotgun\" Ziegler'></gangster>\n"
-  //   };
-  //   REQUIRE_NOTHROW(xml.parse(source));
-  // }
+  SECTION("Element that has an attribute that uses double quotes in value.", "[XML][Parse][[Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<gangster name='George \"Shotgun\" Ziegler'></gangster>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
   // Attribute contains single quotes
+  SECTION("Element that has an attribute that uses single quotes in value.", "[XML][Parse][[Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<gangster name=\"George 'Shotgun' Ziegler\"></gangster>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
   // Attribute contains character entities.
 }
