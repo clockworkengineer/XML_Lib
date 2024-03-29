@@ -18,8 +18,8 @@ enable_testing()
 set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
 
 set(TEST_SOURCES
-    ./IO/ISource.cpp
-    ./IO/IDestination.cpp
+    ./IO/XML_Lib_Tests_ISource.cpp
+    ./IO/XML_Lib_Tests_IDestination.cpp
     ./XML/XML_Lib_Tests_Parse_Misc.cpp
     ./XML/XML_Lib_Tests_Parse_Declaration.cpp
     ./XML/XML_Lib_Tests_Parse_Tags.cpp
@@ -33,7 +33,7 @@ set(TEST_SOURCES
     ./XML/XML_Lib_Tests_Parse_CDATA.cpp
     ./XML/XML_Lib_Tests_Parse_Namespace.cpp
     ./XML/XML_Lib_Tests_Stringify.cpp
-    ./XML/XML_Helper.cpp
+    ./XML/XML_Lib_Tests_Helper.cpp
     ./DTD/DTD_Parse_Misc.cpp
     ./DTD/DTD_Parse_Entity.cpp
     ./DTD/DTD_Parse_Attributes.cpp

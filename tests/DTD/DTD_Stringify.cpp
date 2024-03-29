@@ -6,7 +6,7 @@
 // ================
 // Test definitions
 // ================
-#include "XML_Tests.hpp"
+#include "XML_Lib_Tests.hpp"
 // ====================
 // JSON class namespace
 // ====================

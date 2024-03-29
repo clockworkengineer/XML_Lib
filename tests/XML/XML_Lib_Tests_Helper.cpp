@@ -1,10 +1,10 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_Helper
 //
 // Description: Helper functions for XML unit tests.
 //
 
-#include "XML_Tests.hpp"
+#include "XML_Lib_Tests.hpp"
 // =======================
 // XML class namespace
 // =======================
@@ -28,7 +28,7 @@ std::string prefixPath(const std::string &file)
 
 /// <summary>
 /// Open a XML file, read its contents (UTF8) into a string buffer
-//  and return the buffer.
+///  and return the buffer.
 /// </summary>
 /// <param name="xmlFileName">XML file name.</param>
 /// <returns>String containing UTF8 encoded XML.</returns>
@@ -43,7 +43,7 @@ std::string readXMLFromFileUTF8(const std::string &xmlFileName)
 
 /// <summary>
 /// Open a XML file, read its contents (UTF16BE) into a string buffer
-//  and return the buffer.
+///  and return the buffer.
 /// </summary>
 /// <param name="xmlFileName">XML file name.</param>
 /// <returnsString containign UTF16 encoded XML.</returns>

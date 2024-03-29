@@ -4,7 +4,7 @@
 // Description: Parse XML elements with attached attributes.
 //
 
-#include "XML_Tests.hpp"
+#include "XML_Lib_Tests.hpp"
 
 using namespace XML_Lib;
 

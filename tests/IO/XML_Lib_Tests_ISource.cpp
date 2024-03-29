@@ -1,11 +1,11 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_ISource
 //
 // Description: Unit tests for BufferSource, FileSource structures that implement
 // the ISource and IDestination interfaces used in XML parsing.
 //
 
-#include "XML_Tests.hpp"
+#include "XML_Lib_Tests.hpp"
 // =======================
 // XML class namespace
 // =======================
@@ -27,8 +27,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     REQUIRE_THROWS_WITH(FileSource(prefixPath(kNonExistantXMLFile)),
       "ISource Error: File input stream failed to open or does not exist.");
   }
-  SECTION(
-    "Create FileSource with testfile001.xml. and positioned on the correct first character", "[XML][FileSource]")
+  SECTION("Create FileSource with testfile001.xml. and positioned on the correct first character", "[XML][FileSource]")
   {
     FileSource source{ prefixPath(kSingleXMLFile) };
     REQUIRE_FALSE(!source.more());
@@ -55,8 +54,8 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));// eof
   }
   std::string xmlString;
-  SECTION("Check that FileSource is  performing CRLF to LF conversion on windows format data correctly.",
-    "[XML][FileSource]")
+  SECTION(
+    "Check that FileSource is  performing CRLF to LF conversion on windows format data correctly.", "[XML][FileSource]")
   {
     xmlString =
       "\r\r\n<!DOCTYPE REPORT [\r\n"
@@ -90,8 +89,8 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     verifyCRLFCount(source, 28, 3);
   }
-  SECTION("Check that FileSource is  performing CRLF to LF conversion on linux format data correctly.",
-    "[XML][FileSource]")
+  SECTION(
+    "Check that FileSource is  performing CRLF to LF conversion on linux format data correctly.", "[XML][FileSource]")
   {
     xmlString =
       "\r \n<!DOCTYPE REPORT [\n"
@@ -314,8 +313,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE(xmlResult == u"<root>TestTestTest</root>");
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
   }
-  SECTION(
-    "Check that BufefrSource ignoreWS() at end of file does not throw but next() does.", "[XML][BufferSource]")
+  SECTION("Check that BufefrSource ignoreWS() at end of file does not throw but next() does.", "[XML][BufferSource]")
   {
     xmlString = "<root>Test Test Test Test</root>";
     BufferSource source{ xmlString };
