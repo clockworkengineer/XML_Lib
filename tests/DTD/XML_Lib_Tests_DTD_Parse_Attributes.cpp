@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_DTD_Parse_Attributes
 //
 // Description: Unit tests for DTD parsing.
 //
@@ -10,10 +10,10 @@ using namespace XML_Lib;
 
 TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][Attributes]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("XML with internal DTD with attributes to parse ", "[XML][DTD][Parse][Attributes]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<!DOCTYPE TVSCHEDULE [\n"
       "<!ELEMENT TVSCHEDULE (CHANNEL+)>\n"
@@ -31,14 +31,13 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
       "<!ATTLIST PROGRAMSLOT VTR CDATA #IMPLIED>\n"
       "<!ATTLIST TITLE RATING CDATA #IMPLIED>\n"
       "<!ATTLIST TITLE LANGUAGE CDATA #IMPLIED>]>\n"
-      "<TVSCHEDULE></TVSCHEDULE>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<TVSCHEDULE></TVSCHEDULE>\n"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("XML with internal DTD with attributes to parse and check values", "[XML][DTD][Parse][Attributes]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<!DOCTYPE TVSCHEDULE [\n"
       "<!ELEMENT TVSCHEDULE (CHANNEL+)>\n"
@@ -56,9 +55,8 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
       "<!ATTLIST PROGRAMSLOT VTR CDATA #IMPLIED>\n"
       "<!ATTLIST TITLE RATING CDATA #IMPLIED>\n"
       "<!ATTLIST TITLE LANGUAGE CDATA #IMPLIED>]>\n"
-      "<TVSCHEDULE></TVSCHEDULE>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<TVSCHEDULE></TVSCHEDULE>\n"
+    };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
@@ -96,7 +94,7 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
   SECTION("XML with internal DTD with elements with multiple attributes to parse and check values",
     "[XML][DTD][Parse][Attributes]")
   {
-    xmlString =
+    BufferSource source{
       "<!DOCTYPE CATALOG [\n"
       "<!ENTITY AUTHOR \"John Doe\">\n"
       "<!ENTITY COMPANY \"JD Power Tools, Inc.\">\n"
@@ -116,9 +114,8 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
       "<!ATTLIST PRICE MSRP CDATA #IMPLIED"
       "WHOLESALE CDATA #IMPLIED STREET CDATA #IMPLIED SHIPPING CDATA #IMPLIED>\n"
       "<!ELEMENT NOTES (#PCDATA)> ]>\n"
-      "<CATALOG> </CATALOG>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<CATALOG> </CATALOG>\n"
+    };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[1].isDTD());
@@ -155,11 +152,11 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
 TEST_CASE("Parse XML DTD that contains enumeration attributes with various errors.",
   "[XML][DTD][Parse][Error][Attributes]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("Parse XML with DTD that contains a enumeration attribute gender with a default value if 'F'.",
     "[XML][DTD][Parse][Error][Attributes]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE queue ["
       "<!ELEMENT queue (person)+>\n"
@@ -174,9 +171,8 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "gender=\"M\"><firstName>Andrew</firstName><lastName>Robinson</lastName><nationality>english</nationality></"
       "person>\n"
       "<person><firstName>Jane</firstName><lastName>Smith</lastName><nationality>english</nationality></person>\n"
-      "</queue>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</queue>\n"
+    };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
@@ -201,7 +197,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
   SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing enumeration name).",
     "[XML][DTD][Parse][Error][Attributes]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE queue ["
       "<!ELEMENT queue (person)+>\n"
@@ -216,15 +212,15 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "gender=\"M\"><firstName>Andrew</firstName><lastName>Robinson</lastName><nationality>english</nationality></"
       "person>\n"
       "<person><firstName>Jane</firstName><lastName>Smith</lastName><nationality>english</nationality></person>\n"
-      "</queue>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</queue>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 7 Column: 36] Invalid name '' encountered.");
   }
   SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing end bracket).",
     "[XML][DTD][Parse][Error][Attributes]")
   {
-    xmlString =
+
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE queue ["
       "<!ELEMENT queue (person)+>\n"
@@ -239,16 +235,15 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "gender=\"M\"><firstName>Andrew</firstName><lastName>Robinson</lastName><nationality>english</nationality></"
       "person>\n"
       "<person><firstName>Jane</firstName><lastName>Smith</lastName><nationality>english</nationality></person>\n"
-      "</queue>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</queue>\n"
+    };
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 7 Column: 39] Missing closing ')' on enumeration attribute type.");
   }
   SECTION("Parse XML with DTD that contains a enumeration with a default value not in enumeration.",
     "[XML][DTD][Parse][Error][Attributes]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE queue ["
       "<!ELEMENT queue (person)+>\n"
@@ -263,16 +258,15 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "gender=\"M\"><firstName>Andrew</firstName><lastName>Robinson</lastName><nationality>english</nationality></"
       "person>\n"
       "<person><firstName>Jane</firstName><lastName>Smith</lastName><nationality>english</nationality></person>\n"
-      "</queue>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</queue>\n"
+    };
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error: Default value 'D' for enumeration attribute 'gender' is invalid.");
   }
   SECTION("Parse XML with DTD that contains a enumeration with not all values unique.",
     "[XML][DTD][Parse][Error][Attributes]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE queue ["
       "<!ELEMENT queue (person)+>\n"
@@ -287,16 +281,15 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "gender=\"M\"><firstName>Andrew</firstName><lastName>Robinson</lastName><nationality>english</nationality></"
       "person>\n"
       "<person><firstName>Jane</firstName><lastName>Smith</lastName><nationality>english</nationality></person>\n"
-      "</queue>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</queue>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source),
       "XML Syntax Error: Enumerator value 'F' for attribute 'gender' occurs more than once in its definition.");
   }
   SECTION("Parse XML with DTD that specifies the use of an two different ID attributes for an element.",
     "[XML][DTD][Parse][Error][Attributes]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE collection ["
       "<!ELEMENT collection (item)+>\n"
@@ -310,15 +303,14 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "<item itemID1=\"i003\" itemID2=\"id003\">item description</item>\n"
       "<item itemID1=\"i004\" itemID2=\"id004\">item description</item>\n"
       "<item itemID1=\"i005\" itemID2=\"id005\">item description</item>\n"
-      "</collection>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</collection>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Element <item> has more than one ID attribute.");
   }
   SECTION("Parse XML with DTD that has a valid NOTATION attribute (photo_type) and usage.",
     "[XML][DTD][Parse][Attributes][NOTATION]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE mountains [\n"
       "<!ELEMENT mountains (mountain)+>\n"
@@ -338,9 +330,8 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "<mountain>\n"
       "<name>Cradle Mountain</name>\n"
       "</mountain>\n"
-      "</mountains>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</mountains>\n"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
@@ -358,7 +349,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
   SECTION("Parse XML with DTD that has a missing NOTATION attribute (photo_type GIF) and usage.",
     "[XML][DTD][Parse][Attributes][NOTATION]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE mountains [\n"
       "<!ELEMENT mountains (mountain)+>\n"
@@ -377,9 +368,8 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "<mountain>\n"
       "<name>Cradle Mountain</name>\n"
       "</mountain>\n"
-      "</mountains>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</mountains>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: NOTATION GIF is not defined.");
   }
 }

@@ -114,4 +114,13 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getValue() == "George 'Shotgun' Ziegler");
   }
   // Attribute contains character entities.
+  // SECTION("Element that has an attribute that uses single quotes in value.", "[XML][Parse][[Attributes]")
+  // {
+  //   BufferSource source{
+  //     "<?xml version=\"1.0\"?>\n"
+  //     "<gangster name=\"George &quot;Shotgun&quot; Ziegler\"></gangster>\n"
+  //   };
+  //   REQUIRE_NOTHROW(xml.parse(source));
+  //   REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getValue() == "George \"Shotgun\" Ziegler");
+  // }
 }
