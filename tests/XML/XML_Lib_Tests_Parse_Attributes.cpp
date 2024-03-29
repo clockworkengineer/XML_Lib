@@ -95,7 +95,6 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     };
     REQUIRE_NOTHROW(xml.parse(source));
   }
-  // Attribute contains qouble quotes
   SECTION("Element that has an attribute that uses double quotes in value.", "[XML][Parse][[Attributes]")
   {
     BufferSource source{
@@ -103,8 +102,8 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<gangster name='George \"Shotgun\" Ziegler'></gangster>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getValue() == "George \"Shotgun\" Ziegler");
   }
-  // Attribute contains single quotes
   SECTION("Element that has an attribute that uses single quotes in value.", "[XML][Parse][[Attributes]")
   {
     BufferSource source{
@@ -112,6 +111,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<gangster name=\"George 'Shotgun' Ziegler\"></gangster>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getValue() == "George 'Shotgun' Ziegler");
   }
   // Attribute contains character entities.
 }
