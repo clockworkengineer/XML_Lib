@@ -38,7 +38,7 @@ set(TEST_SOURCES
     ./DTD/XML_Lib_Tests_DTD_Parse_Entity.cpp
     ./DTD/XML_Lib_Tests_DTD_Parse_Attributes.cpp
     ./DTD/XML_Lib_Tests_DTD_Parse_Tags.cpp
-    ./DTD/DTD_Stringify.cpp
+    ./DTD/XML_Lib_Tests_DTD_Stringify.cpp
     ./DTD/DTD_Validate_Elements.cpp
     ./DTD/DTD_Validate_Attributes.cpp
 )

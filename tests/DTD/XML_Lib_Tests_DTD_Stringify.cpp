@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_DTD_Stringify
 //
 // Description: Unit tests for DTD stringification.
 //
