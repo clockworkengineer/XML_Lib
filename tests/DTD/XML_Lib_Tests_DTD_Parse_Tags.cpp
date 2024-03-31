@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_DTD_Parse_Tags
 //
 // Description: Unit tests for DTD parsing.
 //
@@ -10,10 +10,10 @@ using namespace XML_Lib;
 
 TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Parse][Tags][Error]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("XML with internal DTD with missing terminating '>' on !ELEMENT", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note ["
       "<!ELEMENT note (to,from,heading,body)>\n"
@@ -25,14 +25,13 @@ TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Par
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 4 Column: 2] Missing '>' terminator.");
   }
   SECTION("XML with internal DTD with missing terminating '>' on !ATTLIST", "[XML][DTD][Parse][Tags][Error]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<!DOCTYPE TVSCHEDULE [\n"
       "<!ELEMENT TVSCHEDULE (CHANNEL+)>\n"
@@ -50,26 +49,24 @@ TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Par
       "<!ATTLIST PROGRAMSLOT VTR CDATA #IMPLIED>\n"
       "<!ATTLIST TITLE RATING CDATA #IMPLIED>\n"
       "<!ATTLIST TITLE LANGUAGE CDATA #IMPLIED>]>\n"
-      "<TVSCHEDULE></TVSCHEDULE>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<TVSCHEDULE></TVSCHEDULE>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 15 Column: 2] Missing '>' terminator.");
   }
   SECTION("XML with internal DTD with missing terminating '>' on !ENTITY", "[XML][DTD][Parse][Tags][Error]")
   {
-    xmlString =
+    BufferSource source{
       "<!DOCTYPE REPORT [\n"
       "<!ELEMENT REPORT (paragraph)*>\n"
       "<!ELEMENT paragraph (#PCDATA)>\n"
       "<!ENTITY contact \"0893-456334534\" ]>\n"
-      "<REPORT></REPORT>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<REPORT></REPORT>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 4 Column: 36] Missing '>' terminator.");
   }
   SECTION("XML with internal DTD with missing terminating '>' on !NOTATION", "[XML][DTD][Parse][Tags][Error]")
   {
-    xmlString =
+    BufferSource source{
       "<!DOCTYPE REPORT [\n"
       "<!ELEMENT REPORT (paragraph)*>\n"
       "<!ELEMENT paragraph (#PCDATA)>\n"
@@ -78,9 +75,8 @@ TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Par
       "<!NOTATION JPG SYSTEM \"\">\n"
       "<!NOTATION BMP SYSTEM \"\">\n"
       "]>\n"
-      "<REPORT></REPORT>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<REPORT></REPORT>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 6 Column: 2] Missing '>' terminator.");
   }
 }
