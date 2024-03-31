@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_DTD_Parse_Misc
 //
 // Description: Unit tests for DTD parsing.
 //
@@ -10,10 +10,10 @@ using namespace XML_Lib;
 
 TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("XML with internal DTD", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note ["
       "<!ELEMENT note (to,from,heading,body)>\n"
@@ -25,51 +25,49 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
   }
   SECTION("XML with external (SYSTEM) DTD", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<!DOCTYPE note SYSTEM \"./files/note001.dtd\">\n"
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend!</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
+
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
   }
   SECTION("XML with external (PUBLIC) DTD", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<!DOCTYPE note PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
       "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend!</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
   }
   SECTION("XML with external DTD with !NOTATION to parse and check values.", "[XML][DTD][Parse]")
   {
-    xmlString =
+
+    BufferSource source{
       "<!DOCTYPE REPORT SYSTEM \"./files/report02.dtd\">"
-      "<REPORT></REPORT>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<REPORT></REPORT>\n"
+    };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[1].isDTD());
@@ -83,7 +81,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
   }
   SECTION("XML with internal DTD containing comments.", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note ["
       "<!-- root element is note that contains to, from, heading and body elements -->\n"
@@ -100,9 +98,8 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
@@ -110,10 +107,10 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
 }
 TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("XML with internal to parse DTD and check values", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n"
       "<!DOCTYPE address [\n"
       "<!ELEMENT address (name,company,phone)>\n"
@@ -125,9 +122,8 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
       "<company>TutorialsPoint</company>\n"
       "<phone>(011) 123-4567"
       "</phone>\n"
-      "</address>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</address>\n"
+    };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
@@ -148,15 +144,14 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
   }
   SECTION("XML with external file DTD and check values", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<!DOCTYPE note SYSTEM \"./files/note001.dtd\">\n"
       "<note>\n"
       "<to>Tove"
       "</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
@@ -169,13 +164,12 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
   }
   SECTION("XML with external URL DTD to parse and check values", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
       "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""
       " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
-      "<html></html>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "<html></html>\n"
+    };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
@@ -188,11 +182,11 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
 }
 TEST_CASE("Parse XML DTD with various element content specification errors.", "[XML][DTD][Parse][Error]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("XML with a DTD that contains an illegal mixed content specification (#PCDATA doesn't come first).",
     "[XML][DTD][Parse][Error]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!-- Fig. B.5 : mixed.xml-->\n"
       "<!-- Mixed content type elements -->\n"
@@ -206,15 +200,15 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
       "<bold>XML</bold>\n"
       "<italic>XML How to Program</italic>\n"
       "This book carefully explains XML-based systems development."
-      "</format>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</format>"
+    };
+
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <format>.");
   }
   SECTION("XML with a DTD that contains an illegal mixed content specification (does not end with '*').",
     "[XML][DTD][Parse][Error]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!-- Fig. B.5 : mixed.xml-->\n"
       "<!-- Mixed content type elements -->\n"
@@ -228,15 +222,14 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
       "<bold>XML</bold>\n"
       "<italic>XML How to Program</italic>\n"
       "This book carefully explains XML-based systems development."
-      "</format>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</format>"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <format>.");
   }
   SECTION(
     "Parse XML with DTD that contains a content specification in error (missing ',').", "[XML][DTD][Parse][Error]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note ["
       "<!ELEMENT note (to,from,heading body)>\n"
@@ -248,15 +241,14 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <note>.");
   }
   SECTION("Parse XML with DTD that contains a content specification in error (missing element name).",
     "[XML][DTD][Parse][Error]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note ["
       "<!ELEMENT note (to,from,heading,)>\n"
@@ -268,14 +260,13 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <note>.");
   }
   SECTION("XML with a DTD that contains an illegal mixed content specification (uses ',').", "[XML][DTD][Parse][Error]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!-- Fig. B.5 : mixed.xml-->\n"
       "<!-- Mixed content type elements -->\n"
@@ -289,37 +280,34 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
       "<bold>XML</bold>\n"
       "<italic>XML How to Program</italic>\n"
       "This book carefully explains XML-based systems development."
-      "</format>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</format>"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <format>.");
   }
 }
 TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][Conditional]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional001.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
   }
   SECTION("XML with a DTD with conditional INCLUDE containing an entity.", "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional001.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
@@ -327,25 +315,23 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   }
   SECTION("XML with a DTD with invalid conditional value.", "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional002.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 1 Column: 19] Conditional value not INCLUDE or IGNORE.");
   }
   SECTION("XML with a DTD with missing opening '[' from conditional.", "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional003.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Missing opening '[' from conditional.");
   }
@@ -354,13 +340,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     "definition.",
     "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional004.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
@@ -369,13 +354,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   SECTION("XML with a DTD with conditional controlled entity reference value (IGNORE) containing an entity definition.",
     "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional005.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
@@ -383,13 +367,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   }
   SECTION("XML with a DTD with nested conditionals that are both INCLUDE.", "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional006.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
@@ -398,13 +381,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   SECTION(
     "XML with a DTD with nested conditionals that are both INCLUDE and two entities.", "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional007.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
@@ -414,13 +396,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   SECTION("XML with a DTD with nested conditionals that are  outter INCLUDE inner IGNORE plus two entities.",
     "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional008.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
@@ -430,13 +411,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   SECTION("XML with a DTD with nested conditionals that are  outter IGNORE inner INCLUDE plus two entities.",
     "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional009.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
@@ -447,13 +427,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (switch on).",
     "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional010.dtd\" [ <!ENTITY % debug \"INCLUDE\"> ]>\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == (XDTD::Type::internal | XDTD::Type::external));
@@ -464,13 +443,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (switch off).",
     "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional010.dtd\" [ <!ENTITY % debug \"IGNORE\"> ]>\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == (XDTD::Type::internal | XDTD::Type::external));
@@ -482,13 +460,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     "value).",
     "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional010.dtd\" [ <!ENTITY % debug \"IGNOE\"> ]>\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Conditional value not INCLUDE or IGNORE.");
   }
@@ -496,13 +473,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (novalue).",
     "[XML][DTD][Parse][Conditional]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root SYSTEM \"./files/conditional010.dtd\">\n"
       "<root>\n"
-      "</root>";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</root>"
+    };
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Conditional value not INCLUDE or IGNORE.");
   }
@@ -510,10 +486,10 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
 
 TEST_CASE("Parse XML with more than DTD declaration", "[XML][DTD][Parse]")
 {
-  std::string xmlString;
+  XML xml;
   SECTION("XML with more than one DTD declaration ", "[XML][DTD][Parse]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note ["
       "<!ELEMENT note (to,from,heading,body)>\n"
@@ -531,9 +507,8 @@ TEST_CASE("Parse XML with more than DTD declaration", "[XML][DTD][Parse]")
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+      "</note>\n"
+    };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 8 Column: 11] More than one DOCTYPE declaration.");
   }
 }
