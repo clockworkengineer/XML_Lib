@@ -76,16 +76,24 @@ XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std
 }
 
 /// <summary>
-/// Entity mapper constructor.
+/// Initialise entity mapping table with defaults.
 /// </summary>
-XML_EntityMapper::XML_EntityMapper()
+void XML_EntityMapper::XML_EntityMapper::resetToDefault()
 {
-  /// Initialise entity mapping table with defaults.
+  entityMappings.clear();
   entityMappings.emplace(std::make_pair("&amp;", XMLEntityMapping{ "&#x26;" }));
   entityMappings.emplace(std::make_pair("&quot;", XMLEntityMapping{ "&#x22;" }));
   entityMappings.emplace(std::make_pair("&apos;", XMLEntityMapping{ "&#x27;" }));
   entityMappings.emplace(std::make_pair("&lt;", XMLEntityMapping{ "&#x3C;" }));
   entityMappings.emplace(std::make_pair("&gt;", XMLEntityMapping{ "&#x3E;" }));
+}
+
+/// <summary>
+/// Entity mapper constructor.
+/// </summary>
+XML_EntityMapper::XML_EntityMapper()
+{
+  resetToDefault();
 }
 
 /// <summary>
@@ -124,7 +132,7 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
         parsed = getFileMappingContents(entityMapping.external.getSystemID());
       } else {
         throw XML::SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
-                          + entityMapping.external.getSystemID() + "' does not exist.");
+                               + entityMapping.external.getSystemID() + "' does not exist.");
       }
     }
     return (XMLValue{ entityReference.getUnparsed(), parsed });
@@ -188,6 +196,7 @@ void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExter
 {
   getEntityMapping(entityName).external = external;
 }
+
 
 /// <summary>
 /// Take an entity reference string, check whether it contains any infinitely

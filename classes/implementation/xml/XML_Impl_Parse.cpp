@@ -244,7 +244,7 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
     // Normal element tag
     if (!hasRoot) {
       xNode = XNode::make<XRoot>(name, attributes, namespaces);
-      hasRoot=true;
+      hasRoot = true;
     } else {
       xNode = XNode::make<XElement>(name, attributes, namespaces);
     }
@@ -345,6 +345,7 @@ XNode XML_Impl::parseProlog(ISource &source)
 /// </summary>
 XNode XML_Impl::parseXML(ISource &source)
 {
+  entityMapper->resetToDefault();
   auto xProlog = parseProlog(source);
   if (source.match("<")) {
     xProlog.addChild(parseElement(source, {}));

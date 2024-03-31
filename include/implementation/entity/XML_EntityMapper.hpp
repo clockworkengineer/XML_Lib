@@ -46,6 +46,8 @@ public:
   // Check for a recursive entity reference mapping
   void checkForRecursion() override;
 
+  void resetToDefault() override;
+
 private:
   //  Check for any recursion in a entity reference
   void recurseOverEntityReference(const std::string &entityReference,

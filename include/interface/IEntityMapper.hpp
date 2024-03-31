@@ -53,6 +53,10 @@ public:
   // Check for a recursive entity reference mapping
   // ==============================================
   virtual void checkForRecursion() = 0;
+  // ====================================
+  // Reset entity mapper to default state
+  // ====================================
+  virtual void resetToDefault() = 0;
 };
 //
 }// namespace XML_Lib
