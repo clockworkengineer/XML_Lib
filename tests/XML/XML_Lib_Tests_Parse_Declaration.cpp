@@ -18,9 +18,10 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
+        auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "no");
   }
   SECTION("Parse XML declaration with unsupported version. ", "[XML][Parse][Declaration]")
   {
@@ -62,9 +63,10 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-16");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "yes");
+        auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-16");
+    REQUIRE(xDeclaration.standalone() == "yes");
   }
   SECTION("Parse version 1.0, standalone == yes XML declaration. ", "[XML][Parse][Declaration]")
   {
@@ -73,9 +75,10 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "yes");
+        auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "yes");
   }
   SECTION("Check declaration contains at least version attribute.", "[XML][Parse][Declaration]")
   {
@@ -138,9 +141,10 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
   {
     BufferSource source{ "<root></root>\n" };
     REQUIRE_NOTHROW(xml.parse(source));
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
+        auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "no");
     REQUIRE(XRef<XRoot>(xml.root()).name() == "root");
   }
 }
