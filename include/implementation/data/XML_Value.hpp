@@ -23,11 +23,11 @@ struct XMLValue
   const char getQuote() const { return(quote); }
 
 private:
-  // Quote used for value
-  char quote;
   // Parsed/Unparsed value
   std::string unparsed{};
   std::string parsed{};
+    // Quote used for value
+  char quote;
 
 };
 }// namespace XML_Lib
