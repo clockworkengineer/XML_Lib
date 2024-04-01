@@ -267,17 +267,10 @@ TEST_CASE("Stringify CDATA SECTION", "[XML][Stringify][CDATA]")
 TEST_CASE("Stringify ENTITY that contains XML parsable into new structure.", "[XML][Stringify]")
 {
   // Stringify produces correct XML but it does not leave the ENTITY unexpanded (for now).
-  std::string xmlString;
+  XML xml;
   SECTION(
     "Stringify XML that contains an ENTITY that has be parsed adding elements to the XML.", "[XML][Stringify][ENTITY")
   {
-
-    xmlString =
-      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-      "<!DOCTYPE note [\n"
-      "<!ENTITY example \"<p>An ampersand (&#38;#38;) may be escaped numerically (&#38;#38;#38;) or with a general "
-      "entity (&amp;amp;).</p>\">]>\n"
-      "<note>&example;</note>\n";
     std::string expanded =
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
       "<!DOCTYPE note [\n"
@@ -285,8 +278,13 @@ TEST_CASE("Stringify ENTITY that contains XML parsable into new structure.", "[X
       "entity (&amp;amp;).</p>\">]>\n"
       "<note><p>An ampersand (&#38;) may be escaped numerically (&#38;#38;) or with a general entity "
       "(&amp;amp;).</p></note>\n";
-    BufferSource source{ xmlString };
-    XML xml;
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+      "<!DOCTYPE note [\n"
+      "<!ENTITY example \"<p>An ampersand (&#38;#38;) may be escaped numerically (&#38;#38;#38;) or with a general "
+      "entity (&amp;amp;).</p>\">]>\n"
+      "<note>&example;</note>\n"
+    };
     xml.parse(source);
     BufferDestination destination;
     xml.stringify(destination);

@@ -19,11 +19,13 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "<contact-info></contact-info>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
+    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "no");
     REQUIRE(xml.prolog().getChildren().size() == 4);
-    REQUIRE(XRef<XElement>(xml.root()).name() == "contact-info");
+    REQUIRE(xRoot.name() == "contact-info");
   }
   SECTION("Empty root element <AddressBook> ", "[XML][Parse][Root]")
   {
@@ -32,11 +34,13 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "<AddressBook> </AddressBook>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
+    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "no");
     REQUIRE(xml.prolog().getChildren().size() == 4);
-    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(xRoot.name() == "AddressBook");
   }
   SECTION("Root element <AddressBook> and one child <Address> with contents ", "[XML][Parse][Root]")
   {
@@ -47,13 +51,15 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "</AddressBook>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
-    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XRef<XElement>(xml.root()).getChildren().size() == 3);
-    REQUIRE(XRef<XElement>(xml.root())[0].name() == "Address");
-    REQUIRE(XRef<XElement>(xml.root())[0].getContents() == "    This is some contents    ");
+    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "no");
+    REQUIRE(xRoot.name() == "AddressBook");
+    REQUIRE(xRoot.getChildren().size() == 3);
+    REQUIRE(xRoot[0].name() == "Address");
+    REQUIRE(xRoot[0].getContents() == "    This is some contents    ");
   }
   SECTION("Root element <AddressBook> with multiple sibling <Address> elements and contents ", "[XML][Parse][Root]")
   {
@@ -72,16 +78,18 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "</AddressBook>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).version() == "1.0");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
-    REQUIRE(XRef<XDeclaration>(xml.declaration()).standalone() == "no");
-    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XRef<XElement>(xml.root()).getChildren().size() == 7);
-    REQUIRE(XRef<XElement>(xml.root())[0].name() == "Address");
-    REQUIRE(XRef<XElement>(xml.root())[0].getContents() == "\n    This is some contents 1   ");
-    REQUIRE(XRef<XElement>(xml.root())[1].name() == "Address");
-    REQUIRE(XRef<XElement>(xml.root())[1].getContents() == "\n    This is some contents 2   ");
-    REQUIRE(XRef<XElement>(xml.root())[2].name() == "Address");
-    REQUIRE(XRef<XElement>(xml.root())[2].getContents() == "\n    This is some contents 3   ");
+    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "no");
+    REQUIRE(xRoot.name() == "AddressBook");
+    REQUIRE(xRoot.getChildren().size() == 7);
+    REQUIRE(xRoot[0].name() == "Address");
+    REQUIRE(xRoot[0].getContents() == "\n    This is some contents 1   ");
+    REQUIRE(xRoot[1].name() == "Address");
+    REQUIRE(xRoot[1].getContents() == "\n    This is some contents 2   ");
+    REQUIRE(xRoot[2].name() == "Address");
+    REQUIRE(xRoot[2].getContents() == "\n    This is some contents 3   ");
   }
 }
