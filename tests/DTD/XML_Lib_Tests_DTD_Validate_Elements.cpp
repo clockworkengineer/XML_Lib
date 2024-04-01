@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML
+// Unit Tests: XML_Lib_Tests_DTD_Validate_Elements
 //
 // Description: Unit tests for XML DTD element validation.
 //
@@ -11,6 +11,7 @@ using namespace XML_Lib;
 TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate][Elements]")
 {
   std::string xmlString;
+  XML xml;
   SECTION("XML with a DTD that specifies elements that do not contain parsable data.", "[XML][DTD][Validate][Elements]")
   {
     xmlString =
@@ -24,7 +25,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<child1></child1>\n"
       "</root>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(
       xml.validate(), "XML Validation Error [Line: 8] Element <child1> does not contain just any parsable data.");
@@ -46,7 +47,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<body>Don't forget me this weekend</body>\n"
       "</note>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 9] Element <note> does not conform to the content specification "
@@ -68,7 +69,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<body>Don't forget me this weekend</body>\n"
       "</note>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 9] Element <note> does not conform to the content specification "
@@ -89,7 +90,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<notes>\n"
       "</notes>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 10] Element <notes> does not conform to the content specification (note)+.");
@@ -109,7 +110,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<notes>\n"
       "</notes>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -129,7 +130,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<notes>\n"
       "</notes>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -151,7 +152,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<duration>54</duration>\n"
       "</album>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -169,7 +170,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<title>XML Classical Hits</title>\n"
       "</album>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 8] Element <album> does not conform to the content specification ( title, ( "
@@ -193,7 +194,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<songTitle>XML Symphony 1.0</songTitle>\n"
       "</album>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 8] Element <album> does not conform to the content specification ( title, ( "
@@ -214,7 +215,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<book>The Jungle</book>\n"
       "</library>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -230,7 +231,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<library>\n"
       "</library>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -254,7 +255,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "</seats>\n"
       "</plane>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -285,7 +286,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "</class>\n"
       "</timetable>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -321,7 +322,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "</class>\n"
       "</timetable>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 23] Element <class> does not conform to the content specification ( number, ( "
@@ -356,7 +357,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "</donutBox>\n"
       "</donutDelivery>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -390,7 +391,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<donutBox></donutBox>\n"
       "</donutDelivery>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 24] Element <donutBox> does not conform to the content specification ( jelly?, "
@@ -411,7 +412,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<child2/>\n"
       "</root>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -430,7 +431,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<child2/>\n"
       "</root>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] Element <child2> is not empty.");
   }
@@ -449,7 +450,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<child2/>\n"
       "</root>\n";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
@@ -472,7 +473,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "This book carefully explains XML-based systems development."
       "</format>";
     BufferSource source{ xmlString };
-    XML xml;
+
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
