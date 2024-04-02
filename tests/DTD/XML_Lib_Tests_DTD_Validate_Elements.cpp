@@ -14,25 +14,23 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
   XML xml;
   SECTION("XML with a DTD that specifies elements that do not contain parsable data.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
-      "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE root [\n"
-      "<!ELEMENT root (child1)+ >\n"
-      "<!ELEMENT child1 (#PCDATA)>\n"
-      "]>\n"
-      "<root>\n"
-      "<child1>contents</child1>\n"
-      "<child1></child1>\n"
-      "</root>\n";
-    BufferSource source{ xmlString };
-
+    BufferSource source{ xmlString =
+                           "<?xml version=\"1.0\"?>\n"
+                           "<!DOCTYPE root [\n"
+                           "<!ELEMENT root (child1)+ >\n"
+                           "<!ELEMENT child1 (#PCDATA)>\n"
+                           "]>\n"
+                           "<root>\n"
+                           "<child1>contents</child1>\n"
+                           "<child1></child1>\n"
+                           "</root>\n" };
     xml.parse(source);
     REQUIRE_THROWS_WITH(
       xml.validate(), "XML Validation Error [Line: 8] Element <child1> does not contain just any parsable data.");
   }
   SECTION("XML with an undefined element <date> which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note [\n"
       "<!ELEMENT note (to,from,heading,body)>\n"
@@ -45,9 +43,8 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<date>28/12/2019</date>\n"
       "<body>Don't forget me this weekend</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-
+      "</note>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 9] Element <note> does not conform to the content specification "
@@ -55,7 +52,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
   }
   SECTION("XML with an missing <to> tag which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note [\n"
       "<!ELEMENT note (to,from,heading,body)>\n"
@@ -67,9 +64,8 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<note>\n"
       "<from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend</body>\n"
-      "</note>\n";
-    BufferSource source{ xmlString };
-
+      "</note>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 9] Element <note> does not conform to the content specification "
@@ -77,7 +73,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
   }
   SECTION("XML with an empty notes tag which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE notes [\n"
       "<!ELEMENT notes (note)+>\n"
@@ -88,36 +84,33 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<!ELEMENT body (#PCDATA)>\n"
       "]>\n"
       "<notes>\n"
-      "</notes>\n";
-    BufferSource source{ xmlString };
-
+      "</notes>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 10] Element <notes> does not conform to the content specification (note)+.");
   }
   SECTION("XML with an empty notes tag which is valid given DTD.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
-      "<?xml version=\"1.0\"?>\n"
-      "<!DOCTYPE notes [\n"
-      "<!ELEMENT notes (note)*>\n"
-      "<!ELEMENT note (to,from,heading,body)>\n"
-      "<!ELEMENT to (#PCDATA)>\n"
-      "<!ELEMENT from (#PCDATA)>\n"
-      "<!ELEMENT heading (#PCDATA)>\n"
-      "<!ELEMENT body (#PCDATA)>\n"
-      "]>\n"
-      "<notes>\n"
-      "</notes>\n";
-    BufferSource source{ xmlString };
-
+    BufferSource source{ xmlString =
+                           "<?xml version=\"1.0\"?>\n"
+                           "<!DOCTYPE notes [\n"
+                           "<!ELEMENT notes (note)*>\n"
+                           "<!ELEMENT note (to,from,heading,body)>\n"
+                           "<!ELEMENT to (#PCDATA)>\n"
+                           "<!ELEMENT from (#PCDATA)>\n"
+                           "<!ELEMENT heading (#PCDATA)>\n"
+                           "<!ELEMENT body (#PCDATA)>\n"
+                           "]>\n"
+                           "<notes>\n"
+                           "</notes>\n" };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with an empty notes tag which is valid given DTD (use (note*) instead of (note)* here).",
     "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE notes [\n"
       "<!ELEMENT notes (note*)>\n"
@@ -128,15 +121,14 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<!ELEMENT body (#PCDATA)>\n"
       "]>\n"
       "<notes>\n"
-      "</notes>\n";
-    BufferSource source{ xmlString };
-
+      "</notes>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with a DTD that uses sequence operators and '+' (one or more times).", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE album [\n"
       "<!ELEMENT album ( title, ( songTitle, duration )+ )>\n"
@@ -150,15 +142,14 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<duration>10</duration>\n"
       "<songTitle>XML Symphony 1.0</songTitle>\n"
       "<duration>54</duration>\n"
-      "</album>\n";
-    BufferSource source{ xmlString };
-
+      "</album>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with a DTD that does not contain any songs.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE album [\n"
       "<!ELEMENT album ( title, ( songTitle, duration )+ )>\n"
@@ -168,9 +159,8 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "]>\n"
       "<album>\n"
       "<title>XML Classical Hits</title>\n"
-      "</album>\n";
-    BufferSource source{ xmlString };
-
+      "</album>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 8] Element <album> does not conform to the content specification ( title, ( "
@@ -178,7 +168,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
   }
   SECTION("XML with a DTD and XML that has out of sequence duration tag.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE album [\n"
       "<!ELEMENT album ( title, ( songTitle, duration )+ )>\n"
@@ -192,9 +182,8 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<duration>10</duration>\n"
       "<duration>54</duration>\n"
       "<songTitle>XML Symphony 1.0</songTitle>\n"
-      "</album>\n";
-    BufferSource source{ xmlString };
-
+      "</album>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 8] Element <album> does not conform to the content specification ( title, ( "
@@ -203,7 +192,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
   SECTION("XML with a DTD that uses '*' (zero or more times) operator and has XML that complies.",
     "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE library [\n"
       "<!ELEMENT library ( book* )>\n"
@@ -213,32 +202,30 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<book>The Wealth of Nations</book>\n"
       "<book>The Iliad</book>\n"
       "<book>The Jungle</book>\n"
-      "</library>\n";
-    BufferSource source{ xmlString };
-
+      "</library>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with a DTD that uses '*' (zero or more times) operator and has XML that does not have a book element.",
     "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE library [\n"
       "<!ELEMENT library ( book* )>\n"
       "<!ELEMENT book (#PCDATA)>\n"
       "]>\n"
       "<library>\n"
-      "</library>\n";
-    BufferSource source{ xmlString };
-
+      "</library>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with a DTD that uses '?' (zero or one time) operator and has XML contains occupied and empty seats.",
     "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE plane [\n"
       "<!ELEMENT plane ( seats )>\n"
@@ -253,15 +240,14 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<passenger>John Smith</passenger>\n"
       "</seat>\n"
       "</seats>\n"
-      "</plane>\n";
-    BufferSource source{ xmlString };
-
+      "</plane>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with a DTD that uses '|' (or) operator and has valid XML for it.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE timetable [\n"
       "<!ELEMENT timetable (class)+ >\n"
@@ -284,16 +270,15 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<assistant>Paul Deitel</assistant>\n"
       "<credit>3</credit>\n"
       "</class>\n"
-      "</timetable>\n";
-    BufferSource source{ xmlString };
-
+      "</timetable>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with a DTD that uses '|' (or) operator and has a class without an assistant/instructor.",
     "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE timetable [\n"
       "<!ELEMENT timetable (class)+ >\n"
@@ -320,9 +305,8 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<number>885</number>\n"
       "<credit>3</credit>\n"
       "</class>\n"
-      "</timetable>\n";
-    BufferSource source{ xmlString };
-
+      "</timetable>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 23] Element <class> does not conform to the content specification ( number, ( "
@@ -331,7 +315,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
   SECTION("XML with a DTD that uses all of the content specification operators and has valid XML for it.",
     "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE donutDelivery [\n"
       "<!ELEMENT donutDelivery (donutBox)+ >\n"
@@ -355,16 +339,15 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<creme>whipped</creme>\n"
       "<sugar>sweet</sugar>\n"
       "</donutBox>\n"
-      "</donutDelivery>\n";
-    BufferSource source{ xmlString };
-
+      "</donutDelivery>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with a DTD that uses all of the content specification operators and has XML with an empty box.",
     "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE donutDelivery [\n"
       "<!ELEMENT donutDelivery (donutBox)+ >\n"
@@ -389,9 +372,8 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<sugar>sweet</sugar>\n"
       "</donutBox>\n"
       "<donutBox></donutBox>\n"
-      "</donutDelivery>\n";
-    BufferSource source{ xmlString };
-
+      "</donutDelivery>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 24] Element <donutBox> does not conform to the content specification ( jelly?, "
@@ -399,7 +381,7 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
   }
   SECTION("XML with a DTD that specifies elements that are empty.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root [\n"
       "<!ELEMENT root (child1 | child2)+ >\n"
@@ -410,15 +392,14 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<child1>contents</child1>\n"
       "<child2></child2>\n"
       "<child2/>\n"
-      "</root>\n";
-    BufferSource source{ xmlString };
-
+      "</root>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("XML with a DTD that specifies elements that are empty but contain data.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root [\n"
       "<!ELEMENT root (child1 | child2)+ >\n"
@@ -429,15 +410,14 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<child1>contents</child1>\n"
       "<child2>contents</child2>\n"
       "<child2/>\n"
-      "</root>\n";
-    BufferSource source{ xmlString };
-
+      "</root>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] Element <child2> is not empty.");
   }
   SECTION("XML with a DTD that specifies elements that are marked as any.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE root [\n"
       "<!ELEMENT root (child1 | child2)+ >\n"
@@ -448,16 +428,15 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<root>\n"
       "<child1>contents</child1><child2><child3/></child2>\n"
       "<child2/>\n"
-      "</root>\n";
-    BufferSource source{ xmlString };
-
+      "</root>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION(
     "XML with a DTD that specifies elements that are marked as having mixed content.", "[XML][DTD][Validate][Elements]")
   {
-    xmlString =
+    BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!-- Fig. B.5 : mixed.xml-->\n"
       "<!-- Mixed content type elements -->\n"
@@ -471,9 +450,8 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
       "<bold>XML</bold>\n"
       "<italic>XML How to Program</italic>\n"
       "This book carefully explains XML-based systems development."
-      "</format>";
-    BufferSource source{ xmlString };
-
+      "</format>"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
