@@ -70,9 +70,10 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
       "</root>\n"
     };
     xml.parse(source);
-    REQUIRE_FALSE(!xml.root().getChildren()[0].isPI());
-    REQUIRE(XRef<XPI>(xml.root().getChildren()[0]).name() == "xml-stylesheet");
+       auto &xRootChildren = xml.root().getChildren();
+    REQUIRE_FALSE(!xRootChildren[0].isPI());
+    REQUIRE(XRef<XPI>(xRootChildren[0]).name() == "xml-stylesheet");
     REQUIRE(
-      XRef<XPI>(xml.root().getChildren()[0]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
+      XRef<XPI>(xRootChildren[0]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
   }
 }
