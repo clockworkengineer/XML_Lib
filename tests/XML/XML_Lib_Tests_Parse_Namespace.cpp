@@ -33,10 +33,10 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     auto &xRoot = XRef<XElement>(xml.root());
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNamespaceList().size() == 1);
-    REQUIRE(xRoot[0].getNameSpace("h").getValue() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0].getNameSpace("h").getParsed() == "http://www.w3.org/TR/html4/");
     REQUIRE(xRoot[1].getNamespaceList().size() == 1);
     REQUIRE(xRoot[1].name() == "f:table");
-    REQUIRE(xRoot[1].getNameSpace("f").getValue() == "https://www.w3schools.com/furniture");
+    REQUIRE(xRoot[1].getNameSpace("f").getParsed() == "https://www.w3schools.com/furniture");
   }
   SECTION("A root document and two namespaces defined in the root element.", "[XML][Parse][Namespace]")
   {
@@ -60,12 +60,12 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     auto &xRoot = XRef<XElement>(xml.root());
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNamespaceList().size() == 2);
-    REQUIRE(xRoot[0].getNameSpace("h").getValue() == "http://www.w3.org/TR/html4/");
-    REQUIRE(xRoot[0].getNameSpace("f").getValue() == "https://www.w3schools.com/furniture");
+    REQUIRE(xRoot[0].getNameSpace("h").getParsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0].getNameSpace("f").getParsed() == "https://www.w3schools.com/furniture");
     REQUIRE(xRoot[1].name() == "f:table");
     REQUIRE(xRoot[1].getNamespaceList().size() == 2);
-    REQUIRE(xRoot[1].getNameSpace("h").getValue() == "http://www.w3.org/TR/html4/");
-    REQUIRE(xRoot[1].getNameSpace("f").getValue() == "https://www.w3schools.com/furniture");
+    REQUIRE(xRoot[1].getNameSpace("h").getParsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[1].getNameSpace("f").getParsed() == "https://www.w3schools.com/furniture");
   }
   SECTION(
     "A root document and two namespaces defined in the root element and non-existant namespace g for one of tables.",
@@ -89,7 +89,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     auto &xRoot = XRef<XElement>(xml.root());
     REQUIRE(xRoot[0].name() == "tr");
     REQUIRE(xRoot[0].getNamespaceList().size() == 1);
-    REQUIRE(xRoot[0].getNameSpace(":").getValue() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0].getNameSpace(":").getParsed() == "http://www.w3.org/TR/html4/");
   }
   SECTION("A root document and two namespaces (the same name) defined in the root element.", "[XML][Parse][Namespace]")
   {

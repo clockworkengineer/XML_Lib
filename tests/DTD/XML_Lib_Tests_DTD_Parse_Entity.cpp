@@ -109,7 +109,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     XMLAttribute attribute = XRef<XElement>(xml.root()).getAttribute("attr");
     REQUIRE(attribute.getName() == "attr");
     REQUIRE(attribute.getUnparsed() == "&x;");
-    REQUIRE(attribute.getValue() == "&lt;");
+    REQUIRE(attribute.getParsed() == "&lt;");
   }
   // This should throw an error as & ' " < >  not allowed to be assigned to attribute directly (NEED TO FIX)
   SECTION("XML DTD with entity and how it deals with entity character expansion case 4)", "[XML][DTD][Parse][Entity]")

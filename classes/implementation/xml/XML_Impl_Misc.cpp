@@ -73,7 +73,7 @@ void XML_Impl::addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std
   for (const auto &attribute : attributes) {
     if (attribute.getName().starts_with("xmlns")) {
       namespaces.emplace_back((attribute.getName().size() > 5) ? attribute.getName().substr(6) : ":",
-        XMLValue{ attribute.getUnparsed(), attribute.getValue() });
+        XMLValue{ attribute.getUnparsed(), attribute.getParsed() });
     }
   }
 }

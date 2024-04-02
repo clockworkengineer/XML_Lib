@@ -27,7 +27,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(xRoot.name() == "AddressBook");
     REQUIRE(xRoot.getAttributeList().size() == 1);
-    REQUIRE(xRoot.getAttribute("number").getValue() == "15");
+    REQUIRE(xRoot.getAttribute("number").getParsed() == "15");
   }
   SECTION("Root element with 3 attached attributes number, away, flat", "[XML][Parse][[Attributes]")
   {
@@ -45,9 +45,9 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(xRoot.name() == "AddressBook");
     REQUIRE(xRoot.getAttributeList().size() == 3);
-    REQUIRE(xRoot.getAttribute("number").getValue() == "15");
-    REQUIRE(xRoot.getAttribute("away").getValue() == "yes");
-    REQUIRE(xRoot.getAttribute("flat").getValue() == "no");
+    REQUIRE(xRoot.getAttribute("number").getParsed() == "15");
+    REQUIRE(xRoot.getAttribute("away").getParsed() == "yes");
+    REQUIRE(xRoot.getAttribute("flat").getParsed() == "no");
   }
   SECTION("Empty elements with attributes are allowed.", "[XML][Parse][[Attributes]")
   {
@@ -102,7 +102,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<gangster name='George \"Shotgun\" Ziegler'></gangster>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getValue() == "George \"Shotgun\" Ziegler");
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getParsed() == "George \"Shotgun\" Ziegler");
   }
   SECTION("Element that has an attribute that uses single quotes in value.", "[XML][Parse][[Attributes]")
   {
@@ -111,9 +111,9 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<gangster name=\"George 'Shotgun' Ziegler\"></gangster>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getValue() == "George 'Shotgun' Ziegler");
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getParsed() == "George 'Shotgun' Ziegler");
   }
-  // Attribute contains character entities. CORRECT ? 
+  // Attribute contains character entities. CORRECT ?
   SECTION("Element that has an attribute that uses single quotes (&quot;) in value.", "[XML][Parse][[Attributes]")
   {
     BufferSource source{
@@ -121,6 +121,6 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<gangster name=\"George &quot;Shotgun&quot; Ziegler\"></gangster>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getValue() == "George &#x22;Shotgun&#x22; Ziegler");
+    REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getParsed() == "George &#x22;Shotgun&#x22; Ziegler");
   }
 }

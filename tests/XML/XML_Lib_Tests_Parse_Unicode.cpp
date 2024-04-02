@@ -27,7 +27,7 @@ TEST_CASE("Parse XML with Unicode characters. ", "[XML][Parse][Unicode]")
     auto &xRoot = XRef<XElement>(xml.root());
     REQUIRE(xRoot.name() == "俄语");
     REQUIRE(xRoot.getAttributeList().size() == 1);
-    REQUIRE(xRoot.getAttribute("լեզու").getValue() == "ռուսերեն");
+    REQUIRE(xRoot.getAttribute("լեզու").getParsed() == "ռուսերեն");
     REQUIRE(xRoot.getContents() == "данные");
   }
 }

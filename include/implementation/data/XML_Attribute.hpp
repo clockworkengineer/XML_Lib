@@ -15,14 +15,14 @@ struct XMLAttribute
   ~XMLAttribute() = default;
   // Get attribute details
   const std::string &getName() const { return (name); }
-  const std::string &getValue() const { return (value.getParsed()); }
+  const std::string &getParsed() const { return (value.getParsed()); }
   const std::string &getUnparsed() const { return (value.getUnparsed()); }
-
-  static bool isAttrubutePresent(const std::vector<XMLAttribute> &attributes, const std::string & attributeName) {
-    return(std::find_if(attributes.rbegin(),
-          attributes.rend(),
-          [&attributeName](const XMLAttribute &attr) { return (attr.getName() == attributeName); })
-        != attributes.rend());
+  // Search for an attribute in vector of unique attributes
+  static bool isAttrubutePresent(const std::vector<XMLAttribute> &attributes, const std::string &attributeName)
+  {
+    return (std::find_if(attributes.rbegin(), attributes.rend(), [&attributeName](const XMLAttribute &attr) {
+      return (attr.getName() == attributeName);
+    }) != attributes.rend());
   }
 
 private:
