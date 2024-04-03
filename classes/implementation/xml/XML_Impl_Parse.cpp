@@ -92,6 +92,10 @@ XNode XML_Impl::parseComment(ISource &source)
 XNode XML_Impl::parsePI(ISource &source)
 {
   std::string name{ parseName(source) };
+  // Check not a declartion
+  if (name == "xml") {
+    throw XML::SyntaxError(source.getPosition(), "Declaration allowed only at the start of the document.");
+  }
   std::string parameters;
   while (source.more() && !source.match("?>")) {
     parameters += toUtf8(source.current());

@@ -123,15 +123,16 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 2 Column: 33] Missing closing '>' for comment line.");
   }
-  // SECTION("A comment before declaration.", "[XML][Parse][Comments]")
-  // {
-  //   BufferSource source{
-  //     "<!-- A single line comment -->\n"
-  //     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-  //     "<root></root>\n"
-  //   };
-  //   REQUIRE_THROWS_WITH(xml.parse(source), "");
-  // }
+  SECTION("A comment before declaration.", "[XML][Parse][Comments]")
+  {
+    BufferSource source{
+      "<!-- A single line comment -->\n"
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+      "<root></root>\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source),
+      "XML Syntax Error [Line: 2 Column: 10] Declaration allowed only at the start of the document.");
+  }
   SECTION("A commentat at start with no declaratiion.", "[XML][Parse][Comments]")
   {
     BufferSource source{
