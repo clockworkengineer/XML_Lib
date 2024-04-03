@@ -24,6 +24,8 @@ struct XMLAttribute
       return (attr.getName() == attributeName);
     }) != attributes.rend());
   }
+  // Return attribute value with all character escapes translated
+  // const std::string getValue() { return (value.getParsed()); }
 
 private:
   // Attribute name and value

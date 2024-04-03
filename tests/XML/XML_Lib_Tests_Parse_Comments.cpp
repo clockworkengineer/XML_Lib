@@ -120,8 +120,33 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "<!-- A single line comment ---> "
       "<root></root>\n"
     };
-
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 2 Column: 33] Missing closing '>' for comment line.");
+  }
+  // SECTION("A comment before declaration.", "[XML][Parse][Comments]")
+  // {
+  //   BufferSource source{
+  //     "<!-- A single line comment -->\n"
+  //     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+  //     "<root></root>\n"
+  //   };
+  //   REQUIRE_THROWS_WITH(xml.parse(source), "");
+  // }
+  SECTION("A commentat at start with no declaratiion.", "[XML][Parse][Comments]")
+  {
+    BufferSource source{
+      "<!-- A single line comment -->\n"
+      "<root></root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("A comment in attribute value.", "[XML][Parse][Comments]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+      "<root attr1=\"66<!-- A single line comment -->\"</root>\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source),
+      "XML Syntax Error [Line: 2 Column: 51] Attribute value contains invalid character '<', '\"', ''' or '&'.");
   }
 }

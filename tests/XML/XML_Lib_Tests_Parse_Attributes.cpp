@@ -113,7 +113,6 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE_NOTHROW(xml.parse(source));
     REQUIRE(XRef<XElement>(xml.root()).getAttribute("name").getParsed() == "George 'Shotgun' Ziegler");
   }
-  // Attribute contains character entities. CORRECT ?
   SECTION("Element that has an attribute that uses single quotes (&quot;) in value.", "[XML][Parse][[Attributes]")
   {
     BufferSource source{

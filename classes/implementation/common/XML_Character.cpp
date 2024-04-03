@@ -86,23 +86,23 @@ bool validName(const XML_Lib::String &name)
 /// <returns>true then contains all legal characters otherwise false.</returns>
 bool validAttributeValue(const XMLValue &value)
 {
-  BufferSource valueSource(value.getParsed());
-  while (valueSource.more()) {
-    if (valueSource.match("&#")) {
-      parseCharacterReference(valueSource);
-    } else if (valueSource.current() == '&') {
-      parseEntityReference(valueSource);
-    } else if ((valueSource.current() == '"') || (valueSource.current() == '\'')) {
-      if (valueSource.current() == value.getQuote()) {
+  BufferSource source(value.getParsed());
+  while (source.more()) {
+    if (source.match("&#")) {
+      parseCharacterReference(source);
+    } else if (source.current() == '&') {
+      parseEntityReference(source);
+    } else if ((source.current() == '"') || (source.current() == '\'')) {
+      if (source.current() == value.getQuote()) {
         return (false);
       } else {
-        valueSource.next();
+        source.next();
         continue;
       }
-    } else if (valueSource.current() == '<') {
+    } else if (source.current() == '<') {
       return (false);
     } else {
-      valueSource.next();
+      source.next();
     }
   }
   return (true);

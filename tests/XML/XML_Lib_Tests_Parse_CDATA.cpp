@@ -52,8 +52,17 @@ TEST_CASE("Parse CDATA section.", "[XML][Parse][CDATA]")
       "   <![CDATA[< Test Test text ]]>  ]]>\n"
       "   </root>\n"
     };
-
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 4 Column: 1] ']]>' invalid in element content area.");
+  }
+  SECTION("Parse XML root containing CDDATA sequence containing a valid ']]>' ", "[XML][Parse][CDATA]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+      "<root>"
+      "<![CDATA[]]]]><![CDATA[>]]></root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+    REQUIRE(xml.root().getContents() == "]]>");
   }
 }
