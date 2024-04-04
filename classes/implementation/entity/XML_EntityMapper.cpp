@@ -91,10 +91,7 @@ void XML_EntityMapper::XML_EntityMapper::resetToDefault()
 /// <summary>
 /// Entity mapper constructor.
 /// </summary>
-XML_EntityMapper::XML_EntityMapper()
-{
-  resetToDefault();
-}
+XML_EntityMapper::XML_EntityMapper() { resetToDefault(); }
 
 /// <summary>
 /// Entity mapper destructor.
@@ -118,8 +115,8 @@ bool XML_EntityMapper::isPresent(const std::string &entityName) const
 /// <returns></returns>
 XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 {
-  std::string parsed{ entityReference.getUnparsed() };
   if (isPresent(entityReference.getUnparsed())) {
+    std::string parsed{ entityReference.getUnparsed() };
     // Internal so from memory.
     auto entityMapping = getEntityMapping(entityReference.getUnparsed());
     if (!entityMapping.internal.empty()) {
@@ -137,9 +134,8 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
     }
     return (XMLValue{ entityReference.getUnparsed(), parsed });
   }
-  return (entityReference);
+  throw XML::SyntaxError("Entity '" + entityReference.getUnparsed() + "' does not exist.");
 }
-
 /// <summary>
 /// Translate any entity reference found in a string.
 /// </summary>

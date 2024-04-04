@@ -71,10 +71,26 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-      " <root attr1=\" &#x00A5;&#163; \"></root>\n"
+      "<root attr1=\" &#x00A5;&#163; \"></root>\n"
     };
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 1);
     REQUIRE(XRef<XElement>(xml.root()).getAttribute("attr1").getParsed() == " ¥£ ");
+  }
+  SECTION("Parse entity &lamp; (non-existant named) in contents area", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+      "<root> &lamp; </root>\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Entity '&lamp;' does not exist.");
+  }
+  SECTION("Parse entity &lamp; (non-existant named) in attribute.", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+      "<root attr1=\" &lamp; \"> </root>\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Entity '&lamp;' does not exist.");
   }
 }
