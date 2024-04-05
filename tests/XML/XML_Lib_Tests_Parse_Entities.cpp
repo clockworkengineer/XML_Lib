@@ -56,6 +56,22 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     xml.parse(source);
     REQUIRE(XRef<XElement>(xml.root()).getContents() == " £ ");
   }
+  SECTION("Parse reference &#x00As; (invalid hex value) in contents area", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      " <root> &#x00As; </root>\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 21] Cannot convert character reference.");
+  }
+  SECTION("Parse reference &#16A; (invalid decimal value) in contents area", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root> &#16A; </root>\n"
+    };
+  REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 18] Cannot convert character reference.");
+  }
   SECTION("Parse entity &amp;&quot;&apos;&gt;&lt; in attribute value", "[XML][Parse][Entities]")
   {
     BufferSource source{
@@ -115,7 +131,8 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
       "<?xml version=\"1.0\"?>\n"
       "<root> &#; </root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 15] Character reference invalid character.");
+    REQUIRE_THROWS_WITH(
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 15] Character reference invalid character.");
   }
   SECTION("Parse character entity &#; (null entity in attribute", "[XML][Parse][Entities]")
   {
@@ -123,6 +140,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
       "<?xml version=\"1.0\"?>\n"
       "<root attr1=\" &#; \"> </root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 22] Character reference invalid character.");
+    REQUIRE_THROWS_WITH(
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 22] Character reference invalid character.");
   }
 }
