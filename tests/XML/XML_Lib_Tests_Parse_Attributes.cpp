@@ -58,6 +58,15 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     };
     REQUIRE_NOTHROW(xml.parse(source));
   }
+    SECTION("Attributes for no value allowed.", "[XML][Parse][[Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook number=''>\n"
+      "</AddressBook>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
   SECTION("Element with duplicate attributes not allowed.", "[XML][Parse][[Attributes]")
   {
     BufferSource source{
