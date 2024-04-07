@@ -27,11 +27,6 @@ struct XElement : Variant
   }
   // Add an attribute
   void addAttribute(const std::string &name, const XMLValue &value) const { attributes.emplace_back(name, value); }
-  [[nodiscard]] const XMLAttribute &getAttribute(const std::string &name) const
-  {
-    return (*std::find_if(
-      attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return (attr.getName() == name); }));
-  }
   // Return reference to attribute list
   [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return (attributes); }
   [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
@@ -52,7 +47,7 @@ struct XElement : Variant
   [[nodiscard]] const std::string &name() const { return (elementName); }
   // XElement Index overloads
   [[nodiscard]] const XElement &operator[](int index) const;
-  [[nodiscard]] const XElement &operator[](const std::string &name) const;
+  [[nodiscard]] const XMLAttribute &operator[](const std::string &name) const;
 
 private:
   std::string elementName;

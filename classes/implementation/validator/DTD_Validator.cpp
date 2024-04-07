@@ -90,7 +90,7 @@ void DTD_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribut
     if (!attributePresent) { elementError(xElement, "is missing required attribute '" + attribute.name + "'."); }
   } else if ((attribute.type & XDTD::AttributeType::fixed) != 0) {
     if (attributePresent) {
-      XMLAttribute elementAttribute = xElement.getAttribute(attribute.name);
+      XMLAttribute elementAttribute = xElement[attribute.name];
       if (attribute.value.getParsed() != elementAttribute.getParsed()) {
         elementError(xElement,
           "attribute '" + attribute.name + "' is '" + elementAttribute.getParsed() + "' instead of '"
@@ -124,7 +124,7 @@ void DTD_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribut
 void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute)
 {
   const XElement &xElement = XRef<XElement>(xNode);
-  XMLAttribute elementAttribute = xElement.getAttribute(attribute.name);
+  auto &elementAttribute = xElement[attribute.name];
   if ((attribute.type & XDTD::AttributeType::cdata) != 0) {
     if (elementAttribute.getParsed().empty())// No character data present.
     {

@@ -39,17 +39,13 @@ inline const XElement &XElement::operator[](int index) const
   }
   throw XNode::Error("Invalid index used to access array.");
 }
-// ====================
-// XElement name access
-// ====================
-inline const XElement &XElement::operator[](const std::string &name) const
+// =========================
+// XElement attribute access
+// =========================
+inline const XMLAttribute &XElement::operator[](const std::string &name) const
 {
-  if (isIndexable()) {
-    for (const auto &element : getChildren()) {
-      if (XRef<XElement>(element).elementName == name) { return (XRef<XElement>(element)); }
-    }
-  }
-  throw XNode::Error("Invalid index used to access array.");
+  return (*std::find_if(
+    attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return (attr.getName() == name); }));
 }
 
 }// namespace XML_Lib

@@ -106,7 +106,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.getEntityMapper().getInternal("&x;") == "&lt;");
     REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 1);
-    XMLAttribute attribute = XRef<XElement>(xml.root()).getAttribute("attr");
+    auto &attribute = XRef<XElement>(xml.root())["attr"];
     REQUIRE(attribute.getName() == "attr");
     REQUIRE(attribute.getUnparsed() == "&x;");
     REQUIRE(attribute.getParsed() == "&lt;");
