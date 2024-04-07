@@ -92,4 +92,12 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
     REQUIRE(xRoot[2].name() == "Address");
     REQUIRE(xRoot[2].getContents() == "\n    This is some contents 3   ");
   }
+  SECTION("Self closing root tag ", "[XML][Parse][Root]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root/>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
 }

@@ -19,7 +19,8 @@ TEST_CASE("Sample XML files to read and parse.", "[XML][Parse][File]")
     "./files/testfile011.xml",
     "./files/testfile012.xml",
     "./files/testfile013.xml",
-    "./files/testfile014.xml" }));
+    "./files/testfile014.xml",
+    "./files/testfile015.xml" }));
   XML xml;
   SECTION("Load file into buffer and parse.", "[XML][Parse]")
   {
