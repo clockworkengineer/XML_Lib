@@ -58,7 +58,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     };
     REQUIRE_NOTHROW(xml.parse(source));
   }
-    SECTION("Attributes for no value allowed.", "[XML][Parse][[Attributes]")
+    SECTION("Attributes for empty value allowed.", "[XML][Parse][[Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
