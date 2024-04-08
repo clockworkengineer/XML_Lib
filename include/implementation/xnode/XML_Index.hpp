@@ -18,8 +18,14 @@ inline const XNode &XNode::operator[](const std::string &name) const
 {
   if (isIndexable()) {
     for (const auto &element : getChildren()) {
-      if (XRef<XElement>(element).name() == name) { return (element); }
+      if (element.isNameable() && XRef<XElement>(element).name() == name) { return (element); }
     }
+    // auto xNode = std::find_if(getChildren().begin(), getChildren().end(), [&name](const XNode &xNode) {
+    //   return (XRef<XElement>(xNode).name() == name);
+    // });
+    // if (xNode!= getChildren().end()) {
+    //   return(*xNode);
+    // }
   }
   throw XNode::Error("Invalid index used to access array.");
 }
@@ -44,8 +50,11 @@ inline const XElement &XElement::operator[](int index) const
 // =========================
 inline const XMLAttribute &XElement::operator[](const std::string &name) const
 {
-  return (*std::find_if(
-    attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return (attr.getName() == name); }));
+  auto attribute = std::find_if(
+    attributes.begin(), attributes.end(), [&name](const XMLAttribute &attr) { return (attr.getName() == name); });
+
+  if (attribute != attributes.end()) { return (*attribute); }
+  throw XNode::Error("Attribute '" + name + "' does not exist.");
 }
 
 }// namespace XML_Lib

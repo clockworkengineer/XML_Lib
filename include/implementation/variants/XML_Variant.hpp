@@ -9,6 +9,7 @@ struct Variant
   // XNode Types
 protected:
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
+
 public:
   // Constructors/Destructors
   explicit Variant(Variant::Type nodeType = Variant::Type::base) : xmlNodeType(nodeType) {}
@@ -18,6 +19,7 @@ public:
   Variant &operator=(Variant &&other) = default;
   virtual ~Variant() = default;
   // Check what XNode variant
+  [[nodiscard]] bool isNameable() const { return ((xmlNodeType >= Type::root) && (xmlNodeType <= Type::element)); }
   [[nodiscard]] bool isIndexable() const { return (xmlNodeType <= Type::element); }
   [[nodiscard]] bool isProlog() const { return (xmlNodeType == Type::prolog); }
   [[nodiscard]] bool isDeclaration() const { return (xmlNodeType == Type::declaration); }

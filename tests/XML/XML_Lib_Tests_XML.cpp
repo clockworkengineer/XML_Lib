@@ -44,11 +44,59 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     REQUIRE(xRoot["attr1"].getName() == "attr1");
     REQUIRE(xRoot["attr1"].getParsed() == "1");
   }
+  SECTION("Access non existant element attribute.", "[XML][API][Attribute]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root attr2='2'></root>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xRoot.getAttributeList().size() == 1);
+    REQUIRE_THROWS_WITH(xRoot["attr1"].getName(), "XNode Error: Attribute 'attr1' does not exist.");
+  }
+  SECTION("Access root element multiple attributea.", "[XML][API][Attribute]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root attr1='1' attr2='2' attr3='3'></root>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xRoot.getAttributeList().size() == 3);
+    REQUIRE(xRoot["attr1"].getName() == "attr1");
+    REQUIRE(xRoot["attr1"].getParsed() == "1");
+    REQUIRE(xRoot["attr2"].getName() == "attr2");
+    REQUIRE(xRoot["attr2"].getParsed() == "2");
+    REQUIRE(xRoot["attr3"].getName() == "attr3");
+    REQUIRE(xRoot["attr3"].getParsed() == "3");
+  }
   SECTION("Use name for accessing elements", "[XML][API][ByName]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>"
       "<AddressBook>"
+      "<Address>"
+      "Flat A, West Road, Wolverhampton, W1SSX9"
+      "</Address>"
+      "</AddressBook>"
+    };
+    xml.parse(source);
+    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XRef<XElement>(xml.root()["Address"]).name() == "Address");
+    REQUIRE(XRef<XElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+  }
+  SECTION("Use name for accessing elements with other node types in play", "[XML][API][ByName]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>"
+      "<AddressBook>"
+      "<first/>"
+      "Content "
+      "Content "
+      "<!-- comment -->"
+      "<!-- comment -->"
+      "<!-- comment -->"
       "<Address>"
       "Flat A, West Road, Wolverhampton, W1SSX9"
       "</Address>"

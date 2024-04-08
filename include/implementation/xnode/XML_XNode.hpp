@@ -24,6 +24,7 @@ struct XNode
   ~XNode() = default;
   // Check what XNode variant
   [[nodiscard]] bool isEmpty() const { return (xmlVariant.get() == nullptr); }
+  [[nodiscard]] bool isNameable() const { return (xmlVariant->isNameable()); }
   [[nodiscard]] bool isIndexable() const { return (xmlVariant->isIndexable()); }
   [[nodiscard]] bool isProlog() const { return (xmlVariant->isProlog()); }
   [[nodiscard]] bool isDeclaration() const { return (xmlVariant->isDeclaration()); }
@@ -35,7 +36,7 @@ struct XNode
   [[nodiscard]] bool isComment() const { return (xmlVariant->isComment()); }
   [[nodiscard]] bool isCDATA() const { return (xmlVariant->isCDATA()); }
   [[nodiscard]] bool isPI() const { return (xmlVariant->isPI()); }
-  [[nodiscard]] bool isDTD() const { return ( xmlVariant->isDTD()); }
+  [[nodiscard]] bool isDTD() const { return (xmlVariant->isDTD()); }
   // Return XNode contents
   [[nodiscard]] std::string getContents() const { return (xmlVariant->getContents()); }
   // XNode Index overloads
