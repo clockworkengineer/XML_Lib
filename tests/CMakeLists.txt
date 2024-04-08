@@ -33,6 +33,7 @@ set(TEST_SOURCES
     ./XML/XML_Lib_Tests_Parse_CDATA.cpp
     ./XML/XML_Lib_Tests_Parse_Namespace.cpp
     ./XML/XML_Lib_Tests_Stringify.cpp
+    ./XML/XML_Lib_Tests_XML.cpp
     ./XML/XML_Lib_Tests_Helper.cpp
     ./DTD/XML_Lib_Tests_DTD_Parse_Misc.cpp
     ./DTD/XML_Lib_Tests_DTD_Parse_Entity.cpp
