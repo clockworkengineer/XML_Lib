@@ -27,6 +27,8 @@ inline std::string Variant::getContents() const
       }
     } else if (xNode.isCDATA()) {
       result += XRef<XCDATA>(xNode).CDATA();
+    } else if (xNode.isElement()) {
+         result += xNode.getContents();
     }
   }
   return (result);

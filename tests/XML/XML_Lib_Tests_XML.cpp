@@ -107,4 +107,22 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     REQUIRE(XRef<XElement>(xml.root()["Address"]).name() == "Address");
     REQUIRE(XRef<XElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
+  SECTION("Use name for accessing nested elements", "[XML][API][ByName]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>"
+      "<AddressBook>"
+      "<Name><First>John</First> <Surname>Doe</Surname></Name>"
+      "<Address> "
+      "Flat A, West Road, Wolverhampton, W1SSX9"
+      "</Address>"
+      "</AddressBook>"
+    };
+    xml.parse(source);
+    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
+    REQUIRE(XRef<XElement>(xml.root()["Name"]["First"]).getContents() == "John");
+    REQUIRE(XRef<XElement>(xml.root()["Name"]["Surname"]).getContents() == "Doe");
+    REQUIRE(XRef<XElement>(xml.root()["Name"]).getContents() == "John Doe");
+    REQUIRE(XRef<XElement>(xml.root()).getContents() == "John Doe Flat A, West Road, Wolverhampton, W1SSX9");
+  }
 }
