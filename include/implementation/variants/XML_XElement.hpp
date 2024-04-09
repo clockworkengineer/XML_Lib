@@ -49,7 +49,7 @@ struct XElement : Variant
   [[nodiscard]] const XElement &operator[](int index) const;
   [[nodiscard]] const XMLAttribute &operator[](const std::string &name) const;
   // Return Variant contents
-  virtual [[nodiscard]] std::string getContents() const
+   [[nodiscard]] std::string getContents() const override
   {
     std::string result;
     for (const auto &xNode : getChildren()) { result += xNode.getContents(); }

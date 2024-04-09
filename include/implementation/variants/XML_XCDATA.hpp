@@ -16,7 +16,7 @@ struct XCDATA : Variant
   // Return reference to cdata
   [[nodiscard]] const std::string &CDATA() const { return (cdata); }
   // Return Variant contents
-  virtual [[nodiscard]] std::string getContents() const { return(cdata); }
+  [[nodiscard]] std::string getContents() const override { return(cdata); }
   
 private:
   std::string cdata;

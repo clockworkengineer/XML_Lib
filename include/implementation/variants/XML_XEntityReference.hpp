@@ -14,7 +14,7 @@ struct XEntityReference : Variant
   // Return reference to entity reference
   [[nodiscard]] const XMLValue &value() const { return (entityReferenceValue); }
   // Return Variant contents
-  virtual [[nodiscard]] std::string getContents() const
+  [[nodiscard]] std::string getContents() const override
   {
     if (std::string result; !getChildren().empty()) {
       for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
