@@ -15,7 +15,9 @@ struct XCDATA : Variant
   ~XCDATA() = default;
   // Return reference to cdata
   [[nodiscard]] const std::string &CDATA() const { return (cdata); }
-
+  // Return Variant contents
+  virtual [[nodiscard]] std::string getContents() const { return(cdata); }
+  
 private:
   std::string cdata;
 };

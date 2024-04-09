@@ -23,7 +23,7 @@ struct XElement : Variant
   // Is an attribute present ?
   [[nodiscard]] bool isAttributePresent(const std::string &attributeName) const
   {
-    return (XMLAttribute::isAttrubutePresent(attributes,attributeName));
+    return (XMLAttribute::isAttrubutePresent(attributes, attributeName));
   }
   // Add an attribute
   void addAttribute(const std::string &name, const XMLValue &value) const { attributes.emplace_back(name, value); }
@@ -48,6 +48,13 @@ struct XElement : Variant
   // XElement Index overloads
   [[nodiscard]] const XElement &operator[](int index) const;
   [[nodiscard]] const XMLAttribute &operator[](const std::string &name) const;
+  // Return Variant contents
+  virtual [[nodiscard]] std::string getContents() const
+  {
+    std::string result;
+    for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
+    return (result);
+  }
 
 private:
   std::string elementName;
