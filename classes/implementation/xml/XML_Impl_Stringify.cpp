@@ -18,11 +18,11 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xNode">XNode to convert into XML.</param>
 /// <param name="destination">XML destination stream.</param>
-void XML_Impl::stringifyXML(const XNode &xNode, IDestination &destination)
+void XML_Impl::stringify(const XNode &xNode, IDestination &destination)
 {
   // XML prolog
   if (xNode.isProlog()) {
-    for (auto &child : xNode.getChildren()) { stringifyXML(child, destination); }
+    for (auto &child : xNode.getChildren()) { stringify(child, destination); }
   }
   // XML declaration
   else if (xNode.isDeclaration()) {
@@ -39,7 +39,7 @@ void XML_Impl::stringifyXML(const XNode &xNode, IDestination &destination)
     }
     if (!xNode.isSelf()) {
       destination.add(">");
-      for (auto &child : xNode.getChildren()) { stringifyXML(child, destination); }
+      for (auto &child : xNode.getChildren()) { stringify(child, destination); }
       destination.add("</" + xElement.name() + ">");
     } else {
       destination.add("/>");
@@ -77,11 +77,4 @@ void XML_Impl::stringifyXML(const XNode &xNode, IDestination &destination)
     throw XML::Error("Invalid XNode encountered during stringify.");
   }
 }
-
-/// <summary>
-/// Recursively parse XNode passed in to produce XML output on a
-/// destination stream in UTF-8 encoding.
-/// </summary>
-/// <param name="destination">XML destination stream.</param>
-void XML_Impl::stringifyXML(IDestination &destination) { stringifyXML(prolog(), destination); }
 }// namespace XML_Lib

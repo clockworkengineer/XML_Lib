@@ -343,20 +343,4 @@ XNode XML_Impl::parseProlog(ISource &source)
   }
   return (xProlog);
 }
-
-/// <summary>
-/// Parse XML from source stream.
-/// </summary>
-XNode XML_Impl::parseXML(ISource &source)
-{
-  entityMapper->resetToDefault();
-  auto xProlog = parseProlog(source);
-  if (source.match("<")) {
-    xProlog.addChild(parseElement(source, {}));
-  } else {
-    throw XML::SyntaxError(source.getPosition(), "Missing root element.");
-  }
-  parseEpilog(source, xProlog);
-  return (xProlog);
-}
 }// namespace XML_Lib

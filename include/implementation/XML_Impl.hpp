@@ -49,10 +49,8 @@ private:
   XNode parseDTD(ISource &source);
   XNode parseProlog(ISource &source);
   void parseEpilog(ISource &source, XNode &xProlog);
-  XNode parseXML(ISource &source);
   // XML Stringification
-  void stringifyXML(const XNode &xNode, IDestination &destination);
-  void stringifyXML(IDestination &destination);
+  void stringify(const XNode &xNode, IDestination &destination);
   // Miscellaneous
   void resetWhiteSpace(XNode &xNode);
   void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
