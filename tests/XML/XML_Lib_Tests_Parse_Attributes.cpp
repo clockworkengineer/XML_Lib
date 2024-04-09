@@ -57,8 +57,17 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "</AddressBook>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
+    REQUIRE(XRef<XElement>(xml.root())["number"].getParsed() == "15");
   }
-    SECTION("Attributes for empty value allowed.", "[XML][Parse][[Attributes]")
+    SECTION("Self closing element with attributes are allowed.", "[XML][Parse][[Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook number='15'/>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("Attributes for empty value allowed.", "[XML][Parse][[Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
