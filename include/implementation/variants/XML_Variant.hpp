@@ -39,7 +39,7 @@ public:
   void addChild(XNode &child) { children.push_back(std::move(child)); }
   void addChild(XNode &&child) { children.push_back(std::move(child)); }
   // Return Variant contents
-  virtual [[nodiscard]] std::string getContents() const { return (""); }
+  [[nodiscard]] virtual std::string getContents() const { return (""); }
 
 private:
   // Variant type

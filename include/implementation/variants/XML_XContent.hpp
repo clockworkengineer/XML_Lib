@@ -22,7 +22,7 @@ struct XContent : Variant
   // Set whitespace boolean
   void setIsWhiteSpace(bool isWhiteSpace) { whiteSpace = isWhiteSpace; }
   // Return Variant contents
-  virtual [[nodiscard]] std::string getContents() const { return (xmlContent); }
+  [[nodiscard]] virtual std::string getContents() const { return (xmlContent); }
 
 private:
   std::string xmlContent;
