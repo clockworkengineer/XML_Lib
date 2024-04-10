@@ -31,9 +31,7 @@ struct XElement : Variant
   [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return (attributes); }
   [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
   {
-    return (std::find_if(namespaces.rbegin(), namespaces.rend(), [&name](const XMLAttribute &attr) {
-      return (attr.getName() == name);
-    }) != namespaces.rend());
+    return (XMLAttribute::isAttrubutePresent(namespaces, name));
   }
   // Is a namespace present ?
   [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const
@@ -49,7 +47,7 @@ struct XElement : Variant
   [[nodiscard]] const XElement &operator[](int index) const;
   [[nodiscard]] const XMLAttribute &operator[](const std::string &name) const;
   // Return Variant contents
-   [[nodiscard]] std::string getContents() const override
+  [[nodiscard]] std::string getContents() const override
   {
     std::string result;
     for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
