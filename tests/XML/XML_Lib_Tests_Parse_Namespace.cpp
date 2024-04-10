@@ -102,15 +102,22 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error: Attribute 'xmlns:f' defined more than once within start tag.");
   }
-  SECTION("A root document defining one namespace tha is overridden by a child", "[XML][Parse][Namespace]")
+  SECTION("A root document defining one namespace that is overridden by a child", "[XML][Parse][Namespace]")
   {
     BufferSource source{
       "<root xmlns:h=\"http://www.w3.org/TR/html4/\" xmlns:f=\"https://www.w3schools.com/furniture\">\n"
       "<h:table><h:tr><h:td>Apples</h:td><h:td>Bananas</h:td></h:tr></h:table>\n"
-      "<f:table xmlns:f=\"https://www.w3schools.com/furniture\">\n"
+      "<f:table xmlns:f=\"https://www.w3schools.com/furniture/child\">\n"
       "<f:name>African Coffee Table</f:name><f:width>80</f:width>\n"
       "<f:length>120</f:length></f:table></root>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xRoot[0].name() == "h:table");
+    REQUIRE(xRoot[0].getNamespaceList().size() == 2);
+    REQUIRE(xRoot[0].getNameSpace("h").getParsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[1].getNamespaceList().size() == 3);
+    REQUIRE(xRoot[1].name() == "f:table");
+    REQUIRE(xRoot[1].getNameSpace("f").getParsed() == "https://www.w3schools.com/furniture/child");
   }
 }
