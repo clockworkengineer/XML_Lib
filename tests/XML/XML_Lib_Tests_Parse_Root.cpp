@@ -31,7 +31,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
-      "<AddressBook> </AddressBook>\n"
+      "<AddressBook></AddressBook>\n"
     };
     xml.parse(source);
     auto &xDeclaration = XRef<XDeclaration>(xml.declaration());

@@ -116,6 +116,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNamespaceList().size() == 2);
     REQUIRE(xRoot[0].getNameSpace("h").getParsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0].getNameSpace("f").getParsed() == "https://www.w3schools.com/furniture");
     REQUIRE(xRoot[1].getNamespaceList().size() == 3);
     REQUIRE(xRoot[1].name() == "f:table");
     REQUIRE(xRoot[1].getNameSpace("f").getParsed() == "https://www.w3schools.com/furniture/child");
