@@ -33,3 +33,55 @@ TEST_CASE("Sample XML files to read and parse.", "[XML][Parse][File]")
     REQUIRE_NOTHROW(xml.parse(source));
   }
 }
+
+TEST_CASE("Check file format API.", "[XML][File][Format]")
+{
+  XML xml;
+  SECTION("Check UTF-8 file.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile016.xml");
+    REQUIRE(format == XML::Format::utf8);
+  }
+  SECTION("Check UTF-8 file with byte order mark.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile017.xml");
+    REQUIRE(format == XML::Format::utf8BOM);
+  }
+  SECTION("Check UTF-16BE file with byte order mark.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile018.xml");
+    REQUIRE(format == XML::Format::utf16BE);
+  }
+  SECTION("Check UTF-16LE file with byte order mark.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile019.xml");
+    REQUIRE(format == XML::Format::utf16LE);
+  }
+  SECTION("Check UTF-8 file and parse.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile016.xml");
+    REQUIRE(format == XML::Format::utf8);
+    REQUIRE_NOTHROW(xml.parse(FileSource("./files/testfile016.xml")));
+  }
+  SECTION("Check UTF-8 file with byte order mark and parse.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile017.xml");
+    REQUIRE(format == XML::Format::utf8BOM);
+    REQUIRE_THROWS_WITH(xml.parse(FileSource("./files/testfile017.xml")),
+      "XML Syntax Error [Line: 1 Column: 1] Content detected before root element.");
+  }
+  SECTION("Check UTF-16BE file with byte order mark.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile018.xml");
+    REQUIRE(format == XML::Format::utf16BE);
+    REQUIRE_THROWS_WITH(xml.parse(FileSource("./files/testfile017.xml")),
+      "XML Syntax Error [Line: 1 Column: 1] Content detected before root element.");
+  }
+  SECTION("Check UTF-16LE file with byte order mark.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile019.xml");
+    REQUIRE(format == XML::Format::utf16LE);
+    REQUIRE_THROWS_WITH(xml.parse(FileSource("./files/testfile017.xml")),
+      "XML Syntax Error [Line: 1 Column: 1] Content detected before root element.");
+  }
+}

@@ -95,4 +95,10 @@ void XML::toFile(const std::string &fileName, const std::string &XMLString, XML:
 {
   //   XML_Impl::toFile(fileName, XMLString, format);
 }
+/// <summary>
+/// Return format of XML file.
+/// </summary>
+/// <param name="fileName">XML file name</param>
+/// <returns>XML file format.</returns>
+XML::Format XML::getFileFormat(const std::string &fileName) { return (XML_Impl::getFileFormat(fileName)); }
 }// namespace XML_Lib
