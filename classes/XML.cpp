@@ -79,21 +79,17 @@ void XML::stringify(IDestination &&destination) { implementation->stringify(dest
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML string.</returns>
-const std::string XML::fromFile(const std::string &fileName)
-{
-  // return (XML_Impl::fromFile(fileName));
-  return("");
-}
+const std::string XML::fromFile(const std::string &fileName) { return (XML_Impl::fromFile(fileName)); }
 
 /// <summary>
 /// Create an XML file and write XML string to it.
 /// </summary>
 /// <param name="fileName">XML file name</param>
-/// <param name="XMLString">XML string</param>
+/// <param name="xmlString">XML string</param>
 /// <param name="format">XML file format</param>
-void XML::toFile(const std::string &fileName, const std::string &XMLString, XML::Format format)
+void XML::toFile(const std::string &fileName, const std::string &xmlString, XML::Format format)
 {
-  //   XML_Impl::toFile(fileName, XMLString, format);
+  XML_Impl::toFile(fileName, xmlString, format);
 }
 /// <summary>
 /// Return format of XML file.
