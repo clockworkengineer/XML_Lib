@@ -72,4 +72,27 @@ void XML::parse(ISource &&source) { implementation->parse(source); }
 /// <param name="destination">XML destination stream.</param>
 void XML::stringify(IDestination &destination) { implementation->stringify(destination); }
 void XML::stringify(IDestination &&destination) { implementation->stringify(destination); }
+
+/// <summary>
+/// Open a XML file, read its contents into a string buffer and return
+/// the buffer.
+/// </summary>
+/// <param name="fileName">XML file name</param>
+/// <returns>XML string.</returns>
+const std::string XML::fromFile(const std::string &fileName)
+{
+  // return (XML_Impl::fromFile(fileName));
+  return("");
+}
+
+/// <summary>
+/// Create an XML file and write XML string to it.
+/// </summary>
+/// <param name="fileName">XML file name</param>
+/// <param name="XMLString">XML string</param>
+/// <param name="format">XML file format</param>
+void XML::toFile(const std::string &fileName, const std::string &XMLString, XML::Format format)
+{
+  //   XML_Impl::toFile(fileName, XMLString, format);
+}
 }// namespace XML_Lib

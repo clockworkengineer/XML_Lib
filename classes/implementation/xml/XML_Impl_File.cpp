@@ -1,0 +1,168 @@
+//
+// Class: XML_Impl_File
+//
+// Description: XML class implementation layer to read and write
+// XML files in a number of different formats. Note that these
+// methods are all static and do not need a XML object to invoke.
+// For more information on byte marks and their meaning check out link
+// https://en.wikipedia.org/wiki/Byte_order_mark.
+//
+// Dependencies: C++20 - Language standard features used.
+//
+
+#include "XML.hpp"
+#include "XML_Impl.hpp"
+
+namespace XML_Lib {
+
+/// <summary>
+/// Write XML string to a file stream.
+/// </summary>
+/// <param name="XMLFile">XML file stream</param>
+/// <param name="xmlString">XML string</param>
+/// <param name="format">XML file format</param>
+void writeXMLString(std::ofstream &XMLFile, const std::string &xmlString) { XMLFile << xmlString; }
+void writeXMLString(std::ofstream &XMLFile, const std::u16string &xmlString, XML::Format format)
+{
+  if (format == XML::Format::utf16BE) {
+    XMLFile << static_cast<unsigned char>(0xFE) << static_cast<unsigned char>(0xFF);
+    for (auto ch : xmlString) {
+      XMLFile.put(static_cast<unsigned char>(ch >> 8));
+      XMLFile.put(static_cast<unsigned char>(ch));
+    }
+  } else if (format == XML::Format::utf16LE) {
+    XMLFile << static_cast<unsigned char>(0xFF) << static_cast<unsigned char>(0xFE);
+    for (auto ch : xmlString) {
+      XMLFile.put(static_cast<unsigned char>(ch));
+      XMLFile.put(static_cast<unsigned char>(ch >> 8));
+    }
+  } else {
+    throw XML::Error("Unsupported XML file format (Byte Order Mark) specified in call to writeXMLString().");
+  }
+}
+
+/// <summary>
+/// Read XML string from a file stream.
+/// </summary>
+/// <param name="XMLFile">XML file stream</param>
+/// <param name="format">XML file format</param>
+/// <returns>XML string.</returns>
+std::string readXMLString(std::ifstream &XMLFile)
+{
+  std::ostringstream XMLFileBuffer;
+  XMLFileBuffer << XMLFile.rdbuf();
+  return (XMLFileBuffer.str());
+}
+const std::u16string readXMLString(std::ifstream &XMLFile, XML::Format format)
+{
+  std::u16string utf16String;
+  // Move past byte order mark
+  XMLFile.seekg(2);
+  if (format == XML::Format::utf16BE)
+    while (true) {
+      char16_t ch16 = static_cast<unsigned char>(XMLFile.get()) << 8;
+      ch16 |= static_cast<unsigned char>(XMLFile.get());
+      if (XMLFile.eof()) break;
+      utf16String.push_back(ch16);
+    }
+  else if (format == XML::Format::utf16LE) {
+    while (true) {
+      char16_t ch16 = static_cast<unsigned char>(XMLFile.get());
+      ch16 |= static_cast<unsigned char>(XMLFile.get()) << 8;
+      if (XMLFile.eof()) break;
+      utf16String.push_back(ch16);
+    }
+  } else {
+    throw XML::Error("Unsupported XML file format (Byte Order Mark) specified in call to readXMLString().");
+  }
+  return (utf16String);
+}
+
+/// <summary>
+/// Return format of XML file after checking for any byte order marks at
+/// the beginning of the XML file.
+/// </summary>
+/// <param name="fileName">XML file name</param>
+/// <returns>XML file format.</returns>
+XML::Format XML_Impl::getFileFormat(const std::string &fileName)
+{
+  uint32_t byteOrderMark;
+  std::ifstream XMLFile{ fileName, std::ios_base::binary };
+  byteOrderMark = static_cast<unsigned char>(XMLFile.get()) << 24;
+  byteOrderMark |= static_cast<unsigned char>(XMLFile.get()) << 16;
+  byteOrderMark |= static_cast<unsigned char>(XMLFile.get()) << 8;
+  byteOrderMark |= static_cast<unsigned char>(XMLFile.get());
+  if (byteOrderMark == 0x0000FEFF) { return (XML::Format::utf32BE); }
+  if (byteOrderMark == 0xFFFE0000) { return (XML::Format::utf32LE); }
+  if ((byteOrderMark & 0xFFFFFF00) == 0xEFBBBF00) { return (XML::Format::utf8BOM); }
+  if ((byteOrderMark & 0xFFFF0000) == 0xFEFF0000) { return (XML::Format::utf16BE); }
+  if ((byteOrderMark & 0xFFFF0000) == 0xFFFE0000) { return (XML::Format::utf16LE); }
+  XMLFile.close();
+  return (XML::Format::utf8);
+}
+
+/// <summary>
+/// Open a XML file, read its contents into a string buffer and return
+/// the buffer. Note any CRLF in the source file are translated to just a
+/// LF internally.
+/// </summary>
+/// <param name="fileName">XML file name</param>
+/// <returns>XML string.</returns>
+const std::string XML_Impl::fromFile(const std::string &fileName)
+{
+  const char *kCRLF = "\x0D\x0A";
+  const char *kLF = "\x0A";
+  // Get file format
+  XML::Format format = getFileFormat(fileName);
+  // Read in XML
+  std::ifstream XMLFile{ fileName, std::ios_base::binary };
+  std::string translated;
+  switch (format) {
+  case XML::Format::utf8BOM:
+    XMLFile.seekg(3);// Move past byte order mark
+  case XML::Format::utf8:
+    translated = readXMLString(XMLFile);
+    break;
+  case XML::Format::utf16BE:
+  case XML::Format::utf16LE:
+    translated = toUtf8(readXMLString(XMLFile, format));
+    break;
+  default:
+    throw XML::Error("Unsupported XML file format (Byte Order Mark) encountered.");
+  }
+  XMLFile.close();
+  // Translate CRLF -> LF
+  size_t pos = translated.find(kCRLF);
+  while (pos != std::string::npos) {
+    translated.replace(pos, 2, kLF);
+    pos = translated.find(kCRLF, pos + 1);
+  }
+  return (translated);
+}
+
+/// <summary>
+/// Create an XML file and write XML string to it.
+/// </summary>
+/// <param name="fileName">XML file name</param>
+/// <param name="xmlString">XML string</param>
+/// <param name="format">XML file format</param>
+void XML_Impl::toFile(const std::string &fileName, const std::string &xmlString, XML::Format format)
+{
+  std::ofstream XMLFile{ fileName, std::ios::binary };
+  switch (format) {
+  case XML::Format::utf8BOM:
+    XMLFile << static_cast<unsigned char>(0xEF) << static_cast<unsigned char>(0xBB)
+             << static_cast<unsigned char>(0xBF);
+  case XML::Format::utf8:
+    writeXMLString(XMLFile, xmlString);
+    break;
+  case XML::Format::utf16BE:
+  case XML::Format::utf16LE:
+    writeXMLString(XMLFile, toUtf16(xmlString), format);
+    break;
+  default:
+    throw XML::Error("Unsupported XML file format (Byte Order Mark) specified.");
+  }
+  XMLFile.close();
+}
+}// namespace XML_Lib

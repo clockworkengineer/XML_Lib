@@ -38,6 +38,8 @@ public:
       : std::runtime_error("XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + message)
     {}
   };
+  // XML file formats
+  enum class Format : uint8_t { utf8 = 0, utf8BOM, utf16BE, utf16LE, utf32BE, utf32LE };
   // Constructors/Destructors
   XML();
   XML(const XML &other) = delete;
@@ -63,7 +65,12 @@ public:
   // Stringify XML object to destination text
   void stringify(IDestination &destination);
   void stringify(IDestination &&destination);
-
+  // Read/Write XML from file
+  static const std::string fromFile(const std::string &fileName);
+  static void toFile(const std::string &fileName, const std::string &xmlString, Format format = Format::utf8);
+  // Get JSON file format
+  static Format getFileFormat(const std::string &fileName);
+  
 private:
   const std::unique_ptr<XML_Impl> implementation;
 };

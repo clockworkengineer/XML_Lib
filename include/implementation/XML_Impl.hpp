@@ -56,7 +56,12 @@ private:
   void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
   void addContentToElementChildList(XNode &xNode, const std::string &content);
   void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<XMLAttribute> &namespaces);
-
+  // Read/Write XML from file
+  static const std::string fromFile(const std::string &fileName);
+  static void toFile(const std::string &fileName, const std::string &xmlString, XML::Format format);
+  // Get XML file format
+  static XML::Format getFileFormat(const std::string &fileName);
+  
   bool hasDTD{ false };
   bool hasRoot { false };
   XNode xmlRoot;

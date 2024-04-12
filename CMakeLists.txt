@@ -25,6 +25,7 @@ set(XML_LIBRARY_NAME ${PROJECT_NAME})
 set(XML_SOURCES
   ./classes/XML.cpp
   ./classes/implementation/xml/XML_Impl.cpp
+  ./classes/implementation/xml/XML_Impl_File.cpp
   ./classes/implementation/xml/XML_Impl_Parse.cpp
   ./classes/implementation/xml/XML_Impl_Misc.cpp
   ./classes/implementation/xml/XML_Impl_Stringify.cpp
