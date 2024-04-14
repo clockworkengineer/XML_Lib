@@ -102,17 +102,31 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     REQUIRE(format == XML::Format::utf16LE);
     REQUIRE_NOTHROW(xml.parse(BufferSource(xml.fromFile("./files/testfile019.xml"))));
   }
-    SECTION("Check UTF-8 file with byte order mark load into buffer, parse then save it as UTF16BE.", "[XML][File][Format]")
+  SECTION(
+    "Check UTF-8 file with byte order mark load into buffer, parse then save it as UTF-16BE.", "[XML][File][Format]")
   {
     auto format = XML::getFileFormat("./files/testfile017.xml");
     REQUIRE(format == XML::Format::utf8BOM);
     REQUIRE_NOTHROW(xml.parse(BufferSource(xml.fromFile("./files/testfile017.xml"))));
+    XRef<XDeclaration>(xml.declaration()).setEncoding("UTF-16");
     BufferDestination utf8xml;
     xml.stringify(utf8xml);
     XML::toFile(kGeneratedXMLFile, utf8xml.getBuffer(), XML::Format::utf16BE);
-    auto utf16be = XML::fromFile(kGeneratedXMLFile);
-    auto newFormat = XML::getFileFormat(kGeneratedXMLFile);
-    REQUIRE(newFormat == XML::Format::utf16BE);
+    REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf16BE);
+    xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
+    REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-16");
+  }
+  SECTION(
+    "Check UTF-8 file with byte order mark load into buffer, parse then save it as UTF-16LE.", "[XML][File][Format]")
+  {
+    auto format = XML::getFileFormat("./files/testfile017.xml");
+    REQUIRE(format == XML::Format::utf8BOM);
+    REQUIRE_NOTHROW(xml.parse(BufferSource(xml.fromFile("./files/testfile017.xml"))));
+    XRef<XDeclaration>(xml.declaration()).setEncoding("UTF-16");
+    BufferDestination utf8xml;
+    xml.stringify(utf8xml);
+    XML::toFile(kGeneratedXMLFile, utf8xml.getBuffer(), XML::Format::utf16LE);
+    REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf16LE);
     xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-16");
   }
