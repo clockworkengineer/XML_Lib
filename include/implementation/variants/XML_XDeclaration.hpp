@@ -20,9 +20,9 @@ struct XDeclaration : Variant
   [[nodiscard]] const std::string &encoding() const { return (xmlEncoding); }
   [[nodiscard]] const std::string &standalone() const { return (xmlStandalone); }
   // Set declaration attibutes
-  [[nodiscard]] void setVersion(const std::string &version) { xmlVersion = version; }
-  [[nodiscard]] void setEncoding(const std::string &encoding) { xmlEncoding = encoding; }
-  [[nodiscard]] void setStandalone(const std::string &standalone) { xmlStandalone = standalone; }
+  void setVersion(const std::string &version) { xmlVersion = version; }
+  void setEncoding(const std::string &encoding) { xmlEncoding = encoding; }
+  void setStandalone(const std::string &standalone) { xmlStandalone = standalone; }
 
 private:
   std::string xmlVersion;
