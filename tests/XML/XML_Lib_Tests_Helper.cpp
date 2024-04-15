@@ -27,46 +27,6 @@ std::string prefixPath(const std::string &file)
 }
 
 /// <summary>
-/// Create an XML file and write XML to it in UTF8 encoding.
-/// </summary>
-/// <param name="xmlFileName">XML file name.</param>
-/// <param name="xmlFileName">XML.</param>
-/// <returns></returns>
-void writeXMLToFileUTF8(const std::string &xmlFileName, const std::string &xmlString)
-{
-  std::remove(xmlFileName.c_str());
-  std::ofstream xmlFile;
-  xmlFile.open(xmlFileName, std::ios::binary);
-  xmlFile << xmlString;
-  xmlFile.close();
-}
-
-/// <summary>
-/// Create an XML file and write XML to it in UTF16 encoding.
-/// </summary>
-/// <param name="xmlFileName">XML file name.</param>
-/// <param name="xmlFileName">XML.</param>
-/// <returns></returns>
-void writeXMLToFileUTF16(const std::string &xmlFileName, const std::u16string &xmlString, bool be = true)
-{
-  std::remove(xmlFileName.c_str());
-  std::ofstream xmlFile;
-  char ch[2];
-  xmlFile.open(xmlFileName);
-  for (unsigned short u16 : xmlString) {
-    if (be) {
-      ch[0] = u16 >> 8;
-      ch[1] = u16 & 0xFF;
-    } else {
-      ch[0] = u16 & 0xFF;
-      ch[1] = u16 >> 8;
-    }
-    xmlFile.write(ch, 2);
-  }
-  xmlFile.close();
-}
-
-/// <summary>
 /// Convert CRLF to LF for source and check number of CR/LF left after with
 /// REQUIRE.
 /// </summary>

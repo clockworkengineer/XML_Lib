@@ -85,7 +85,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
       "<!NOTATION BMP SYSTEM \"\">\r\n"
       "]>\r\n"
       "<REPORT>\r\r </REPORT>\r\n";
-    writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
+    XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     verifyCRLFCount(source, 28, 3);
   }
@@ -120,14 +120,14 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
       "<!NOTATION BMP SYSTEM \"\">\n"
       "]>\n"
       "<REPORT>\r\r </REPORT>\n";
-    writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
+    XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     verifyCRLFCount(source, 28, 3);
   }
   SECTION("Check that FileSource is ignoring whitespace correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
-    writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
+    XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     XML_Lib::String xmlResult;
     while (source.more()) {
@@ -141,7 +141,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
   SECTION("Check that FileSource ignoreWS() at end of file does not throw but next() does.", "[XML][FileSource]")
   {
     xmlString = "<root>Test Test Test Test</root>";
-    writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
+    XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     while (source.more()) { source.next(); }
     REQUIRE_NOTHROW(source.ignoreWS());
@@ -151,7 +151,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
   SECTION("Check that FileSource match works correctly when match found or not.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
-    writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
+    XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     REQUIRE_FALSE(source.match("<root> "));
     REQUIRE_FALSE(!source.match("<root>"));
@@ -179,7 +179,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
   SECTION("Check that FileSource backup works and doesn't go negative.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
-    writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
+    XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     source.match("<root>Match1");
     REQUIRE(source.current() == ' ');
@@ -401,7 +401,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   SECTION("Check that FileSource position() and getRange works correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
-    writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
+    XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
@@ -426,7 +426,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   SECTION("Check that FileSource reset() works correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
-    writeXMLToFileUTF8(prefixPath(kGeneratedXMLFile), xmlString);
+    XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
