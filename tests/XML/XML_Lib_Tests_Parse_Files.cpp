@@ -24,7 +24,7 @@ TEST_CASE("Sample XML files to read and parse.", "[XML][Parse][File]")
   XML xml;
   SECTION("Load file into buffer and parse.", "[XML][Parse]")
   {
-    BufferSource source{ readXMLFromFileUTF8(testFile) };
+    BufferSource source{ XML::fromFile(testFile) };
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Parse XML from file.", "[XML][Parse][File]")

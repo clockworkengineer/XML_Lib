@@ -69,7 +69,7 @@ TEST_CASE("Creation and use of IDestination (File) interface.", "[XML][Parse][Fi
     file.add("65767");
     std::filesystem::path filePath(prefixPath(kGeneratedXMLFile));
     REQUIRE(std::filesystem::file_size(filePath) == 5);
-    std::string expected = readXMLFromFileUTF8(prefixPath(kGeneratedXMLFile));
+    std::string expected = XML::fromFile(prefixPath(kGeneratedXMLFile));
     REQUIRE(expected == "65767");
   }
 }

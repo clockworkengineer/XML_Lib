@@ -25,8 +25,6 @@
 // Unit test helper functions
 // ==========================
 std::string prefixPath(const std::string &file);
-std::string readXMLFromFileUTF8(const std::string &xmlFileName);
-std::u16string readXMLFromFileUTF16(const std::string &xmlFileName);
 void writeXMLToFileUTF8(const std::string &xmlFileName, const std::string &xmlString);
 void writeXMLToFileUTF16(const std::string &xmlFileName, const std::u16string &xmlString, bool be);
 void checkStringify(const std::string &xmlString);

@@ -197,7 +197,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
 }
 TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", "[XML][BufferSource]")
 {
-  std::string buffer{ readXMLFromFileUTF8(prefixPath(kSingleXMLFile)) };
+  std::string buffer{ XML::fromFile(prefixPath(kSingleXMLFile)) };
   SECTION("Create BufferSource.", "[XML][BufferSource]") { REQUIRE_NOTHROW(BufferSource(buffer)); }
   SECTION("Create BufferSource with empty buffer.", "[XML][BufferSource][Exception]")
   {

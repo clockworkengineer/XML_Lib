@@ -161,7 +161,7 @@ TEST_CASE("Stringify XML from a list of example files.", "[XML][Stringify]")
     "./files/testfile011.xml" }));
   SECTION("Load file into buffer and parse.", "[XML][Parse]")
   {
-    std::string expected{ readXMLFromFileUTF8(testFile) };
+    std::string expected{ XML::fromFile(testFile) };
     checkStringify(expected);
   }
 }
