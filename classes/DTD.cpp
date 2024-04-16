@@ -34,4 +34,10 @@ void DTD::parse(ISource &source) { implementation->parse(source); }
 /// <param name="destination">DTD destination stream.</param>
 void DTD::stringify(IDestination &destination) { implementation->stringify(destination); }
 
+/// <summary>
+/// Validate XML agaisnt DTD.
+/// </summary>
+/// <param name="destination">DTD destination stream.</param>
+void DTD::validate(const XNode &xNode) { implementation->validate(xNode); }
+
 }// namespace XML_Lib

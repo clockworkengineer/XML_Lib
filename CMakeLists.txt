@@ -31,13 +31,14 @@ set(XML_SOURCES
   ./classes/implementation/xml/XML_Impl_Stringify.cpp
   ./classes/DTD.cpp
   ./classes/implementation/dtd/DTD_Impl.cpp
+  ./classes/implementation/dtd/DTD_Impl_Validator.cpp
   ./classes/implementation/dtd/DTD_Impl_Parse.cpp
   ./classes/implementation/dtd/DTD_Impl_Parse_Content.cpp
   ./classes/implementation/dtd/DTD_Impl_Parse_External.cpp
   ./classes/implementation/common/XML_Character.cpp
   ./classes/implementation/common/XML_Parse.cpp
   ./classes/implementation/common/XML_Utility.cpp
-  ./classes/implementation/validator/DTD_Validator.cpp
+
   ./classes/implementation/entity/XML_EntityMapper.cpp
 )
 
@@ -70,7 +71,6 @@ set(XML_INCLUDES
   ./include/implementation/io/XML_Destinations.hpp
   ./include/implementation/io/XML_BufferDestination.hpp
   ./include/implementation/io/XML_FileDestination.hpp
-  ./include/implementation/validator/DTD_Validator.hpp
   ./include/implementation/XML_Impl.hpp
   ./include/implementation/xnode/XML_XNode.hpp
   ./include/implementation/xnode/XML_Reference.hpp

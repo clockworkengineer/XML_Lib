@@ -312,9 +312,11 @@ XNode XML_Impl::parseDTD(ISource &source)
 {
   if (hasDTD) { throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
   auto xNode = XNode::make<XDTD>(*entityMapper);
-  DTD dtd{ xNode };
-  dtd.parse(source);
-  validator = std::make_unique<DTD_Validator>(xNode);
+  validator = std::make_unique<DTD>(xNode);
+  validator->parse(source);
+  // DTD dtd{ xNode };
+  // dtd.parse(source);
+  // validator = std::make_unique<DTD_Validator>(xNode);
   hasDTD = true;
   return (xNode);
 }

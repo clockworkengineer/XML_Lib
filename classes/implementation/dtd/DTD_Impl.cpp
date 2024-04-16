@@ -13,7 +13,7 @@ namespace XML_Lib {
 /// <summary>
 /// DTD_Impl constructor.
 /// </summary>
-DTD_Impl::DTD_Impl(XNode &xNode) : dtdRoot(XRef<XDTD>(xNode)) {}
+DTD_Impl::DTD_Impl(XNode &xNode) : dtdRoot(XRef<XDTD>(xNode)), xDTD(XRef<XDTD>(xNode)) {}
 
 /// <summary>
 /// DTD_Impl destructor.
