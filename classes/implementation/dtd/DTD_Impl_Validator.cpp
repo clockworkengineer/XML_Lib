@@ -1,7 +1,7 @@
 //
-// Class: DTD_Validator
+// Class: DTD_Impl_Validator
 //
-// Description: XML DTD validator.
+// Description: DTD validator.
 //
 // Dependencies: C++20 - Language standard features used..
 //

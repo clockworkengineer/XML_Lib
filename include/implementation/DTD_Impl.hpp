@@ -71,7 +71,5 @@ private:
   std::set<std::string> assignedIDREFValues;
   long lineNumber = 1;
   XDTD &xDTD;
-
-  XDTD &dtdRoot;
 };
 }// namespace XML_Lib

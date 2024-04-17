@@ -64,7 +64,7 @@ private:
   bool hasDTD{ false };
   bool hasRoot{ false };
   XNode xmlRoot;
-  std::unique_ptr<DTD> validator;
+  std::unique_ptr<IValidator> validator;
   std::unique_ptr<IEntityMapper> entityMapper;
 };
 }// namespace XML_Lib
