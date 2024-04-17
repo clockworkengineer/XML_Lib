@@ -1,5 +1,5 @@
 //
-// Class: XML_Impl
+// Class: XML_Impl_Validator
 //
 // Description: XML DTD parser code.
 //
@@ -12,7 +12,6 @@
 #include "DTD_Impl.hpp"
 
 namespace XML_Lib {
-
 
 /// <summary>
 /// Parse XML DTD and return any XNode created for it.
