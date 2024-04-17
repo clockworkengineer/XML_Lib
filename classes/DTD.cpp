@@ -35,7 +35,7 @@ void DTD::parse(ISource &source) { implementation->parse(source); }
 void DTD::stringify(IDestination &destination) { implementation->stringify(destination); }
 
 /// <summary>
-/// Validate XML agaisnt DTD.
+/// Validate XML against DTD.
 /// </summary>
 /// <param name="destination">DTD destination stream.</param>
 void DTD::validate(const XNode &xNode) { implementation->validate(xNode); }

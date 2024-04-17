@@ -7,9 +7,6 @@
 #include "XML.hpp"
 #include "XML_Core.hpp"
 
-#include "DTD.hpp"
-#include "DTD_Impl.hpp"
-
 namespace XML_Lib {
 
 class XML_Impl

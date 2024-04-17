@@ -304,24 +304,6 @@ void XML_Impl::parseEpilog(ISource &source, XNode &xProlog)
 }
 
 /// <summary>
-/// Parse XML DTD and return any XNode created for it.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <returns>Pointer to DTD XNode.</returns>
-XNode XML_Impl::parseDTD(ISource &source)
-{
-  if (hasDTD) { throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
-  auto xNode = XNode::make<XDTD>(*entityMapper);
-  validator = std::make_unique<DTD>(xNode);
-  validator->parse(source);
-  // DTD dtd{ xNode };
-  // dtd.parse(source);
-  // validator = std::make_unique<DTD_Validator>(xNode);
-  hasDTD = true;
-  return (xNode);
-}
-
-/// <summary>
 /// Parse XML prolog and create the necessary element XNodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
 /// processing instructions, comments, whitespace and a Document Type Declaration (DTD).
