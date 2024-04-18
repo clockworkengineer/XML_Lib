@@ -33,7 +33,7 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
   source.ignoreWS();
   if (conditionalValue == "INCLUDE") {
     if (source.current() != '[') {
-      throw XML::SyntaxError(source.getPosition(), "Missing opening '[' from conditional.");
+      throw XML_Lib::SyntaxError(source.getPosition(), "Missing opening '[' from conditional.");
     }
     source.next();
     source.ignoreWS();
@@ -57,9 +57,9 @@ void DTD_Impl::parseConditional(ISource &source, bool includeOn)
       }
     }
   } else {
-    throw XML::SyntaxError(source.getPosition(), "Conditional value not INCLUDE or IGNORE.");
+    throw XML_Lib::SyntaxError(source.getPosition(), "Conditional value not INCLUDE or IGNORE.");
   }
-  if (source.current() != '>') { throw XML::SyntaxError(source.getPosition(), "Missing '>' terminator."); }
+  if (source.current() != '>') { throw XML_Lib::SyntaxError(source.getPosition(), "Missing '>' terminator."); }
   source.next();
   source.ignoreWS();
 }
@@ -92,9 +92,9 @@ void DTD_Impl::parseExternalContent(ISource &source)
       parseConditional(source);
       continue;
     } else {
-      throw XML::SyntaxError(source.getPosition(), "Invalid DTD tag.");
+      throw XML_Lib::SyntaxError(source.getPosition(), "Invalid DTD tag.");
     }
-    if (source.current() != '>') { throw XML::SyntaxError(source.getPosition(), "Missing '>' terminator."); }
+    if (source.current() != '>') { throw XML_Lib::SyntaxError(source.getPosition(), "Missing '>' terminator."); }
     source.next();
     source.ignoreWS();
   }
@@ -129,7 +129,7 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source)
     std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     return (XMLExternalReference{ "PUBLIC", systemID, publicID });
   }
-  throw XML::SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
+  throw XML_Lib::SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
 }
 
 /// <summary>

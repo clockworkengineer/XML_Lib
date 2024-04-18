@@ -17,7 +17,7 @@ namespace XML_Lib {
 /// <param name="error">Error text string.</param>
 void DTD_Impl::elementError(const XElement &xElement, const std::string &error)
 {
-  throw XML::ValidationError(lineNumber, "Element <" + xElement.name() + "> " + error);
+  throw XML_Lib::ValidationError(lineNumber, "Element <" + xElement.name() + "> " + error);
 }
 
 /// <summary>
@@ -262,7 +262,7 @@ void DTD_Impl::checkElements(const XNode &xNode)
     ;
   } else if (xNode.isRoot() || xNode.isElement()) {
     if (xNode.isRoot() && XRef<XElement>(xNode).name() != xDTD.getRootName()) {
-      throw XML::ValidationError(
+      throw XML_Lib::ValidationError(
         lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
@@ -277,7 +277,7 @@ void DTD_Impl::checkElements(const XNode &xNode)
       if (ch == kLineFeed) { lineNumber++; }
     }
   } else {
-    throw XML::ValidationError(lineNumber, "Invalid XMLNode encountered during validation.");
+    throw XML_Lib::ValidationError(lineNumber, "Invalid XMLNode encountered during validation.");
   }
 }
 
@@ -293,7 +293,7 @@ void DTD_Impl::checkAgainstDTD(const XNode &xNode)
   checkElements(xNode);
   for (auto &idref : assignedIDREFValues) {
     if (assignedIDValues.count(idref) == 0) {
-      throw XML::ValidationError(
+      throw XML_Lib::ValidationError(
         lineNumber, "IDREF attribute '" + idref + "' does not reference any element with the ID.");
     }
   }

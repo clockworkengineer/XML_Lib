@@ -42,7 +42,7 @@ XNode &XML_Impl::dtd()
       if (element.isDTD()) { return (element); }
     }
   }
-  throw XML::Error("No DTD found.");
+  throw XML_Lib::Error("No DTD found.");
 }
 
 /// <summary>
@@ -54,7 +54,7 @@ XNode &XML_Impl::prolog()
   if (!xmlRoot.isEmpty()) {
     return (xmlRoot);
   } else {
-    throw XML::Error("No XML has been parsed.");
+    throw XML_Lib::Error("No XML has been parsed.");
   }
 }
 
@@ -73,7 +73,7 @@ XNode &XML_Impl::root()
   for (auto &element : prolog().getChildren()) {
     if (element.isRoot() || element.isSelf()) { return (element); }
   }
-  throw XML::Error("No root element found.");
+  throw XML_Lib::Error("No root element found.");
 }
 
 /// <summary>
@@ -87,7 +87,7 @@ void XML_Impl::parse(ISource &source)
   if (source.match("<")) {
     xmlRoot.addChild(parseElement(source, {}));
   } else {
-    throw XML::SyntaxError(source.getPosition(), "Missing root element.");
+    throw XML_Lib::SyntaxError(source.getPosition(), "Missing root element.");
   }
   parseEpilog(source, xmlRoot);
 }

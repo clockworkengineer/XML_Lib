@@ -25,7 +25,7 @@ std::string parseName(ISource &source)
   }
   source.ignoreWS();
   if (!validName(name)) {
-    throw XML::SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered.");
+    throw XML_Lib::SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered.");
   }
   return (toUtf8(name));
 }
@@ -40,7 +40,9 @@ XMLValue parseEntityReference(ISource &source)
   std::string unparsed{ toUtf8(source.current()) };
   source.next();
   unparsed += parseName(source);
-  if (source.current() != ';') { throw XML::SyntaxError(source.getPosition(), "Invalidly formed entity reference."); }
+  if (source.current() != ';') {
+    throw XML_Lib::SyntaxError(source.getPosition(), "Invalidly formed entity reference.");
+  }
   unparsed += ';';
   source.next();
   return (XMLValue{ unparsed, unparsed });
@@ -59,7 +61,7 @@ XMLValue parseCharacterReference(ISource &source)
     source.next();
   }
   if (source.current() != ';') {
-    throw XML::SyntaxError(source.getPosition(), "Invalidly formed  character reference.");
+    throw XML_Lib::SyntaxError(source.getPosition(), "Invalidly formed  character reference.");
   }
   source.next();
   unparsed += ';';
@@ -75,11 +77,11 @@ XMLValue parseCharacterReference(ISource &source)
   result = std::strtol(reference.c_str(), &end, result);
   if (*end == '\0') {
     if (!validChar(static_cast<XML_Lib::Char>(result))) {
-      throw XML::SyntaxError(source.getPosition(), "Character reference invalid character.");
+      throw XML_Lib::SyntaxError(source.getPosition(), "Character reference invalid character.");
     }
     return (XMLValue{ unparsed, toUtf8(static_cast<XML_Lib::Char>(result)) });
   }
-  throw XML::SyntaxError(source.getPosition(), "Cannot convert character reference.");
+  throw XML_Lib::SyntaxError(source.getPosition(), "Cannot convert character reference.");
 }
 
 /// <summary>
@@ -100,7 +102,7 @@ XMLValue parseCharacter(ISource &source)
     source.next();
     return (XMLValue{ character, character });
   }
-  throw XML::SyntaxError(source.getPosition(), "Invalid character value encountered.");
+  throw XML_Lib::SyntaxError(source.getPosition(), "Invalid character value encountered.");
 }
 
 /// <summary>
@@ -130,7 +132,7 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
     source.ignoreWS();
     return (XMLValue{ unparsed, parsed, static_cast<char>(quote) });
   }
-  throw XML::SyntaxError(source.getPosition(), "Invalid attribute value.");
+  throw XML_Lib::SyntaxError(source.getPosition(), "Invalid attribute value.");
 }
 
 /// <summary>
@@ -153,7 +155,7 @@ XMLValue parseValue(ISource &source)
     source.ignoreWS();
     return (XMLValue{ unparsed, parsed, static_cast<char>(quote) });
   }
-  throw XML::SyntaxError(source.getPosition(), "Invalid attribute value.");
+  throw XML_Lib::SyntaxError(source.getPosition(), "Invalid attribute value.");
 }
 
 /// <summary>

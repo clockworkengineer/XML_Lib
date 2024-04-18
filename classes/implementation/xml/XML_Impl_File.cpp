@@ -37,7 +37,7 @@ void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, XML
       xmlFile.put(static_cast<unsigned char>(ch >> 8));
     }
   } else {
-    throw XML::Error("Unsupported XML file format (Byte Order Mark) specified in call to writeXMLString().");
+    throw XML_Lib::Error("Unsupported XML file format (Byte Order Mark) specified in call to writeXMLString().");
   }
 }
 
@@ -73,7 +73,7 @@ const std::u16string readXMLString(std::ifstream &xmlFile, XML::Format format)
       utf16String.push_back(ch16);
     }
   } else {
-    throw XML::Error("Unsupported XML file format (Byte Order Mark) specified in call to readXMLString().");
+    throw XML_Lib::Error("Unsupported XML file format (Byte Order Mark) specified in call to readXMLString().");
   }
   return (utf16String);
 }
@@ -128,7 +128,7 @@ const std::string XML_Impl::fromFile(const std::string &fileName)
     translated = toUtf8(readXMLString(xmlFile, format));
     break;
   default:
-    throw XML::Error("Unsupported XML file format (Byte Order Mark) encountered.");
+    throw XML_Lib::Error("Unsupported XML file format (Byte Order Mark) encountered.");
   }
   xmlFile.close();
   // Translate CRLF -> LF
@@ -151,8 +151,7 @@ void XML_Impl::toFile(const std::string &fileName, const std::string &xmlString,
   std::ofstream xmlFile{ fileName, std::ios::binary };
   switch (format) {
   case XML::Format::utf8BOM:
-    xmlFile << static_cast<unsigned char>(0xEF) << static_cast<unsigned char>(0xBB)
-             << static_cast<unsigned char>(0xBF);
+    xmlFile << static_cast<unsigned char>(0xEF) << static_cast<unsigned char>(0xBB) << static_cast<unsigned char>(0xBF);
   case XML::Format::utf8:
     writeXMLString(xmlFile, xmlString);
     break;
@@ -161,7 +160,7 @@ void XML_Impl::toFile(const std::string &fileName, const std::string &xmlString,
     writeXMLString(xmlFile, toUtf16(xmlString), format);
     break;
   default:
-    throw XML::Error("Unsupported XML file format (Byte Order Mark) specified.");
+    throw XML_Lib::Error("Unsupported XML file format (Byte Order Mark) specified.");
   }
   xmlFile.close();
 }

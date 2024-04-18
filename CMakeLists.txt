@@ -50,15 +50,16 @@ list(APPEND XML_SOURCES "./classes/implementation/common/converter/${PLATFORM}/X
 set(XML_INCLUDES
   XML_Config.hpp
   ./include/XML.hpp
+  ./include/XML_Core.hpp
   ./include/DTD.hpp
   ./include/interface/ISource.hpp
   ./include/interface/IDestination.hpp
   ./include/interface/IEntityMapper.hpp
   ./include/interface/IValidator.hpp
   ./include/interface/XML_Interfaces.hpp
-  ./include/implementation/XML_Core.hpp
   ./include/implementation/common/XML_Character.hpp
   ./include/implementation/common/XML_Converter.hpp
+  ./include/implementation/common/XML_Error.hpp
   ./include/implementation/common/XML_Parse.hpp
   ./include/implementation/common/XML_Utility.hpp
   ./include/implementation/data/XML_Value.hpp

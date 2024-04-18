@@ -20,7 +20,7 @@ namespace XML_Lib {
 /// <returns>Pointer to DTD XNode.</returns>
 XNode XML_Impl::parseDTD(ISource &source)
 {
-  if (hasDTD) { throw XML::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
+  if (hasDTD) { throw XML_Lib::SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
   auto xNode = XNode::make<XDTD>(*entityMapper);
   validator = std::make_unique<DTD>(xNode);
   validator->parse(source);
