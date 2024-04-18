@@ -10,20 +10,20 @@ using namespace XML_Lib;
 
 TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate][Elements]")
 {
-  std::string xmlString;
   XML xml;
   SECTION("XML with a DTD that specifies elements that do not contain parsable data.", "[XML][DTD][Validate][Elements]")
   {
-    BufferSource source{ xmlString =
-                           "<?xml version=\"1.0\"?>\n"
-                           "<!DOCTYPE root [\n"
-                           "<!ELEMENT root (child1)+ >\n"
-                           "<!ELEMENT child1 (#PCDATA)>\n"
-                           "]>\n"
-                           "<root>\n"
-                           "<child1>contents</child1>\n"
-                           "<child1></child1>\n"
-                           "</root>\n" };
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<!DOCTYPE root [\n"
+      "<!ELEMENT root (child1)+ >\n"
+      "<!ELEMENT child1 (#PCDATA)>\n"
+      "]>\n"
+      "<root>\n"
+      "<child1>contents</child1>\n"
+      "<child1></child1>\n"
+      "</root>\n"
+    };
     xml.parse(source);
     REQUIRE_THROWS_WITH(
       xml.validate(), "XML Validation Error [Line: 8] Element <child1> does not contain just any parsable data.");
@@ -92,18 +92,19 @@ TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate]
   }
   SECTION("XML with an empty notes tag which is valid given DTD.", "[XML][DTD][Validate][Elements]")
   {
-    BufferSource source{ xmlString =
-                           "<?xml version=\"1.0\"?>\n"
-                           "<!DOCTYPE notes [\n"
-                           "<!ELEMENT notes (note)*>\n"
-                           "<!ELEMENT note (to,from,heading,body)>\n"
-                           "<!ELEMENT to (#PCDATA)>\n"
-                           "<!ELEMENT from (#PCDATA)>\n"
-                           "<!ELEMENT heading (#PCDATA)>\n"
-                           "<!ELEMENT body (#PCDATA)>\n"
-                           "]>\n"
-                           "<notes>\n"
-                           "</notes>\n" };
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<!DOCTYPE notes [\n"
+      "<!ELEMENT notes (note)*>\n"
+      "<!ELEMENT note (to,from,heading,body)>\n"
+      "<!ELEMENT to (#PCDATA)>\n"
+      "<!ELEMENT from (#PCDATA)>\n"
+      "<!ELEMENT heading (#PCDATA)>\n"
+      "<!ELEMENT body (#PCDATA)>\n"
+      "]>\n"
+      "<notes>\n"
+      "</notes>\n"
+    };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }

@@ -83,6 +83,7 @@ XNode &XML_Impl::root()
 void XML_Impl::parse(ISource &source)
 {
   entityMapper->resetToDefault();
+  hasDTD = hasRoot = false;
   xmlRoot = parseProlog(source);
   if (source.match("<")) {
     xmlRoot.addChild(parseElement(source, {}));
@@ -98,7 +99,11 @@ void XML_Impl::parse(ISource &source)
 /// </summary>
 void XML_Impl::validate()
 {
-  if (validator.get() != nullptr) { validator->validate(prolog()); }
+  if (validator.get() != nullptr) {
+    validator->validate(prolog());
+  } else {
+    throw Error("No DTD specified for validation.");
+  }
 }
 
 /// <summary>

@@ -10,7 +10,6 @@ using namespace XML_Lib;
 
 TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][DTD][Validate][Attributes]")
 {
-  std::string xmlString;
   XML xml;
   SECTION("XML with a DTD that specifies a required attribute that is missing.", "[XML][DTD][Validate][Attributes]")
   {

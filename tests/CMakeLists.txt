@@ -42,6 +42,7 @@ set(TEST_SOURCES
     ./DTD/XML_Lib_Tests_DTD_Stringify.cpp
     ./DTD/XML_Lib_Tests_DTD_Validate_Elements.cpp
     ./DTD/XML_Lib_Tests_DTD_Validate_Attributes.cpp
+    ./DTD/XML_Lib_Tests_DTD_Validate_Misc.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})
