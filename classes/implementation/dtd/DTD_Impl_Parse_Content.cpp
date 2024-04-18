@@ -57,14 +57,14 @@ void DTD_Impl::parseElementCP(ISource &contentSpecSource, IDestination &contentS
 /// <param name="contentSpecDestination">Parsed content specification stream.</param>
 void DTD_Impl::parseElementChoice(ISource &contentSpecSource, IDestination &contentSpecDestination)
 {
-  if (contentSpecSource.current() != '(') { throw XML_Lib::SyntaxError("Invalid element content specification."); }
+  if (contentSpecSource.current() != '(') { throw SyntaxError("Invalid element content specification."); }
   contentSpecDestination.add("(");
   parseElementCP(contentSpecSource, contentSpecDestination);
   while (contentSpecSource.more() && contentSpecSource.current() == '|') {
     contentSpecDestination.add("|");
     parseElementCP(contentSpecSource, contentSpecDestination);
   }
-  if (contentSpecSource.current() != ')') { throw XML_Lib::SyntaxError("Invalid element content specification."); }
+  if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
   contentSpecDestination.add(")");
   contentSpecSource.next();
   contentSpecSource.ignoreWS();
@@ -77,13 +77,13 @@ void DTD_Impl::parseElementChoice(ISource &contentSpecSource, IDestination &cont
 /// <param name="contentSpecDestination">Parsed content specification stream.</param>
 void DTD_Impl::parseElementSequence(ISource &contentSpecSource, IDestination &contentSpecDestination)
 {
-  if (contentSpecSource.current() != '(') { throw XML_Lib::SyntaxError("Invalid element content specification."); }
+  if (contentSpecSource.current() != '(') { throw SyntaxError("Invalid element content specification."); }
   contentSpecDestination.add("(");
   parseElementCP(contentSpecSource, contentSpecDestination);
   while (contentSpecSource.more() && contentSpecSource.current() == ',') {
     parseElementCP(contentSpecSource, contentSpecDestination);
   }
-  if (contentSpecSource.current() != ')') { throw XML_Lib::SyntaxError("Invalid element content specification."); }
+  if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
   contentSpecDestination.add(")");
   contentSpecSource.next();
   contentSpecSource.ignoreWS();
@@ -127,7 +127,7 @@ void DTD_Impl::parseElementChildren(ISource &contentSpecSource, IDestination &co
       contentSpecSource.ignoreWS();
     }
   } else {
-    throw XML_Lib::SyntaxError("Invalid element content specification.");
+    throw SyntaxError("Invalid element content specification.");
   }
 }
 
@@ -148,10 +148,10 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
       if (validNameStartChar(contentSpecSource.current())) {
         parseElementName(contentSpecSource, contentSpecDestination);
       } else {
-        throw XML_Lib::SyntaxError("Invalid element content specification.");
+        throw SyntaxError("Invalid element content specification.");
       }
     }
-    if (contentSpecSource.current() != ')') { throw XML_Lib::SyntaxError("Invalid element content specification."); }
+    if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
     contentSpecDestination.add(")");
     contentSpecSource.next();
     contentSpecSource.ignoreWS();
@@ -160,12 +160,12 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
       contentSpecSource.next();
     }
     if (contentSpecSource.more() && !contentSpecSource.isWS()) {
-      throw XML_Lib::SyntaxError("Invalid element content specification.");
+      throw SyntaxError("Invalid element content specification.");
     }
   } else if (contentSpecSource.current() == ')') {
     contentSpecDestination.add(")");
   } else {
-    throw XML_Lib::SyntaxError("Invalid element content specification.");
+    throw SyntaxError("Invalid element content specification.");
   }
 }
 
@@ -190,12 +190,12 @@ XMLValue DTD_Impl::parseElementInternalpecification(const std::string &elementNa
         parseElementChildren(contentSpecSource, contentSpecDestination);
       }
     } else {
-      throw XML_Lib::SyntaxError("Invalid element content specification.");
+      throw SyntaxError("Invalid element content specification.");
     }
     return (XMLValue{ contentSpec.getUnparsed(), contentSpecDestination.getBuffer() });
-  } catch (XML_Lib::SyntaxError &e) {
+  } catch (SyntaxError &e) {
     if (e.what() == std::string("XML Syntax Error: Invalid element content specification.")) {
-      throw XML_Lib::SyntaxError("Invalid content specification for element <" + elementName + ">.");
+      throw SyntaxError("Invalid content specification for element <" + elementName + ">.");
     } else {
       throw;
     }
