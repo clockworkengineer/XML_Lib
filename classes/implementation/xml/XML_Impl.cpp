@@ -37,7 +37,7 @@ std::string XML_Impl::version()
 /// <returns>Reference to DTD XNode.</returns>
 XNode &XML_Impl::dtd()
 {
-  if (hasDTD) {
+  if ((validator.get() != nullptr)) {
     for (auto &element : prolog().getChildren()) {
       if (element.isDTD()) { return (element); }
     }
@@ -82,14 +82,19 @@ XNode &XML_Impl::root()
 /// </summary>
 void XML_Impl::parse(ISource &source)
 {
+  // Reset XML before next parse
   entityMapper->resetToDefault();
-  hasDTD = hasRoot = false;
+  hasRoot = false;
+  validator.reset();
+  // Handle prolog
   xmlRoot = parseProlog(source);
+  // Handle main body
   if (source.match("<")) {
     xmlRoot.addChild(parseElement(source, {}));
   } else {
     throw SyntaxError(source.getPosition(), "Missing root element.");
   }
+  // Handle any epilog
   parseEpilog(source, xmlRoot);
 }
 
