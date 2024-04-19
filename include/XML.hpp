@@ -19,25 +19,6 @@ struct XNode;
 class XML
 {
 public:
-  // XML error types
-  struct Error : public std::runtime_error
-  {
-    Error(const std::string &message) : std::runtime_error("XML Error: " + message) {}
-  };
-  struct SyntaxError : public std::runtime_error
-  {
-    SyntaxError(const std::string &message) : std::runtime_error("XML Syntax Error: " + message) {}
-    explicit SyntaxError(const std::pair<long, long> &position, const std::string &message = "")
-      : std::runtime_error("XML Syntax Error [Line: " + std::to_string(position.first)
-                           + " Column: " + std::to_string(position.second) + "] " + message)
-    {}
-  };
-  struct ValidationError : public std::runtime_error
-  {
-    explicit ValidationError(long lineNumber, const std::string &message = "")
-      : std::runtime_error("XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + message)
-    {}
-  };
   // XML file formats
   enum class Format : uint8_t { utf8 = 0, utf8BOM, utf16BE, utf16LE, utf32BE, utf32LE };
   // Constructors/Destructors

@@ -4,6 +4,7 @@
 // XML Core
 // ==========
 
+#include "XML_Error.hpp"
 #include "XML_Variant.hpp"
 #include "XML_XNode.hpp"
 #include "XML_Value.hpp"

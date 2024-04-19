@@ -93,10 +93,20 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 1 Column: 20] Declaration end tag not found.");
   }
-  SECTION("Parse empty XML declaration no root element.", "[XML][Parse][Declaration]")
+  SECTION("Parse  XML declaration with no root element.", "[XML][Parse][Declaration]")
   {
     BufferSource source{ "<?xml version=\"1.0\"?>\n" };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 2] Missing root element.");
+  }
+  SECTION("Parse empty XML declaration two root elements.", "[XML][Parse][Declaration]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root></root>\n"
+      "<root></root>"
+    };
+    REQUIRE_THROWS_WITH(
+      xml.parse(source), "XML Syntax Error [Line: 3 Column: 4] Extra content at the end of document.");
   }
   SECTION("Parse empty XML declaration with content before root element.", "[XML][Parse][Declaration]")
   {

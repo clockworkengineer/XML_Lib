@@ -22,6 +22,8 @@ public:
   void parse(ISource &source);
   // Stringify XML DTD to text destination
   void stringify(IDestination &destination);
+  // Validate XML against DTD
+  void validate(const XNode &xNode);
 
 private:
   void parseValidNotations(const std::string &notations);
@@ -52,6 +54,22 @@ private:
   void parseInternal(ISource &source);
   void parseDTD(ISource &source);
 
-  XDTD &dtdRoot;
+  void elementError(const XElement &xElement, const std::string &error);
+  void checkAttributes(const XNode &xNode);
+  void checkContentSpecification(const XNode &xNode);
+  void checkElement(const XNode &xNode);
+  void checkElements(const XNode &xNode);
+  bool checkIsNMTOKENOK(const std::string &nmTokenValue);
+  bool checkIsIDOK(const std::string &idValue);
+  void checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute);
+  void checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute);
+  bool checkIsPCDATA(const XNode &xNode);
+  bool checkIsEMPTY(const XNode &xNode);
+  void checkAgainstDTD(const XNode &prolog);
+
+  std::set<std::string> assignedIDValues;
+  std::set<std::string> assignedIDREFValues;
+  long lineNumber = 1;
+  XDTD &xDTD;
 };
 }// namespace XML_Lib

@@ -18,9 +18,17 @@ public:
   // Constructors/destructors
   // ========================
   virtual ~IValidator() = default;
-  // =======================
-  // Validate XML using DTD
-  // =======================
+  // =========================
+  // Parse XML DTD from source
+  // =========================
+  virtual void parse(ISource &source) = 0;
+  // =====================================
+  // Stringify XML DTD to text destination
+  // =====================================
+  virtual void stringify(IDestination &destination) = 0;
+  // =========================
+  // Validate XML agaisnt DTD
+  // =========================
   virtual void validate(const XNode &xNode) = 0;
 };
 

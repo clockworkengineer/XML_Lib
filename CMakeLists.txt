@@ -29,15 +29,17 @@ set(XML_SOURCES
   ./classes/implementation/xml/XML_Impl_Parse.cpp
   ./classes/implementation/xml/XML_Impl_Misc.cpp
   ./classes/implementation/xml/XML_Impl_Stringify.cpp
+  ./classes/implementation/xml/XML_Impl_Validator.cpp
   ./classes/DTD.cpp
   ./classes/implementation/dtd/DTD_Impl.cpp
+  ./classes/implementation/dtd/DTD_Impl_Validator.cpp
   ./classes/implementation/dtd/DTD_Impl_Parse.cpp
   ./classes/implementation/dtd/DTD_Impl_Parse_Content.cpp
   ./classes/implementation/dtd/DTD_Impl_Parse_External.cpp
   ./classes/implementation/common/XML_Character.cpp
   ./classes/implementation/common/XML_Parse.cpp
   ./classes/implementation/common/XML_Utility.cpp
-  ./classes/implementation/validator/DTD_Validator.cpp
+
   ./classes/implementation/entity/XML_EntityMapper.cpp
 )
 
@@ -48,15 +50,16 @@ list(APPEND XML_SOURCES "./classes/implementation/common/converter/${PLATFORM}/X
 set(XML_INCLUDES
   XML_Config.hpp
   ./include/XML.hpp
+  ./include/XML_Core.hpp
   ./include/DTD.hpp
   ./include/interface/ISource.hpp
   ./include/interface/IDestination.hpp
   ./include/interface/IEntityMapper.hpp
   ./include/interface/IValidator.hpp
   ./include/interface/XML_Interfaces.hpp
-  ./include/implementation/XML_Core.hpp
   ./include/implementation/common/XML_Character.hpp
   ./include/implementation/common/XML_Converter.hpp
+  ./include/implementation/common/XML_Error.hpp
   ./include/implementation/common/XML_Parse.hpp
   ./include/implementation/common/XML_Utility.hpp
   ./include/implementation/data/XML_Value.hpp
@@ -70,7 +73,6 @@ set(XML_INCLUDES
   ./include/implementation/io/XML_Destinations.hpp
   ./include/implementation/io/XML_BufferDestination.hpp
   ./include/implementation/io/XML_FileDestination.hpp
-  ./include/implementation/validator/DTD_Validator.hpp
   ./include/implementation/XML_Impl.hpp
   ./include/implementation/xnode/XML_XNode.hpp
   ./include/implementation/xnode/XML_Reference.hpp

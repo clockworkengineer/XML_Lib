@@ -74,7 +74,7 @@ void XML_Impl::stringify(const XNode &xNode, IDestination &destination)
   else if (xNode.isDTD()) {
     destination.add(XRef<XDTD>(dtd()).unparsed());
   } else {
-    throw XML::Error("Invalid XNode encountered during stringify.");
+    throw Error("Invalid XNode encountered during stringify.");
   }
 }
 }// namespace XML_Lib

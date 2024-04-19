@@ -1,12 +1,12 @@
 //
-// Class: DTD_Validator
+// Class: DTD_Impl_Validator
 //
-// Description: XML DTD validator.
+// Description: DTD validator.
 //
 // Dependencies: C++20 - Language standard features used..
 //
 
-#include "DTD_Validator.hpp"
+#include "DTD_Impl.hpp"
 
 namespace XML_Lib {
 
@@ -15,9 +15,9 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xElement">Element X Node.</param>
 /// <param name="error">Error text string.</param>
-void DTD_Validator::elementError(const XElement &xElement, const std::string &error)
+void DTD_Impl::elementError(const XElement &xElement, const std::string &error)
 {
-  throw XML::ValidationError(lineNumber, "Element <" + xElement.name() + "> " + error);
+  throw ValidationError(lineNumber, "Element <" + xElement.name() + "> " + error);
 }
 
 /// <summary>
@@ -25,7 +25,7 @@ void DTD_Validator::elementError(const XElement &xElement, const std::string &er
 /// </summary>
 /// <param name="nmTokenValue">Token value.</param>
 /// <returns>true then token is valid otherwise false.</returns>
-bool DTD_Validator::checkIsNMTOKENOK(const std::string &nmTokenValue)
+bool DTD_Impl::checkIsNMTOKENOK(const std::string &nmTokenValue)
 {
   BufferSource nmTokenValueSource(trimmString(nmTokenValue));
   while (nmTokenValueSource.more()) {
@@ -40,7 +40,7 @@ bool DTD_Validator::checkIsNMTOKENOK(const std::string &nmTokenValue)
 /// </summary>
 /// <param name="idValue">ID string value.</param>
 /// <returns>true then ID is valid otherwise false.</returns>
-bool DTD_Validator::checkIsIDOK(const std::string &idValue)
+bool DTD_Impl::checkIsIDOK(const std::string &idValue)
 {
   try {
     BufferSource idSource(idValue);
@@ -56,7 +56,7 @@ bool DTD_Validator::checkIsIDOK(const std::string &idValue)
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <returns>true if element contains characters otherwise false.</returns>
-bool DTD_Validator::checkIsPCDATA(const XNode &xNode)
+bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 {
   for (const auto &element : xNode.getChildren()) {
     if ((element.isElement()) || (element.isSelf())) { return (false); }
@@ -69,7 +69,7 @@ bool DTD_Validator::checkIsPCDATA(const XNode &xNode)
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <returns>true if element empty otherwise false.</returns>
-bool DTD_Validator::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren().empty() || xNode.isSelf()); }
+bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren().empty() || xNode.isSelf()); }
 
 /// <summary>
 ///
@@ -82,7 +82,7 @@ bool DTD_Validator::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren
 ///
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void DTD_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute)
+void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute)
 {
   const XElement &xElement = XRef<XElement>(xNode);
   bool attributePresent = xElement.isAttributePresent(attribute.name);
@@ -121,7 +121,7 @@ void DTD_Validator::checkAttributeValue(const XNode &xNode, const XDTD::Attribut
 ///
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute)
+void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute)
 {
   const XElement &xElement = XRef<XElement>(xNode);
   auto &elementAttribute = xElement[attribute.name];
@@ -198,7 +198,7 @@ void DTD_Validator::checkAttributeType(const XNode &xNode, const XDTD::Attribute
 /// it.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void DTD_Validator::checkAttributes(const XNode &xNode)
+void DTD_Impl::checkAttributes(const XNode &xNode)
 {
   const XElement &xElement = XRef<XElement>(xNode);
   for (auto &attribute : xDTD.getElement(xElement.name()).attributes) {
@@ -211,7 +211,7 @@ void DTD_Validator::checkAttributes(const XNode &xNode)
 /// Check elements structure.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void DTD_Validator::checkContentSpecification(const XNode &xNode)
+void DTD_Impl::checkContentSpecification(const XNode &xNode)
 {
   const XElement &xElement = XRef<XElement>(xNode);
   if (xDTD.getElementCount() == 0) { return; }
@@ -243,7 +243,7 @@ void DTD_Validator::checkContentSpecification(const XNode &xNode)
 /// Check elements content and associated attributes.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void DTD_Validator::checkElement(const XNode &xNode)
+void DTD_Impl::checkElement(const XNode &xNode)
 {
   checkContentSpecification(xNode);
   checkAttributes(xNode);
@@ -253,7 +253,7 @@ void DTD_Validator::checkElement(const XNode &xNode)
 /// Recursively check elements of XML document.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void DTD_Validator::checkElements(const XNode &xNode)
+void DTD_Impl::checkElements(const XNode &xNode)
 {
   if (xNode.isProlog()) {
     for (auto &element : xNode.getChildren()) { checkElements(element); }
@@ -262,7 +262,7 @@ void DTD_Validator::checkElements(const XNode &xNode)
     ;
   } else if (xNode.isRoot() || xNode.isElement()) {
     if (xNode.isRoot() && XRef<XElement>(xNode).name() != xDTD.getRootName()) {
-      throw XML::ValidationError(
+      throw ValidationError(
         lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
@@ -277,7 +277,7 @@ void DTD_Validator::checkElements(const XNode &xNode)
       if (ch == kLineFeed) { lineNumber++; }
     }
   } else {
-    throw XML::ValidationError(lineNumber, "Invalid XMLNode encountered during validation.");
+    throw ValidationError(lineNumber, "Invalid XMLNode encountered during validation.");
   }
 }
 
@@ -287,14 +287,13 @@ void DTD_Validator::checkElements(const XNode &xNode)
 /// </summary>
 /// <param name="">.</param>
 /// <param name="xNode">XNode element containing root of XML to validate.</param>
-void DTD_Validator::checkAgainstDTD(const XNode &xNode)
+void DTD_Impl::checkAgainstDTD(const XNode &xNode)
 {
   lineNumber = xDTD.getLineCount();
   checkElements(xNode);
   for (auto &idref : assignedIDREFValues) {
     if (assignedIDValues.count(idref) == 0) {
-      throw XML::ValidationError(
-        lineNumber, "IDREF attribute '" + idref + "' does not reference any element with the ID.");
+      throw ValidationError(lineNumber, "IDREF attribute '" + idref + "' does not reference any element with the ID.");
     }
   }
 }
@@ -304,5 +303,5 @@ void DTD_Validator::checkAgainstDTD(const XNode &xNode)
 /// issue with the XML that is being validated.
 /// </summary>
 /// <param name="xNode">XNode element containing root of XML to validate.</param>
-void DTD_Validator::validate(const XNode &xNode) { checkAgainstDTD(xNode); }
+void DTD_Impl::validate(const XNode &xNode) { checkAgainstDTD(xNode); }
 }// namespace XML_Lib

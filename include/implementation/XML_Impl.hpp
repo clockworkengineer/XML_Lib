@@ -7,9 +7,6 @@
 #include "XML.hpp"
 #include "XML_Core.hpp"
 
-#include "DTD.hpp"
-#include "DTD_Validator.hpp"
-
 namespace XML_Lib {
 
 class XML_Impl
@@ -61,8 +58,6 @@ private:
   void addContentToElementChildList(XNode &xNode, const std::string &content);
   void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<XMLAttribute> &namespaces);
 
-
-  bool hasDTD{ false };
   bool hasRoot{ false };
   XNode xmlRoot;
   std::unique_ptr<IValidator> validator;

@@ -18,9 +18,7 @@ namespace XML_Lib {
 void DTD_Impl::parseValidNotations(const std::string &notations)
 {
   for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|')) {
-    if (dtdRoot.getNotationCount(notation) == 0) {
-      throw XML::SyntaxError("NOTATION " + notation + " is not defined.");
-    }
+    if (xDTD.getNotationCount(notation) == 0) { throw SyntaxError("NOTATION " + notation + " is not defined."); }
   }
 }
 
@@ -33,14 +31,14 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
 {
   // Attribute cannot be ID and fixed
   if (dtdAttribute.type == (XDTD::AttributeType::id | XDTD::AttributeType::fixed)) {
-    throw XML::SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
+    throw SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
   }
   // Only one ID attribute allowed per element
   else if ((dtdAttribute.type & XDTD::AttributeType::id) != 0) {
-    if (dtdRoot.getElement(elementName).idAttributePresent) {
-      throw XML::SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
+    if (xDTD.getElement(elementName).idAttributePresent) {
+      throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
     }
-    dtdRoot.getElement(elementName).idAttributePresent = true;
+    xDTD.getElement(elementName).idAttributePresent = true;
   }
   // Enumeration contains unique values and default is valid value
   else if (dtdAttribute.type == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal)) {
@@ -49,13 +47,13 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
       if (options.find(option) == options.end()) {
         options.insert(option);
       } else {
-        throw XML::SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name
-                               + "' occurs more than once in its definition.");
+        throw SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name
+                          + "' occurs more than once in its definition.");
       }
     }
     if (options.find(dtdAttribute.value.getParsed()) == options.end()) {
-      throw XML::SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
-                             + dtdAttribute.name + "' is invalid.");
+      throw SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
+                        + dtdAttribute.name + "' is invalid.");
     }
   }
 }
@@ -78,7 +76,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
     enumerationType += parseName(source);
   }
   if (source.current() != ')') {
-    throw XML::SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type.");
+    throw SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type.");
   }
   enumerationType += toUtf8(source.current());
   source.next();
@@ -139,7 +137,7 @@ void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute)
     }
     return;
   }
-  throw XML::SyntaxError(source.getPosition(), "Invalid attribute type specified.");
+  throw SyntaxError(source.getPosition(), "Invalid attribute type specified.");
 }
 
 /// <summary>
@@ -155,11 +153,11 @@ void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute)
     attribute.type |= XDTD::AttributeType::implied;
   } else if (source.match("#FIXED")) {
     source.ignoreWS();
-    attribute.value = parseValue(source, dtdRoot.getEntityMapper());
+    attribute.value = parseValue(source, xDTD.getEntityMapper());
     attribute.type |= XDTD::AttributeType::fixed;
   } else {
     source.ignoreWS();
-    attribute.value = parseValue(source, dtdRoot.getEntityMapper());
+    attribute.value = parseValue(source, xDTD.getEntityMapper());
     attribute.type |= XDTD::AttributeType::normal;
   }
 }
@@ -178,7 +176,7 @@ void DTD_Impl::parseAttributeList(ISource &source)
     parseAttributeType(source, dtdAttribute);
     parseAttributeValue(source, dtdAttribute);
     parseValidateAttribute(elementName, dtdAttribute);
-    dtdRoot.getElement(elementName).attributes.emplace_back(dtdAttribute);
+    xDTD.getElement(elementName).attributes.emplace_back(dtdAttribute);
     source.ignoreWS();
   }
 }
@@ -191,7 +189,7 @@ void DTD_Impl::parseNotation(ISource &source)
 {
   source.ignoreWS();
   std::string name = parseName(source);
-  dtdRoot.addNotation(name, parseExternalReference(source));
+  xDTD.addNotation(name, parseExternalReference(source));
   source.ignoreWS();
 }
 
@@ -211,12 +209,12 @@ void DTD_Impl::parseEntity(ISource &source)
   entityName += parseName(source) + ";";
   if (source.current() == '\'' || source.current() == '"') {
     XMLValue entityValue = parseValue(source);
-    dtdRoot.getEntityMapper().setInternal(entityName, entityValue.getParsed());
+    xDTD.getEntityMapper().setInternal(entityName, entityValue.getParsed());
   } else {
-    dtdRoot.getEntityMapper().setExternal(entityName, parseExternalReference(source));
+    xDTD.getEntityMapper().setExternal(entityName, parseExternalReference(source));
     if (source.match("NDATA")) {
       source.ignoreWS();
-      dtdRoot.getEntityMapper().setNotation(entityName, parseName(source));
+      xDTD.getEntityMapper().setNotation(entityName, parseName(source));
     }
   }
 }
@@ -230,16 +228,16 @@ void DTD_Impl::parseElement(ISource &source)
   source.ignoreWS();
   std::string elementName = parseName(source);
   if (source.match("EMPTY")) {
-    dtdRoot.addElement(elementName, XDTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
+    xDTD.addElement(elementName, XDTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
   } else if (source.match("ANY")) {
-    dtdRoot.addElement(elementName, XDTD::Element(elementName, XMLValue{ "ANY", "ANY" }));
+    xDTD.addElement(elementName, XDTD::Element(elementName, XMLValue{ "ANY", "ANY" }));
   } else {
     std::string unparsed;
     while (source.more() && (source.current() != '<') && (source.current() != '>')) {
       unparsed += toUtf8(source.current());
       source.next();
     }
-    dtdRoot.addElement(
+    xDTD.addElement(
       elementName, XDTD::Element(elementName, parseElementInternalpecification(elementName, XMLValue{ unparsed, "" })));
   }
   source.ignoreWS();
@@ -261,7 +259,7 @@ void DTD_Impl::parseComment(ISource &source)
 void DTD_Impl::parseParameterEntityReference(ISource &source)
 {
   XMLValue parameterEntity = parseEntityReference(source);
-  BufferSource entitySource(dtdRoot.getEntityMapper().translate(parameterEntity.getUnparsed()));
+  BufferSource entitySource(xDTD.getEntityMapper().translate(parameterEntity.getUnparsed()));
   parseInternal(entitySource);
   source.ignoreWS();
 }
@@ -287,9 +285,9 @@ void DTD_Impl::parseInternal(ISource &source)
       parseParameterEntityReference(source);
       continue;
     } else {
-      throw XML::SyntaxError(source.getPosition(), "Invalid DTD tag.");
+      throw SyntaxError(source.getPosition(), "Invalid DTD tag.");
     }
-    if (source.current() != '>') { throw XML::SyntaxError(source.getPosition(), "Missing '>' terminator."); }
+    if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
     source.next();
     source.ignoreWS();
   }
@@ -308,19 +306,19 @@ void DTD_Impl::parseDTD(ISource &source)
   // in its raw unparsed form.
   long start = source.position();
   source.ignoreWS();
-  dtdRoot.setRootName(parseName(source));
+  xDTD.setRootName(parseName(source));
   // Parse in external DTD reference
-  if (source.current() != '[') { dtdRoot.setExternalReference(parseExternalReference(source)); }
+  if (source.current() != '[') { xDTD.setExternalReference(parseExternalReference(source)); }
   // We have internal DTD so parse that first
   if (source.current() == '[') {
     source.next();
     source.ignoreWS();
     parseInternal(source);
-    dtdRoot.setType(XDTD::Type::internal);
+    xDTD.setType(XDTD::Type::internal);
   }
   // Missing '>' after external DTD reference
   else if (source.current() != '>') {
-    throw XML::SyntaxError(source.getPosition(), "Missing '>' terminator.");
+    throw SyntaxError(source.getPosition(), "Missing '>' terminator.");
   }
   // Move to the next component in XML prolog
   else {
@@ -328,16 +326,16 @@ void DTD_Impl::parseDTD(ISource &source)
     source.ignoreWS();
   }
   // Parse any DTD in external reference found
-  if (!dtdRoot.getExternalReference().getType().empty()) {
+  if (!xDTD.getExternalReference().getType().empty()) {
     parseExternal(source);
-    dtdRoot.setType(dtdRoot.getType() | XDTD::Type::external);
+    xDTD.setType(xDTD.getType() | XDTD::Type::external);
   }
   // Save away unparsed form of DTD
-  dtdRoot.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
+  xDTD.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
   // Make sure no defined entity contains recursion
-  dtdRoot.getEntityMapper().checkForRecursion();
+  xDTD.getEntityMapper().checkForRecursion();
   // Count lines in DTD
-  std::string unparsedDTD = dtdRoot.unparsed();
-  dtdRoot.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);
+  std::string unparsedDTD = xDTD.unparsed();
+  xDTD.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);
 }
 }// namespace XML_Lib

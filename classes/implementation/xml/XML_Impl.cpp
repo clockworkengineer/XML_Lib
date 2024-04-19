@@ -37,12 +37,12 @@ std::string XML_Impl::version()
 /// <returns>Reference to DTD XNode.</returns>
 XNode &XML_Impl::dtd()
 {
-  if (hasDTD) {
+  if ((validator.get() != nullptr)) {
     for (auto &element : prolog().getChildren()) {
       if (element.isDTD()) { return (element); }
     }
   }
-  throw XML::Error("No DTD found.");
+  throw Error("No DTD found.");
 }
 
 /// <summary>
@@ -54,7 +54,7 @@ XNode &XML_Impl::prolog()
   if (!xmlRoot.isEmpty()) {
     return (xmlRoot);
   } else {
-    throw XML::Error("No XML has been parsed.");
+    throw Error("No XML has been parsed.");
   }
 }
 
@@ -73,7 +73,7 @@ XNode &XML_Impl::root()
   for (auto &element : prolog().getChildren()) {
     if (element.isRoot() || element.isSelf()) { return (element); }
   }
-  throw XML::Error("No root element found.");
+  throw Error("No root element found.");
 }
 
 /// <summary>
@@ -82,13 +82,19 @@ XNode &XML_Impl::root()
 /// </summary>
 void XML_Impl::parse(ISource &source)
 {
+  // Reset XML before next parse
   entityMapper->resetToDefault();
+  hasRoot = false;
+  validator.reset();
+  // Handle prolog
   xmlRoot = parseProlog(source);
+  // Handle main body
   if (source.match("<")) {
     xmlRoot.addChild(parseElement(source, {}));
   } else {
-    throw XML::SyntaxError(source.getPosition(), "Missing root element.");
+    throw SyntaxError(source.getPosition(), "Missing root element.");
   }
+  // Handle any epilog
   parseEpilog(source, xmlRoot);
 }
 
@@ -98,7 +104,11 @@ void XML_Impl::parse(ISource &source)
 /// </summary>
 void XML_Impl::validate()
 {
-  if (validator.get() != nullptr) { validator->validate(prolog()); }
+  if (validator.get() != nullptr) {
+    validator->validate(prolog());
+  } else {
+    throw Error("No DTD specified for validation.");
+  }
 }
 
 /// <summary>
