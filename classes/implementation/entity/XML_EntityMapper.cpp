@@ -19,7 +19,7 @@ namespace XML_Lib {
 /// <param name="entityName">Entity mapping name.</param>
 /// <param name="type">Entity mapping type.</param>
 void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
-  XML_Lib::Char type,
+  Char type,
   std::set<std::string> &currentEntities)
 {
   BufferSource entitySource(entityName);

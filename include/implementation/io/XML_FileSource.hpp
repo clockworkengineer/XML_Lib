@@ -28,7 +28,7 @@ public:
   FileSource &operator=(FileSource &&other) = delete;
   ~FileSource() = default;
 
-  XML_Lib::Char current() const override { return (static_cast<XML_Lib::Char>(source.peek())); }
+  Char current() const override { return (static_cast<Char>(source.peek())); }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }
@@ -46,7 +46,7 @@ public:
   bool more() const override { return (source.peek() != EOF); }
   void backup(long length) override
   {
-    if ((static_cast<long>(source.tellg()) - length >= 0) || (current() == (XML_Lib::Char)EOF)) {
+    if ((static_cast<long>(source.tellg()) - length >= 0) || (current() == (Char)EOF)) {
       source.clear();
       source.seekg(-length, std::ios_base::cur);
     } else {

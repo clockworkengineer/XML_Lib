@@ -18,7 +18,7 @@ XMLValue parseCharacterReference(ISource &source);
 /// </summary>
 /// <param name="c">Character to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validChar(XML_Lib::Char c)
+bool validChar(Char c)
 {
   return ((c == 0x09) || (c == kLineFeed) || (c == kCarriageReturn) || (c >= 0x20 && c <= 0xD7FF)
           || (c >= 0xE000 && c <= 0xFFFD));
@@ -29,7 +29,7 @@ bool validChar(XML_Lib::Char c)
 /// </summary>
 /// <param name="c">Character value to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validNameStartChar(XML_Lib::Char c)
+bool validNameStartChar(Char c)
 {
   return ((c == ':') || (c == '_') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= 0xC0 && c <= 0xD6)
           || (c >= 0xD8 && c <= 0xF6) || (c >= 0xF8 && c <= 0x2FF) || (c >= 0x370 && c <= 0x37D)
@@ -43,7 +43,7 @@ bool validNameStartChar(XML_Lib::Char c)
 /// </summary>
 /// <param name="c">Name to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validNameChar(XML_Lib::Char c)
+bool validNameChar(Char c)
 {
   return (validNameStartChar(c) || (c == '-') || (c == '.') || (c >= '0' && c <= '9') || (c == 0xB7)
           || (c >= 0x0300 && c <= 0x036F) || (c >= 0x203F && c <= 0x2040));
@@ -54,7 +54,7 @@ bool validNameChar(XML_Lib::Char c)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validReservedName(const XML_Lib::String &name)
+bool validReservedName(const String &name)
 {
   return ((name.find(u"xmlns") == 0) || (name.find(u"xml-stylesheet") == 0) || (name == u"xml"));
 }
@@ -64,12 +64,12 @@ bool validReservedName(const XML_Lib::String &name)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validName(const XML_Lib::String &name)
+bool validName(const String &name)
 {
-  XML_Lib::String localName{ name };
+  String localName{ name };
   if (localName.empty()) { return (false); }
-  std::transform(localName.begin(), localName.end(), localName.begin(), [](XML_Lib::Char c) {
-    return static_cast<XML_Lib::Char>(std::tolower(static_cast<int>(c)));
+  std::transform(localName.begin(), localName.end(), localName.begin(), [](Char c) {
+    return static_cast<Char>(std::tolower(static_cast<int>(c)));
   });
   if (localName.find(u"xml") == 0 && !(validReservedName(localName))) { return (false); }
   if (!validNameStartChar(localName[0])) { return (false); }

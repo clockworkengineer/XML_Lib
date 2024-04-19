@@ -129,7 +129,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
     XML::toFile(prefixPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
     FileSource source{ prefixPath(kGeneratedXMLFile) };
-    XML_Lib::String xmlResult;
+    String xmlResult;
     while (source.more()) {
       source.ignoreWS();
       xmlResult += source.current();
@@ -304,7 +304,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
     BufferSource source{ xmlString };
-    XML_Lib::String xmlResult;
+    String xmlResult;
     while (source.more()) {
       source.ignoreWS();
       xmlResult += source.current();

@@ -28,7 +28,7 @@ public:
     buffer = utf16xml;
     convertCRLFToLF(buffer);
   }
-  explicit BufferSource(const std::string &sourceBuffer) : buffer {toUtf16(sourceBuffer)}
+  explicit BufferSource(const std::string &sourceBuffer) : buffer{ toUtf16(sourceBuffer) }
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     convertCRLFToLF(buffer);
@@ -40,10 +40,10 @@ public:
   BufferSource &operator=(BufferSource &&other) = delete;
   ~BufferSource() = default;
 
-  [[nodiscard]] XML_Lib::Char current() const override
+  [[nodiscard]] Char current() const override
   {
     if (more()) { return (buffer[bufferPosition]); }
-    return (static_cast<XML_Lib::Char>(EOF));
+    return (static_cast<Char>(EOF));
   }
   void next() override
   {
@@ -74,7 +74,7 @@ public:
   }
 
 private:
-  void convertCRLFToLF(XML_Lib::String &xmlString)
+  void convertCRLFToLF(String &xmlString)
   {
     size_t pos = xmlString.find(u"\x0D\x0A");
     while (pos != std::string::npos) {
@@ -84,6 +84,6 @@ private:
   }
 
   long bufferPosition = 0;
-  XML_Lib::String buffer;
+  String buffer;
 };
 }// namespace XML_Lib

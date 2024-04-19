@@ -26,7 +26,6 @@ public:
   // Add bytes to destination
   // ========================
   virtual void add(const std::string &bytes) = 0;
-  virtual void add(XML_Lib::Char c) = 0;
-
+  virtual void add(Char c) = 0;
 };
 }// namespace XML_Lib

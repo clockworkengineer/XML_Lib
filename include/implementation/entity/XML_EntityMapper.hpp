@@ -50,9 +50,8 @@ public:
 
 private:
   //  Check for any recursion in a entity reference
-  void recurseOverEntityReference(const std::string &entityReference,
-    XML_Lib::Char type,
-    std::set<std::string> &currentEntities);
+  void
+    recurseOverEntityReference(const std::string &entityReference, Char type, std::set<std::string> &currentEntities);
   // Get contents of file that is pointed to by an entity reference
   std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry

@@ -18,7 +18,7 @@ namespace XML_Lib {
 /// <returns>XML name.</returns>
 std::string parseName(ISource &source)
 {
-  XML_Lib::String name;
+  String name;
   while (source.more() && validNameChar(source.current())) {
     name += source.current();
     source.next();
@@ -70,10 +70,10 @@ XMLValue parseCharacterReference(ISource &source)
   }
   result = std::strtol(reference.c_str(), &end, result);
   if (*end == '\0') {
-    if (!validChar(static_cast<XML_Lib::Char>(result))) {
+    if (!validChar(static_cast<Char>(result))) {
       throw SyntaxError(source.getPosition(), "Character reference invalid character.");
     }
-    return (XMLValue{ unparsed, toUtf8(static_cast<XML_Lib::Char>(result)) });
+    return (XMLValue{ unparsed, toUtf8(static_cast<Char>(result)) });
   }
   throw SyntaxError(source.getPosition(), "Cannot convert character reference.");
 }
@@ -109,7 +109,7 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 {
   if ((source.current() == '\'') || ((source.current() == '"'))) {
     std::string unparsed, parsed;
-    XML_Lib::Char quote = source.current();
+    Char quote = source.current();
     source.next();
     while (source.more() && source.current() != quote) {
       XMLValue character{ parseCharacter(source) };
@@ -138,7 +138,7 @@ XMLValue parseValue(ISource &source)
 {
   if ((source.current() == '\'') || ((source.current() == '"'))) {
     std::string unparsed, parsed;
-    XML_Lib::Char quote = source.current();
+    Char quote = source.current();
     source.next();
     while (source.more() && source.current() != quote) {
       XMLValue character{ parseCharacter(source) };

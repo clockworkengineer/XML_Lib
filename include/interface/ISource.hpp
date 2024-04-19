@@ -84,7 +84,7 @@ public:
   bool match(const char *target)
   {
     long index = 0;
-    while (more() && (current() == static_cast<XML_Lib::Char>(target[index]))) {
+    while (more() && (current() == static_cast<Char>(target[index]))) {
       next();
       if (++index == (long)std::strlen(target)) { return (true); }
     }
