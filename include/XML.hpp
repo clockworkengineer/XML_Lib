@@ -30,7 +30,7 @@ public:
   ~XML();
   // Get reference to DTD XNode
   XNode &dtd();
-  // Get reference to proglog XNode
+  // Get reference to prolog XNode
   XNode &prolog();
   // Get reference to declaration XNode
   XNode &declaration();
