@@ -1,5 +1,5 @@
 //
-// Class: XML_Impl
+// Class: XML_Impl_Parser
 //
 // Description: XML parser code. All parsing of characters takes place having
 // converted the characters to UTF-16 to make the process easier (any data once

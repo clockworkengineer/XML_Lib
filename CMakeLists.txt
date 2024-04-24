@@ -26,7 +26,7 @@ set(XML_SOURCES
   ./classes/XML.cpp
   ./classes/implementation/xml/XML_Impl.cpp
   ./classes/implementation/xml/XML_Impl_File.cpp
-  ./classes/implementation/xml/XML_Impl_Parse.cpp
+  ./classes/implementation/xml/XML_Impl_Parser.cpp
   ./classes/implementation/xml/XML_Impl_Misc.cpp
   ./classes/implementation/xml/XML_Impl_Stringify.cpp
   ./classes/implementation/xml/XML_Impl_Validator.cpp
@@ -55,12 +55,14 @@ set(XML_INCLUDES
   ./include/interface/IDestination.hpp
   ./include/interface/IEntityMapper.hpp
   ./include/interface/IValidator.hpp
+  ./include/interface/IParser.hpp
+  ./include/interface/IStringify.hpp
   ./include/interface/XML_Interfaces.hpp
   ./include/implementation/XML_Core.hpp
   ./include/implementation/common/XML_Character.hpp
   ./include/implementation/common/XML_Converter.hpp
   ./include/implementation/common/XML_Error.hpp
-  ./include/implementation/common/XML_Parse.hpp
+  ./include/implementation/common/XML_Parser.hpp
   ./include/implementation/common/XML_Utility.hpp
   ./include/implementation/data/XML_Value.hpp
   ./include/implementation/data/XML_Attribute.hpp

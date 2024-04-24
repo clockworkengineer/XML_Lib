@@ -27,7 +27,7 @@
 #include "XML_Interfaces.hpp"
 #include "XML_EntityMapper.hpp"
 #include "XML_Character.hpp"
-#include "XML_Parse.hpp"
+#include "XML_Parser.hpp"
 #include "XML_Utility.hpp"
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
