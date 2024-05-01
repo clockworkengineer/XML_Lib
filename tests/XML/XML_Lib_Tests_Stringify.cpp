@@ -150,18 +150,10 @@ TEST_CASE("Use XML to stringify previously parsed XML.", "[XML][Stringify]")
 }
 TEST_CASE("Stringify XML from a list of example files.", "[XML][Stringify]")
 {
-  auto testFile = GENERATE(values<std::string>({ "./files/testfile001.xml",
-    "./files/testfile002.xml",
-    "./files/testfile003.xml",
-    "./files/testfile004.xml",
-    "./files/testfile005.xml",
-    "./files/testfile006.xml",
-    "./files/testfile007.xml",
-    "./files/testfile010.xml",
-    "./files/testfile011.xml" }));
+  TEST_FILE_LIST(file);
   SECTION("Load file into buffer and parse.", "[XML][Parse]")
   {
-    std::string expected{ XML::fromFile(testFile) };
+    std::string expected{ XML::fromFile(file) };
     checkStringify(expected);
   }
 }

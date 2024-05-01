@@ -10,26 +10,16 @@ using namespace XML_Lib;
 
 TEST_CASE("Sample XML files to read and parse.", "[XML][Parse][File]")
 {
-  auto testFile = GENERATE(values<std::string>({ "./files/testfile001.xml",
-    "./files/testfile002.xml",
-    "./files/testfile003.xml",
-    "./files/testfile005.xml",
-    "./files/testfile007.xml",
-    "./files/testfile010.xml",
-    "./files/testfile011.xml",
-    "./files/testfile012.xml",
-    "./files/testfile013.xml",
-    "./files/testfile014.xml",
-    "./files/testfile015.xml" }));
+  TEST_FILE_LIST(file);
   XML xml;
   SECTION("Load file into buffer and parse.", "[XML][Parse]")
   {
-    BufferSource source{ XML::fromFile(testFile) };
+    BufferSource source{ XML::fromFile(file) };
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Parse XML from file.", "[XML][Parse][File]")
   {
-    FileSource source{ testFile };
+    FileSource source{ file };
     REQUIRE_NOTHROW(xml.parse(source));
   }
 }
