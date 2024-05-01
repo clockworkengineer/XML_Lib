@@ -30,6 +30,7 @@ set(XML_SOURCES
   ./classes/implementation/xml/XML_Impl_Misc.cpp
   ./classes/implementation/xml/XML_Impl_Stringify.cpp
   ./classes/implementation/xml/XML_Impl_Validator.cpp
+  ./classes/implementation/variant/XML_Variant.cpp
   ./classes/DTD.cpp
   ./classes/implementation/dtd/DTD_Impl.cpp
   ./classes/implementation/dtd/DTD_Impl_Validator.cpp

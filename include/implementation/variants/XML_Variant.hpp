@@ -13,8 +13,8 @@ protected:
 public:
   // Constructors/Destructors
   explicit Variant(Variant::Type nodeType = Variant::Type::base) : xmlNodeType(nodeType) {}
-  Variant(const Variant &other) = default;
-  Variant &operator=(const Variant &other) = default;
+  Variant(const Variant &other) = delete;
+  Variant &operator=(const Variant &other) = delete;
   Variant(Variant &&other) = default;
   Variant &operator=(Variant &&other) = default;
   virtual ~Variant() = default;
@@ -33,11 +33,11 @@ public:
   [[nodiscard]] bool isPI() const { return (xmlNodeType == Type::pi); }
   [[nodiscard]] bool isDTD() const { return (xmlNodeType == Type::dtd); }
   // Get XNode children reference
-  std::vector<XNode> &getChildren() { return (children); }
-  const std::vector<XNode> &getChildren() const { return (children); }
+  std::vector<XNode> &getChildren();
+  const std::vector<XNode> &getChildren() const;
   // Add child
-  void addChild(XNode &child) { children.push_back(std::move(child)); }
-  void addChild(XNode &&child) { children.push_back(std::move(child)); }
+  void addChild(XNode &child);
+  void addChild(XNode &&child);
   // Return Variant contents
   [[nodiscard]] virtual std::string getContents() const { return (""); }
 
@@ -45,7 +45,7 @@ private:
   // Variant type
   Variant::Type xmlNodeType{ Type::base };
   // XNode Children
-  std::vector<XNode> children;
+  mutable std::unique_ptr<std::vector<XNode>> children;
 };
 
 }// namespace XML_Lib
