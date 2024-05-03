@@ -27,7 +27,6 @@ set(XML_SOURCES
   ./classes/implementation/xml/XML_Impl.cpp
   ./classes/implementation/xml/XML_Impl_File.cpp
   ./classes/implementation/xml/XML_Impl_Parser.cpp
-  ./classes/implementation/xml/XML_Impl_Misc.cpp
   ./classes/implementation/xml/XML_Impl_Stringify.cpp
   ./classes/implementation/xml/XML_Impl_Validator.cpp
   ./classes/implementation/variant/XML_Variant.cpp

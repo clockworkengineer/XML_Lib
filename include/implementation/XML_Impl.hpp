@@ -35,6 +35,7 @@ public:
 
 private:
   // XML Parser
+  void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
   std::string parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
   bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
   void parseContent(ISource &source, XNode &xNode);
@@ -52,11 +53,6 @@ private:
   void parseEpilog(ISource &source, XNode &xProlog);
   // XML Stringification
   void stringify(const XNode &xNode, IDestination &destination);
-  // Miscellaneous
-  void resetWhiteSpace(XNode &xNode);
-  void processEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
-  void addContentToElementChildList(XNode &xNode, const std::string &content);
-  void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<XMLAttribute> &namespaces);
 
   bool hasRoot{ false };
   XNode xmlRoot;
