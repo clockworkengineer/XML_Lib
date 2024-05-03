@@ -77,28 +77,6 @@ XNode &XML_Impl::root()
 }
 
 /// <summary>
-/// Parse XML read from source stream into internal object generating an exception
-/// if a syntax error in the XML is found (not well formed).
-/// </summary>
-void XML_Impl::parse(ISource &source)
-{
-  // Reset XML before next parse
-  entityMapper->resetToDefault();
-  hasRoot = false;
-  validator.reset();
-  // Handle prolog
-  xmlRoot = parseProlog(source);
-  // Handle main body
-  if (source.match("<")) {
-    xmlRoot.addChild(parseElement(source, {}));
-  } else {
-    throw SyntaxError(source.getPosition(), "Missing root element.");
-  }
-  // Handle any epilog
-  parseEpilog(source, xmlRoot);
-}
-
-/// <summary>
 /// Validate XML against any DTD provided to see whether it is valid. If an
 /// exception is thrown then there is a validation issue and the XML is not valid.
 /// </summary>

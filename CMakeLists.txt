@@ -62,7 +62,7 @@ set(XML_INCLUDES
   ./include/implementation/common/XML_Character.hpp
   ./include/implementation/common/XML_Converter.hpp
   ./include/implementation/common/XML_Error.hpp
-  ./include/implementation/common/XML_Parser.hpp
+  ./include/implementation/common/XML_Parse.hpp
   ./include/implementation/common/XML_Utility.hpp
   ./include/implementation/data/XML_Value.hpp
   ./include/implementation/data/XML_Attribute.hpp
