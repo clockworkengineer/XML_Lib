@@ -6,6 +6,7 @@
 
 #include "XML.hpp"
 #include "XML_Core.hpp"
+#include "XML_Parser.hpp"
 
 namespace XML_Lib {
 
@@ -34,29 +35,14 @@ public:
   static XML::Format getFileFormat(const std::string &fileName);
 
 private:
-  // XML Parser
-  void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
-  std::string parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
-  bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
-  void parseContent(ISource &source, XNode &xNode);
-  std::string parseTagName(ISource &source);
-  std::vector<XMLAttribute> parseAttributes(ISource &source);
-  XNode parseComment(ISource &source);
-  XNode parseCDATA(ISource &source);
-  XNode parsePI(ISource &source);
-  void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
-  void parseElementInternal(ISource &source, XNode &xNode);
-  XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces);
-  XNode parseDeclaration(ISource &source);
   XNode parseDTD(ISource &source);
-  XNode parseProlog(ISource &source);
-  void parseEpilog(ISource &source, XNode &xProlog);
-  // XML Stringification
+
   void stringify(const XNode &xNode, IDestination &destination);
 
   bool hasRoot{ false };
   XNode xmlRoot;
-  std::unique_ptr<IValidator> validator;
+  // std::unique_ptr<IValidator> validator;
   std::unique_ptr<IEntityMapper> entityMapper;
+  std::unique_ptr<XML_Parser> parser;
 };
 }// namespace XML_Lib

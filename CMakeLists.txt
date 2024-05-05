@@ -26,7 +26,7 @@ set(XML_SOURCES
   ./classes/XML.cpp
   ./classes/implementation/xml/XML_Impl.cpp
   ./classes/implementation/xml/XML_Impl_File.cpp
-  ./classes/implementation/xml/XML_Impl_Parser.cpp
+  ./classes/implementation/xml/parser/XML_Parser.cpp
   ./classes/implementation/xml/XML_Impl_Stringify.cpp
   ./classes/implementation/xml/XML_Impl_Validator.cpp
   ./classes/implementation/variant/XML_Variant.cpp
@@ -76,6 +76,7 @@ set(XML_INCLUDES
   ./include/implementation/io/XML_BufferDestination.hpp
   ./include/implementation/io/XML_FileDestination.hpp
   ./include/implementation/XML_Impl.hpp
+  ./include/implementation/parser/XML_Parser.hpp
   ./include/implementation/xnode/XML_XNode.hpp
   ./include/implementation/xnode/XML_Reference.hpp
   ./include/implementation/xnode/XML_Creation.hpp
@@ -104,6 +105,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/include/implementation/data
   ${PROJECT_SOURCE_DIR}/include/implementation/entity
   ${PROJECT_SOURCE_DIR}/include/implementation/io
+  ${PROJECT_SOURCE_DIR}/include/implementation/parser
   ${PROJECT_SOURCE_DIR}/include/implementation/validator
   ${PROJECT_SOURCE_DIR}/include/implementation/xnode
   ${PROJECT_SOURCE_DIR}/include/implementation/variants

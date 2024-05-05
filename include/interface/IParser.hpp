@@ -33,6 +33,6 @@ public:
   // =================
   // Parse XML source
   // =================
-virtual XNode parse(ISource &source) = 0;
+  virtual XNode parse(ISource &source) = 0;
 };
 }// namespace XML_Lib

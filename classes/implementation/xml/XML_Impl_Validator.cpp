@@ -18,13 +18,13 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to DTD XNode.</returns>
-XNode XML_Impl::parseDTD(ISource &source)
-{
-  if (validator.get() != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
-  auto xNode = XNode::make<XDTD>(*entityMapper);
-  validator = std::make_unique<DTD>(xNode);
-  validator->parse(source);
-  return (xNode);
-}
+// XNode XML_Impl::parseDTD(ISource &source)
+// {
+//   if (validator.get() != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
+//   auto xNode = XNode::make<XDTD>(*entityMapper);
+//   validator = std::make_unique<DTD>(xNode);
+//   validator->parse(source);
+//   return (xNode);
+// }
 
 }// namespace XML_Lib

@@ -1,5 +1,5 @@
 //
-// Class: XML_Impl_Parser
+// Class: XML_Parser
 //
 // Description: XML parser code. All parsing of characters takes place having
 // converted the characters to UTF-16 to make the process easier (any data once
@@ -8,7 +8,8 @@
 // Dependencies: C++20 - Language standard features used..
 //
 
-#include "XML_Impl.hpp"
+#include "XML_Parser.hpp"
+#include "DTD.hpp"
 
 namespace XML_Lib {
 
@@ -70,7 +71,7 @@ void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<X
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="entityReference">Entity reference to be parsed for XML.</param>
-void XML_Impl::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference)
+void XML_Parser::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference)
 {
   auto xElement = XNode::make<XElement>();
   BufferSource entitySource(entityReference.getParsed());
@@ -86,7 +87,7 @@ void XML_Impl::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityRefer
 /// <param name="source">XML source stream.</param>
 /// <param name="xProlog">XMLprolog XNode.</param>
 /// <returns>True then items parsed.</returns>
-bool XML_Impl::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
+bool XML_Parser::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
 {
   if (source.match("<!--")) {
     xProlog.addChild(parseComment(source));
@@ -106,7 +107,7 @@ bool XML_Impl::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Element tag name.</returns>
-std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source)); }
+std::string XML_Parser::parseTagName(ISource &source) { return (parseName(source)); }
 
 /// <summary>
 /// Parse declaration attribute and validate its value.
@@ -117,7 +118,7 @@ std::string XML_Impl::parseTagName(ISource &source) { return (parseName(source))
 /// <param name="toUpper">==true then convert attribute value all to uppercase.</param>
 /// <returns>Valid attribute value.</returns>
 std::string
-  XML_Impl::parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values)
+  XML_Parser::parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values)
 {
   std::string value;
   source.ignoreWS();
@@ -138,7 +139,7 @@ std::string
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to comment XNode.</returns>
-XNode XML_Impl::parseComment(ISource &source)
+XNode XML_Parser::parseComment(ISource &source)
 {
   std::string comment;
   while (source.more() && !source.match("--")) {
@@ -155,7 +156,7 @@ XNode XML_Impl::parseComment(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to PI XNode.</returns>
-XNode XML_Impl::parsePI(ISource &source)
+XNode XML_Parser::parsePI(ISource &source)
 {
   std::string name{ parseName(source) };
   // Check not a declartion
@@ -176,7 +177,7 @@ XNode XML_Impl::parsePI(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to CDATA XNode.</returns>
-XNode XML_Impl::parseCDATA(ISource &source)
+XNode XML_Parser::parseCDATA(ISource &source)
 {
   std::string cdata;
   while (source.more() && !source.match("]]>")) {
@@ -195,7 +196,7 @@ XNode XML_Impl::parseCDATA(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>XML element attribute list.</returns>
-std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
+std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source)
 {
   std::vector<XMLAttribute> attributes;
   while (source.more() && source.current() != '/' && source.current() != '>') {
@@ -204,7 +205,7 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
       throw SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
     }
     source.ignoreWS();
-    XMLValue attributeValue = parseValue(source, *entityMapper);
+    XMLValue attributeValue = parseValue(source, entityMapper);
     if (!validAttributeValue(attributeValue)) {
       throw SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
     }
@@ -221,7 +222,7 @@ std::vector<XMLAttribute> XML_Impl::parseAttributes(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current XNode.</param>
-void XML_Impl::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
+void XML_Parser::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 {
   std::string whiteSpace;
   while (source.more() && source.isWS()) {
@@ -236,11 +237,11 @@ void XML_Impl::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
-void XML_Impl::parseContent(ISource &source, XNode &xNode)
+void XML_Parser::parseContent(ISource &source, XNode &xNode)
 {
   XMLValue content{ parseCharacter(source) };
   if (content.isReference()) {
-    if (content.isEntityReference()) { content = entityMapper->map(content); }
+    if (content.isEntityReference()) { content = entityMapper.map(content); }
     auto xEntityReference = XNode::make<XEntityReference>(content);
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
@@ -268,7 +269,7 @@ void XML_Impl::parseContent(ISource &source, XNode &xNode)
 /// </summary>
 /// <param name="source">XMl source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
-void XML_Impl::parseElementInternal(ISource &source, XNode &xNode)
+void XML_Parser::parseElementInternal(ISource &source, XNode &xNode)
 {
   if (source.match("<!--")) {
     xNode.addChild(parseComment(source));
@@ -301,7 +302,7 @@ void XML_Impl::parseElementInternal(ISource &source, XNode &xNode)
 /// <param name="source">XML source stream.</param>
 /// <param name="outerNamespaces">Current list of outerNamespaces.</param>
 /// <returns>Pointer to element XNode.</returns>
-XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces)
+XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces)
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
@@ -332,7 +333,7 @@ XNode XML_Impl::parseElement(ISource &source, const std::vector<XMLAttribute> &o
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to declaration XNode.</returns>
-XNode XML_Impl::parseDeclaration(ISource &source)
+XNode XML_Parser::parseDeclaration(ISource &source)
 {
   std::string version{ "1.0" };
   std::string encoding{ "UTF-8" };
@@ -360,7 +361,7 @@ XNode XML_Impl::parseDeclaration(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xProlog">Prolog XNode.</param>
-void XML_Impl::parseEpilog(ISource &source, XNode &xProlog)
+void XML_Parser::parseEpilog(ISource &source, XNode &xProlog)
 {
   while (source.more()) {
     if (!parseCommentsPIAndWhiteSpace(source, xProlog)) {
@@ -370,13 +371,26 @@ void XML_Impl::parseEpilog(ISource &source, XNode &xProlog)
 }
 
 /// <summary>
+/// Parse XML DTD and return any XNode created for it.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Pointer to DTD XNode.</returns>
+XNode XML_Parser::parseDTD(ISource &source)
+{
+  if (validator.get() != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
+  auto xNode = XNode::make<XDTD>(entityMapper);
+  validator = std::make_unique<DTD>(xNode);
+  validator->parse(source);
+  return (xNode);
+}
+/// <summary>
 /// Parse XML prolog and create the necessary element XNodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
 /// processing instructions, comments, whitespace and a Document Type Declaration (DTD).
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to prolog XNode.</returns>
-XNode XML_Impl::parseProlog(ISource &source)
+XNode XML_Parser::parseProlog(ISource &source)
 {
   auto xProlog = XNode::make<XProlog>();
   xProlog.addChild(parseDeclaration(source));
@@ -398,10 +412,11 @@ XNode XML_Impl::parseProlog(ISource &source)
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well formed).
 /// </summary>
-void XML_Impl::parse(ISource &source)
+XNode XML_Parser::parse(ISource &source)
 {
+  XNode xmlRoot;
   // Reset XML before next parse
-  entityMapper->resetToDefault();
+  entityMapper.resetToDefault();
   hasRoot = false;
   validator.reset();
   // Handle prolog
@@ -414,5 +429,6 @@ void XML_Impl::parse(ISource &source)
   }
   // Handle any epilog
   parseEpilog(source, xmlRoot);
+  return (xmlRoot);
 }
 }// namespace XML_Lib

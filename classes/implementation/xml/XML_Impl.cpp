@@ -7,13 +7,18 @@
 //
 
 #include "XML_Impl.hpp"
+#include "XML_Parser.hpp"
 
 namespace XML_Lib {
 
 /// <summary>
 /// XML constructor.
 /// </summary>
-XML_Impl::XML_Impl() { entityMapper = std::make_unique<XML_EntityMapper>(); }
+XML_Impl::XML_Impl()
+{
+  entityMapper = std::make_unique<XML_EntityMapper>();
+  parser = std::make_unique<XML_Parser>(*entityMapper);
+}
 
 /// <summary>
 /// XML destructor.
@@ -37,7 +42,7 @@ std::string XML_Impl::version()
 /// <returns>Reference to DTD XNode.</returns>
 XNode &XML_Impl::dtd()
 {
-  if ((validator.get() != nullptr)) {
+  if (parser->hasValidator()) {
     for (auto &element : prolog().getChildren()) {
       if (element.isDTD()) { return (element); }
     }
@@ -82,13 +87,19 @@ XNode &XML_Impl::root()
 /// </summary>
 void XML_Impl::validate()
 {
-  if (validator.get() != nullptr) {
-    validator->validate(prolog());
-  } else {
-    throw Error("No DTD specified for validation.");
-  }
+  // if (validator.get() != nullptr) {
+  //   validator->validate(prolog());
+  // } else {
+  //   throw Error("No DTD specified for validation.");
+  // }
+  parser->validate(prolog());
 }
 
+/// <summary>
+/// Parse XML read from source stream into internal object generating an exception
+/// if a syntax error in the XML is found (not well formed).
+/// </summary>
+void XML_Impl::parse(ISource &source) { xmlRoot = parser->parse(source); }
 /// <summary>
 /// Create XML text on destination stream from an XML object.
 /// </summary>
