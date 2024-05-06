@@ -88,7 +88,6 @@ XNode &XML_Impl::root()
 /// </summary>
 void XML_Impl::validate()
 {
-
   parser->validate(prolog());
 }
 
@@ -97,6 +96,7 @@ void XML_Impl::validate()
 /// if a syntax error in the XML is found (not well formed).
 /// </summary>
 void XML_Impl::parse(ISource &source) { xmlRoot = parser->parse(source); }
+
 /// <summary>
 /// Create XML text on destination stream from an XML object.
 /// </summary>

@@ -26,9 +26,9 @@ void XML_Stringify::stringify(const XNode &xNode, IDestination &destination) con
   }
   // XML declaration
   else if (xNode.isDeclaration()) {
-    // XDeclaration &xNodeDeclaration = XRef<XDeclaration>(declaration());
-    // destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
-    //                 + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
+    auto &xNodeDeclaration = XRef<XDeclaration>(xNode);
+    destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
+                    + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
   }
   // XML root or child elements
   else if (xNode.isRoot() || xNode.isElement() || xNode.isSelf()) {
@@ -72,7 +72,7 @@ void XML_Stringify::stringify(const XNode &xNode, IDestination &destination) con
   }
   // XML DTD
   else if (xNode.isDTD()) {
-    // destination.add(XRef<XDTD>(dtd()).unparsed());
+    destination.add(XRef<XDTD>(xNode).unparsed());
   } else {
     throw Error("Invalid XNode encountered during stringify.");
   }
