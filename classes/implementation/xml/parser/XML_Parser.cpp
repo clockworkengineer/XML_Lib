@@ -412,6 +412,8 @@ XNode XML_Parser::parseProlog(ISource &source)
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well formed).
 /// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Prolog XNode.</returns>
 XNode XML_Parser::parse(ISource &source)
 {
   XNode xmlRoot;
@@ -431,4 +433,21 @@ XNode XML_Parser::parse(ISource &source)
   parseEpilog(source, xmlRoot);
   return (xmlRoot);
 }
+/// <summary>
+/// Validate XML against parsed DTD.
+/// </summary>
+/// <param name="prolog">Prolog XNode</param>
+void XML_Parser::validate(XNode &prolog)
+{
+  if (validator.get() != nullptr) {
+    validator->validate(prolog);
+  } else {
+    throw Error("No DTD specified for validation.");
+  }
+}
+/// <summary>
+/// Parser can validate XML.
+/// </summary>
+/// <returns>Returns true if can validate XML.</returns>
+bool XML_Parser::canValidate() { return (validator.get() != nullptr); }
 }// namespace XML_Lib

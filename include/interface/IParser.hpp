@@ -34,5 +34,10 @@ public:
   // Parse XML source
   // =================
   virtual XNode parse(ISource &source) = 0;
+  // ==============
+  // XML Validation
+  // ==============
+  virtual bool canValidate() = 0;
+  virtual void validate(XNode &prolog) = 0;
 };
 }// namespace XML_Lib

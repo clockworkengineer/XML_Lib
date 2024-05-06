@@ -42,7 +42,7 @@ std::string XML_Impl::version()
 /// <returns>Reference to DTD XNode.</returns>
 XNode &XML_Impl::dtd()
 {
-  if (parser->hasValidator()) {
+  if (parser->canValidate()) {
     for (auto &element : prolog().getChildren()) {
       if (element.isDTD()) { return (element); }
     }

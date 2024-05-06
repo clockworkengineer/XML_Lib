@@ -21,7 +21,7 @@ TEST_CASE("Parse XML with various DTD issues.", "[XML][DTD][Validate]")
       "</root>\n"
     };
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "XML Error: No DTD specified for validation.");
+    REQUIRE_THROWS_WITH(xml.validate(), "IParser Error: No DTD specified for validation.");
   }
   SECTION("XML parse 2 xml strings with DTD.", "[XML][DTD][Validate][Elements]")
   {

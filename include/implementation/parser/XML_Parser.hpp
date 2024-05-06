@@ -9,7 +9,7 @@
 
 namespace XML_Lib {
 
-class XML_Parser
+class XML_Parser : IParser
 {
 public:
   // Constructors/Destructors
@@ -21,17 +21,8 @@ public:
   ~XML_Parser() = default;
 
   virtual XNode parse(ISource &source);
-  void validate(XNode &prolog)
-  {
-    if (validator.get() != nullptr) {
-      validator->validate(prolog);
-    } else {
-      throw Error("No DTD specified for validation.");
-    }
-  }
-  bool hasValidator() {
-    return(validator.get() != nullptr);
-  }
+  virtual void validate(XNode &prolog);
+  virtual bool canValidate();
 
 private:
   // XML Parser
