@@ -7,6 +7,7 @@
 #include "XML.hpp"
 #include "XML_Core.hpp"
 #include "XML_Parser.hpp"
+#include "XML_Stringify.hpp"
 
 namespace XML_Lib {
 
@@ -35,14 +36,11 @@ public:
   static XML::Format getFileFormat(const std::string &fileName);
 
 private:
-  XNode parseDTD(ISource &source);
+  // void stringify(const XNode &xNode, IDestination &destination);
 
-  void stringify(const XNode &xNode, IDestination &destination);
-
-  bool hasRoot{ false };
   XNode xmlRoot;
-  // std::unique_ptr<IValidator> validator;
   std::unique_ptr<IEntityMapper> entityMapper;
-  std::unique_ptr<XML_Parser> parser;
+  std::unique_ptr<IParser> parser;
+  std::unique_ptr<XML_Stringify> stringifier;
 };
 }// namespace XML_Lib

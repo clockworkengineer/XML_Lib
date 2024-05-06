@@ -76,6 +76,7 @@ set(XML_INCLUDES
   ./include/implementation/io/XML_FileDestination.hpp
   ./include/implementation/XML_Impl.hpp
   ./include/implementation/parser/XML_Parser.hpp
+  ./include/implementation/stringify/XML_Stringify.hpp
   ./include/implementation/xnode/XML_XNode.hpp
   ./include/implementation/xnode/XML_Reference.hpp
   ./include/implementation/xnode/XML_Creation.hpp
@@ -107,6 +108,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/include/implementation/parser
   ${PROJECT_SOURCE_DIR}/include/implementation/validator
   ${PROJECT_SOURCE_DIR}/include/implementation/xnode
+  ${PROJECT_SOURCE_DIR}/include/implementation/stringify
   ${PROJECT_SOURCE_DIR}/include/implementation/variants
   ${PROJECT_BINARY_DIR})
 

@@ -5,3 +5,4 @@
 #include "IEntityMapper.hpp"
 #include "IValidator.hpp"
 #include "IParser.hpp"
+#include "IStringify.hpp"

@@ -9,7 +9,7 @@
 
 namespace XML_Lib {
 
-class XML_Parser : IParser
+class XML_Parser : public IParser
 {
 public:
   // Constructors/Destructors
@@ -21,8 +21,8 @@ public:
   ~XML_Parser() = default;
 
   virtual XNode parse(ISource &source);
-  virtual void validate(XNode &prolog);
   virtual bool canValidate();
+  virtual void validate(XNode &prolog);
 
 private:
   // XML Parser

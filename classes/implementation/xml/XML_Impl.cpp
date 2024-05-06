@@ -18,6 +18,7 @@ XML_Impl::XML_Impl()
 {
   entityMapper = std::make_unique<XML_EntityMapper>();
   parser = std::make_unique<XML_Parser>(*entityMapper);
+  stringifier = std::make_unique<XML_Stringify>();
 }
 
 /// <summary>
@@ -87,11 +88,7 @@ XNode &XML_Impl::root()
 /// </summary>
 void XML_Impl::validate()
 {
-  // if (validator.get() != nullptr) {
-  //   validator->validate(prolog());
-  // } else {
-  //   throw Error("No DTD specified for validation.");
-  // }
+
   parser->validate(prolog());
 }
 
@@ -104,6 +101,6 @@ void XML_Impl::parse(ISource &source) { xmlRoot = parser->parse(source); }
 /// Create XML text on destination stream from an XML object.
 /// </summary>
 /// <param name="destination">XML destination stream.</param>
-void XML_Impl::stringify(IDestination &destination) { stringify(prolog(), destination); }
+void XML_Impl::stringify(IDestination &destination) { stringifier->stringify(prolog(), destination); }
 
 }// namespace XML_Lib

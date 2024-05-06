@@ -31,7 +31,7 @@ public:
   // ====================
   // Stringify XNode tree
   // ====================
-  virtual void stringify(const XNode &XNode, IDestination &destination, long indent) const = 0;
+  virtual void stringify(const XNode &XNode, IDestination &destination) const = 0;
 };
 // Make custom stringify to pass to XML constructor: Note pointer is tidied up internally.
 template <typename T> IStringify *makeStringify() {

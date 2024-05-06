@@ -1,5 +1,5 @@
 //
-// Class: XML_Impl
+// Class: XML_Stringify
 //
 // Description:  Code to take an XML internal object description and produce
 // the XML text for it on a destination stream. Currently as UTF-8 encoded
@@ -18,7 +18,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xNode">XNode to convert into XML.</param>
 /// <param name="destination">XML destination stream.</param>
-void XML_Impl::stringify(const XNode &xNode, IDestination &destination)
+void XML_Stringify::stringify(const XNode &xNode, IDestination &destination) const
 {
   // XML prolog
   if (xNode.isProlog()) {
@@ -26,9 +26,9 @@ void XML_Impl::stringify(const XNode &xNode, IDestination &destination)
   }
   // XML declaration
   else if (xNode.isDeclaration()) {
-    XDeclaration &xNodeDeclaration = XRef<XDeclaration>(declaration());
-    destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
-                    + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
+    // XDeclaration &xNodeDeclaration = XRef<XDeclaration>(declaration());
+    // destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
+    //                 + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
   }
   // XML root or child elements
   else if (xNode.isRoot() || xNode.isElement() || xNode.isSelf()) {
@@ -72,7 +72,7 @@ void XML_Impl::stringify(const XNode &xNode, IDestination &destination)
   }
   // XML DTD
   else if (xNode.isDTD()) {
-    destination.add(XRef<XDTD>(dtd()).unparsed());
+    // destination.add(XRef<XDTD>(dtd()).unparsed());
   } else {
     throw Error("Invalid XNode encountered during stringify.");
   }
