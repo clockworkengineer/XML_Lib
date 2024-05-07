@@ -43,6 +43,7 @@ set(TEST_SOURCES
     ./DTD/XML_Lib_Tests_DTD_Validate_Elements.cpp
     ./DTD/XML_Lib_Tests_DTD_Validate_Attributes.cpp
     ./DTD/XML_Lib_Tests_DTD_Validate_Misc.cpp
+    ./entitymapper/XML_Lib_Tests_Entitymapper.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})

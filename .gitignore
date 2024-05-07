@@ -6,3 +6,4 @@
 /CMakeFiles/
 .vscode/
 external/
+.cache/clangd/index/
