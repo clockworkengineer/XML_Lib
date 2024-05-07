@@ -8,7 +8,7 @@
 // Dependencies: C++20 - Language standard features used..
 //
 
-#include "XML_Impl.hpp"
+#include "XML_Stringify.hpp"
 
 namespace XML_Lib {
 

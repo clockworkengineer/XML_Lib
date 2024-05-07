@@ -8,7 +8,7 @@ namespace XML_Lib {
 // ===================================================
 // Forward declarations for interfaces/classes/structs
 // ===================================================
-struct XMLEntityMapping;
+struct XMLExternalReference;
 struct XMLValue;
 
 // ===========================

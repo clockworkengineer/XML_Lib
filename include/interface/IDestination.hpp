@@ -2,8 +2,6 @@
 
 #include <string>
 
-#include "XML_Converter.hpp"
-
 namespace XML_Lib {
 // =======================================================================
 // Interface for writing destination stream during XML/DTD stringification

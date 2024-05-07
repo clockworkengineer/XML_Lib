@@ -436,11 +436,11 @@ XNode XML_Parser::parse(ISource &source)
 /// <summary>
 /// Validate XML against parsed DTD.
 /// </summary>
-/// <param name="prolog">Prolog XNode</param>
-void XML_Parser::validate(XNode &prolog)
+/// <param name="xProlog">Prolog XNode</param>
+void XML_Parser::validate(XNode &xProlog)
 {
   if (validator.get() != nullptr) {
-    validator->validate(prolog);
+    validator->validate(xProlog);
   } else {
     throw Error("No DTD specified for validation.");
   }
@@ -448,6 +448,6 @@ void XML_Parser::validate(XNode &prolog)
 /// <summary>
 /// Parser can validate XML.
 /// </summary>
-/// <returns>Returns true if can validate XML.</returns>
+/// <returns>Returns true if parser can validate XML.</returns>
 bool XML_Parser::canValidate() { return (validator.get() != nullptr); }
 }// namespace XML_Lib

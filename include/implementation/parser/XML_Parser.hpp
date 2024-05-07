@@ -42,9 +42,11 @@ private:
   XNode parseDTD(ISource &source);
   XNode parseProlog(ISource &source);
   void parseEpilog(ISource &source, XNode &xProlog);
-
+  // XML tree has root
   bool hasRoot{ false };
+  // Parser validator
   std::unique_ptr<IValidator> validator;
+  // Entity mapper reference
   IEntityMapper &entityMapper;
 };
 }// namespace XML_Lib
