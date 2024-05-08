@@ -35,7 +35,7 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
       if (currentEntities.count(mappedEntityName) > 0) {
         throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
       }
-      auto nextMappedName = getEntityMapping(mappedEntityName).internal;
+      auto nextMappedName = getEntityMapping(mappedEntityName).getInternal();
       if (!nextMappedName.empty()) {
         currentEntities.emplace(mappedEntityName);
         recurseOverEntityReference(nextMappedName, type, currentEntities);
@@ -119,17 +119,17 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
     std::string parsed{ entityReference.getUnparsed() };
     // Internal so from memory.
     auto entityMapping = getEntityMapping(entityReference.getUnparsed());
-    if (!entityMapping.internal.empty()) {
-      parsed = entityMapping.internal;
+    if (!entityMapping.getInternal().empty()) {
+      parsed = entityMapping.getInternal();
     } else
     // External so from a file.
     // *** TODO Need to add support for external other than file ***
     {
-      if (std::filesystem::exists(entityMapping.external.getSystemID())) {
-        parsed = getFileMappingContents(entityMapping.external.getSystemID());
+      if (std::filesystem::exists(entityMapping.getExternal().getSystemID())) {
+        parsed = getFileMappingContents(entityMapping.getExternal().getSystemID());
       } else {
         throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
-                          + entityMapping.external.getSystemID() + "' does not exist.");
+                          + entityMapping.getExternal().getSystemID() + "' does not exist.");
       }
     }
     return (XMLValue{ entityReference.getUnparsed(), parsed });
@@ -151,7 +151,7 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, char typ
     for (auto &entity : entityMappings) {
       if (entity.first[0] == type) {
         if (size_t position = translated.find(entity.first); position != std::string::npos) {
-          translated.replace(position, entity.first.length(), entity.second.internal);
+          translated.replace(position, entity.first.length(), entity.second.getInternal());
           matchFound = true;
           break;
         }
@@ -166,15 +166,15 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, char typ
 /// </summary>
 const std::string &XML_EntityMapper::getInternal(const std::string &entityName)
 {
-  return (getEntityMapping(entityName).internal);
+  return (getEntityMapping(entityName).getInternal());
 }
 const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
 {
-  return (getEntityMapping(entityName).notation);
+  return (getEntityMapping(entityName).getNotation());
 }
 const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
 {
-  return (getEntityMapping(entityName).external);
+  return (getEntityMapping(entityName).getExternal());
 }
 
 /// <summary>
@@ -182,15 +182,15 @@ const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &ent
 /// </summary>
 void XML_EntityMapper::setInternal(const std::string &entityName, const std::string &internal)
 {
-  getEntityMapping(entityName).internal = internal;
+  getEntityMapping(entityName).setInternal(internal);
 }
 void XML_EntityMapper::setNotation(const std::string &entityName, const std::string &notation)
 {
-  getEntityMapping(entityName).notation = notation;
+  getEntityMapping(entityName).setNotation(notation);
 }
 void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExternalReference &external)
 {
-  getEntityMapping(entityName).external = external;
+  getEntityMapping(entityName).setExternal(external);
 }
 
 

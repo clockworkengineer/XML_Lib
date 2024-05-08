@@ -10,13 +10,26 @@
 
 namespace XML_Lib {
 
-class XML_EntityMapper : public IEntityMapper
+struct XML_EntityMapper : public IEntityMapper
 {
 public:
   // Entity mapping data
   struct XMLEntityMapping
   {
-    explicit XMLEntityMapping(const std::string &internal) : internal(internal) {}
+  protected:
+    enum class Type { base = 0, internal, declaration, root, external, notation };
+
+  public:
+    explicit XMLEntityMapping(const std::string &value) : internal(value) {}
+    // Entity reference get/set details
+    const std::string &getInternal() const{  return (internal); }
+    const std::string &getNotation() const { return (notation); }
+    const XMLExternalReference &getExternal() const { return (external); }
+    void setInternal(const std::string &value) { internal = value; }
+    void setNotation(const std::string &value) { notation = value; }
+    void setExternal(const XMLExternalReference &value) { external = value; }
+
+  private:
     std::string internal{};
     XMLExternalReference external{ "" };
     std::string notation{};
