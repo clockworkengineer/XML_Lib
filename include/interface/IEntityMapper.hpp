@@ -31,6 +31,9 @@ public:
   // ================================
   // Entity reference get/set details
   // ================================
+  virtual bool isInternal(const std::string &entityName) = 0;
+  virtual bool isExternal(const std::string &entityName) = 0;
+  virtual bool isNotation(const std::string &entityName) = 0;
   virtual const std::string &getInternal(const std::string &entityName) = 0;
   virtual const std::string &getNotation(const std::string &entityName) = 0;
   virtual const XMLExternalReference &getExternal(const std::string &entityName) = 0;

@@ -59,13 +59,12 @@ public:
   XML_EntityMapper(XML_EntityMapper &&other) = delete;
   XML_EntityMapper &operator=(XML_EntityMapper &&other) = delete;
   ~XML_EntityMapper();
-
   // Is entity reference mapping entry present ?
   [[nodiscard]] bool isPresent(const std::string &entityName) const override;
   // Determine entity type
-  [[nodiscard]] bool isInternal(const std::string &entityName);
-  [[nodiscard]] bool isExternal(const std::string &entityName);
-  [[nodiscard]] bool isNotation(const std::string &entityName);
+  [[nodiscard]] bool isInternal(const std::string &entityName) override;
+  [[nodiscard]] bool isExternal(const std::string &entityName) override;
+  [[nodiscard]] bool isNotation(const std::string &entityName) override;
   // Entity reference get/set details
   const std::string &getInternal(const std::string &entityName) override;
   const std::string &getNotation(const std::string &entityName) override;
