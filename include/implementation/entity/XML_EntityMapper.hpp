@@ -16,8 +16,9 @@ public:
   // Entity mapping data
   struct XMLEntityMapping
   {
+    // Mapping types
   protected:
-    enum class Type { base = 0, internal, declaration, root, external, notation };
+    enum class Type { base = 0, internal, external, notation };
 
   public:
     explicit XMLEntityMapping(const std::string &value) { setInternal(value); }
@@ -40,7 +41,9 @@ public:
       mappingType = Type::external;
       external = value;
     }
-
+    [[nodiscard]] bool isInternal() { return (mappingType == Type::internal); }
+    [[nodiscard]] bool isExternal() { return (mappingType == Type ::external); }
+    [[nodiscard]] bool isNotation() { return (mappingType == Type::notation); }
 
   private:
     Type mappingType;
@@ -59,6 +62,10 @@ public:
 
   // Is entity reference mapping entry present ?
   [[nodiscard]] bool isPresent(const std::string &entityName) const override;
+  // Determine entity type
+  [[nodiscard]] bool isInternal(const std::string &entityName);
+  [[nodiscard]] bool isExternal(const std::string &entityName);
+  [[nodiscard]] bool isNotation(const std::string &entityName);
   // Entity reference get/set details
   const std::string &getInternal(const std::string &entityName) override;
   const std::string &getNotation(const std::string &entityName) override;

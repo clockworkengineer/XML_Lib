@@ -162,6 +162,13 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, char typ
 }
 
 /// <summary>
+/// Determine entity type
+/// </summary>
+bool XML_EntityMapper::isInternal(const std::string &entityName) { return (getEntityMapping(entityName).isInternal()); }
+bool XML_EntityMapper::isExternal(const std::string &entityName) { return (getEntityMapping(entityName).isExternal()); }
+bool XML_EntityMapper::isNotation(const std::string &entityName) { return (getEntityMapping(entityName).isNotation()); }
+
+/// <summary>
 /// Get entity mapping values.
 /// </summary>
 const std::string &XML_EntityMapper::getInternal(const std::string &entityName)

@@ -18,30 +18,35 @@ TEST_CASE("XML entity mapper useage tests cases.", "[XML][EntityMapper]")
   {
     XML_EntityMapper entityMapper;
     REQUIRE_FALSE(!entityMapper.isPresent("&amp;"));
-    REQUIRE(entityMapper.getInternal("&amp;")=="&#x26;");
+    REQUIRE_FALSE(!entityMapper.isInternal("&amp;"));
+    REQUIRE(entityMapper.getInternal("&amp;") == "&#x26;");
   }
   SECTION("Create entity mapper intialised default with &quot; entry.", "[XML][EntityMapper][DefaultValues]")
   {
     XML_EntityMapper entityMapper;
     REQUIRE_FALSE(!entityMapper.isPresent("&quot;"));
-    REQUIRE(entityMapper.getInternal("&quot;")=="&#x22;");
+    REQUIRE_FALSE(!entityMapper.isInternal("&quot;"));
+    REQUIRE(entityMapper.getInternal("&quot;") == "&#x22;");
   }
   SECTION("Create entity mapper intialised default with &apos; entry.", "[XML][EntityMapper][DefaultValues]")
   {
     XML_EntityMapper entityMapper;
     REQUIRE_FALSE(!entityMapper.isPresent("&apos;"));
-    REQUIRE(entityMapper.getInternal("&apos;")=="&#x27;");
+    REQUIRE_FALSE(!entityMapper.isInternal("&apos;"));
+    REQUIRE(entityMapper.getInternal("&apos;") == "&#x27;");
   }
   SECTION("Create entity mapper intialised default with &lt; entry.", "[XML][EntityMapper][DefaultValues]")
   {
     XML_EntityMapper entityMapper;
     REQUIRE_FALSE(!entityMapper.isPresent("&lt;"));
-    REQUIRE(entityMapper.getInternal("&lt;")=="&#x3C;");
+    REQUIRE_FALSE(!entityMapper.isInternal("&lt;"));
+    REQUIRE(entityMapper.getInternal("&lt;") == "&#x3C;");
   }
   SECTION("Create entity mapper intialised default with &gt; entry.", "[XML][EntityMapper][DefaultValues]")
   {
     XML_EntityMapper entityMapper;
     REQUIRE_FALSE(!entityMapper.isPresent("&gt;"));
-    REQUIRE(entityMapper.getInternal("&gt;")=="&#x3E;");
+    REQUIRE_FALSE(!entityMapper.isInternal("&gt;"));
+    REQUIRE(entityMapper.getInternal("&gt;") == "&#x3E;");
   }
 }
