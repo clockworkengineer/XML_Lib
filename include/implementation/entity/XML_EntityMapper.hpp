@@ -20,16 +20,30 @@ public:
     enum class Type { base = 0, internal, declaration, root, external, notation };
 
   public:
-    explicit XMLEntityMapping(const std::string &value) : internal(value) {}
+    explicit XMLEntityMapping(const std::string &value) { setInternal(value); }
     // Entity reference get/set details
-    const std::string &getInternal() const{  return (internal); }
+    const std::string &getInternal() const { return (internal); }
     const std::string &getNotation() const { return (notation); }
     const XMLExternalReference &getExternal() const { return (external); }
-    void setInternal(const std::string &value) { internal = value; }
-    void setNotation(const std::string &value) { notation = value; }
-    void setExternal(const XMLExternalReference &value) { external = value; }
+    void setInternal(const std::string &value)
+    {
+      mappingType = Type::internal;
+      internal = value;
+    }
+    void setNotation(const std::string &value)
+    {
+      mappingType = Type::internal;
+      notation = value;
+    }
+    void setExternal(const XMLExternalReference &value)
+    {
+      mappingType = Type::external;
+      external = value;
+    }
+
 
   private:
+    Type mappingType;
     std::string internal{};
     XMLExternalReference external{ "" };
     std::string notation{};
@@ -58,7 +72,7 @@ public:
   [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
   // Check for a recursive entity reference mapping
   void checkForRecursion() override;
-
+  // Reset entity mapper to default state
   void resetToDefault() override;
 
 private:
