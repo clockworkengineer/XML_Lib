@@ -116,16 +116,16 @@ void DTD_Impl::parseExternalReferenceContent()
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 /// <returns>External reference.</returns>
-XMLExternalReference DTD_Impl::parseExternalReference(ISource &source)
+XML_ExternalReference DTD_Impl::parseExternalReference(ISource &source)
 {
   if (source.match("SYSTEM")) {
     source.ignoreWS();
-    return (XMLExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" });
+    return (XML_ExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" });
   } else if (source.match("PUBLIC")) {
     source.ignoreWS();
     std::string publicID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
-    return (XMLExternalReference{ "PUBLIC", systemID, publicID });
+    return (XML_ExternalReference{ "PUBLIC", systemID, publicID });
   }
   throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
 }

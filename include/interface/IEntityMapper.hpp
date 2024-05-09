@@ -8,7 +8,7 @@ namespace XML_Lib {
 // ===================================================
 // Forward declarations for interfaces/classes/structs
 // ===================================================
-struct XMLExternalReference;
+struct XML_ExternalReference;
 struct XMLValue;
 
 // ===========================
@@ -36,10 +36,10 @@ public:
   virtual bool isNotation(const std::string &entityName) = 0;
   virtual const std::string &getInternal(const std::string &entityName) = 0;
   virtual const std::string &getNotation(const std::string &entityName) = 0;
-  virtual const XMLExternalReference &getExternal(const std::string &entityName) = 0;
+  virtual const XML_ExternalReference &getExternal(const std::string &entityName) = 0;
   virtual void setInternal(const std::string &entityName, const std::string &internal) = 0;
   virtual void setNotation(const std::string &entityName, const std::string &notation) = 0;
-  virtual void setExternal(const std::string &entityName, const XMLExternalReference &external) = 0;
+  virtual void setExternal(const std::string &entityName, const XML_ExternalReference &external) = 0;
   // ===========================================
   // Is entity reference mapping entry present ?
   // ===========================================

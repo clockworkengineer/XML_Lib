@@ -78,8 +78,8 @@ struct XDTD : Variant
   void setType(uint16_t type) { dtdNodeType = type; }
   [[nodiscard]] std::string getRootName() const { return (dtdNodeName); }
   void setRootName(const std::string &name) { dtdNodeName = name; }
-  [[nodiscard]] XMLExternalReference getExternalReference() const { return (externalReference); }
-  void setExternalReference(const XMLExternalReference &reference) { externalReference = reference; }
+  [[nodiscard]] XML_ExternalReference getExternalReference() const { return (externalReference); }
+  void setExternalReference(const XML_ExternalReference &reference) { externalReference = reference; }
   [[nodiscard]] bool isElementPresent(const std::string &elementName) const
   {
     return (elements.find(elementName) != elements.end());
@@ -95,13 +95,13 @@ struct XDTD : Variant
     elements.emplace(elementName, element);
   }
   [[nodiscard]] long getElementCount() const { return (static_cast<long>(elements.size())); }
-  XMLExternalReference &getNotation(const std::string &notationName)
+  XML_ExternalReference &getNotation(const std::string &notationName)
   {
     auto notation = notations.find(notationName);
     if (notation != notations.end()) { return (notation->second); }
     throw XNode::Error("Could not find notation name.");
   }
-  void addNotation(const std::string &notationName, const XMLExternalReference &notation)
+  void addNotation(const std::string &notationName, const XML_ExternalReference &notation)
   {
     notations.emplace(notationName, notation);
   }
@@ -119,9 +119,9 @@ private:
   uint16_t dtdNodeType{};
   long lineCount{};
   std::string dtdNodeName;
-  XMLExternalReference externalReference{ "" };
+  XML_ExternalReference externalReference{ "" };
   std::unordered_map<std::string, XDTD::Element> elements;
-  std::unordered_map<std::string, XMLExternalReference> notations;
+  std::unordered_map<std::string, XML_ExternalReference> notations;
   std::string unparsedDTD;
   IEntityMapper &entityMapper;
 };

@@ -14,19 +14,19 @@ struct XML_EntityMapper : public IEntityMapper
 {
 public:
   // Entity mapping data
-  struct XMLEntityMapping
+  struct XML_EntityMapping
   {
     // Mapping types
   protected:
     enum class Type { base = 0, internal, external, notation };
 
   public:
-    XMLEntityMapping() = default;
-    explicit XMLEntityMapping(const std::string &value) { setInternal(value); }
+    XML_EntityMapping() = default;
+    explicit XML_EntityMapping(const std::string &value) { setInternal(value); }
     // Entity reference get/set details
     const std::string &getInternal() const { return (internal); }
     const std::string &getNotation() const { return (notation); }
-    const XMLExternalReference &getExternal() const { return (external); }
+    const XML_ExternalReference &getExternal() const { return (external); }
     void setInternal(const std::string &value)
     {
       mappingType = Type::internal;
@@ -37,7 +37,7 @@ public:
       mappingType = Type::notation;
       notation = value;
     }
-    void setExternal(const XMLExternalReference &value)
+    void setExternal(const XML_ExternalReference &value)
     {
       mappingType = Type::external;
       external = value;
@@ -49,7 +49,7 @@ public:
   private:
     Type mappingType {Type::base};
     std::string internal{};
-    XMLExternalReference external{ "" };
+    XML_ExternalReference external{ "" };
     std::string notation{};
   };
 
@@ -69,10 +69,10 @@ public:
   // Entity reference get/set details
   const std::string &getInternal(const std::string &entityName) override;
   const std::string &getNotation(const std::string &entityName) override;
-  const XMLExternalReference &getExternal(const std::string &entityName) override;
+  const XML_ExternalReference &getExternal(const std::string &entityName) override;
   void setInternal(const std::string &entityName, const std::string &internal) override;
   void setNotation(const std::string &entityName, const std::string &notation) override;
-  void setExternal(const std::string &entityName, const XMLExternalReference &external) override;
+  void setExternal(const std::string &entityName, const XML_ExternalReference &external) override;
   //  Get mapping for an entity reference
   XMLValue map(const XMLValue &entityReference) override;
   // Translate any entity reference in a string
@@ -89,8 +89,8 @@ private:
   // Get contents of file that is pointed to by an entity reference
   std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry
-  XMLEntityMapping &getEntityMapping(const std::string &entityName);
+  XML_EntityMapping &getEntityMapping(const std::string &entityName);
 
-  std::map<std::string, XMLEntityMapping> entityMappings;
+  std::map<std::string, XML_EntityMapping> entityMappings;
 };
 }// namespace XML_Lib

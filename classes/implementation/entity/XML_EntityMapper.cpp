@@ -67,9 +67,9 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 /// </summary>
 /// <param name="entityName">.</param>
 /// <returns>Reference to entity mapping in intermal map.</returns>
-XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
+XML_EntityMapper::XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
 {
-  if (!isPresent(entityName)) { entityMappings.emplace(std::make_pair(entityName, XMLEntityMapping())); }
+  if (!isPresent(entityName)) { entityMappings.emplace(std::make_pair(entityName, XML_EntityMapping())); }
   auto entity = entityMappings.find(entityName);
   if (entity != entityMappings.end()) { return (entity->second); }
   throw Error("Could not find entity reference in map.");
@@ -81,11 +81,11 @@ XML_EntityMapper::XMLEntityMapping &XML_EntityMapper::getEntityMapping(const std
 void XML_EntityMapper::XML_EntityMapper::resetToDefault()
 {
   entityMappings.clear();
-  entityMappings.emplace(std::make_pair("&amp;", XMLEntityMapping{ "&#x26;" }));
-  entityMappings.emplace(std::make_pair("&quot;", XMLEntityMapping{ "&#x22;" }));
-  entityMappings.emplace(std::make_pair("&apos;", XMLEntityMapping{ "&#x27;" }));
-  entityMappings.emplace(std::make_pair("&lt;", XMLEntityMapping{ "&#x3C;" }));
-  entityMappings.emplace(std::make_pair("&gt;", XMLEntityMapping{ "&#x3E;" }));
+  entityMappings.emplace(std::make_pair("&amp;", XML_EntityMapping{ "&#x26;" }));
+  entityMappings.emplace(std::make_pair("&quot;", XML_EntityMapping{ "&#x22;" }));
+  entityMappings.emplace(std::make_pair("&apos;", XML_EntityMapping{ "&#x27;" }));
+  entityMappings.emplace(std::make_pair("&lt;", XML_EntityMapping{ "&#x3C;" }));
+  entityMappings.emplace(std::make_pair("&gt;", XML_EntityMapping{ "&#x3E;" }));
 }
 
 /// <summary>
@@ -179,7 +179,7 @@ const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
 {
   return (getEntityMapping(entityName).getNotation());
 }
-const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
+const XML_ExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
 {
   return (getEntityMapping(entityName).getExternal());
 }
@@ -195,7 +195,7 @@ void XML_EntityMapper::setNotation(const std::string &entityName, const std::str
 {
   getEntityMapping(entityName).setNotation(notation);
 }
-void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExternalReference &external)
+void XML_EntityMapper::setExternal(const std::string &entityName, const XML_ExternalReference &external)
 {
   getEntityMapping(entityName).setExternal(external);
 }

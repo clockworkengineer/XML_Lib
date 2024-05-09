@@ -4,17 +4,17 @@
 
 namespace XML_Lib {
 
-struct XMLExternalReference
+struct XML_ExternalReference
 {
   // Constructors/Destructors
-  XMLExternalReference(const std::string &type, const std::string &systemID = "", const std::string publicID = "")
+  XML_ExternalReference(const std::string &type, const std::string &systemID = "", const std::string publicID = "")
     : type(type), systemID(systemID), publicID(publicID)
   {}
-  XMLExternalReference(const XMLExternalReference &other) = default;
-  XMLExternalReference &operator=(const XMLExternalReference &other) = default;
-  XMLExternalReference(XMLExternalReference &&other) = default;
-  XMLExternalReference &operator=(XMLExternalReference &&other) = default;
-  ~XMLExternalReference() = default;
+  XML_ExternalReference(const XML_ExternalReference &other) = default;
+  XML_ExternalReference &operator=(const XML_ExternalReference &other) = default;
+  XML_ExternalReference(XML_ExternalReference &&other) = default;
+  XML_ExternalReference &operator=(XML_ExternalReference &&other) = default;
+  ~XML_ExternalReference() = default;
   // Get external reference details
   const std::string &getType() const { return (type); }
   const std::string &getSystemID() const { return (systemID); }

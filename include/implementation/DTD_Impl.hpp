@@ -45,7 +45,7 @@ private:
   void parseNotation(ISource &source);
   void parseEntity(ISource &source);
   void parseElement(ISource &source);
-  XMLExternalReference parseExternalReference(ISource &source);
+  XML_ExternalReference parseExternalReference(ISource &source);
   void parseAttributeType(ISource &source, XDTD::Attribute &attribute);
   void parseAttributeValue(ISource &source, XDTD::Attribute &attribute);
   void parseComment(ISource &source);

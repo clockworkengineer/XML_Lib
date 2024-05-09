@@ -78,7 +78,7 @@ TEST_CASE("XML entity mapper useage tests cases.", "[XML][EntityMapper]")
   //   SECTION("Create external reference entity mapping.", "[XML][EntityMapper][API]")
   // {
   //   XML_EntityMapper entityMapper;
-  //   XMLExternalReference  
+  //   XML_ExternalReference  
   //   entityMapper.setExternal("&test;", );
   //   REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
   //   REQUIRE_FALSE(!entityMapper.isNotation("&test;"));
