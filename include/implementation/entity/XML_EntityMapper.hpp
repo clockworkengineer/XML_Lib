@@ -21,6 +21,7 @@ public:
     enum class Type { base = 0, internal, external, notation };
 
   public:
+    XMLEntityMapping() = default;
     explicit XMLEntityMapping(const std::string &value) { setInternal(value); }
     // Entity reference get/set details
     const std::string &getInternal() const { return (internal); }
@@ -33,7 +34,7 @@ public:
     }
     void setNotation(const std::string &value)
     {
-      mappingType = Type::internal;
+      mappingType = Type::notation;
       notation = value;
     }
     void setExternal(const XMLExternalReference &value)
@@ -46,7 +47,7 @@ public:
     [[nodiscard]] bool isNotation() { return (mappingType == Type::notation); }
 
   private:
-    Type mappingType;
+    Type mappingType {Type::base};
     std::string internal{};
     XMLExternalReference external{ "" };
     std::string notation{};

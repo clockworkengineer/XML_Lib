@@ -49,4 +49,39 @@ TEST_CASE("XML entity mapper useage tests cases.", "[XML][EntityMapper]")
     REQUIRE_FALSE(!entityMapper.isInternal("&gt;"));
     REQUIRE(entityMapper.getInternal("&gt;") == "&#x3E;");
   }
+  SECTION("Try to see if a non-existant entry exists.", "[XML][EntityMapper][API]")
+  {
+    XML_EntityMapper entityMapper;
+    REQUIRE_FALSE(entityMapper.isPresent("&test;"));
+  }
+  SECTION("Try to see if a non-existant entry is internal.", "[XML][EntityMapper][API]")
+  {
+    XML_EntityMapper entityMapper;
+    REQUIRE_FALSE(entityMapper.isInternal("&test;"));
+  }
+  SECTION("Create internal entity mapping.", "[XML][EntityMapper][API]")
+  {
+    XML_EntityMapper entityMapper;
+    entityMapper.setInternal("&test;", "test cotents");
+    REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
+    REQUIRE_FALSE(!entityMapper.isInternal("&test;"));
+    REQUIRE(entityMapper.getInternal("&test;") == "test cotents");
+  }
+  SECTION("Create notation entity mapping.", "[XML][EntityMapper][API]")
+  {
+    XML_EntityMapper entityMapper;
+    entityMapper.setNotation("&test;", "test cotents");
+    REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
+    REQUIRE_FALSE(!entityMapper.isNotation("&test;"));
+    REQUIRE(entityMapper.getNotation("&test;") == "test cotents");
+  }
+  //   SECTION("Create external reference entity mapping.", "[XML][EntityMapper][API]")
+  // {
+  //   XML_EntityMapper entityMapper;
+  //   XMLExternalReference  
+  //   entityMapper.setExternal("&test;", );
+  //   REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
+  //   REQUIRE_FALSE(!entityMapper.isNotation("&test;"));
+  //   REQUIRE(entityMapper.getNotation("&test;") == "test cotents");
+  // }
 }
