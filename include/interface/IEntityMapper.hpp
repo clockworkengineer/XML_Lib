@@ -22,7 +22,7 @@ public:
   // ==================
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("IEntityMapper Error: " + message) {}
+    Error(const std::string &message) : std::runtime_error("EntityMapper Error: " + message) {}
   };
   // ========================
   // Constructors/destructors

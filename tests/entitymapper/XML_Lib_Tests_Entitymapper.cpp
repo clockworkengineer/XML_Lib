@@ -64,7 +64,7 @@ TEST_CASE("XML entity mapper useage tests cases.", "[XML][EntityMapper]")
     XML_EntityMapper entityMapper;
     REQUIRE_FALSE(entityMapper.isPresent("&test;"));
     REQUIRE_THROWS_WITH(
-      entityMapper.getInternal("&test;"), "IEntityMapper Error: Internal entity reference not found for '&test;'.");
+      entityMapper.getInternal("&test;"), "EntityMapper Error: Internal entity reference not found for '&test;'.");
   }
   SECTION("Create internal entity mapping.", "[XML][EntityMapper][API]")
   {

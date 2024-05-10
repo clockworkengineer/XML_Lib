@@ -47,12 +47,16 @@ public:
     [[nodiscard]] bool isNotation() { return (mappingType == Type::notation); }
 
   private:
-    Type mappingType {Type::base};
+    Type mappingType{ Type::base };
     std::string internal{};
     XML_ExternalReference external{ "" };
     std::string notation{};
   };
-
+  // EntityMapper Error
+  struct Error : public std::runtime_error
+  {
+    Error(const std::string &message) : std::runtime_error("EntityMapper Error: " + message) {}
+  };
   // Constructors/Destructors
   XML_EntityMapper();
   XML_EntityMapper(const XML_EntityMapper &other) = delete;

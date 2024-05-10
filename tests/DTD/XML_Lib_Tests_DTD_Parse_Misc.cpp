@@ -364,7 +364,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
-      "IEntityMapper Error: Internal entity reference not found for '&example;'.");
+      "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION("XML with a DTD with nested conditionals that are both INCLUDE.", "[XML][DTD][Parse][Conditional]")
   {
@@ -408,7 +408,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
-      "IEntityMapper Error: Internal entity reference not found for '&example;'.");
+      "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION("XML with a DTD with nested conditionals that are  outter IGNORE inner INCLUDE plus two entities.",
     "[XML][DTD][Parse][Conditional]")
@@ -423,9 +423,9 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example1;"),
-      "IEntityMapper Error: Internal entity reference not found for '&example1;'.");
+      "EntityMapper Error: Internal entity reference not found for '&example1;'.");
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
-      "IEntityMapper Error: Internal entity reference not found for '&example;'.");
+      "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION(
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (switch on).",
@@ -457,9 +457,9 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == (XDTD::Type::internal | XDTD::Type::external));
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example1;"),
-      "IEntityMapper Error: Internal entity reference not found for '&example1;'.");
+      "EntityMapper Error: Internal entity reference not found for '&example1;'.");
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
-      "IEntityMapper Error: Internal entity reference not found for '&example;'.");
+      "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION(
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (invalid "
