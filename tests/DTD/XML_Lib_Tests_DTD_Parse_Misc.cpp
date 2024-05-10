@@ -363,7 +363,8 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "");
+    REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
+      "IEntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION("XML with a DTD with nested conditionals that are both INCLUDE.", "[XML][DTD][Parse][Conditional]")
   {
@@ -405,8 +406,9 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "");
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
+    REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
+      "IEntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION("XML with a DTD with nested conditionals that are  outter IGNORE inner INCLUDE plus two entities.",
     "[XML][DTD][Parse][Conditional]")
@@ -420,8 +422,10 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "");
-    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "");
+    REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example1;"),
+      "IEntityMapper Error: Internal entity reference not found for '&example1;'.");
+    REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
+      "IEntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION(
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (switch on).",
@@ -452,8 +456,10 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE(xDTD.getType() == (XDTD::Type::internal | XDTD::Type::external));
-    REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "");
-    REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "");
+    REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example1;"),
+      "IEntityMapper Error: Internal entity reference not found for '&example1;'.");
+    REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
+      "IEntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION(
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (invalid "
@@ -479,9 +485,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "<root>\n"
       "</root>"
     };
-    // REQUIRE_THROWS_WITH(
-    //   xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Conditional value not INCLUDE or IGNORE.");
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Entity '%debug;' does not exist.");
+     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Entity '%debug;' does not exist.");
   }
 }
 

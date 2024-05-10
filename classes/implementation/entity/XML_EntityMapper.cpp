@@ -173,15 +173,30 @@ bool XML_EntityMapper::isNotation(const std::string &entityName) { return (getEn
 /// </summary>
 const std::string &XML_EntityMapper::getInternal(const std::string &entityName)
 {
-  return (getEntityMapping(entityName).getInternal());
+  auto entity = getEntityMapping(entityName);
+  if (entity.isInternal()) {
+    return (getEntityMapping(entityName).getInternal());
+  } else {
+    throw Error("Internal entity reference not found for '"+entityName+"'.");
+  }
 }
 const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
 {
-  return (getEntityMapping(entityName).getNotation());
+  auto entity = getEntityMapping(entityName);
+  if (entity.isNotation()) {
+    return (getEntityMapping(entityName).getNotation());
+  } else {
+     throw Error("Notation entity reference not found for '"+entityName+"'.");
+  }
 }
 const XML_ExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
 {
-  return (getEntityMapping(entityName).getExternal());
+  auto entity = getEntityMapping(entityName);
+  if (entity.isExternal()) {
+    return (getEntityMapping(entityName).getExternal());
+  } else {
+  throw Error("External entity reference not found for '"+entityName+"'.");
+  }
 }
 
 /// <summary>
