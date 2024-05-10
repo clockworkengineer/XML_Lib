@@ -23,9 +23,9 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
   }
   SECTION("Create FileSource with non existants file.", "[XML][FileSource][Exception]")
   {
-    REQUIRE_THROWS_AS(FileSource(prefixPath(kNonExistantXMLFile)), ISource::Error);
+    REQUIRE_THROWS_AS(FileSource(prefixPath(kNonExistantXMLFile)), FileSource::Error);
     REQUIRE_THROWS_WITH(FileSource(prefixPath(kNonExistantXMLFile)),
-      "ISource Error: File input stream failed to open or does not exist.");
+      "FileSource Error: File input stream failed to open or does not exist.");
   }
   SECTION("Create FileSource with testfile001.xml. and positioned on the correct first character", "[XML][FileSource]")
   {
@@ -145,8 +145,8 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     FileSource source{ prefixPath(kGeneratedXMLFile) };
     while (source.more()) { source.next(); }
     REQUIRE_NOTHROW(source.ignoreWS());
-    REQUIRE_THROWS_AS(source.next(), ISource::Error);
-    REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
+    REQUIRE_THROWS_AS(source.next(), FileSource::Error);
+    REQUIRE_THROWS_WITH(source.next(), "FileSource Error: Parse buffer empty before parse complete.");
   }
   SECTION("Check that FileSource match works correctly when match found or not.", "[XML][FileSource]")
   {
@@ -174,7 +174,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     source.next();
     REQUIRE_FALSE(!source.match("</root>"));
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
-    REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
+    REQUIRE_THROWS_WITH(source.next(), "FileSource Error: Parse buffer empty before parse complete.");
   }
   SECTION("Check that FileSource backup works and doesn't go negative.", "[XML][FileSource]")
   {
@@ -201,8 +201,8 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   SECTION("Create BufferSource.", "[XML][BufferSource]") { REQUIRE_NOTHROW(BufferSource(buffer)); }
   SECTION("Create BufferSource with empty buffer.", "[XML][BufferSource][Exception]")
   {
-    REQUIRE_THROWS_AS(BufferSource(""), ISource::Error);
-    REQUIRE_THROWS_WITH(BufferSource(""), "ISource Error: Empty source buffer passed to be parsed.");
+    REQUIRE_THROWS_AS(BufferSource(""), BufferSource::Error);
+    REQUIRE_THROWS_WITH(BufferSource(""), "BufferSource Error: Empty source buffer passed to be parsed.");
   }
   SECTION("Create BufferSource with testfile001.xml and that it is positioned on the correct first character",
     "[XML][BufferSource]")
@@ -319,8 +319,8 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     BufferSource source{ xmlString };
     while (source.more()) { source.next(); }
     REQUIRE_NOTHROW(source.ignoreWS());
-    REQUIRE_THROWS_AS(source.next(), ISource::Error);
-    REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
+    REQUIRE_THROWS_AS(source.next(), BufferSource::Error);
+    REQUIRE_THROWS_WITH(source.next(), "BufferSource Error: Parse buffer empty before parse complete.");
   }
   SECTION("Check that BufferSource match works correctly when match found or not.", "[XML][BufferSource]")
   {
@@ -347,7 +347,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     source.next();
     REQUIRE_FALSE(!source.match("</root>"));
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
-    REQUIRE_THROWS_WITH(source.next(), "ISource Error: Parse buffer empty before parse complete.");
+    REQUIRE_THROWS_WITH(source.next(), "BufferSource Error: Parse buffer empty before parse complete.");
   }
   SECTION("Check that BufferSource backup works and doesn't go negative.", "[XML][BufferSource]")
   {

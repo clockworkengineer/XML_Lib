@@ -11,6 +11,11 @@ namespace XML_Lib {
 class BufferDestination : public IDestination
 {
 public:
+  // BufferDestination Error
+  struct Error : public std::runtime_error
+  {
+    Error(const std::string &message) : std::runtime_error("BufferDestination Error: " + message) {}
+  };
   // Constructors/Destructors
   BufferDestination() = default;
   BufferDestination(const BufferDestination &other) = delete;

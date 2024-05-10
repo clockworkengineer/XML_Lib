@@ -11,6 +11,11 @@ namespace XML_Lib {
 class FileDestination : public IDestination
 {
 public:
+  // FileDestination Error
+  struct Error : public std::runtime_error
+  {
+    Error(const std::string &message) : std::runtime_error("FileDestination Error: " + message) {}
+  };
   // Constructors/Destructors
   explicit FileDestination(const std::string &destinationFileName)
   {
