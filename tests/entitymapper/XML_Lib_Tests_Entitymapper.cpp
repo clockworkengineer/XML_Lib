@@ -75,13 +75,26 @@ TEST_CASE("XML entity mapper useage tests cases.", "[XML][EntityMapper]")
     REQUIRE_FALSE(!entityMapper.isNotation("&test;"));
     REQUIRE(entityMapper.getNotation("&test;") == "test cotents");
   }
-  //   SECTION("Create external reference entity mapping.", "[XML][EntityMapper][API]")
-  // {
-  //   XML_EntityMapper entityMapper;
-  //   XML_ExternalReference  
-  //   entityMapper.setExternal("&test;", );
-  //   REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
-  //   REQUIRE_FALSE(!entityMapper.isNotation("&test;"));
-  //   REQUIRE(entityMapper.getNotation("&test;") == "test cotents");
-  // }
+  SECTION("Create system external reference entity mapping.", "[XML][EntityMapper][API]")
+  {
+    XML_EntityMapper entityMapper;
+    XML_ExternalReference externalReference{ "SYSTEM", "chap1.xml" };
+    entityMapper.setExternal("&test;", externalReference);
+    REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
+    REQUIRE_FALSE(!entityMapper.isExternal("&test;"));
+    REQUIRE(entityMapper.getExternal("&test;").getSystemID() == "chap1.xml");
+  }
+  SECTION("Create public external reference entity mapping.", "[XML][EntityMapper][API]")
+  {
+    XML_EntityMapper entityMapper;
+    XML_ExternalReference externalReference{
+      "PUBLIC", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    };
+    entityMapper.setExternal("&test;", externalReference);
+    REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
+    REQUIRE_FALSE(!entityMapper.isExternal("&test;"));
+    REQUIRE(entityMapper.getExternal("&test;").getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
+    REQUIRE(
+      entityMapper.getExternal("&test;").getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+  }
 }
