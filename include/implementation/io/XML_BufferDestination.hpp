@@ -16,6 +16,7 @@ public:
   {
     Error(const std::string &message) : std::runtime_error("BufferDestination Error: " + message) {}
   };
+  // Con
   // Constructors/Destructors
   BufferDestination() = default;
   BufferDestination(const BufferDestination &other) = delete;
