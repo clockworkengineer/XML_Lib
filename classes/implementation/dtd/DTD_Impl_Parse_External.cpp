@@ -106,7 +106,7 @@ void DTD_Impl::parseExternalReferenceContent()
   if (xDTD.getExternalReference().getType() == "SYSTEM") {
     FileSource dtdFile(xDTD.getExternalReference().getSystemID());
     parseExternalContent(dtdFile);
-  } else if (xDTD.getExternalReference().getType() == "PUBLIC") {
+  } else if (xDTD.getExternalReference().getType() == XML_ExternalReference::kPublicID) {
     // Public external DTD currently not supported (Use system id ?)
   }
 }
@@ -121,11 +121,11 @@ XML_ExternalReference DTD_Impl::parseExternalReference(ISource &source)
   if (source.match("SYSTEM")) {
     source.ignoreWS();
     return (XML_ExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" });
-  } else if (source.match("PUBLIC")) {
+  } else if (source.match(XML_ExternalReference::kPublicID)) {
     source.ignoreWS();
     std::string publicID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
-    return (XML_ExternalReference{ "PUBLIC", systemID, publicID });
+    return (XML_ExternalReference{ XML_ExternalReference::kPublicID, systemID, publicID });
   }
   throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
 }

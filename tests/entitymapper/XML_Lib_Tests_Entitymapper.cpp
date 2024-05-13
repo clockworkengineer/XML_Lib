@@ -95,7 +95,7 @@ TEST_CASE("XML entity mapper useage tests cases.", "[XML][EntityMapper]")
   {
     XML_EntityMapper entityMapper;
     XML_ExternalReference externalReference{
-      "PUBLIC", "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      XML_ExternalReference::kPublicID, "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", "-//W3C//DTD XHTML 1.0 Transitional//EN"
     };
     entityMapper.setExternal("&test;", externalReference);
     REQUIRE_FALSE(!entityMapper.isPresent("&test;"));

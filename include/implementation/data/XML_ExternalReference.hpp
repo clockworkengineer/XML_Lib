@@ -11,6 +11,9 @@ protected:
   enum class Type { base = 0, systemID, publicID };
 
 public:
+  // Constants
+  static constexpr char kPublicID[] = "PUBLIC";
+  static constexpr char kSystemID[] = "SYSTEM";
   // ExternalReference Error
   struct Error : public std::runtime_error
   {
@@ -22,9 +25,9 @@ public:
     const std::string publicID = "")
     : systemID(systemID), publicID(publicID)
   {
-    if (referenceType == "SYSTEM") {
+    if (referenceType == kSystemID) {
       type = Type::systemID;
-    } else if (referenceType == "PUBLIC") {
+    } else if (referenceType == kPublicID) {
       type = Type::publicID;
     } else if (referenceType == "") {
       type = Type::base;
@@ -41,9 +44,9 @@ public:
   const std::string getType() const
   {
     if (type == Type::publicID) {
-      return ("PUBLIC");
+      return (kPublicID);
     } else if (type == Type::systemID) {
-      return ("SYSTEM");
+      return (kSystemID);
     } else if (type == Type::base) {
       return ("");
     }

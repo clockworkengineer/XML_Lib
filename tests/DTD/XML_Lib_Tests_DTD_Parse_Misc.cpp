@@ -175,7 +175,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
     REQUIRE(xDTD.getType() == XDTD::Type::external);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
-    REQUIRE(xDTD.getExternalReference().getType() == "PUBLIC");
+    REQUIRE(xDTD.getExternalReference().getType() == XML_ExternalReference::kPublicID);
     REQUIRE(xDTD.getExternalReference().getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
     REQUIRE(xDTD.getExternalReference().getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
   }
