@@ -22,7 +22,7 @@ public:
   // Constructors/Destructors
   XMLExternalReference(const std::string &referenceType,
     const std::string &systemID = "",
-    const std::string publicID = "")
+    const std::string &publicID = "")
     : systemID(systemID), publicID(publicID)
   {
     if (referenceType == kSystemID) {
@@ -35,6 +35,7 @@ public:
       throw Error("Invalid reference type passed.");
     }
   }
+  XMLExternalReference()=delete;
   XMLExternalReference(const XMLExternalReference &other) = default;
   XMLExternalReference &operator=(const XMLExternalReference &other) = default;
   XMLExternalReference(XMLExternalReference &&other) = default;
@@ -47,10 +48,9 @@ public:
       return (kPublicID);
     } else if (type == Type::systemID) {
       return (kSystemID);
-    } else if (type == Type::base) {
+    } else {// base
       return ("");
     }
-    throw Error("Invalid external reference type.");
   }
 
   const std::string &getSystemID() const { return (systemID); }

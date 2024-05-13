@@ -7,7 +7,10 @@ namespace XML_Lib {
 struct XMLValue
 {
   // Constructors/Destructors
-  XMLValue(const std::string &unparsed = "", const std::string &parsed = "", char quote='\'') : unparsed(unparsed), parsed(parsed), quote(quote) {}
+  XMLValue(const std::string &unparsed = "", const std::string &parsed = "", char quote = '\'')
+    : unparsed(unparsed), parsed(parsed), quote(quote)
+  {}
+  XMLValue() = delete;
   XMLValue(const XMLValue &other) = default;
   XMLValue &operator=(const XMLValue &other) = default;
   XMLValue(XMLValue &&other) = default;
@@ -20,14 +23,13 @@ struct XMLValue
   // Get value
   const std::string &getUnparsed() const { return (unparsed); }
   const std::string &getParsed() const { return (parsed); }
-  const char getQuote() const { return(quote); }
+  const char getQuote() const { return (quote); }
 
 private:
   // Parsed/Unparsed value
   std::string unparsed{};
   std::string parsed{};
-    // Quote used for value
+  // Quote used for value
   char quote;
-
 };
 }// namespace XML_Lib

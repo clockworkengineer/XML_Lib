@@ -9,6 +9,7 @@ struct XMLAttribute
 {
   // Constructors/Destructors
   XMLAttribute(const std::string &name, const XMLValue &value) : name(name), value(value) {}
+  XMLAttribute() = delete;
   XMLAttribute(const XMLAttribute &other) = default;
   XMLAttribute &operator=(const XMLAttribute &other) = default;
   XMLAttribute(XMLAttribute &&other) = default;
