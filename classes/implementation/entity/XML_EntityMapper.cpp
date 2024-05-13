@@ -189,7 +189,7 @@ const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
      throw Error("Notation entity reference not found for '"+entityName+"'.");
   }
 }
-const XML_ExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
+const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
 {
   auto entity = getEntityMapping(entityName);
   if (entity.isExternal()) {
@@ -210,7 +210,7 @@ void XML_EntityMapper::setNotation(const std::string &entityName, const std::str
 {
   getEntityMapping(entityName).setNotation(notation);
 }
-void XML_EntityMapper::setExternal(const std::string &entityName, const XML_ExternalReference &external)
+void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExternalReference &external)
 {
   getEntityMapping(entityName).setExternal(external);
 }

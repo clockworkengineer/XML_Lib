@@ -4,7 +4,7 @@
 
 namespace XML_Lib {
 
-struct XML_ExternalReference
+struct XMLExternalReference
 {
   // Reference types
 protected:
@@ -20,7 +20,7 @@ public:
     Error(const std::string &message) : std::runtime_error("ExternalReference Error: " + message) {}
   };
   // Constructors/Destructors
-  XML_ExternalReference(const std::string &referenceType,
+  XMLExternalReference(const std::string &referenceType,
     const std::string &systemID = "",
     const std::string publicID = "")
     : systemID(systemID), publicID(publicID)
@@ -35,11 +35,11 @@ public:
       throw Error("Invalid reference type passed.");
     }
   }
-  XML_ExternalReference(const XML_ExternalReference &other) = default;
-  XML_ExternalReference &operator=(const XML_ExternalReference &other) = default;
-  XML_ExternalReference(XML_ExternalReference &&other) = default;
-  XML_ExternalReference &operator=(XML_ExternalReference &&other) = default;
-  ~XML_ExternalReference() = default;
+  XMLExternalReference(const XMLExternalReference &other) = default;
+  XMLExternalReference &operator=(const XMLExternalReference &other) = default;
+  XMLExternalReference(XMLExternalReference &&other) = default;
+  XMLExternalReference &operator=(XMLExternalReference &&other) = default;
+  ~XMLExternalReference() = default;
   // Get external reference details
   const std::string getType() const
   {

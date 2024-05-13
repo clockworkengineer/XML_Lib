@@ -85,7 +85,7 @@ TEST_CASE("XML entity mapper useage tests cases.", "[XML][EntityMapper]")
   SECTION("Create system external reference entity mapping.", "[XML][EntityMapper][API]")
   {
     XML_EntityMapper entityMapper;
-    XML_ExternalReference externalReference{ "SYSTEM", "chap1.xml" };
+    XMLExternalReference externalReference{ "SYSTEM", "chap1.xml" };
     entityMapper.setExternal("&test;", externalReference);
     REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
     REQUIRE_FALSE(!entityMapper.isExternal("&test;"));
@@ -94,8 +94,8 @@ TEST_CASE("XML entity mapper useage tests cases.", "[XML][EntityMapper]")
   SECTION("Create public external reference entity mapping.", "[XML][EntityMapper][API]")
   {
     XML_EntityMapper entityMapper;
-    XML_ExternalReference externalReference{
-      XML_ExternalReference::kPublicID, "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    XMLExternalReference externalReference{
+      XMLExternalReference::kPublicID, "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", "-//W3C//DTD XHTML 1.0 Transitional//EN"
     };
     entityMapper.setExternal("&test;", externalReference);
     REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
