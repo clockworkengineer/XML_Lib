@@ -1,0 +1,42 @@
+//
+// Unit Tests: XML_Lib_Tests_External_Reference
+//
+// Description: XML External Reference unit tests.
+//
+
+#include "XML_Lib_Tests.hpp"
+
+using namespace XML_Lib;
+
+TEST_CASE("XML external reference useage tests cases.", "[XML][ExternalReference]")
+{
+  SECTION("Create an empty external reference does not throw execption.", "[XML][ExternalReference][Create]")
+  {
+    REQUIRE_NOTHROW(XMLExternalReference(""));
+  }
+  SECTION("Try to access an empty reference (base).", "[XML][ExternalReference][Create]")
+  {
+    auto externalReference = XMLExternalReference("");
+    REQUIRE_THROWS_WITH(externalReference.getType(), "ExternalReference Error: External reference type not set.");
+    REQUIRE_FALSE(externalReference.isSystem());
+    REQUIRE_FALSE(externalReference.isPublic());
+  }
+  SECTION("Create a system external reference", "[XML][ExternalReference][Create]")
+  {
+    auto externalReference =
+      XMLExternalReference(XMLExternalReference::kSystemID, "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+    REQUIRE_FALSE(!externalReference.isSystem());
+    REQUIRE_FALSE(externalReference.isPublic());
+    REQUIRE(externalReference.getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+  }
+  SECTION("Create a public external reference", "[XML][ExternalReference][Create]")
+  {
+    auto externalReference = XMLExternalReference(XMLExternalReference::kPublicID,
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd",
+      "-//W3C//DTD XHTML 1.0 Transitional//EN");
+    REQUIRE_FALSE(externalReference.isSystem());
+    REQUIRE_FALSE(!externalReference.isPublic());
+    REQUIRE(externalReference.getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
+    REQUIRE(externalReference.getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+  }
+}

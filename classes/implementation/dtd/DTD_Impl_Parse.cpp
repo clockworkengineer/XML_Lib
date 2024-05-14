@@ -326,7 +326,7 @@ void DTD_Impl::parseDTD(ISource &source)
     source.ignoreWS();
   }
   // Parse any DTD in external reference found
-  if (!xDTD.getExternalReference().getType().empty()) {
+  if (xDTD.getExternalReference().isPublic() || xDTD.getExternalReference().isSystem()) {
     parseExternal(source);
     xDTD.setType(xDTD.getType() | XDTD::Type::external);
   }

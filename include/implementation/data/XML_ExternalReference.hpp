@@ -35,7 +35,7 @@ public:
       throw Error("Invalid reference type passed.");
     }
   }
-  XMLExternalReference()=delete;
+  XMLExternalReference() = delete;
   XMLExternalReference(const XMLExternalReference &other) = default;
   XMLExternalReference &operator=(const XMLExternalReference &other) = default;
   XMLExternalReference(XMLExternalReference &&other) = default;
@@ -48,11 +48,14 @@ public:
       return (kPublicID);
     } else if (type == Type::systemID) {
       return (kSystemID);
-    } else {// base
-      return ("");
+    } else {
+      throw Error("External reference type not set.");
     }
   }
-
+  // Check which reference is set
+  bool isPublic() { return (type == Type::publicID); }
+  bool isSystem() { return (type == Type::systemID); }
+  // Get reference values
   const std::string &getSystemID() const { return (systemID); }
   const std::string &getPublicID() const { return (publicID); }
 

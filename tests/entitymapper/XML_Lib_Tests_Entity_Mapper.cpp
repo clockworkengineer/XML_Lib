@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML_Lib_Tests_Entitymapper
+// Unit Tests: XML_Lib_Tests_Entity_Mapper
 //
 // Description: XML Entity Mapper unit tests.
 //
