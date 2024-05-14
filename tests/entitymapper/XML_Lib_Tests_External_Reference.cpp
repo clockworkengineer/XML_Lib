@@ -20,6 +20,8 @@ TEST_CASE("XML external reference useage tests cases.", "[XML][ExternalReference
     REQUIRE_THROWS_WITH(externalReference.getType(), "ExternalReference Error: External reference type not set.");
     REQUIRE_FALSE(externalReference.isSystem());
     REQUIRE_FALSE(externalReference.isPublic());
+    REQUIRE_THROWS_WITH(externalReference.getPublicID(), "ExternalReference Error: External reference is not public.");
+    REQUIRE_THROWS_WITH(externalReference.getSystemID(), "ExternalReference Error: External reference has no system value set." );
   }
   SECTION("Create a system external reference", "[XML][ExternalReference][Create]")
   {
