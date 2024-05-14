@@ -56,8 +56,22 @@ public:
   bool isPublic() { return (type == Type::publicID); }
   bool isSystem() { return (type == Type::systemID); }
   // Get reference values
-  const std::string &getSystemID() const { return (systemID); }
-  const std::string &getPublicID() const { return (publicID); }
+  const std::string &getSystemID() const
+  {
+    if (type != Type::base) {
+      return (systemID);
+    } else {
+      throw Error("External reference has no system value set.");
+    }
+  }
+  const std::string &getPublicID() const
+  {
+    if (type == Type::publicID) {
+      return (publicID);
+    } else {
+      throw Error("External reference is not public.");
+    }
+  }
 
 private:
   // Reference type and ids

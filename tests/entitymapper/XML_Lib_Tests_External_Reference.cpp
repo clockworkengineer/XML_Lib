@@ -10,7 +10,7 @@ using namespace XML_Lib;
 
 TEST_CASE("XML external reference useage tests cases.", "[XML][ExternalReference]")
 {
-  SECTION("Create an empty external reference does not throw execption.", "[XML][ExternalReference][Create]")
+  SECTION("Create an empty external reference does not throw exeception.", "[XML][ExternalReference][Create]")
   {
     REQUIRE_NOTHROW(XMLExternalReference(""));
   }
@@ -38,5 +38,13 @@ TEST_CASE("XML external reference useage tests cases.", "[XML][ExternalReference
     REQUIRE_FALSE(!externalReference.isPublic());
     REQUIRE(externalReference.getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
     REQUIRE(externalReference.getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+  }
+  SECTION("Create a system external reference and try to access public value.", "[XML][ExternalReference][Create]")
+  {
+    auto externalReference =
+      XMLExternalReference(XMLExternalReference::kSystemID, "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+    REQUIRE_FALSE(!externalReference.isSystem());
+    REQUIRE_FALSE(externalReference.isPublic());
+    REQUIRE_THROWS_WITH(externalReference.getPublicID(), "ExternalReference Error: External reference is not public.");
   }
 }
