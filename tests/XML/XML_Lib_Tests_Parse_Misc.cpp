@@ -16,11 +16,11 @@ TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
     BufferSource source(XML::fromFile("./files/testfile008.xml"));
     REQUIRE_NOTHROW(xml.parse(source));
   }
-  // SECTION("Parse UTF16 encoded file BE ", "[XML][Parse][UTF16]")
-  // {
-  //   BufferSource source(XML::fromFile("./files/testfile009.xml"));
-  //   REQUIRE_NOTHROW(xml.parse(source));
-  // }
+  SECTION("Parse UTF16 encoded file BE ", "[XML][Parse][UTF16]")
+  {
+    BufferSource source(XML::fromFile("./files/testfile009.xml"));
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
 }
 TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
 {

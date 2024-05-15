@@ -84,7 +84,7 @@ bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren().em
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute)
 {
-  const XElement &xElement = XRef<XElement>(xNode);
+  const auto &xElement = XRef<XElement>(xNode);
   bool attributePresent = xElement.isAttributePresent(attribute.name);
   if ((attribute.type & XDTD::AttributeType::required) != 0) {
     if (!attributePresent) { elementError(xElement, "is missing required attribute '" + attribute.name + "'."); }
@@ -123,7 +123,7 @@ void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &at
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute)
 {
-  const XElement &xElement = XRef<XElement>(xNode);
+  const auto &xElement = XRef<XElement>(xNode);
   auto &elementAttribute = xElement[attribute.name];
   if ((attribute.type & XDTD::AttributeType::cdata) != 0) {
     if (elementAttribute.getParsed().empty())// No character data present.
@@ -144,7 +144,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
     }
     assignedIDREFValues.insert(elementAttribute.getParsed());
   } else if ((attribute.type & XDTD::AttributeType::idrefs) != 0) {
-    for (auto &id : splitString(elementAttribute.getParsed(), ' ')) {
+    for (const auto &id : splitString(elementAttribute.getParsed(), ' ')) {
       if (!checkIsIDOK(id)) {
         elementError(xElement, "IDREFS attribute '" + attribute.name + "' contains an invalid IDREF.");
       }
@@ -166,7 +166,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
         "ENTITY attribute '" + attribute.name + "' value '" + elementAttribute.getParsed() + "' is not defined.");
     }
   } else if ((attribute.type & XDTD::AttributeType::entities) != 0) {
-    for (auto &entity : splitString(elementAttribute.getParsed(), ' ')) {
+    for (const auto &entity : splitString(elementAttribute.getParsed(), ' ')) {
       if (!xDTD.getEntityMapper().isPresent("&" + entity + ";")) {
         elementError(xElement, "ENTITIES attribute '" + attribute.name + "' value '" + entity + "' is not defined.");
       }
@@ -200,7 +200,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkAttributes(const XNode &xNode)
 {
-  const XElement &xElement = XRef<XElement>(xNode);
+  const auto &xElement = XRef<XElement>(xNode);
   for (auto &attribute : xDTD.getElement(xElement.name()).attributes) {
     if (xElement.isAttributePresent(attribute.name)) { checkAttributeType(xNode, attribute); }
     checkAttributeValue(xNode, attribute);
@@ -213,7 +213,7 @@ void DTD_Impl::checkAttributes(const XNode &xNode)
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkContentSpecification(const XNode &xNode)
 {
-  const XElement &xElement = XRef<XElement>(xNode);
+  const auto &xElement = XRef<XElement>(xNode);
   if (xDTD.getElementCount() == 0) { return; }
   if (xDTD.getElement(xElement.name()).content.getParsed() == "((<#PCDATA>))") {
     if (!checkIsPCDATA(xNode)) { elementError(xElement, "does not contain just any parsable data."); }
@@ -273,7 +273,7 @@ void DTD_Impl::checkElements(const XNode &xNode)
     // Nothing for present
     ;
   } else if (xNode.isContent()) {
-    for (auto &ch : XRef<XContent>(xNode).getContent()) {
+    for (const auto &ch : XRef<XContent>(xNode).getContent()) {
       if (ch == kLineFeed) { lineNumber++; }
     }
   } else {
@@ -291,7 +291,7 @@ void DTD_Impl::checkAgainstDTD(const XNode &xNode)
 {
   lineNumber = xDTD.getLineCount();
   checkElements(xNode);
-  for (auto &idref : assignedIDREFValues) {
+  for (const auto &idref : assignedIDREFValues) {
     if (assignedIDValues.count(idref) == 0) {
       throw ValidationError(lineNumber, "IDREF attribute '" + idref + "' does not reference any element with the ID.");
     }
