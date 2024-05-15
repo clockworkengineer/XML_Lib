@@ -17,7 +17,7 @@ public:
   // ExternalReference Error
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("ExternalReference Error: " + message) {}
+    explicit Error(const std::string &message) : std::runtime_error("ExternalReference Error: " + message) {}
   };
   // Constructors/Destructors
   XMLExternalReference(const std::string &referenceType,

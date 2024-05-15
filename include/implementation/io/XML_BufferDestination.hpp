@@ -14,7 +14,7 @@ public:
   // BufferDestination Error
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("BufferDestination Error: " + message) {}
+    explicit Error(const std::string &message) : std::runtime_error("BufferDestination Error: " + message) {}
   };
   // Constructors/Destructors
   BufferDestination() = default;

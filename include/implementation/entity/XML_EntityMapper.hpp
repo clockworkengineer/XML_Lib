@@ -55,7 +55,7 @@ public:
   // EntityMapper Error
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("EntityMapper Error: " + message) {}
+    explicit Error(const std::string &message) : std::runtime_error("EntityMapper Error: " + message) {}
   };
   // Constructors/Destructors
   XML_EntityMapper();

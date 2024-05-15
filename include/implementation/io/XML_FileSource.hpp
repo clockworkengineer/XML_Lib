@@ -14,7 +14,7 @@ public:
   // FileSource Error
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("FileSource Error: " + message) {}
+    explicit  Error(const std::string &message) : std::runtime_error("FileSource Error: " + message) {}
   };
   // Constructors/Destructors
   explicit FileSource(const std::string &sourceFileName)

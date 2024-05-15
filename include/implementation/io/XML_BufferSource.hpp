@@ -17,7 +17,7 @@ public:
   // BufferSource Error
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("BufferSource Error: " + message) {}
+    explicit  Error(const std::string &message) : std::runtime_error("BufferSource Error: " + message) {}
   };
   // Constructors/Destructors
   explicit BufferSource(const std::u16string &sourceBuffer)// UTF16 source BE/LE

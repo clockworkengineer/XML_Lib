@@ -23,7 +23,7 @@ public:
   // =============
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("ISource Error: " + message) {}
+    explicit Error(const std::string &message) : std::runtime_error("ISource Error: " + message) {}
   };
   // ========================
   // Constructors/destructors

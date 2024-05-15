@@ -12,7 +12,7 @@ struct XNode
   // XNode Error
   struct Error : public std::runtime_error
   {
-    Error(const std::string &message) : std::runtime_error("XNode Error: " + message) {}
+    explicit Error(const std::string &message) : std::runtime_error("XNode Error: " + message) {}
   };
   // Constructors/Destructors
   XNode() = default;
