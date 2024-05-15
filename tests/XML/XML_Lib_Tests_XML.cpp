@@ -13,19 +13,19 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
   SECTION("Check XML Lib version.", "[XML][XNode][Version]") { REQUIRE(xml.version() == "XML_Lib Version 1.0.0"); }
   SECTION("Check prolog with no parsed XML.", "[XML][Prolog][No XML]")
   {
-    REQUIRE_THROWS(xml.prolog(), "XML Error: No XML has been parsed.");
+    REQUIRE_THROWS((void)xml.prolog(), "XML Error: No XML has been parsed.");
   }
   SECTION("Check declaration with no parsed XML.", "[XML][Declaration][No XML]")
   {
-    REQUIRE_THROWS(xml.declaration(), "XML Error: No XML has been parsed.");
+    REQUIRE_THROWS((void)xml.declaration(), "XML Error: No XML has been parsed.");
   }
   SECTION("Check root with no parsed XML.", "[XML][Root][No XML]")
   {
-    REQUIRE_THROWS(xml.root(), "XML Error: No XML has been parsed.");
+    REQUIRE_THROWS((void)xml.root(), "XML Error: No XML has been parsed.");
   }
   SECTION("Check DTD with no parsed XML.", "[XML][DTD][No XML]")
   {
-    REQUIRE_THROWS(xml.dtd(), "XML Error: No XML has been parsed.");
+    REQUIRE_THROWS((void)xml.dtd(), "XML Error: No XML has been parsed.");
   }
   SECTION("Check stringify with no parsed XML.", "[XML][Stringify][No XML]")
   {

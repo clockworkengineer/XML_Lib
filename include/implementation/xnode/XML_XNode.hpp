@@ -46,11 +46,11 @@ struct XNode
   void addChild(XNode &child) { xmlVariant->addChild(child); }
   void addChild(XNode &&child) { xmlVariant->addChild(child); }
   // Get XNode children reference
-  std::vector<XNode> &getChildren() { return (xmlVariant->getChildren()); }
-  const std::vector<XNode> &getChildren() const { return (xmlVariant->getChildren()); }
+  [[nodiscard]] std::vector<XNode> &getChildren() { return (xmlVariant->getChildren()); }
+  [[nodiscard]] const std::vector<XNode> &getChildren() const { return (xmlVariant->getChildren()); }
   // Get reference to XNode  variant
-  Variant &getVariant() { return (*xmlVariant); }
-  const Variant &getVariant() const { return (*xmlVariant); }
+  [[nodiscard]] Variant &getVariant() { return (*xmlVariant); }
+  [[nodiscard]] const Variant &getVariant() const { return (*xmlVariant); }
   // Make XNode
   template<typename T, typename... Args> static XNode make(Args &&...args)
   {

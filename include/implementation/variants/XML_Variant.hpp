@@ -33,8 +33,8 @@ public:
   [[nodiscard]] bool isPI() const { return (xmlNodeType == Type::pi); }
   [[nodiscard]] bool isDTD() const { return (xmlNodeType == Type::dtd); }
   // Get XNode children reference
-  std::vector<XNode> &getChildren();
-  const std::vector<XNode> &getChildren() const;
+  [[nodiscard]] std::vector<XNode> &getChildren();
+  [[nodiscard]] const std::vector<XNode> &getChildren() const;
   // Add child
   void addChild(XNode &child);
   void addChild(XNode &&child);

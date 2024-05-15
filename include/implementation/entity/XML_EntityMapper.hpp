@@ -71,14 +71,14 @@ public:
   [[nodiscard]] bool isExternal(const std::string &entityName) override;
   [[nodiscard]] bool isNotation(const std::string &entityName) override;
   // Entity reference get/set details
-  const std::string &getInternal(const std::string &entityName) override;
-  const std::string &getNotation(const std::string &entityName) override;
-  const XMLExternalReference &getExternal(const std::string &entityName) override;
+  [[nodiscard]] const std::string &getInternal(const std::string &entityName) override;
+  [[nodiscard]] const std::string &getNotation(const std::string &entityName) override;
+  [[nodiscard]] const XMLExternalReference &getExternal(const std::string &entityName) override;
   void setInternal(const std::string &entityName, const std::string &internal) override;
   void setNotation(const std::string &entityName, const std::string &notation) override;
   void setExternal(const std::string &entityName, const XMLExternalReference &external) override;
   //  Get mapping for an entity reference
-  XMLValue map(const XMLValue &entityReference) override;
+  [[nodiscard]] XMLValue map(const XMLValue &entityReference) override;
   // Translate any entity reference in a string
   [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
   // Check for a recursive entity reference mapping
@@ -91,9 +91,9 @@ private:
   void
     recurseOverEntityReference(const std::string &entityReference, Char type, std::set<std::string> &currentEntities);
   // Get contents of file that is pointed to by an entity reference
-  std::string getFileMappingContents(const std::string &fileName);
+  [[nodiscard]] std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry
-  XML_EntityMapping &getEntityMapping(const std::string &entityName);
+  [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string &entityName);
 
   std::map<std::string, XML_EntityMapping> entityMappings;
 };

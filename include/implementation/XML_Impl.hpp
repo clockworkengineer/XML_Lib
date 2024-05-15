@@ -20,18 +20,18 @@ public:
   XML_Impl &operator=(XML_Impl &&other) = delete;
   ~XML_Impl();
 
-  XNode &dtd();
-  XNode &prolog();
-  XNode &root();
-  XNode &declaration();
+  [[nodiscard]] XNode &dtd();
+  [[nodiscard]] XNode &prolog();
+  [[nodiscard]] XNode &root();
+  [[nodiscard]] XNode &declaration();
   void parse(ISource &source);
   void stringify(IDestination &destination);
   void validate();
-  std::string version();
+  [[nodiscard]] std::string version();
 
-  static const std::string fromFile(const std::string &fileName);
+  [[nodiscard]] static const std::string fromFile(const std::string &fileName);
   static void toFile(const std::string &fileName, const std::string &xmlString, XML::Format format);
-  static XML::Format getFileFormat(const std::string &fileName);
+  [[nodiscard]] static XML::Format getFileFormat(const std::string &fileName);
 
 private:
   // Root XNode

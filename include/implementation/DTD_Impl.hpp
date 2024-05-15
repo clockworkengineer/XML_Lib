@@ -31,7 +31,7 @@ private:
   void parseConditional(ISource &source, bool includeOff = true);
   void parseParameterEntities(ISource &source);
   void parseExternalContent(ISource &source);
-  std::string parseAttributeEnumerationType(ISource &source);
+  [[nodiscard]] std::string parseAttributeEnumerationType(ISource &source);
   bool parseIsChoiceOrSequence(ISource &contentSpecSource);
   void parseElementCP(ISource &contentSpecSource, IDestination &contentSpec);
   void parseElementChoice(ISource &contentSpecSource, IDestination &contentSpec);
@@ -39,13 +39,13 @@ private:
   void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpec);
   void parseElementName(ISource &contentSpecSource, IDestination &contentSpec);
   void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpec);
-  XMLValue parseElementInternalpecification(const std::string &elementName, const XMLValue &contentSpec);
+  [[nodiscard]] XMLValue parseElementInternalpecification(const std::string &elementName, const XMLValue &contentSpec);
   void parseExternalReferenceContent();
   void parseAttributeList(ISource &source);
   void parseNotation(ISource &source);
   void parseEntity(ISource &source);
   void parseElement(ISource &source);
-  XMLExternalReference parseExternalReference(ISource &source);
+  [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source);
   void parseAttributeType(ISource &source, XDTD::Attribute &attribute);
   void parseAttributeValue(ISource &source, XDTD::Attribute &attribute);
   void parseComment(ISource &source);
@@ -59,12 +59,12 @@ private:
   void checkContentSpecification(const XNode &xNode);
   void checkElement(const XNode &xNode);
   void checkElements(const XNode &xNode);
-  bool checkIsNMTOKENOK(const std::string &nmTokenValue);
-  bool checkIsIDOK(const std::string &idValue);
+  [[nodiscard]] bool checkIsNMTOKENOK(const std::string &nmTokenValue);
+  [[nodiscard]] bool checkIsIDOK(const std::string &idValue);
   void checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute);
   void checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute);
-  bool checkIsPCDATA(const XNode &xNode);
-  bool checkIsEMPTY(const XNode &xNode);
+  [[nodiscard]] bool checkIsPCDATA(const XNode &xNode);
+  [[nodiscard]] bool checkIsEMPTY(const XNode &xNode);
   void checkAgainstDTD(const XNode &prolog);
 
   std::set<std::string> assignedIDValues;

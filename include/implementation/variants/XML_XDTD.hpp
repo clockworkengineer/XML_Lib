@@ -84,7 +84,7 @@ struct XDTD : Variant
   {
     return (elements.find(elementName) != elements.end());
   }
-  XDTD::Element &getElement(const std::string &elementName)
+  [[nodiscard]] XDTD::Element &getElement(const std::string &elementName)
   {
     auto element = elements.find(elementName);
     if (element != elements.end()) { return (element->second); }
@@ -95,7 +95,7 @@ struct XDTD : Variant
     elements.emplace(elementName, element);
   }
   [[nodiscard]] long getElementCount() const { return (static_cast<long>(elements.size())); }
-  XMLExternalReference &getNotation(const std::string &notationName)
+  [[nodiscard]] XMLExternalReference &getNotation(const std::string &notationName)
   {
     auto notation = notations.find(notationName);
     if (notation != notations.end()) { return (notation->second); }
@@ -112,7 +112,7 @@ struct XDTD : Variant
   [[nodiscard]] long getLineCount() const { return (lineCount); }
   void setLineCount(long newLineCount) { lineCount = newLineCount; }
 
-  IEntityMapper &getEntityMapper() const { return (entityMapper); }
+  [[nodiscard]] IEntityMapper &getEntityMapper() const { return (entityMapper); }
 
 
 private:
