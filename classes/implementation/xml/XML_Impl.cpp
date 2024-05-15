@@ -12,9 +12,6 @@
 
 namespace XML_Lib {
 
-/// <summary>
-/// XML constructor.
-/// </summary>
 XML_Impl::XML_Impl()
 {
   entityMapper = std::make_unique<XML_EntityMapper>();
@@ -22,15 +19,8 @@ XML_Impl::XML_Impl()
   stringifier = std::make_unique<XML_Stringify>();
 }
 
-/// <summary>
-/// XML destructor.
-/// </summary>
 XML_Impl::~XML_Impl() {}
 
-/// <summary>
-///  Get XML_Lib version.
-/// </summary>
-/// <returns>Library version string.</returns>
 std::string XML_Impl::version()
 {
   std::stringstream versionString;
@@ -38,10 +28,6 @@ std::string XML_Impl::version()
   return (versionString.str());
 }
 
-/// <summary>
-/// Return XML DTD XNode.
-/// </summary>
-/// <returns>Reference to DTD XNode.</returns>
 XNode &XML_Impl::dtd()
 {
   if (parser->canValidate()) {
@@ -52,10 +38,6 @@ XNode &XML_Impl::dtd()
   throw Error("No DTD found.");
 }
 
-/// <summary>
-/// Return XML prolog XNode.
-/// </summary>
-/// <returns>Reference to prolog XNode.</returns>
 XNode &XML_Impl::prolog()
 {
   if (!xmlRoot.isEmpty()) {
@@ -65,16 +47,8 @@ XNode &XML_Impl::prolog()
   }
 }
 
-/// <summary>
-/// Return XML declaration XNode.
-/// </summary>
-/// <returns>Reference to declaration XNode.</returns>
 XNode &XML_Impl::declaration() { return (prolog().getChildren()[0]); }
 
-/// <summary>
-/// Return XML root element XNode.
-/// </summary>
-/// <returns>Reference to root element XNode.</returns>
 XNode &XML_Impl::root()
 {
   for (auto &element : prolog().getChildren()) {
@@ -83,25 +57,10 @@ XNode &XML_Impl::root()
   throw Error("No root element found.");
 }
 
-/// <summary>
-/// Validate XML against any DTD provided to see whether it is valid. If an
-/// exception is thrown then there is a validation issue and the XML is not valid.
-/// </summary>
-void XML_Impl::validate()
-{
-  parser->validate(prolog());
-}
+void XML_Impl::validate() { parser->validate(prolog()); }
 
-/// <summary>
-/// Parse XML read from source stream into internal object generating an exception
-/// if a syntax error in the XML is found (not well formed).
-/// </summary>
 void XML_Impl::parse(ISource &source) { xmlRoot = parser->parse(source); }
 
-/// <summary>
-/// Create XML text on destination stream from an XML object.
-/// </summary>
-/// <param name="destination">XML destination stream.</param>
 void XML_Impl::stringify(IDestination &destination) { stringifier->stringify(prolog(), destination); }
 
 }// namespace XML_Lib
