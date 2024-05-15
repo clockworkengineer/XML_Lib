@@ -4,10 +4,10 @@ namespace XML_Lib {
 // ===========
 // XML parsing
 // ===========
-XMLValue parseEntityReference(ISource &source);
-std::string parseName(ISource &source);
-XMLValue parseCharacter(ISource &source);
-XMLValue parseValue(ISource &source);
-XMLValue parseValue(ISource &source, IEntityMapper &entityMapper);
-std::string parseTagBody(ISource &source);
+[[nodiscard]] XMLValue parseEntityReference(ISource &source);
+[[nodiscard]] std::string parseName(ISource &source);
+[[nodiscard]] XMLValue parseCharacter(ISource &source);
+[[nodiscard]] XMLValue parseValue(ISource &source);
+[[nodiscard]] XMLValue parseValue(ISource &source, IEntityMapper &entityMapper);
+[[nodiscard]] std::string parseTagBody(ISource &source);
 }// namespace XML_Lib

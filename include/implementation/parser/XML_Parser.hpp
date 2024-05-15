@@ -20,27 +20,28 @@ public:
   XML_Parser &operator=(XML_Parser &&other) = delete;
   ~XML_Parser() = default;
 
-  virtual XNode parse(ISource &source);
-  virtual bool canValidate();
+  [[nodiscard]] virtual XNode parse(ISource &source);
+  [[nodiscard]] virtual bool canValidate();
   virtual void validate(XNode &prolog);
 
 private:
   // XML Parser
   void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
-  std::string parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
-  bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
+  [[nodiscard]] std::string
+    parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
+  [[nodiscard]] bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
   void parseContent(ISource &source, XNode &xNode);
-  std::string parseTagName(ISource &source);
-  std::vector<XMLAttribute> parseAttributes(ISource &source);
-  XNode parseComment(ISource &source);
-  XNode parseCDATA(ISource &source);
-  XNode parsePI(ISource &source);
+  [[nodiscard]] std::string parseTagName(ISource &source);
+  [[nodiscard]] std::vector<XMLAttribute> parseAttributes(ISource &source);
+  [[nodiscard]] XNode parseComment(ISource &source);
+  [[nodiscard]] XNode parseCDATA(ISource &source);
+  [[nodiscard]] XNode parsePI(ISource &source);
   void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
   void parseElementInternal(ISource &source, XNode &xNode);
-  XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces);
-  XNode parseDeclaration(ISource &source);
-  XNode parseDTD(ISource &source);
-  XNode parseProlog(ISource &source);
+  [[nodiscard]] XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces);
+  [[nodiscard]] XNode parseDeclaration(ISource &source);
+  [[nodiscard]] XNode parseDTD(ISource &source);
+  [[nodiscard]] XNode parseProlog(ISource &source);
   void parseEpilog(ISource &source, XNode &xProlog);
   // XML tree has root
   bool hasRoot{ false };

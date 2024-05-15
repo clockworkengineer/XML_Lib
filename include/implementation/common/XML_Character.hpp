@@ -4,9 +4,9 @@ namespace XML_Lib {
 // ========================
 // XML character validation
 // ========================
-bool validChar(Char c);
-bool validNameStartChar(Char c);
-bool validNameChar(Char c);
-bool validName(const String &name);
-bool validAttributeValue(const XMLValue &value);
+[[nodiscard]] bool validChar(Char c);
+[[nodiscard]] bool validNameStartChar(Char c);
+[[nodiscard]] bool validNameChar(Char c);
+[[nodiscard]] bool validName(const String &name);
+[[nodiscard]] bool validAttributeValue(const XMLValue &value);
 }// namespace XML_Lib

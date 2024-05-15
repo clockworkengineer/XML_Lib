@@ -42,7 +42,7 @@ public:
   XMLExternalReference &operator=(XMLExternalReference &&other) = default;
   ~XMLExternalReference() = default;
   // Get external reference details
-  const std::string getType() const
+  [[nodiscard]] const std::string getType() const
   {
     if (type == Type::publicID) {
       return (kPublicID);
@@ -53,10 +53,10 @@ public:
     }
   }
   // Check which reference is set
-  bool isPublic() { return (type == Type::publicID); }
-  bool isSystem() { return (type == Type::systemID); }
+  [[nodiscard]] bool isPublic() { return (type == Type::publicID); }
+  [[nodiscard]] bool isSystem() { return (type == Type::systemID); }
   // Get reference values
-  const std::string &getSystemID() const
+  [[nodiscard]] const std::string &getSystemID() const
   {
     if (type != Type::base) {
       return (systemID);
@@ -64,7 +64,7 @@ public:
       throw Error("External reference has no system value set.");
     }
   }
-  const std::string &getPublicID() const
+  [[nodiscard]] const std::string &getPublicID() const
   {
     if (type == Type::publicID) {
       return (publicID);

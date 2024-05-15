@@ -33,7 +33,7 @@ public:
   FileSource &operator=(FileSource &&other) = delete;
   ~FileSource() = default;
 
-  Char current() const override { return (static_cast<Char>(source.peek())); }
+  [[nodiscard]] Char current() const override { return (static_cast<Char>(source.peek())); }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }
@@ -48,7 +48,7 @@ public:
       columnNo = 1;
     }
   }
-  bool more() const override { return (source.peek() != EOF); }
+  [[nodiscard]] bool more() const override { return (source.peek() != EOF); }
   void backup(long length) override
   {
     if ((static_cast<long>(source.tellg()) - length >= 0) || (current() == (Char)EOF)) {
@@ -58,7 +58,7 @@ public:
       source.seekg(0, std::ios_base::beg);
     }
   }
-  long position() const override { return (static_cast<long>(source.tellg())); }
+  [[nodiscard]] long position() const override { return (static_cast<long>(source.tellg())); }
   void reset() override
   {
     lineNo = 1;
@@ -66,7 +66,7 @@ public:
     source.clear();
     source.seekg(0, std::ios_base::beg);
   }
-  std::string getRange(long start, long end) override
+  [[nodiscard]] std::string getRange(long start, long end) override
   {
     std::string rangeBuffer(static_cast<std::size_t>(end) - start, ' ');
     long currentPosition = (long)source.tellg();

@@ -66,7 +66,7 @@ public:
     if (bufferPosition < 0) { bufferPosition = 0; }
   }
   [[nodiscard]] long position() const override { return (bufferPosition); }
-  std::string getRange(long start, long end) override
+  [[nodiscard]] std::string getRange(long start, long end) override
   {
     return (toUtf8(buffer.substr(start, static_cast<std::size_t>(end) - start)));
   }

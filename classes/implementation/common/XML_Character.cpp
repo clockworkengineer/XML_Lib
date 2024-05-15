@@ -93,7 +93,7 @@ bool validAttributeValue(const XMLValue &value)
       if (source.match("&#")) {
         parseCharacterReference(source);
       } else if (source.current() == '&') {
-        parseEntityReference(source);
+        auto entity = parseEntityReference(source);
       } else if ((source.current() == '"') || (source.current() == '\'')) {
         if (source.current() == value.getQuote()) {
           return (false);

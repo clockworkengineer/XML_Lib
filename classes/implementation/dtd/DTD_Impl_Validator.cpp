@@ -44,7 +44,7 @@ bool DTD_Impl::checkIsIDOK(const std::string &idValue)
 {
   try {
     BufferSource idSource(idValue);
-    parseName(idSource);
+    auto name = parseName(idSource);
   } catch (std::exception &) {
     return (false);
   }
