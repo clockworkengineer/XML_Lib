@@ -7,7 +7,7 @@ namespace XML_Lib {
 struct XComment : Variant
 {
   // Constructors/Destructors
-  explicit XComment(const std::string comment = "") : Variant(Variant::Type::comment), xmlComment(comment) {}
+  explicit XComment(const std::string &comment = "") : Variant(Variant::Type::comment), xmlComment(comment) {}
   XComment(const XComment &other) = delete;
   XComment &operator=(const XComment &other) = delete;
   XComment(XComment &&other) = default;

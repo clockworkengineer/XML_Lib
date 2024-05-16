@@ -13,7 +13,7 @@ class XML_Parser : public IParser
 {
 public:
   // Constructors/Destructors
-  XML_Parser(IEntityMapper &entityMapper) : entityMapper(entityMapper) {}
+  explicit XML_Parser(IEntityMapper &entityMapper) : entityMapper(entityMapper) {}
   XML_Parser(const XML_Parser &other) = delete;
   XML_Parser &operator=(const XML_Parser &other) = delete;
   XML_Parser(XML_Parser &&other) = delete;

@@ -20,7 +20,7 @@ public:
     explicit Error(const std::string &message) : std::runtime_error("ExternalReference Error: " + message) {}
   };
   // Constructors/Destructors
-  XMLExternalReference(const std::string &referenceType,
+  explicit XMLExternalReference(const std::string &referenceType,
     const std::string &systemID = "",
     const std::string &publicID = "")
     : systemID(systemID), publicID(publicID)
