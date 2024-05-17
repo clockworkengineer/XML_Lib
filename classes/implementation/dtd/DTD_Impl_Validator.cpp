@@ -58,10 +58,12 @@ bool DTD_Impl::checkIsIDOK(const std::string &idValue)
 /// <returns>true if element contains characters otherwise false.</returns>
 bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 {
-  for (const auto &element : xNode.getChildren()) {
-    if ((element.isElement()) || (element.isSelf())) { return (false); }
+  if (auto &children = xNode.getChildren(); std::all_of(children.cbegin(), children.cend(), [](const XNode &element) {
+        return (!(element.isElement()) || (element.isSelf()));
+      })) {
+    return (!xNode.getContents().empty());
   }
-  return (!xNode.getContents().empty());
+  return (false);
 }
 
 /// <summary>
