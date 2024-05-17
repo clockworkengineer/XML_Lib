@@ -41,11 +41,10 @@ void addContentToElementChildList(XNode &xNode, const std::string &content)
   }
   XContent &xmlContent = XRef<XContent>(xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
-    for (const auto ch : content) {
-      if (!std::iswspace(ch)) {
-        xmlContent.setIsWhiteSpace(false);
-        break;
-      }
+    if (std::all_of(content.cbegin(), content.cend(), [](char ch) { return (std::iswspace(ch)); })) {
+      xmlContent.setIsWhiteSpace(true);
+    } else {
+      xmlContent.setIsWhiteSpace(false);
     }
   }
   xmlContent.addContent(content);
