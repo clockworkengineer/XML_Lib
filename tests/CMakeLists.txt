@@ -46,6 +46,7 @@ set(TEST_SOURCES
     ./entitymapper/XML_Lib_Tests_Entity_Mapper.cpp
     ./data/XML_Lib_Tests_External_Reference.cpp
     ./data/XML_Lib_Tests_Value.cpp
+    ./data/XML_Lib_Tests_Attribute.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})

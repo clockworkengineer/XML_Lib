@@ -14,16 +14,16 @@ public:
   // FileSource Error
   struct Error : public std::runtime_error
   {
-    explicit  Error(const std::string &message) : std::runtime_error("FileSource Error: " + message) {}
+    explicit Error(const std::string &message) : std::runtime_error("FileSource Error: " + message) {}
   };
   // Constructors/Destructors
   explicit FileSource(const std::string &sourceFileName)
   {
     source.open(sourceFileName.c_str(), std::ios_base::binary);
     if (!source.is_open()) { throw Error("File input stream failed to open or does not exist."); }
-    if (current() == kCarriageReturn) {
+    if (current_character() == kCarriageReturn) {
       source.get();
-      if (current() != kLineFeed) { source.unget(); }
+      if (current_character() != kLineFeed) { source.unget(); }
     }
   }
   FileSource() = default;
@@ -33,7 +33,7 @@ public:
   FileSource &operator=(FileSource &&other) = delete;
   ~FileSource() = default;
 
-  [[nodiscard]] Char current() const override { return (static_cast<Char>(source.peek())); }
+  [[nodiscard]] Char current() const override { return (current_character()); }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }
@@ -77,6 +77,7 @@ public:
   }
 
 private:
+  [[nodiscard]] Char current_character() const { return (static_cast<Char>(source.peek())); }
   mutable std::ifstream source;
 };
 }// namespace XML_Lib

@@ -26,7 +26,7 @@ public:
 
   void add(const std::string &bytes) override
   {
-    for (auto b : bytes) { buffer.push_back(b); }
+    std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
   }
   void add(const Char ch) override { add(toUtf8(ch)); }
   [[nodiscard]] std::string getBuffer() const { return (buffer); }
