@@ -29,7 +29,6 @@ private:
   void parseValidNotations(const std::string &notations);
   void parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute);
   void parseConditional(ISource &source, bool includeOff = true);
-  void parseParameterEntities(ISource &source);
   void parseExternalContent(ISource &source);
   [[nodiscard]] std::string parseAttributeEnumerationType(ISource &source);
   bool parseIsChoiceOrSequence(ISource &contentSpecSource);
