@@ -4,6 +4,7 @@
 #include <string>
 #include <stdexcept>
 #include <type_traits>
+#include <algorithm>
 
 #include "ISource.hpp"
 
@@ -17,17 +18,17 @@ public:
   // BufferSource Error
   struct Error : public std::runtime_error
   {
-    explicit  Error(const std::string &message) : std::runtime_error("BufferSource Error: " + message) {}
+    explicit Error(const std::string &message) : std::runtime_error("BufferSource Error: " + message) {}
   };
   // Constructors/Destructors
   explicit BufferSource(const std::u16string &sourceBuffer)// UTF16 source BE/LE
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     std::u16string utf16xml{ sourceBuffer };
-    if (utf16xml.find(u"<?xml") != 0) {
-      for (char16_t &ch : utf16xml) {
-        ch = (static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte);
-      }
+    if (utf16xml.starts_with(u"<?xml")) {
+      std::transform(utf16xml.begin(), utf16xml.end(), utf16xml.begin(), [](char16_t &ch) {
+        return((static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte));
+      });
     }
     buffer = utf16xml;
     convertCRLFToLF(buffer);
