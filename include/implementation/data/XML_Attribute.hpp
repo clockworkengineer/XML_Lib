@@ -5,20 +5,18 @@
 
 namespace XML_Lib {
 
-struct XMLAttribute
+struct XMLAttribute : public XMLValue
 {
   // Constructors/Destructors
-  XMLAttribute(const std::string &name, const XMLValue &value) : name(name), value(value) {}
+  XMLAttribute(const std::string &name, const XMLValue &value) : XMLValue(value) , name(name) {} 
   XMLAttribute() = delete;
   XMLAttribute(const XMLAttribute &other) = default;
   XMLAttribute &operator=(const XMLAttribute &other) = default;
   XMLAttribute(XMLAttribute &&other) = default;
   XMLAttribute &operator=(XMLAttribute &&other) = default;
   ~XMLAttribute() = default;
-  // Get attribute details
+  // Get attribute name
   [[nodiscard]] const std::string &getName() const { return (name); }
-  [[nodiscard]] const std::string &getParsed() const { return (value.getParsed()); }
-  [[nodiscard]] const std::string &getUnparsed() const { return (value.getUnparsed()); }
   // Search for an attribute in vector of unique attributes
   [[nodiscard]] static bool isAttrubutePresent(const std::vector<XMLAttribute> &attributes, const std::string &attributeName)
   {
@@ -28,8 +26,7 @@ struct XMLAttribute
   }
 
 private:
-  // Attribute name and value
+  // Attribute name
   std::string name;
-  XMLValue value;
 };
 }// namespace XML_Lib

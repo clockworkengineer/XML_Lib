@@ -14,28 +14,28 @@ TEST_CASE("XML value useage tests cases.", "[XML][Value]")
   {
     REQUIRE_NOTHROW(XMLValue(""));
   }
-  SECTION("Create an empty value and check its type.", "[XML][Value][API]")
+  SECTION("Create an empty value and check its type.", "[XML][Value][Create]")
   {
     XMLValue value("");
     REQUIRE_FALSE(value.isEntityReference());
     REQUIRE_FALSE(value.isCharacterReference());
     REQUIRE_FALSE(value.isReference());
   }
-  SECTION("Create an entity reference value and check its type.", "[XML][Value][API]")
+  SECTION("Create an entity reference value and check its type.", "[XML][Value][Create]")
   {
     XMLValue value("&test;");
     REQUIRE_FALSE(!value.isEntityReference());
     REQUIRE_FALSE(value.isCharacterReference());
     REQUIRE_FALSE(!value.isReference());
   }
-  SECTION("Create an character reference value and check its type.", "[XML][Value][API]")
+  SECTION("Create an character reference value and check its type.", "[XML][Value][Create]")
   {
     XMLValue value("&#0180;");
     REQUIRE_FALSE(value.isEntityReference());
     REQUIRE_FALSE(!value.isCharacterReference());
     REQUIRE_FALSE(!value.isReference());
   }
-  SECTION("Create a value with parsed and unparsed data.", "[XML][Value][API]")
+  SECTION("Create a value with parsed and unparsed data.", "[XML][Value][Create]")
   {
     XMLValue value("unparsed","parsed");
     REQUIRE_FALSE(value.isEntityReference());
