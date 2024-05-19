@@ -31,7 +31,7 @@ TEST_CASE("XML attribute useage tests cases.", "[XML][Value]")
     REQUIRE(attribute.getUnparsed() == "&test;");
     REQUIRE(attribute.getParsed() == "parsed");
   }
-  SECTION("Create an attribute character reference value and check its type.", "[XML][Value][Create]")
+  SECTION("Create an attribute character reference value and check its type.", "[XML][Attribute][Create]")
   {
     auto attribute = XMLAttribute("test", XMLValue("&#0180;", "parsed"));
     REQUIRE_FALSE(attribute.isEntityReference());
@@ -41,7 +41,25 @@ TEST_CASE("XML attribute useage tests cases.", "[XML][Value]")
     REQUIRE(attribute.getUnparsed() == "&#0180;");
     REQUIRE(attribute.getParsed() == "parsed");
   }
-// Test attribute search empty list
-// Test attribute search success.
-// Test attribute search failure.
+  SECTION("Create an empty vector of attributes and try to search.", "[XML][Attribute][API]")
+  {
+    std::vector<XMLAttribute> attributes;
+    REQUIRE_FALSE(XMLAttribute::isAttrubutePresent(attributes, "test"));
+  }
+  SECTION("Create an  vector of three attributes and perform a successful search.", "[XML][Attribute][API]")
+  {
+    std::vector<XMLAttribute> attributes;
+    attributes.push_back(XMLAttribute("test1", XMLValue("&test1;", "parsed")));
+    attributes.push_back(XMLAttribute("test2", XMLValue("&test2;", "parsed")));
+    attributes.push_back(XMLAttribute("test3", XMLValue("&test3;", "parsed")));
+    REQUIRE_FALSE(!XMLAttribute::isAttrubutePresent(attributes, "test3"));
+  }
+  SECTION("Create an  vector of three attributes and perform a failed search.", "[XML][Attribute][API]")
+  {
+    std::vector<XMLAttribute> attributes;
+    attributes.push_back(XMLAttribute("test1", XMLValue("&test1;", "parsed")));
+    attributes.push_back(XMLAttribute("test2", XMLValue("&test2;", "parsed")));
+    attributes.push_back(XMLAttribute("test3", XMLValue("&test3;", "parsed")));
+    REQUIRE_FALSE(XMLAttribute::isAttrubutePresent(attributes, "test4"));
+  }
 }
