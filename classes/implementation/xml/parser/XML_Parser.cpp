@@ -41,7 +41,7 @@ void addContentToElementChildList(XNode &xNode, const std::string &content)
   }
   XContent &xmlContent = XRef<XContent>(xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
-    if (std::ranges::all_of(content, [](char ch) { return (std::iswspace(ch)); })) {
+    if (std::ranges::all_of(content, [](const char ch) { return (std::iswspace(ch)); })) {
       xmlContent.setIsWhiteSpace(true);
     } else {
       xmlContent.setIsWhiteSpace(false);
@@ -238,8 +238,7 @@ void XML_Parser::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 /// <param name="xNode">Current element XNode.</param>
 void XML_Parser::parseContent(ISource &source, XNode &xNode)
 {
-  XMLValue content{ parseCharacter(source) };
-  if (content.isReference()) {
+  if (XMLValue content{ parseCharacter(source) }; content.isReference()) {
     if (content.isEntityReference()) { content = entityMapper.map(content); }
     auto xEntityReference = XNode::make<XEntityReference>(content);
     if (content.isEntityReference()) {

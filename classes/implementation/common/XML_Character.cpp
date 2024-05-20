@@ -18,7 +18,7 @@ XMLValue parseCharacterReference(ISource &source);
 /// </summary>
 /// <param name="c">Character to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validChar(Char c)
+bool validChar(const Char c)
 {
   return ((c == 0x09) || (c == kLineFeed) || (c == kCarriageReturn) || (c >= 0x20 && c <= 0xD7FF)
           || (c >= 0xE000 && c <= 0xFFFD));
@@ -29,7 +29,7 @@ bool validChar(Char c)
 /// </summary>
 /// <param name="c">Character value to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validNameStartChar(Char c)
+bool validNameStartChar(const Char c)
 {
   return ((c == ':') || (c == '_') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= 0xC0 && c <= 0xD6)
           || (c >= 0xD8 && c <= 0xF6) || (c >= 0xF8 && c <= 0x2FF) || (c >= 0x370 && c <= 0x37D)
@@ -43,7 +43,7 @@ bool validNameStartChar(Char c)
 /// </summary>
 /// <param name="c">Name to validate.</param>
 /// <returns>true then valid otherwise false.</returns>
-bool validNameChar(Char c)
+bool validNameChar(const Char c)
 {
   return (validNameStartChar(c) || (c == '-') || (c == '.') || (c >= '0' && c <= '9') || (c == 0xB7)
           || (c >= 0x0300 && c <= 0x036F) || (c >= 0x203F && c <= 0x2040));
@@ -69,7 +69,7 @@ bool validName(const String &name)
   String localName{ name };
   if (localName.empty()) { return (false); }
   std::ranges::transform(
-    localName, localName.begin(), [](Char c) {
+    localName, localName.begin(), [](const Char c) {
     return static_cast<Char>(std::tolower(static_cast<int>(c)));
   });
   if (localName.find(u"xml") == 0 && !(validReservedName(localName))) { return (false); }

@@ -17,7 +17,7 @@ namespace XML_Lib {
 /// <param name="stringToSplit">String to split up.</param>
 /// <param name="delimeter">Character delimeter to split on.</param>
 /// <returns>Vector of split strings.</returns>
-std::vector<std::string> splitString(const std::string &target, char delimeter)
+std::vector<std::string> splitString(const std::string &target, const char delimeter)
 {
   std::stringstream sourceStream(target);
   std::string splitOffItem;
@@ -34,9 +34,9 @@ std::string trimmString(const std::string &target)
 {
   std::string trimmedString{ target };
   trimmedString.erase(trimmedString.begin(),
-    std::ranges::find_if(trimmedString, [](unsigned char ch) { return !std::iswspace(ch); }));
+    std::ranges::find_if(trimmedString, [](const unsigned char ch) { return !std::iswspace(ch); }));
   trimmedString.erase(
-    std::ranges::find_if(trimmedString.rbegin(), trimmedString.rend(), [](unsigned char ch) { return !std::iswspace(ch); })
+    std::ranges::find_if(trimmedString.rbegin(), trimmedString.rend(), [](const unsigned char ch) { return !std::iswspace(ch); })
       .base(),
     trimmedString.end());
   return (trimmedString);
@@ -50,7 +50,7 @@ std::string toUpperString(const std::string &target)
 {
   std::string upperCaseString{ target };
   std::ranges::transform(
-    upperCaseString, upperCaseString.begin(), [](unsigned int c) {
+    upperCaseString, upperCaseString.begin(), [](const unsigned int c) {
     return static_cast<char>(std::toupper(c));
   });
   return (upperCaseString);
@@ -64,7 +64,7 @@ std::string toLowerString(const std::string &target)
 {
   std::string lowerCaseString{ target };
   std::ranges::transform(
-    lowerCaseString, lowerCaseString.begin(), [](unsigned int c) {
+    lowerCaseString, lowerCaseString.begin(), [](const unsigned int c) {
     return static_cast<char>(std::tolower(c));
   });
   return (lowerCaseString);

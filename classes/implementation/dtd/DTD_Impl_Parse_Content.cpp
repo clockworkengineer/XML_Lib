@@ -18,7 +18,7 @@ namespace XML_Lib {
 bool DTD_Impl::parseIsChoiceOrSequence(ISource &contentSpecSource)
 {
   bool choice = false;
-  long start = contentSpecSource.position();
+  const long start = contentSpecSource.position();
   while (contentSpecSource.more() && contentSpecSource.current() != '|' && contentSpecSource.current() != ',') {
     contentSpecSource.next();
   }

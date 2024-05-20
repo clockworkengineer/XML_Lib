@@ -15,7 +15,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xElement">Element X Node.</param>
 /// <param name="error">Error text string.</param>
-void DTD_Impl::elementError(const XElement &xElement, const std::string &error)
+void DTD_Impl::elementError(const XElement &xElement, const std::string &error) const
 {
   throw ValidationError(lineNumber, "Element <" + xElement.name() + "> " + error);
 }
@@ -88,13 +88,13 @@ bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren().em
 void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute)
 {
   const auto &xElement = XRef<XElement>(xNode);
-  bool attributePresent = xElement.isAttributePresent(attribute.name);
+  const bool attributePresent = xElement.isAttributePresent(attribute.name);
   if ((attribute.type & XDTD::AttributeType::required) != 0) {
     if (!attributePresent) { elementError(xElement, "is missing required attribute '" + attribute.name + "'."); }
   } else if ((attribute.type & XDTD::AttributeType::fixed) != 0) {
     if (attributePresent) {
-      XMLAttribute elementAttribute = xElement[attribute.name];
-      if (attribute.value.getParsed() != elementAttribute.getParsed()) {
+      if (const XMLAttribute elementAttribute = xElement[attribute.name];
+          attribute.value.getParsed() != elementAttribute.getParsed()) {
         elementError(xElement,
           "attribute '" + attribute.name + "' is '" + elementAttribute.getParsed() + "' instead of '"
             + attribute.value.getParsed() + "'.");
@@ -203,8 +203,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkAttributes(const XNode &xNode)
 {
-  const auto &xElement = XRef<XElement>(xNode);
-  for (auto &attribute : xDTD.getElement(xElement.name()).attributes) {
+  for (const auto &xElement = XRef<XElement>(xNode); auto &attribute : xDTD.getElement(xElement.name()).attributes) {
     if (xElement.isAttributePresent(attribute.name)) { checkAttributeType(xNode, attribute); }
     checkAttributeValue(xNode, attribute);
   }
@@ -227,7 +226,7 @@ void DTD_Impl::checkContentSpecification(const XNode &xNode)
     return;
   }
   if (xDTD.getElement(xElement.name()).content.getParsed() == "ANY") { return; }
-  std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
+  const std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
   std::string elements;
   for (auto &element : xElement.getChildren()) {
     if ((element.isElement()) || (element.isSelf())) {

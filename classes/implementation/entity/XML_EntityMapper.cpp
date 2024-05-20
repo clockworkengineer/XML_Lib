@@ -19,7 +19,7 @@ namespace XML_Lib {
 /// <param name="entityName">Entity mapping name.</param>
 /// <param name="type">Entity mapping type.</param>
 void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
-  Char type,
+  const Char type,
   std::set<std::string> &currentEntities)
 {
   BufferSource entitySource(entityName);
@@ -35,8 +35,7 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
       if (currentEntities.contains(mappedEntityName)) {
         throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
       }
-      auto nextMappedName = getEntityMapping(mappedEntityName).getInternal();
-      if (!nextMappedName.empty()) {
+      if (auto nextMappedName = getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
         currentEntities.emplace(mappedEntityName);
         recurseOverEntityReference(nextMappedName, type, currentEntities);
         currentEntities.erase(mappedEntityName);
@@ -70,8 +69,7 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 XML_EntityMapper::XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
 {
   if (!isPresent(entityName)) { entityMappings.emplace(std::make_pair(entityName, XML_EntityMapping())); }
-  auto entity = entityMappings.find(entityName);
-  if (entity != entityMappings.end()) { return (entity->second); }
+  if (const auto entity = entityMappings.find(entityName); entity != entityMappings.end()) { return (entity->second); }
   throw Error("Could not find entity reference in map.");
 }
 
@@ -118,8 +116,7 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
   if (isPresent(entityReference.getUnparsed())) {
     std::string parsed{ entityReference.getUnparsed() };
     // Internal so from memory.
-    auto entityMapping = getEntityMapping(entityReference.getUnparsed());
-    if (!entityMapping.getInternal().empty()) {
+    if (const auto entityMapping = getEntityMapping(entityReference.getUnparsed()); !entityMapping.getInternal().empty()) {
       parsed = entityMapping.getInternal();
     } else
     // External so from a file.
@@ -142,7 +139,7 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 /// <param name="toTranslate">Source string containing references to be translated.</param>
 /// <param name="type">Entity reference type.</param>
 /// <returns>Translated string.</returns>
-std::string XML_EntityMapper::translate(const std::string &toTranslate, char type) const
+std::string XML_EntityMapper::translate(const std::string &toTranslate, const char type) const
 {
   std::string translated = toTranslate;
   bool matchFound;
@@ -173,8 +170,7 @@ bool XML_EntityMapper::isNotation(const std::string &entityName) { return (getEn
 /// </summary>
 const std::string &XML_EntityMapper::getInternal(const std::string &entityName)
 {
-  auto entity = getEntityMapping(entityName);
-  if (entity.isInternal()) {
+  if (auto entity = getEntityMapping(entityName); entity.isInternal()) {
     return (getEntityMapping(entityName).getInternal());
   } else {
     throw Error("Internal entity reference not found for '"+entityName+"'.");
@@ -182,8 +178,7 @@ const std::string &XML_EntityMapper::getInternal(const std::string &entityName)
 }
 const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
 {
-  auto entity = getEntityMapping(entityName);
-  if (entity.isNotation()) {
+  if (auto entity = getEntityMapping(entityName); entity.isNotation()) {
     return (getEntityMapping(entityName).getNotation());
   } else {
      throw Error("Notation entity reference not found for '"+entityName+"'.");
@@ -191,8 +186,7 @@ const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
 }
 const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
 {
-  auto entity = getEntityMapping(entityName);
-  if (entity.isExternal()) {
+  if (auto entity = getEntityMapping(entityName); entity.isExternal()) {
     return (getEntityMapping(entityName).getExternal());
   } else {
   throw Error("External entity reference not found for '"+entityName+"'.");

@@ -30,5 +30,5 @@ void DTD_Impl::parse(ISource &source) { parseDTD(source); }
 /// Create DTD text from an DTD object.
 /// </summary>
 /// <param name="destination">DTD destination stream.</param>
-void DTD_Impl::stringify(IDestination &destination) { destination.add(xDTD.unparsed()); }
+void DTD_Impl::stringify(IDestination &destination) const { destination.add(xDTD.unparsed()); }
 }// namespace XML_Lib

@@ -109,11 +109,10 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 {
   if ((source.current() == '\'') || ((source.current() == '"'))) {
     std::string unparsed, parsed;
-    Char quote = source.current();
+    const Char quote = source.current();
     source.next();
     while (source.more() && source.current() != quote) {
-      XMLValue character{ parseCharacter(source) };
-      if (character.isEntityReference()) {
+      if (XMLValue character{ parseCharacter(source) }; character.isEntityReference()) {
         XMLValue entityReference{ entityMapper.map(character) };
         unparsed += entityReference.getUnparsed();
         parsed += entityReference.getParsed();

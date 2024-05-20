@@ -15,7 +15,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 /// <param name="includeOn">If set to false then enclosing conditionals treated as ignored.</param>
-void DTD_Impl::parseConditional(ISource &source, bool includeOn)
+void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
 {
   std::string conditionalValue;
   source.ignoreWS();
@@ -116,15 +116,15 @@ void DTD_Impl::parseExternalReferenceContent()
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 /// <returns>External reference.</returns>
-XMLExternalReference DTD_Impl::parseExternalReference(ISource &source)
+XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
 {
   if (source.match("SYSTEM")) {
     source.ignoreWS();
     return (XMLExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" });
   } else if (source.match(XMLExternalReference::kPublicID)) {
     source.ignoreWS();
-    std::string publicID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
-    std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
+    const std::string publicID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
+    const std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     return (XMLExternalReference{ XMLExternalReference::kPublicID, systemID, publicID });
   }
   throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");

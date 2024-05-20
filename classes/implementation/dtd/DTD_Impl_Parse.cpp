@@ -15,7 +15,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="">.</param>
 /// <returns></returns>
-void DTD_Impl::parseValidNotations(const std::string &notations)
+void DTD_Impl::parseValidNotations(const std::string &notations) const
 {
   for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|')) {
     if (xDTD.getNotationCount(notation) == 0) { throw SyntaxError("NOTATION " + notation + " is not defined."); }
@@ -169,7 +169,7 @@ void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute)
 void DTD_Impl::parseAttributeList(ISource &source)
 {
   source.ignoreWS();
-  std::string elementName = parseName(source);
+  const std::string elementName = parseName(source);
   while (source.more() && validNameStartChar(source.current())) {
     XDTD::Attribute dtdAttribute;
     dtdAttribute.name = parseName(source);
@@ -188,7 +188,7 @@ void DTD_Impl::parseAttributeList(ISource &source)
 void DTD_Impl::parseNotation(ISource &source)
 {
   source.ignoreWS();
-  std::string name = parseName(source);
+  const std::string name = parseName(source);
   xDTD.addNotation(name, parseExternalReference(source));
   source.ignoreWS();
 }
@@ -208,7 +208,7 @@ void DTD_Impl::parseEntity(ISource &source)
   }
   entityName += parseName(source) + ";";
   if (source.current() == '\'' || source.current() == '"') {
-    XMLValue entityValue = parseValue(source);
+    const XMLValue entityValue = parseValue(source);
     xDTD.getEntityMapper().setInternal(entityName, entityValue.getParsed());
   } else {
     xDTD.getEntityMapper().setExternal(entityName, parseExternalReference(source));
@@ -226,7 +226,7 @@ void DTD_Impl::parseEntity(ISource &source)
 void DTD_Impl::parseElement(ISource &source)
 {
   source.ignoreWS();
-  std::string elementName = parseName(source);
+  const std::string elementName = parseName(source);
   if (source.match("EMPTY")) {
     xDTD.addElement(elementName, XDTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
   } else if (source.match("ANY")) {
@@ -258,7 +258,7 @@ void DTD_Impl::parseComment(ISource &source)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseParameterEntityReference(ISource &source)
 {
-  XMLValue parameterEntity = parseEntityReference(source);
+  const XMLValue parameterEntity = parseEntityReference(source);
   BufferSource entitySource(xDTD.getEntityMapper().translate(parameterEntity.getUnparsed()));
   parseInternal(entitySource);
   source.ignoreWS();
@@ -304,7 +304,7 @@ void DTD_Impl::parseDTD(ISource &source)
   // We take the easy option for allowing a DTD to be stringified
   // and keeping the correct order for its components by storing it
   // in its raw unparsed form.
-  long start = source.position();
+  const long start = source.position();
   source.ignoreWS();
   xDTD.setRootName(parseName(source));
   // Parse in external DTD reference

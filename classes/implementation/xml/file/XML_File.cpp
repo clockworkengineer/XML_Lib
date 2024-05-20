@@ -21,7 +21,7 @@ namespace XML_Lib {
 /// <param name="xmlString">XML string</param>
 /// <param name="format">XML file format</param>
 void writeXMLString(std::ofstream &xmlFile, const std::string &xmlString) { xmlFile << xmlString; }
-void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, XML::Format format)
+void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, const XML::Format format)
 {
   if (format == XML::Format::utf16BE) {
     xmlFile << static_cast<unsigned char>(0xFE) << static_cast<unsigned char>(0xFF);
@@ -52,7 +52,7 @@ std::string readXMLString(std::ifstream &xmlFile)
   xmlFileBuffer << xmlFile.rdbuf();
   return (xmlFileBuffer.str());
 }
-const std::u16string readXMLString(std::ifstream &xmlFile, XML::Format format)
+const std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
 {
   std::u16string utf16String;
   // Move past byte order mark
@@ -145,7 +145,7 @@ const std::string XML_Impl::fromFile(const std::string &fileName)
 /// <param name="fileName">XML file name</param>
 /// <param name="xmlString">XML string</param>
 /// <param name="format">XML file format</param>
-void XML_Impl::toFile(const std::string &fileName, const std::string &xmlString, XML::Format format)
+void XML_Impl::toFile(const std::string &fileName, const std::string &xmlString, const XML::Format format)
 {
   std::ofstream xmlFile{ fileName, std::ios::binary };
   switch (format) {

@@ -21,17 +21,17 @@ public:
   // Parse XML DTD from source
   void parse(ISource &source);
   // Stringify XML DTD to text destination
-  void stringify(IDestination &destination);
+  void stringify(IDestination &destination) const;
   // Validate XML against DTD
   void validate(const XNode &xNode);
 
 private:
-  void parseValidNotations(const std::string &notations);
+  void parseValidNotations(const std::string &notations) const;
   void parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute);
   void parseConditional(ISource &source, bool includeOff = true);
   void parseExternalContent(ISource &source);
-  [[nodiscard]] std::string parseAttributeEnumerationType(ISource &source);
-  bool parseIsChoiceOrSequence(ISource &contentSpecSource);
+  [[nodiscard]] static std::string parseAttributeEnumerationType(ISource &source);
+  static bool parseIsChoiceOrSequence(ISource &contentSpecSource);
   void parseElementCP(ISource &contentSpecSource, IDestination &contentSpec);
   void parseElementChoice(ISource &contentSpecSource, IDestination &contentSpec);
   void parseElementSequence(ISource &contentSpecSource, IDestination &contentSpec);
@@ -44,7 +44,7 @@ private:
   void parseNotation(ISource &source);
   void parseEntity(ISource &source);
   void parseElement(ISource &source);
-  [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source);
+  [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source) const;
   void parseAttributeType(ISource &source, XDTD::Attribute &attribute);
   void parseAttributeValue(ISource &source, XDTD::Attribute &attribute);
   void parseComment(ISource &source);
@@ -53,12 +53,12 @@ private:
   void parseInternal(ISource &source);
   void parseDTD(ISource &source);
 
-  void elementError(const XElement &xElement, const std::string &error);
+  void elementError(const XElement &xElement, const std::string &error) const;
   void checkAttributes(const XNode &xNode);
   void checkContentSpecification(const XNode &xNode);
   void checkElement(const XNode &xNode);
   void checkElements(const XNode &xNode);
-  [[nodiscard]] bool checkIsNMTOKENOK(const std::string &nmTokenValue);
+  [[nodiscard]] static bool checkIsNMTOKENOK(const std::string &nmTokenValue);
   [[nodiscard]] bool checkIsIDOK(const std::string &idValue);
   void checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute);
   void checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute);

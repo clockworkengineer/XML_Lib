@@ -91,7 +91,7 @@ private:
   void
     recurseOverEntityReference(const std::string &entityReference, Char type, std::set<std::string> &currentEntities);
   // Get contents of file that is pointed to by an entity reference
-  [[nodiscard]] std::string getFileMappingContents(const std::string &fileName);
+  [[nodiscard]] static std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry
   [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string &entityName);
 
