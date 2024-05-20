@@ -49,8 +49,8 @@ public:
     throw Error("External reference type not set.");
   }
   // Check which reference is set
-  [[nodiscard]] bool isPublic() { return type == Type::publicID; }
-  [[nodiscard]] bool isSystem() { return type == Type::systemID; }
+  [[nodiscard]] bool isPublic() const { return type == Type::publicID; }
+  [[nodiscard]] bool isSystem() const { return type == Type::systemID; }
   // Get reference values
   [[nodiscard]] const std::string &getSystemID() const
   {

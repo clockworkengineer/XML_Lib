@@ -23,7 +23,7 @@ struct XMLValue
   // Get value
   [[nodiscard]] const std::string &getUnparsed() const { return unparsed; }
   [[nodiscard]] const std::string &getParsed() const { return parsed; }
-  [[nodiscard]] const char getQuote() const { return quote; }
+  [[nodiscard]] char getQuote() const { return quote; }
 
 private:
   // Parsed/Unparsed value

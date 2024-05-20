@@ -82,12 +82,11 @@ struct XDTD final : Variant
   void setExternalReference(const XMLExternalReference &reference) { externalReference = reference; }
   [[nodiscard]] bool isElementPresent(const std::string &elementName) const
   {
-    return elements.find(elementName) != elements.end();
+    return elements.contains(elementName);
   }
   [[nodiscard]] XDTD::Element &getElement(const std::string &elementName)
   {
-    auto element = elements.find(elementName);
-    if (element != elements.end()) { return element->second; }
+    if (const auto element = elements.find(elementName); element != elements.end()) { return element->second; }
     throw XNode::Error("Could not find notation name.");
   }
   void addElement(const std::string &elementName, const XDTD::Element &element)
@@ -97,8 +96,7 @@ struct XDTD final : Variant
   [[nodiscard]] long getElementCount() const { return static_cast<long>(elements.size()); }
   [[nodiscard]] XMLExternalReference &getNotation(const std::string &notationName)
   {
-    auto notation = notations.find(notationName);
-    if (notation != notations.end()) { return notation->second; }
+    if (const auto notation = notations.find(notationName); notation != notations.end()) { return notation->second; }
     throw XNode::Error("Could not find notation name.");
   }
   void addNotation(const std::string &notationName, const XMLExternalReference &notation)

@@ -42,9 +42,9 @@ public:
       mappingType = Type::external;
       external = value;
     }
-    [[nodiscard]] bool isInternal() { return mappingType == Type::internal; }
-    [[nodiscard]] bool isExternal() { return mappingType == Type ::external; }
-    [[nodiscard]] bool isNotation() { return mappingType == Type::notation; }
+    [[nodiscard]] bool isInternal() const { return mappingType == Type::internal; }
+    [[nodiscard]] bool isExternal() const { return mappingType == Type ::external; }
+    [[nodiscard]] bool isNotation() const { return mappingType == Type::notation; }
 
   private:
     Type mappingType{ Type::base };

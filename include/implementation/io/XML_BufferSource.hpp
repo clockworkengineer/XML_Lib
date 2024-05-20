@@ -79,7 +79,7 @@ public:
   }
 
 private:
-  void convertCRLFToLF(String &xmlString)
+  static void convertCRLFToLF(String &xmlString)
   {
     size_t pos = xmlString.find(u"\x0D\x0A");
     while (pos != std::string::npos) {

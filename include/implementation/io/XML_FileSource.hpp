@@ -51,7 +51,7 @@ public:
   [[nodiscard]] bool more() const override { return source.peek() != EOF; }
   void backup(const long length) override
   {
-    if (static_cast<long>(source.tellg()) - length >= 0 || current() == (Char)EOF) {
+    if (static_cast<long>(source.tellg()) - length >= 0 || current() == static_cast<Char>(EOF)) {
       source.clear();
       source.seekg(-length, std::ios_base::cur);
     } else {
@@ -69,7 +69,7 @@ public:
   [[nodiscard]] std::string getRange(const long start, const long end) override
   {
     std::string rangeBuffer(static_cast<std::size_t>(end) - start, ' ');
-    long currentPosition = (long)source.tellg();
+    const long currentPosition = (long)source.tellg();
     source.seekg(start, std::ios_base::beg);
     source.read(&rangeBuffer[0], static_cast<std::streamsize>(end) - start);
     source.seekg(currentPosition, std::ios_base::beg);
