@@ -8,7 +8,7 @@ struct XDeclaration final : Variant
 {
   // Constructors/Destructors
   XDeclaration(const std::string &version, const std::string &encoding, const std::string &standalone)
-    : Variant(Variant::Type::declaration), xmlVersion(version), xmlEncoding(encoding), xmlStandalone(standalone)
+    : Variant(Type::declaration), xmlVersion(version), xmlEncoding(encoding), xmlStandalone(standalone)
   {}
   XDeclaration(const XDeclaration &other) = delete;
   XDeclaration &operator=(const XDeclaration &other) = delete;

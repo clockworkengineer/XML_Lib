@@ -8,11 +8,11 @@ namespace XML_Lib {
 struct XElement : Variant
 {
   // Constructors/Destructors
-  explicit XElement(const Variant::Type nodeType = Variant::Type::element) : Variant(nodeType) {}
+  explicit XElement(const Type nodeType = Type::element) : Variant(nodeType) {}
   XElement(const std::string &name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces,
-    const Variant::Type nodeType = Variant::Type::element)
+    const Type nodeType = Type::element)
     : Variant(nodeType), elementName(name), attributes(attributes), namespaces(namespaces)
   {}
   XElement(const XElement &other) = delete;

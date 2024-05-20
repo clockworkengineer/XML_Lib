@@ -12,7 +12,7 @@ class FileDestination final : public IDestination
 {
 public:
   // FileDestination Error
-  struct Error final : public std::runtime_error
+  struct Error final : std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("FileDestination Error: " + message) {}
   };

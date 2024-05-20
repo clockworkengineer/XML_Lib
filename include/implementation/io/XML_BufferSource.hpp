@@ -16,7 +16,7 @@ public:
   // Bits per byte
   static constexpr int kBitsPerByte{ 8 };
   // BufferSource Error
-  struct Error final : public std::runtime_error
+  struct Error final : std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("BufferSource Error: " + message) {}
   };

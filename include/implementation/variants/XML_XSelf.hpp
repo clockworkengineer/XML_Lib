@@ -8,11 +8,11 @@ namespace XML_Lib {
 struct XSelf final : XElement
 {
   // Constructors/Destructors
-  XSelf() : XElement(Variant::Type::self) {}
+  XSelf() : XElement(Type::self) {}
   XSelf(const std::string &name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces)
-    : XElement(name, attributes, namespaces, Variant::Type::self)
+    : XElement(name, attributes, namespaces, Type::self)
   {}
   XSelf(const XSelf &other) = delete;
   XSelf &operator=(const XSelf &other) = delete;

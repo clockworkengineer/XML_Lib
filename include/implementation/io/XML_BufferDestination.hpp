@@ -12,7 +12,7 @@ class BufferDestination final : public IDestination
 {
 public:
   // BufferDestination Error
-  struct Error final : public std::runtime_error
+  struct Error final : std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("BufferDestination Error: " + message) {}
   };

@@ -15,7 +15,7 @@ public:
   static constexpr char kPublicID[] = "PUBLIC";
   static constexpr char kSystemID[] = "SYSTEM";
   // ExternalReference Error
-  struct Error final : public std::runtime_error
+  struct Error final : std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("ExternalReference Error: " + message) {}
   };
@@ -42,7 +42,7 @@ public:
   XMLExternalReference &operator=(XMLExternalReference &&other) = default;
   ~XMLExternalReference() = default;
   // Get external reference details
-  [[nodiscard]] const std::string getType() const
+  [[nodiscard]] std::string getType() const
   {
     if (type == Type::publicID) { return kPublicID; }
     if (type == Type::systemID) { return kSystemID; }

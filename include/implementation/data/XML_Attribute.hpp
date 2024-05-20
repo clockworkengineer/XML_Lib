@@ -5,7 +5,7 @@
 
 namespace XML_Lib {
 
-struct XMLAttribute : public XMLValue
+struct XMLAttribute : XMLValue
 {
   // Constructors/Destructors
   XMLAttribute(const std::string &name, const XMLValue &value) : XMLValue(value) , name(name) {} 

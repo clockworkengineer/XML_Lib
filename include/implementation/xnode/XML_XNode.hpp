@@ -10,7 +10,7 @@ namespace XML_Lib {
 struct XNode
 {
   // XNode Error
-  struct Error final : public std::runtime_error
+  struct Error final : std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("XNode Error: " + message) {}
   };

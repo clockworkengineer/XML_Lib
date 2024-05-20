@@ -22,6 +22,5 @@ public:
 
   void stringify(const XNode &xNode, IDestination &destination) const override;
 
-private:
 };
 }// namespace XML_Lib

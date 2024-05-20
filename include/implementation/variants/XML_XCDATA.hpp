@@ -7,7 +7,7 @@ namespace XML_Lib {
 struct XCDATA final : Variant
 {
   // Constructors/Destructors
-  explicit XCDATA(const std::string &cdata) : Variant(Variant::Type::cdata), cdata(cdata) {}
+  explicit XCDATA(const std::string &cdata) : Variant(Type::cdata), cdata(cdata) {}
   XCDATA(const XCDATA &other) = delete;
   XCDATA &operator=(const XCDATA &other) = delete;
   XCDATA(XCDATA &&other) = default;

@@ -45,7 +45,7 @@ inline const XElement &XElement::operator[](const int index) const
 inline const XMLAttribute &XElement::operator[](const std::string &name) const
 {
   if (const auto attribute = std::ranges::find_if(
-        attributes, [&name](const XMLAttribute &attribute) { return attribute.getName() == name; });
+        attributes, [&name](const XMLAttribute &attr) { return attr.getName() == name; });
       attribute != attributes.end()) { return *attribute; }
   throw XNode::Error("Attribute '" + name + "' does not exist.");
 }

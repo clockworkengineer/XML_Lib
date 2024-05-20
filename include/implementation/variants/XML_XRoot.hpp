@@ -8,11 +8,11 @@ namespace XML_Lib {
 struct XRoot final : XElement
 {
   // Constructors/Destructors
-  XRoot() : XElement(Variant::Type::root) {}
+  XRoot() : XElement(Type::root) {}
   XRoot(const std::string &name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces)
-    : XElement(name, attributes, namespaces, Variant::Type::root)
+    : XElement(name, attributes, namespaces, Type::root)
   {}
   XRoot(const XRoot &other) = delete;
   XRoot &operator=(const XRoot &other) = delete;

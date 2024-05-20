@@ -84,12 +84,12 @@ struct XDTD final : Variant
   {
     return elements.contains(elementName);
   }
-  [[nodiscard]] XDTD::Element &getElement(const std::string &elementName)
+  [[nodiscard]] Element &getElement(const std::string &elementName)
   {
     if (const auto element = elements.find(elementName); element != elements.end()) { return element->second; }
     throw XNode::Error("Could not find notation name.");
   }
-  void addElement(const std::string &elementName, const XDTD::Element &element)
+  void addElement(const std::string &elementName, const Element &element)
   {
     elements.emplace(elementName, element);
   }
@@ -118,7 +118,7 @@ private:
   long lineCount{};
   std::string dtdNodeName;
   XMLExternalReference externalReference{ "" };
-  std::unordered_map<std::string, XDTD::Element> elements;
+  std::unordered_map<std::string, Element> elements;
   std::unordered_map<std::string, XMLExternalReference> notations;
   std::string unparsedDTD;
   IEntityMapper &entityMapper;

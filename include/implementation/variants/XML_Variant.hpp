@@ -12,7 +12,7 @@ protected:
 
 public:
   // Constructors/Destructors
-  explicit Variant(const Variant::Type nodeType = Variant::Type::base) : xmlNodeType(nodeType) {}
+  explicit Variant(const Type nodeType = Type::base) : xmlNodeType(nodeType) {}
   Variant(const Variant &other) = delete;
   Variant &operator=(const Variant &other) = delete;
   Variant(Variant &&other) = default;
@@ -43,7 +43,7 @@ public:
 
 private:
   // Variant type
-  Variant::Type xmlNodeType{ Type::base };
+  Type xmlNodeType{ Type::base };
   // XNode Children
   mutable std::unique_ptr<std::vector<XNode>> children;
 };
