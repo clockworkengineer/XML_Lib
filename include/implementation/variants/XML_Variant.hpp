@@ -36,8 +36,8 @@ public:
   [[nodiscard]] std::vector<XNode> &getChildren();
   [[nodiscard]] const std::vector<XNode> &getChildren() const;
   // Add child
-  void addChild(XNode &child);
-  void addChild(XNode &&child);
+  void addChild(XNode &child) const;
+  void addChild(XNode &&child) const;
   // Return Variant contents
   [[nodiscard]] virtual std::string getContents() const { return (""); }
 

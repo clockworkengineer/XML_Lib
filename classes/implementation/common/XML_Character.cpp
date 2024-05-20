@@ -74,7 +74,7 @@ bool validName(const String &name)
   });
   if (localName.find(u"xml") == 0 && !(validReservedName(localName))) { return (false); }
   if (!validNameStartChar(localName[0])) { return (false); }
-  for (auto it = localName.begin() + 1; it != localName.end(); it++) {
+  for (auto it = localName.begin() + 1; it != localName.end(); ++it) {
     if (!validNameChar(*it)) { return (false); }
   }
   return (true);

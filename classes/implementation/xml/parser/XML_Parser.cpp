@@ -195,7 +195,7 @@ XNode XML_Parser::parseCDATA(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>XML element attribute list.</returns>
-std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source)
+std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source) const
 {
   std::vector<XMLAttribute> attributes;
   while (source.more() && source.current() != '/' && source.current() != '>') {
@@ -278,8 +278,8 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode)
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
     xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNamespaceList()));
-    XElement &xNodeChildElement = XRef<XElement>(xNode.getChildren().back());
-    if (auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
+    const XElement &xNodeChildElement = XRef<XElement>(xNode.getChildren().back());
+    if (const auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
       }
@@ -414,13 +414,12 @@ XNode XML_Parser::parseProlog(ISource &source)
 /// <returns>Prolog XNode.</returns>
 XNode XML_Parser::parse(ISource &source)
 {
-  XNode xmlRoot;
   // Reset XML before next parse
   entityMapper.resetToDefault();
   hasRoot = false;
   validator.reset();
   // Handle prolog
-  xmlRoot = parseProlog(source);
+  XNode xmlRoot = parseProlog(source);
   // Handle main body
   if (source.match("<")) {
     xmlRoot.addChild(parseElement(source, {}));

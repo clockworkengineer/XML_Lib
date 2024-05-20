@@ -10,12 +10,12 @@
 #include "XML_Impl.hpp"
 
 namespace XML_Lib {
-void Variant::addChild(XNode &child)
+void Variant::addChild(XNode &child) const
 {
   if (children.get() == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
   children->push_back(std::move(child));
 }
-void Variant::addChild(XNode &&child)
+void Variant::addChild(XNode &&child) const
 {
   if (children.get() == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
   children->push_back(std::move(child));

@@ -29,7 +29,7 @@ public:
   void validate();
   [[nodiscard]] std::string version();
 
-  [[nodiscard]] static const std::string fromFile(const std::string &fileName);
+  [[nodiscard]] static std::string fromFile(const std::string &fileName);
   static void toFile(const std::string &fileName, const std::string &xmlString, XML::Format format);
   [[nodiscard]] static XML::Format getFileFormat(const std::string &fileName);
 

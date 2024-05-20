@@ -27,7 +27,7 @@ public:
 
 private:
   void parseValidNotations(const std::string &notations) const;
-  void parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute);
+  void parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute) const;
   void parseConditional(ISource &source, bool includeOff = true);
   void parseExternalContent(ISource &source);
   [[nodiscard]] static std::string parseAttributeEnumerationType(ISource &source);
@@ -45,8 +45,8 @@ private:
   void parseEntity(ISource &source);
   void parseElement(ISource &source);
   [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source) const;
-  void parseAttributeType(ISource &source, XDTD::Attribute &attribute);
-  void parseAttributeValue(ISource &source, XDTD::Attribute &attribute);
+  void parseAttributeType(ISource &source, XDTD::Attribute &attribute) const;
+  void parseAttributeValue(ISource &source, XDTD::Attribute &attribute) const;
   void parseComment(ISource &source);
   void parseParameterEntityReference(ISource &source);
   void parseExternal(ISource &source);
@@ -60,7 +60,7 @@ private:
   void checkElements(const XNode &xNode);
   [[nodiscard]] static bool checkIsNMTOKENOK(const std::string &nmTokenValue);
   [[nodiscard]] bool checkIsIDOK(const std::string &idValue);
-  void checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute);
+  void checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute) const;
   void checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute);
   [[nodiscard]] bool checkIsPCDATA(const XNode &xNode);
   [[nodiscard]] bool checkIsEMPTY(const XNode &xNode);

@@ -147,7 +147,7 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, const ch
     matchFound = false;
     for (auto &entity : entityMappings) {
       if (entity.first[0] == type) {
-        if (size_t position = translated.find(entity.first); position != std::string::npos) {
+        if (const size_t position = translated.find(entity.first); position != std::string::npos) {
           translated.replace(position, entity.first.length(), entity.second.getInternal());
           matchFound = true;
           break;

@@ -27,7 +27,7 @@ void DTD_Impl::parseValidNotations(const std::string &notations) const
 /// </summary>
 /// <param name="elementName">Element associated with attribute.</param>
 /// <param name="dtdAttribute">Attribute description to validate.</param>
-void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute)
+void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute) const
 {
   // Attribute cannot be ID and fixed
   if (dtdAttribute.type == (XDTD::AttributeType::id | XDTD::AttributeType::fixed)) {
@@ -90,7 +90,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
 /// <param name="source">DTD source stream.</param>
 /// <param name="attribute">Attribute description.</param>
 /// <returns>Attribute type as string (UTF-8 encoded).</returns>
-void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute)
+void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute) const
 {
   if (source.match("CDATA")) {
     attribute.type = XDTD::AttributeType::cdata;
@@ -145,7 +145,7 @@ void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute)
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 /// <param name="attribute">Attribute description.</param>
-void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute)
+void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute) const
 {
   if (source.match("#REQUIRED")) {
     attribute.type |= XDTD::AttributeType::required;

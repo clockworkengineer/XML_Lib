@@ -92,7 +92,7 @@ XMLValue parseCharacter(ISource &source)
   } else if (source.current() == '&') {
     return (parseEntityReference(source));
   } else if (validChar(source.current())) {
-    std::string character{ toUtf8(source.current()) };
+    const std::string character{ toUtf8(source.current()) };
     source.next();
     return (XMLValue{ character, character });
   }
@@ -137,7 +137,7 @@ XMLValue parseValue(ISource &source)
 {
   if ((source.current() == '\'') || ((source.current() == '"'))) {
     std::string unparsed, parsed;
-    Char quote = source.current();
+    const Char quote = source.current();
     source.next();
     while (source.more() && source.current() != quote) {
       XMLValue character{ parseCharacter(source) };

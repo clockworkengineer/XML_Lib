@@ -29,7 +29,7 @@ public:
   XML &operator=(XML &&other) = delete;
   ~XML();
   // Get reference to DTD XNode
-  [[nodiscard]] XNode &dtd();
+  [[nodiscard]] XNode &dtd() const;
   // Get reference to prolog XNode
   [[nodiscard]] XNode &prolog();
   // Get reference to declaration XNode
@@ -39,7 +39,7 @@ public:
   // Validate XML
   void validate();
   // Return version string
-  [[nodiscard]] std::string version();
+  [[nodiscard]] std::string version() const;
   // Parse XML source
   void parse(ISource &source);
   void parse(ISource &&source);
@@ -47,7 +47,7 @@ public:
   void stringify(IDestination &destination);
   void stringify(IDestination &&destination);
   // Read/Write XML to/from file
-  [[nodiscard]] static const std::string fromFile(const std::string &fileName);
+  [[nodiscard]] static std::string fromFile(const std::string &fileName);
   static void toFile(const std::string &fileName, const std::string &xmlString, Format format = Format::utf8);
   // Get XML file format
   [[nodiscard]] static Format getFileFormat(const std::string &fileName);

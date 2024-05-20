@@ -25,13 +25,13 @@ void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, con
 {
   if (format == XML::Format::utf16BE) {
     xmlFile << static_cast<unsigned char>(0xFE) << static_cast<unsigned char>(0xFF);
-    for (auto ch : xmlString) {
+    for (const auto ch : xmlString) {
       xmlFile.put(static_cast<unsigned char>(ch >> 8));
       xmlFile.put(static_cast<unsigned char>(ch));
     }
   } else if (format == XML::Format::utf16LE) {
     xmlFile << static_cast<unsigned char>(0xFF) << static_cast<unsigned char>(0xFE);
-    for (auto ch : xmlString) {
+    for (const auto ch : xmlString) {
       xmlFile.put(static_cast<unsigned char>(ch));
       xmlFile.put(static_cast<unsigned char>(ch >> 8));
     }
@@ -46,13 +46,13 @@ void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, con
 /// <param name="xmlFile">XML file stream</param>
 /// <param name="format">XML file format</param>
 /// <returns>XML string.</returns>
-std::string readXMLString(std::ifstream &xmlFile)
+std::string readXMLString(const std::ifstream &xmlFile)
 {
   std::ostringstream xmlFileBuffer;
   xmlFileBuffer << xmlFile.rdbuf();
   return (xmlFileBuffer.str());
 }
-const std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
+std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
 {
   std::u16string utf16String;
   // Move past byte order mark
@@ -85,9 +85,8 @@ const std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format for
 /// <returns>XML file format.</returns>
 XML::Format XML_Impl::getFileFormat(const std::string &fileName)
 {
-  uint32_t byteOrderMark;
   std::ifstream xmlFile{ fileName, std::ios_base::binary };
-  byteOrderMark = static_cast<unsigned char>(xmlFile.get()) << 24;
+  uint32_t byteOrderMark = static_cast<unsigned char>(xmlFile.get()) << 24;
   byteOrderMark |= static_cast<unsigned char>(xmlFile.get()) << 16;
   byteOrderMark |= static_cast<unsigned char>(xmlFile.get()) << 8;
   byteOrderMark |= static_cast<unsigned char>(xmlFile.get());
@@ -107,12 +106,11 @@ XML::Format XML_Impl::getFileFormat(const std::string &fileName)
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML string.</returns>
-const std::string XML_Impl::fromFile(const std::string &fileName)
+std::string XML_Impl::fromFile(const std::string &fileName)
 {
-  const char *kCRLF = "\x0D\x0A";
-  const char *kLF = "\x0A";
+  const auto kCRLF = "\x0D\x0A";
   // Get file format
-  XML::Format format = getFileFormat(fileName);
+  const XML::Format format = getFileFormat(fileName);
   // Read in XML
   std::ifstream xmlFile{ fileName, std::ios_base::binary };
   std::string translated;
@@ -133,6 +131,7 @@ const std::string XML_Impl::fromFile(const std::string &fileName)
   // Translate CRLF -> LF
   size_t pos = translated.find(kCRLF);
   while (pos != std::string::npos) {
+    const auto kLF = "\x0A";
     translated.replace(pos, 2, kLF);
     pos = translated.find(kCRLF, pos + 1);
   }

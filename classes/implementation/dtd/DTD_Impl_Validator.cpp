@@ -85,7 +85,7 @@ bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren().em
 ///
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute)
+void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute) const
 {
   const auto &xElement = XRef<XElement>(xNode);
   const bool attributePresent = xElement.isAttributePresent(attribute.name);

@@ -27,13 +27,13 @@ XML::~XML() {}
 /// Get XML_Lib version.
 /// </summary>
 /// <returns>Library version string.</returns>
-std::string XML::version() { return (implementation->version()); }
+std::string XML::version() const { return (implementation->version()); }
 
 /// <summary>
 /// Return reference to any internal DTD for parsed XML.
 /// </summary>
 /// <returns>Reference to DTD XNode.</returns>
-XNode &XML::dtd() { return (implementation->dtd()); }
+XNode &XML::dtd() const { return (implementation->dtd()); }
 
 /// <summary>
 /// Return prolog node of parsed XML tree.
@@ -79,7 +79,7 @@ void XML::stringify(IDestination &&destination) { implementation->stringify(dest
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML string.</returns>
-const std::string XML::fromFile(const std::string &fileName) { return (XML_Impl::fromFile(fileName)); }
+std::string XML::fromFile(const std::string &fileName) { return (XML_Impl::fromFile(fileName)); }
 
 /// <summary>
 /// Create an XML file and write XML string to it.

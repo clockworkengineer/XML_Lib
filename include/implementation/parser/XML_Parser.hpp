@@ -32,7 +32,7 @@ private:
   [[nodiscard]] bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
   void parseContent(ISource &source, XNode &xNode);
   [[nodiscard]] std::string parseTagName(ISource &source);
-  [[nodiscard]] std::vector<XMLAttribute> parseAttributes(ISource &source);
+  [[nodiscard]] std::vector<XMLAttribute> parseAttributes(ISource &source) const;
   [[nodiscard]] XNode parseComment(ISource &source);
   [[nodiscard]] XNode parseCDATA(ISource &source);
   [[nodiscard]] XNode parsePI(ISource &source);
