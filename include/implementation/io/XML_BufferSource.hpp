@@ -26,8 +26,8 @@ public:
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     std::u16string utf16xml{ sourceBuffer };
     if (utf16xml.starts_with(u"<?xml")) {
-      std::transform(utf16xml.begin(), utf16xml.end(), utf16xml.begin(), [](char16_t &ch) {
-        return((static_cast<uint16_t>(ch) >> kBitsPerByte) | (static_cast<uint16_t>(ch) << kBitsPerByte));
+      std::transform(utf16xml.begin(), utf16xml.end(), utf16xml.begin(), [](const char16_t &ch) {
+        return static_cast<uint16_t>(ch) >> kBitsPerByte | static_cast<uint16_t>(ch) << kBitsPerByte;
       });
     }
     buffer = utf16xml;
@@ -47,8 +47,8 @@ public:
 
   [[nodiscard]] Char current() const override
   {
-    if (more()) { return (buffer[bufferPosition]); }
-    return (static_cast<Char>(EOF));
+    if (more()) { return buffer[bufferPosition]; }
+    return static_cast<Char>(EOF);
   }
   void next() override
   {
@@ -60,16 +60,16 @@ public:
       columnNo = 1;
     }
   }
-  [[nodiscard]] bool more() const override { return (bufferPosition < static_cast<long>(buffer.size())); }
-  void backup(long length) override
+  [[nodiscard]] bool more() const override { return bufferPosition < static_cast<long>(buffer.size()); }
+  void backup(const long length) override
   {
     bufferPosition -= length;
     if (bufferPosition < 0) { bufferPosition = 0; }
   }
-  [[nodiscard]] long position() const override { return (bufferPosition); }
-  [[nodiscard]] std::string getRange(long start, long end) override
+  [[nodiscard]] long position() const override { return bufferPosition; }
+  [[nodiscard]] std::string getRange(const long start, const long end) override
   {
-    return (toUtf8(buffer.substr(start, static_cast<std::size_t>(end) - start)));
+    return toUtf8(buffer.substr(start, static_cast<std::size_t>(end) - start));
   }
   void reset() override
   {

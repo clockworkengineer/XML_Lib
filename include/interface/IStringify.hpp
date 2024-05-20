@@ -35,6 +35,6 @@ public:
 };
 // Make custom stringify to pass to XML constructor: Note pointer is tidied up internally.
 template <typename T> IStringify *makeStringify() {
-  return (std::make_unique<T>().release());
+  return std::make_unique<T>().release();
 }
 }// namespace XML_Lib

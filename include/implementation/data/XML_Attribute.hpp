@@ -16,13 +16,13 @@ struct XMLAttribute : public XMLValue
   XMLAttribute &operator=(XMLAttribute &&other) = default;
   ~XMLAttribute() = default;
   // Get attribute name
-  [[nodiscard]] const std::string &getName() const { return (name); }
+  [[nodiscard]] const std::string &getName() const { return name; }
   // Search for an attribute in vector of unique attributes
   [[nodiscard]] static bool isAttrubutePresent(const std::vector<XMLAttribute> &attributes, const std::string &attributeName)
   {
-    return (std::find_if(attributes.rbegin(), attributes.rend(), [&attributeName](const XMLAttribute &attr) {
-      return (attr.getName() == attributeName);
-    }) != attributes.rend());
+    return std::find_if(attributes.rbegin(), attributes.rend(), [&attributeName](const XMLAttribute &attr) {
+      return attr.getName() == attributeName;
+    }) != attributes.rend();
   }
 
 private:

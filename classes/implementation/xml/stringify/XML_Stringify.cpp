@@ -32,7 +32,7 @@ void XML_Stringify::stringify(const XNode &xNode, IDestination &destination) con
   }
   // XML root or child elements
   else if (xNode.isRoot() || xNode.isElement() || xNode.isSelf()) {
-    const XElement &xElement = XRef<XElement>(xNode);
+    const auto &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto &attribute : xElement.getAttributeList()) {
       destination.add(" " + attribute.getName() + "=\"" + attribute.getUnparsed() + "\"");
@@ -47,17 +47,17 @@ void XML_Stringify::stringify(const XNode &xNode, IDestination &destination) con
   }
   // XML comments
   else if (xNode.isComment()) {
-    const XComment &xNodeComment = XRef<XComment>(xNode);
+    const auto &xNodeComment = XRef<XComment>(xNode);
     destination.add("<!--" + xNodeComment.comment() + "-->");
   }
   // XML element content
   else if (xNode.isContent()) {
-    const XContent &xNodeContent = XRef<XContent>(xNode);
+    const auto &xNodeContent = XRef<XContent>(xNode);
     destination.add(xNodeContent.getContent());
   }
   // XML character entity
   else if (xNode.isEntity()) {
-    const XEntityReference &xNodeEntity = XRef<XEntityReference>(xNode);
+    const auto &xNodeEntity = XRef<XEntityReference>(xNode);
     destination.add(xNodeEntity.value().getUnparsed());
   }
   // XML processing instruction
@@ -67,7 +67,7 @@ void XML_Stringify::stringify(const XNode &xNode, IDestination &destination) con
   }
   // XML CDATA section
   else if (xNode.isCDATA()) {
-    const XCDATA &xNodeCDATA = XRef<XCDATA>(xNode);
+    const auto &xNodeCDATA = XRef<XCDATA>(xNode);
     destination.add("<![CDATA[" + xNodeCDATA.CDATA() + "]]>");
   }
   // XML DTD

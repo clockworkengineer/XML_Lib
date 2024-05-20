@@ -34,7 +34,7 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
     throw SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
   }
   // Only one ID attribute allowed per element
-   if ((dtdAttribute.type & XDTD::AttributeType::id) != 0) {
+  if ((dtdAttribute.type & XDTD::AttributeType::id) != 0) {
     if (xDTD.getElement(elementName).idAttributePresent) {
       throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
     }
@@ -344,6 +344,6 @@ void DTD_Impl::parseDTD(ISource &source)
   xDTD.getEntityMapper().checkForRecursion();
   // Count lines in DTD
   std::string unparsedDTD = xDTD.unparsed();
-  xDTD.setLineCount(static_cast<long>(std::ranges::count(unparsedDTD, kLineFeed)) + 1);
+  xDTD.setLineCount(std::ranges::count(unparsedDTD, kLineFeed) + 1);
 }
 }// namespace XML_Lib

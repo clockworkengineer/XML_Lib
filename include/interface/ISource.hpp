@@ -60,7 +60,7 @@ public:
   // =====================================
   // Is the current character whitespace ?
   // =====================================
-  [[nodiscard]] bool isWS() const { return (std::iswspace(static_cast<wint_t>(current()))) != 0; }
+  [[nodiscard]] bool isWS() const { return std::iswspace(static_cast<wint_t>(current())) != 0; }
   // ==================================
   // Ignore whitespace on source stream
   // ==================================
@@ -76,25 +76,25 @@ public:
     long index = 0;
     while (more() && current() == target[index]) {
       next();
-      if (++index == (long)target.length()) { return (true); }
+      if (++index == (long)target.length()) { return true; }
     }
     backup(index);
-    return (false);
+    return false;
   }
   bool match(const char *target)
   {
     long index = 0;
-    while (more() && (current() == static_cast<Char>(target[index]))) {
+    while (more() && current() == static_cast<Char>(target[index])) {
       next();
-      if (++index == (long)std::strlen(target)) { return (true); }
+      if (++index == (long)std::strlen(target)) { return true; }
     }
     backup(index);
-    return (false);
+    return false;
   }
   // ==================================
   // Get current source stream position
   // ==================================
-  std::pair<long, long> getPosition() const { return (std::make_pair(lineNo, columnNo)); }
+  std::pair<long, long> getPosition() const { return std::make_pair(lineNo, columnNo); }
 
 protected:
   long lineNo = 1;

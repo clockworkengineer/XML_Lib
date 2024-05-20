@@ -20,7 +20,7 @@ struct SyntaxError : public std::runtime_error
 };
 struct ValidationError : public std::runtime_error
 {
-  explicit ValidationError(long lineNumber, const std::string &message = "")
+  explicit ValidationError(const long lineNumber, const std::string &message = "")
     : std::runtime_error("XML Validation Error [Line: " + std::to_string(lineNumber) + "] " + message)
   {}
 };

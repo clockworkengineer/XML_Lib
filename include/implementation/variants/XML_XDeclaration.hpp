@@ -16,9 +16,9 @@ struct XDeclaration : Variant
   XDeclaration &operator=(XDeclaration &&other) = default;
   ~XDeclaration() = default;
   // Get reference to declaration attibutes
-  [[nodiscard]] const std::string &version() const { return (xmlVersion); }
-  [[nodiscard]] const std::string &encoding() const { return (xmlEncoding); }
-  [[nodiscard]] const std::string &standalone() const { return (xmlStandalone); }
+  [[nodiscard]] const std::string &version() const { return xmlVersion; }
+  [[nodiscard]] const std::string &encoding() const { return xmlEncoding; }
+  [[nodiscard]] const std::string &standalone() const { return xmlStandalone; }
   // Set declaration attibutes
   void setVersion(const std::string &version) { xmlVersion = version; }
   void setEncoding(const std::string &encoding) { xmlEncoding = encoding; }

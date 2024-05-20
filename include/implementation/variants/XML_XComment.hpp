@@ -14,7 +14,7 @@ struct XComment : Variant
   XComment &operator=(XComment &&other) = default;
   ~XComment() = default;
   // Return reference to comment
-  [[nodiscard]] const std::string &comment() const { return (xmlComment); }
+  [[nodiscard]] const std::string &comment() const { return xmlComment; }
 
 private:
   std::string xmlComment;

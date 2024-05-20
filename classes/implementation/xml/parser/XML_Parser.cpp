@@ -39,7 +39,7 @@ void addContentToElementChildList(XNode &xNode, const std::string &content)
     }
     xNode.addChild(XNode::make<XContent>(isWhiteSpace));
   }
-  XContent &xmlContent = XRef<XContent>(xNode.getChildren().back());
+  auto &xmlContent = XRef<XContent>(xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
     if (std::ranges::all_of(content, [](const char ch) { return std::iswspace(ch); })) {
       xmlContent.setIsWhiteSpace(true);
@@ -375,7 +375,7 @@ void XML_Parser::parseEpilog(ISource &source, XNode &xProlog)
 /// <returns>Pointer to DTD XNode.</returns>
 XNode XML_Parser::parseDTD(ISource &source)
 {
-  if (validator.get() != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
+  if (validator != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
   auto xNode = XNode::make<XDTD>(entityMapper);
   validator = std::make_unique<DTD>(xNode);
   validator->parse(source);
@@ -415,7 +415,7 @@ XNode XML_Parser::parseProlog(ISource &source)
 XNode XML_Parser::parse(ISource &source)
 {
   // Reset XML before next parse
-  entityMapper.resetToDefault();
+  entityMapper.reset();
   hasRoot = false;
   validator.reset();
   // Handle prolog
@@ -436,7 +436,7 @@ XNode XML_Parser::parse(ISource &source)
 /// <param name="xProlog">Prolog XNode</param>
 void XML_Parser::validate(XNode &xProlog)
 {
-  if (validator.get() != nullptr) {
+  if (validator != nullptr) {
     validator->validate(xProlog);
   } else {
     throw Error("No DTD specified for validation.");
@@ -446,5 +446,5 @@ void XML_Parser::validate(XNode &xProlog)
 /// Parser can validate XML.
 /// </summary>
 /// <returns>Returns true if parser can validate XML.</returns>
-bool XML_Parser::canValidate() { return validator.get() != nullptr; }
+bool XML_Parser::canValidate() { return validator != nullptr; }
 }// namespace XML_Lib

@@ -16,9 +16,9 @@ struct XPI : Variant
   XPI &operator=(XPI &&other) = default;
   ~XPI() = default;
   // Return reference to name
-  [[nodiscard]] const std::string &name() const { return (piName); }
+  [[nodiscard]] const std::string &name() const { return piName; }
   // Return reference to parameters
-  [[nodiscard]] const std::string &parameters() const { return (piParameters); }
+  [[nodiscard]] const std::string &parameters() const { return piParameters; }
 
 private:
   std::string piName;

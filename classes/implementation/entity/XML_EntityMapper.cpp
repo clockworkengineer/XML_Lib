@@ -11,6 +11,19 @@
 namespace XML_Lib {
 
 /// <summary>
+/// Initialise entity mapping table with defaults.
+/// </summary>
+void  XML_EntityMapper::resetToDefault()
+{
+  entityMappings.clear();
+  entityMappings.emplace("&amp;", XML_EntityMapping{ "&#x26;" });
+  entityMappings.emplace("&quot;", XML_EntityMapping{ "&#x22;" });
+  entityMappings.emplace("&apos;", XML_EntityMapping{ "&#x27;" });
+  entityMappings.emplace("&lt;", XML_EntityMapping{ "&#x3C;" });
+  entityMappings.emplace("&gt;", XML_EntityMapping{ "&#x3E;" });
+}
+
+/// <summary>
 /// Take an entity reference mapping and make sure it is not recursive by calling
 /// recurseOverEntityReference() repeatedly on any mapping found at the next level
 /// until no more more are found it or the entity reference repeats in which case
@@ -77,14 +90,9 @@ XML_EntityMapper::XML_EntityMapping &XML_EntityMapper::getEntityMapping(const st
 /// <summary>
 /// Initialise entity mapping table with defaults.
 /// </summary>
-void XML_EntityMapper::XML_EntityMapper::resetToDefault()
+void XML_EntityMapper::XML_EntityMapper::reset()
 {
-  entityMappings.clear();
-  entityMappings.emplace(std::make_pair("&amp;", XML_EntityMapping{ "&#x26;" }));
-  entityMappings.emplace(std::make_pair("&quot;", XML_EntityMapping{ "&#x22;" }));
-  entityMappings.emplace(std::make_pair("&apos;", XML_EntityMapping{ "&#x27;" }));
-  entityMappings.emplace(std::make_pair("&lt;", XML_EntityMapping{ "&#x3C;" }));
-  entityMappings.emplace(std::make_pair("&gt;", XML_EntityMapping{ "&#x3E;" }));
+  resetToDefault();
 }
 
 /// <summary>

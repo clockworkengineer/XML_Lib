@@ -7,7 +7,7 @@ namespace XML_Lib {
 struct XMLValue
 {
   // Constructors/Destructors
-  XMLValue(const std::string &unparsed = "", const std::string &parsed = "", char quote = '\'')
+  XMLValue(const std::string &unparsed = "", const std::string &parsed = "", const char quote = '\'')
     : unparsed(unparsed), parsed(parsed), quote(quote)
   {}
   XMLValue() = delete;
@@ -17,13 +17,13 @@ struct XMLValue
   XMLValue &operator=(XMLValue &&other) = default;
   ~XMLValue() = default;
   // Is a reference value ?
-  [[nodiscard]] bool isReference() const { return (unparsed[0] == '&' && unparsed.back() == ';'); }
-  [[nodiscard]] bool isEntityReference() const { return (isReference() && unparsed[1] != '#'); }
-  [[nodiscard]] bool isCharacterReference() const { return (isReference() && unparsed[1] == '#'); }
+  [[nodiscard]] bool isReference() const { return unparsed[0] == '&' && unparsed.back() == ';'; }
+  [[nodiscard]] bool isEntityReference() const { return isReference() && unparsed[1] != '#'; }
+  [[nodiscard]] bool isCharacterReference() const { return isReference() && unparsed[1] == '#'; }
   // Get value
-  [[nodiscard]] const std::string &getUnparsed() const { return (unparsed); }
-  [[nodiscard]] const std::string &getParsed() const { return (parsed); }
-  [[nodiscard]] const char getQuote() const { return (quote); }
+  [[nodiscard]] const std::string &getUnparsed() const { return unparsed; }
+  [[nodiscard]] const std::string &getParsed() const { return parsed; }
+  [[nodiscard]] const char getQuote() const { return quote; }
 
 private:
   // Parsed/Unparsed value

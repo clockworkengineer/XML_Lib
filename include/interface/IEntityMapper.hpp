@@ -59,7 +59,7 @@ public:
   // ====================================
   // Reset entity mapper to default state
   // ====================================
-  virtual void resetToDefault() = 0;
+  virtual void reset() = 0;
 };
 //
 }// namespace XML_Lib

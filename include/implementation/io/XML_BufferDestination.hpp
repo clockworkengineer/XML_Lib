@@ -29,7 +29,7 @@ public:
     std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
   }
   void add(const Char ch) override { add(toUtf8(ch)); }
-  [[nodiscard]] std::string getBuffer() const { return (buffer); }
+  [[nodiscard]] std::string getBuffer() const { return buffer; }
 
 private:
   std::string buffer;

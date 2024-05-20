@@ -24,9 +24,9 @@ public:
     XML_EntityMapping() = default;
     explicit XML_EntityMapping(const std::string &value) { setInternal(value); }
     // Entity reference get/set details
-    const std::string &getInternal() const { return (internal); }
-    const std::string &getNotation() const { return (notation); }
-    const XMLExternalReference &getExternal() const { return (external); }
+    const std::string &getInternal() const { return internal; }
+    const std::string &getNotation() const { return notation; }
+    const XMLExternalReference &getExternal() const { return external; }
     void setInternal(const std::string &value)
     {
       mappingType = Type::internal;
@@ -42,9 +42,9 @@ public:
       mappingType = Type::external;
       external = value;
     }
-    [[nodiscard]] bool isInternal() { return (mappingType == Type::internal); }
-    [[nodiscard]] bool isExternal() { return (mappingType == Type ::external); }
-    [[nodiscard]] bool isNotation() { return (mappingType == Type::notation); }
+    [[nodiscard]] bool isInternal() { return mappingType == Type::internal; }
+    [[nodiscard]] bool isExternal() { return mappingType == Type ::external; }
+    [[nodiscard]] bool isNotation() { return mappingType == Type::notation; }
 
   private:
     Type mappingType{ Type::base };
@@ -84,7 +84,7 @@ public:
   // Check for a recursive entity reference mapping
   void checkForRecursion() override;
   // Reset entity mapper to default state
-  void resetToDefault() override;
+  void reset() override;
 
 private:
   //  Check for any recursion in a entity reference
@@ -94,6 +94,8 @@ private:
   [[nodiscard]] static std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry
   [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string &entityName);
+  // Reset entity map
+  void resetToDefault();
 
   std::map<std::string, XML_EntityMapping> entityMappings;
 };

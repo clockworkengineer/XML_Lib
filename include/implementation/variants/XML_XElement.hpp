@@ -8,11 +8,11 @@ namespace XML_Lib {
 struct XElement : Variant
 {
   // Constructors/Destructors
-  explicit XElement(Variant::Type nodeType = Variant::Type::element) : Variant(nodeType) {}
+  explicit XElement(const Variant::Type nodeType = Variant::Type::element) : Variant(nodeType) {}
   XElement(const std::string &name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces,
-    Variant::Type nodeType = Variant::Type::element)
+    const Variant::Type nodeType = Variant::Type::element)
     : Variant(nodeType), elementName(name), attributes(attributes), namespaces(namespaces)
   {}
   XElement(const XElement &other) = delete;
@@ -23,26 +23,26 @@ struct XElement : Variant
   // Is an attribute present ?
   [[nodiscard]] bool isAttributePresent(const std::string &attributeName) const
   {
-    return (XMLAttribute::isAttrubutePresent(attributes, attributeName));
+    return XMLAttribute::isAttrubutePresent(attributes, attributeName);
   }
   // Add an attribute
   void addAttribute(const std::string &name, const XMLValue &value) const { attributes.emplace_back(name, value); }
   // Return reference to attribute list
-  [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return (attributes); }
+  [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return attributes; }
   [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
   {
-    return (XMLAttribute::isAttrubutePresent(namespaces, name));
+    return XMLAttribute::isAttrubutePresent(namespaces, name);
   }
   // Is a namespace present ?
   [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const
   {
-    return (*std::find_if(
-      namespaces.rbegin(), namespaces.rend(), [&name](const XMLAttribute &ns) { return (ns.getName() == name); }));
+    return *std::find_if(
+      namespaces.rbegin(), namespaces.rend(), [&name](const XMLAttribute &ns) { return ns.getName() == name; });
   }
   // Return reference to namespace list
-  [[nodiscard]] const std::vector<XMLAttribute> &getNamespaceList() const { return (namespaces); }
+  [[nodiscard]] const std::vector<XMLAttribute> &getNamespaceList() const { return namespaces; }
   // Return reference to element tag name
-  [[nodiscard]] const std::string &name() const { return (elementName); }
+  [[nodiscard]] const std::string &name() const { return elementName; }
   // XElement Index overloads
   [[nodiscard]] const XElement &operator[](int index) const;
   [[nodiscard]] const XMLAttribute &operator[](const std::string &name) const;
@@ -51,7 +51,7 @@ struct XElement : Variant
   {
     std::string result;
     for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
-    return (result);
+    return result;
   }
 
 private:

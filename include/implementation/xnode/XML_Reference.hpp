@@ -13,7 +13,7 @@ template<typename T> void checkXNodeType(const XNode &xNode)
   } else if constexpr (std::is_same_v<T, XDeclaration>) {
     if (!xNode.isDeclaration()) { throw XNode::Error("Node not a declaration."); }
   } else if constexpr (std::is_same_v<T, XElement>) {
-    if ((!xNode.isRoot()) && (!xNode.isSelf()) && (!xNode.isElement())) { throw XNode::Error("Node not a element."); }
+    if (!xNode.isRoot() && !xNode.isSelf() && !xNode.isElement()) { throw XNode::Error("Node not a element."); }
   } else if constexpr (std::is_same_v<T, XContent>) {
     if (!xNode.isContent()) { throw XNode::Error("Node not content."); }
   } else if constexpr (std::is_same_v<T, XEntityReference>) {
@@ -31,11 +31,11 @@ template<typename T> void checkXNodeType(const XNode &xNode)
 template<typename T> T &XRef(XNode &xNode)
 {
   checkXNodeType<T>(xNode);
-  return (static_cast<T &>(xNode.getVariant()));
+  return static_cast<T &>(xNode.getVariant());
 }
 template<typename T> const T &XRef(const XNode &xNode)
 {
   checkXNodeType<T>(xNode);
-  return (static_cast<const T &>(xNode.getVariant()));
+  return static_cast<const T &>(xNode.getVariant());
 }
 }// namespace XML_Lib

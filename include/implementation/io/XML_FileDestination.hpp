@@ -29,7 +29,7 @@ public:
   FileDestination &operator=(FileDestination &&other) = delete;
   ~FileDestination() = default;
 
-  void add(Char c) override { add(toUtf8(c)); }
+  void add(const Char c) override { add(toUtf8(c)); }
   void add(const std::string &bytes) override
   {
     destination.write(bytes.c_str(), static_cast<std::streamsize>(bytes.length()));

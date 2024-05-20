@@ -33,7 +33,7 @@ public:
   FileSource &operator=(FileSource &&other) = delete;
   ~FileSource() = default;
 
-  [[nodiscard]] Char current() const override { return (current_character()); }
+  [[nodiscard]] Char current() const override { return current_character(); }
   void next() override
   {
     if (!more()) { throw Error("Parse buffer empty before parse complete."); }
@@ -48,17 +48,17 @@ public:
       columnNo = 1;
     }
   }
-  [[nodiscard]] bool more() const override { return (source.peek() != EOF); }
-  void backup(long length) override
+  [[nodiscard]] bool more() const override { return source.peek() != EOF; }
+  void backup(const long length) override
   {
-    if ((static_cast<long>(source.tellg()) - length >= 0) || (current() == (Char)EOF)) {
+    if (static_cast<long>(source.tellg()) - length >= 0 || current() == (Char)EOF) {
       source.clear();
       source.seekg(-length, std::ios_base::cur);
     } else {
       source.seekg(0, std::ios_base::beg);
     }
   }
-  [[nodiscard]] long position() const override { return (static_cast<long>(source.tellg())); }
+  [[nodiscard]] long position() const override { return static_cast<long>(source.tellg()); }
   void reset() override
   {
     lineNo = 1;
@@ -66,18 +66,18 @@ public:
     source.clear();
     source.seekg(0, std::ios_base::beg);
   }
-  [[nodiscard]] std::string getRange(long start, long end) override
+  [[nodiscard]] std::string getRange(const long start, const long end) override
   {
     std::string rangeBuffer(static_cast<std::size_t>(end) - start, ' ');
     long currentPosition = (long)source.tellg();
     source.seekg(start, std::ios_base::beg);
     source.read(&rangeBuffer[0], static_cast<std::streamsize>(end) - start);
     source.seekg(currentPosition, std::ios_base::beg);
-    return (rangeBuffer);
+    return rangeBuffer;
   }
 
 private:
-  [[nodiscard]] Char current_character() const { return (static_cast<Char>(source.peek())); }
+  [[nodiscard]] Char current_character() const { return static_cast<Char>(source.peek()); }
   mutable std::ifstream source;
 };
 }// namespace XML_Lib

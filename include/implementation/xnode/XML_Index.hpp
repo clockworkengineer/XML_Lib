@@ -6,9 +6,9 @@ namespace XML_Lib {
 // ====================
 // XNode index access
 // ====================
-inline const XNode &XNode::operator[](int index) const
+inline const XNode &XNode::operator[](const int index) const
 {
-  if ((index >= 0) && (index < (static_cast<int>(getChildren().size())))) { return (((getChildren()[index]))); }
+  if (index >= 0 && index < static_cast<int>(getChildren().size())) { return getChildren()[index]; }
   throw XNode::Error("Invalid index used to access XNode array.");
 }
 // =================
@@ -18,9 +18,9 @@ inline const XNode &XNode::operator[](const std::string &name) const
 {
   if (isIndexable()) {
     auto xNode = std::find_if(getChildren().begin(), getChildren().end(), [&name](const XNode &xNode) {
-      return (xNode.isNameable() && XRef<XElement>(xNode).name() == name);
+      return xNode.isNameable() && XRef<XElement>(xNode).name() == name;
     });
-    if (xNode != getChildren().end()) { return (*xNode); }
+    if (xNode != getChildren().end()) { return *xNode; }
   }
   throw XNode::Error("Element '" + name + "' does not exist.");
 }
@@ -30,10 +30,10 @@ inline const XNode &XNode::operator[](const std::string &name) const
 inline const XElement &XElement::operator[](int index) const
 {
   int number = 0;
-  if ((index >= 0) && (index < (static_cast<int>(getChildren().size())))) {
+  if (index >= 0 && index < static_cast<int>(getChildren().size())) {
     for (const auto &child : getChildren()) {
       if (child.isIndexable()) {
-        if (number == index) { return (XRef<XElement>(child)); }
+        if (number == index) { return XRef<XElement>(child); }
         number++;
       }
     }
@@ -46,8 +46,8 @@ inline const XElement &XElement::operator[](int index) const
 inline const XMLAttribute &XElement::operator[](const std::string &name) const
 {
   auto attribute = std::find_if(
-    attributes.begin(), attributes.end(), [&name](const XMLAttribute &attribute) { return (attribute.getName() == name); });
-  if (attribute != attributes.end()) { return (*attribute); }
+    attributes.begin(), attributes.end(), [&name](const XMLAttribute &attribute) { return attribute.getName() == name; });
+  if (attribute != attributes.end()) { return *attribute; }
   throw XNode::Error("Attribute '" + name + "' does not exist.");
 }
 
