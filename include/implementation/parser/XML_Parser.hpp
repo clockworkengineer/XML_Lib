@@ -33,7 +33,7 @@ private:
   void parseContent(ISource &source, XNode &xNode);
   [[nodiscard]] static std::string parseTagName(ISource &source);
   [[nodiscard]] std::vector<XMLAttribute> parseAttributes(ISource &source) const;
-  [[nodiscard]] XNode parseComment(ISource &source);
+  [[nodiscard]] static XNode parseComment(ISource &source);
   [[nodiscard]] XNode parseCDATA(ISource &source);
   [[nodiscard]] XNode parsePI(ISource &source);
   void parseWhiteSpaceToContent(ISource &source, XNode &xNode);

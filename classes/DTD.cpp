@@ -37,7 +37,7 @@ void DTD::stringify(IDestination &destination) { implementation->stringify(desti
 /// <summary>
 /// Validate XML against DTD.
 /// </summary>
-/// <param name="destination">DTD destination stream.</param>
+/// <param name="xNode">XML prolog XNode.</param>
 void DTD::validate(const XNode &xNode) { implementation->validate(xNode); }
 
 }// namespace XML_Lib

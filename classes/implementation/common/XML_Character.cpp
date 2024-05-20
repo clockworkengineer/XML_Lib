@@ -52,7 +52,7 @@ bool validNameChar(const Char c)
 /// <summary>
 /// Check name that starts with xml is a valid reserved name.
 /// </summary>
-/// <param name="source">XML source stream.</param>
+/// <param name="name">XML name to check.</param>
 /// <returns>true then valid otherwise false.</returns>
 bool validReservedName(const String &name)
 {
@@ -62,7 +62,7 @@ bool validReservedName(const String &name)
 /// <summary>
 /// Validate XML tag/attribute names.
 /// </summary>
-/// <param name="source">XML source stream.</param>
+/// <param name="name">XML name to check.</param>
 /// <returns>true then valid otherwise false.</returns>
 bool validName(const String &name)
 {
@@ -83,7 +83,7 @@ bool validName(const String &name)
 /// <summary>
 /// Make sure that XML attribute value does not contain any illegal characters.
 /// </summary>
-/// <param name="">.</param>
+/// <param name="value">XML value to check.</param>>
 /// <returns>true then contains all legal characters otherwise false.</returns>
 bool validAttributeValue(const XMLValue &value)
 {

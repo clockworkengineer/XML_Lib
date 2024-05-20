@@ -287,7 +287,6 @@ void DTD_Impl::checkElements(const XNode &xNode)
 /// Check XML element by element and then check all ID values reference an
 /// element.
 /// </summary>
-/// <param name="">.</param>
 /// <param name="xNode">XNode element containing root of XML to validate.</param>
 void DTD_Impl::checkAgainstDTD(const XNode &xNode)
 {

@@ -37,11 +37,11 @@ private:
   void parseElementSequence(ISource &contentSpecSource, IDestination &contentSpec);
   void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpec);
   static void parseElementName(ISource &contentSpecSource, IDestination &contentSpec);
-  void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpec);
+  static void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpec);
   [[nodiscard]] XMLValue parseElementInternalpecification(const std::string &elementName, const XMLValue &contentSpec);
   void parseExternalReferenceContent();
   void parseAttributeList(ISource &source) const;
-  void parseNotation(ISource &source);
+  void parseNotation(ISource &source) const;
   void parseEntity(ISource &source);
   void parseElement(ISource &source);
   [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source) const;
@@ -62,7 +62,7 @@ private:
   [[nodiscard]] static bool checkIsIDOK(const std::string &idValue);
   void checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute) const;
   void checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute);
-  [[nodiscard]] bool checkIsPCDATA(const XNode &xNode);
+  [[nodiscard]] static bool checkIsPCDATA(const XNode &xNode);
   [[nodiscard]] bool checkIsEMPTY(const XNode &xNode);
   void checkAgainstDTD(const XNode &prolog);
 

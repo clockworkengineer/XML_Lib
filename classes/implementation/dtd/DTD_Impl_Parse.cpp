@@ -11,9 +11,9 @@
 namespace XML_Lib {
 
 /// <summary>
-///
+/// Validate notation description
 /// </summary>
-/// <param name="">.</param>
+/// <param name="notations">Notations string values (separated by '|').</param>
 /// <returns></returns>
 void DTD_Impl::parseValidNotations(const std::string &notations) const
 {
@@ -185,7 +185,7 @@ void DTD_Impl::parseAttributeList(ISource &source) const
 /// Parse DTD notation.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
-void DTD_Impl::parseNotation(ISource &source)
+void DTD_Impl::parseNotation(ISource &source) const
 {
   source.ignoreWS();
   const std::string name = parseName(source);

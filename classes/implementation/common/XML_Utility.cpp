@@ -14,7 +14,7 @@ namespace XML_Lib {
 /// <summary>
 /// Split a string into a vector of strings using the passed in delimeter.
 /// </summary>
-/// <param name="stringToSplit">String to split up.</param>
+/// <param name="target">String to split up.</param>
 /// <param name="delimeter">Character delimeter to split on.</param>
 /// <returns>Vector of split strings.</returns>
 std::vector<std::string> splitString(const std::string &target, const char delimeter)
@@ -45,7 +45,7 @@ std::string trimmString(const std::string &target)
 /// <summary>
 /// Convert a string to all uppercase.
 /// </summary>
-/// <param name="stringToTrimm">String to convert.</param>
+/// <param name="target">String to convert.</param>
 std::string toUpperString(const std::string &target)
 {
   std::string upperCaseString{ target };
@@ -59,7 +59,7 @@ std::string toUpperString(const std::string &target)
 /// <summary>
 /// Convert a string to all lowercase.
 /// </summary>
-/// <param name="stringToTrimm">String to convert.</param>
+/// <param name="target">String to convert.</param>
 std::string toLowerString(const std::string &target)
 {
   std::string lowerCaseString{ target };

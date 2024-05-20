@@ -45,7 +45,7 @@ XNode &XML::prolog() const { return (implementation->prolog()); }
 /// Return declaration node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to declaration XNode.</returns>
-XNode &XML::declaration() { return (implementation->declaration()); }
+XNode &XML::declaration() const { return (implementation->declaration()); }
 
 /// <summary>
 /// Return root node of parsed XML tree.

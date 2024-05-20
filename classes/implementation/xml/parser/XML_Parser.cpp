@@ -114,7 +114,6 @@ std::string XML_Parser::parseTagName(ISource &source) { return (parseName(source
 /// <param name="source">XML source stream.</param>
 /// <param name="name">Attribute name string.</param>
 /// <param name="values">Set of valid attribute values.</param>
-/// <param name="toUpper">==true then convert attribute value all to uppercase.</param>
 /// <returns>Valid attribute value.</returns>
 std::string
   XML_Parser::parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values)

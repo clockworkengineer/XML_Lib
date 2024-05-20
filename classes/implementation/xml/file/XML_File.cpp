@@ -19,8 +19,13 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xmlFile">XML file stream</param>
 /// <param name="xmlString">XML string</param>
-/// <param name="format">XML file format</param>
 void writeXMLString(std::ofstream &xmlFile, const std::string &xmlString) { xmlFile << xmlString; }
+/// <summary>
+/// Write XML string to a file stream.
+/// </summary>
+/// <param name="xmlFile">XML file stream</param>
+/// <param name="xmlString">XML string</param>
+/// <param name="format">XML file format</param>
 void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, const XML::Format format)
 {
   if (format == XML::Format::utf16BE) {
@@ -44,7 +49,6 @@ void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, con
 /// Read XML string from a file stream.
 /// </summary>
 /// <param name="xmlFile">XML file stream</param>
-/// <param name="format">XML file format</param>
 /// <returns>XML string.</returns>
 std::string readXMLString(const std::ifstream &xmlFile)
 {

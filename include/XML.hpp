@@ -33,7 +33,7 @@ public:
   // Get reference to prolog XNode
   [[nodiscard]] XNode &prolog() const;
   // Get reference to declaration XNode
-  [[nodiscard]] XNode &declaration();
+  [[nodiscard]] XNode &declaration() const;
   // Get reference to root element XNode
   [[nodiscard]] XNode &root();
   // Validate XML
