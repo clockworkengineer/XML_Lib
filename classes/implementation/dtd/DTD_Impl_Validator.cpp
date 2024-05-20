@@ -58,7 +58,8 @@ bool DTD_Impl::checkIsIDOK(const std::string &idValue)
 /// <returns>true if element contains characters otherwise false.</returns>
 bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 {
-  if (auto &children = xNode.getChildren(); std::all_of(children.cbegin(), children.cend(), [](const XNode &element) {
+  if (auto &children = xNode.getChildren(); std::ranges::all_of(
+        children, [](const XNode &element) {
         return (!(element.isElement()) || (element.isSelf()));
       })) {
     return (!xNode.getContents().empty());
@@ -136,7 +137,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
     if (!checkIsIDOK(elementAttribute.getParsed())) {
       elementError(xElement, "ID attribute '" + attribute.name + "' is invalid.");
     }
-    if (assignedIDValues.count(elementAttribute.getParsed()) > 0) {
+    if (assignedIDValues.contains(elementAttribute.getParsed())) {
       elementError(xElement, "ID attribute '" + attribute.name + "' is not unique.");
     }
     assignedIDValues.insert(elementAttribute.getParsed());
@@ -178,7 +179,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
     for (auto &notation : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
       notations.insert(notation);
     }
-    if (notations.count(elementAttribute.getParsed()) == 0) {
+    if (!notations.contains(elementAttribute.getParsed())) {
       elementError(xElement,
         "NOTATION attribute '" + attribute.name + "' value '" + elementAttribute.getParsed() + "' is not defined.");
     }
@@ -187,7 +188,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
     for (auto &option : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
       enumeration.insert(option);
     }
-    if (enumeration.find(elementAttribute.getParsed()) == enumeration.end()) {
+    if (!enumeration.contains(elementAttribute.getParsed())) {
       elementError(xElement,
         "attribute '" + attribute.name + "' contains invalid enumeration value '" + elementAttribute.getParsed()
           + "'.");
@@ -294,7 +295,7 @@ void DTD_Impl::checkAgainstDTD(const XNode &xNode)
   lineNumber = xDTD.getLineCount();
   checkElements(xNode);
   for (const auto &idref : assignedIDREFValues) {
-    if (assignedIDValues.count(idref) == 0) {
+    if (!assignedIDValues.contains(idref)) {
       throw ValidationError(lineNumber, "IDREF attribute '" + idref + "' does not reference any element with the ID.");
     }
   }

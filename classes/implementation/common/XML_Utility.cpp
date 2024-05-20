@@ -34,9 +34,9 @@ std::string trimmString(const std::string &target)
 {
   std::string trimmedString{ target };
   trimmedString.erase(trimmedString.begin(),
-    std::find_if(trimmedString.begin(), trimmedString.end(), [](unsigned char ch) { return !std::iswspace(ch); }));
+    std::ranges::find_if(trimmedString, [](unsigned char ch) { return !std::iswspace(ch); }));
   trimmedString.erase(
-    std::find_if(trimmedString.rbegin(), trimmedString.rend(), [](unsigned char ch) { return !std::iswspace(ch); })
+    std::ranges::find_if(trimmedString.rbegin(), trimmedString.rend(), [](unsigned char ch) { return !std::iswspace(ch); })
       .base(),
     trimmedString.end());
   return (trimmedString);
@@ -49,7 +49,8 @@ std::string trimmString(const std::string &target)
 std::string toUpperString(const std::string &target)
 {
   std::string upperCaseString{ target };
-  std::transform(upperCaseString.begin(), upperCaseString.end(), upperCaseString.begin(), [](unsigned int c) {
+  std::ranges::transform(
+    upperCaseString, upperCaseString.begin(), [](unsigned int c) {
     return static_cast<char>(std::toupper(c));
   });
   return (upperCaseString);
@@ -62,7 +63,8 @@ std::string toUpperString(const std::string &target)
 std::string toLowerString(const std::string &target)
 {
   std::string lowerCaseString{ target };
-  std::transform(lowerCaseString.begin(), lowerCaseString.end(), lowerCaseString.begin(), [](unsigned int c) {
+  std::ranges::transform(
+    lowerCaseString, lowerCaseString.begin(), [](unsigned int c) {
     return static_cast<char>(std::tolower(c));
   });
   return (lowerCaseString);

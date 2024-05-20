@@ -68,7 +68,8 @@ bool validName(const String &name)
 {
   String localName{ name };
   if (localName.empty()) { return (false); }
-  std::transform(localName.begin(), localName.end(), localName.begin(), [](Char c) {
+  std::ranges::transform(
+    localName, localName.begin(), [](Char c) {
     return static_cast<Char>(std::tolower(static_cast<int>(c)));
   });
   if (localName.find(u"xml") == 0 && !(validReservedName(localName))) { return (false); }

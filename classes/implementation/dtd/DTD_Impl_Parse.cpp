@@ -44,14 +44,14 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
   else if (dtdAttribute.type == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal)) {
     std::set<std::string> options;
     for (auto &option : splitString(dtdAttribute.enumeration.substr(1, dtdAttribute.enumeration.size() - 2), '|')) {
-      if (options.find(option) == options.end()) {
+      if (!options.contains(option)) {
         options.insert(option);
       } else {
         throw SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name
                           + "' occurs more than once in its definition.");
       }
     }
-    if (options.find(dtdAttribute.value.getParsed()) == options.end()) {
+    if (!options.contains(dtdAttribute.value.getParsed())) {
       throw SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
                         + dtdAttribute.name + "' is invalid.");
     }
@@ -336,6 +336,6 @@ void DTD_Impl::parseDTD(ISource &source)
   xDTD.getEntityMapper().checkForRecursion();
   // Count lines in DTD
   std::string unparsedDTD = xDTD.unparsed();
-  xDTD.setLineCount(static_cast<long>(std::count(unparsedDTD.begin(), unparsedDTD.end(), kLineFeed)) + 1);
+  xDTD.setLineCount(static_cast<long>(std::ranges::count(unparsedDTD, kLineFeed)) + 1);
 }
 }// namespace XML_Lib

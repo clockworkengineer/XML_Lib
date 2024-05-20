@@ -32,7 +32,7 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
         entitySource.next();
       }
       mappedEntityName += toUtf8(entitySource.current());
-      if (currentEntities.count(mappedEntityName) > 0) {
+      if (currentEntities.contains(mappedEntityName)) {
         throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
       }
       auto nextMappedName = getEntityMapping(mappedEntityName).getInternal();
@@ -105,7 +105,7 @@ XML_EntityMapper::~XML_EntityMapper() {}
 /// <returns></returns>
 bool XML_EntityMapper::isPresent(const std::string &entityName) const
 {
-  return (entityMappings.count(entityName) != 0);
+  return (entityMappings.contains(entityName));
 }
 
 /// <summary>
