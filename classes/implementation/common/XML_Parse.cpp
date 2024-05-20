@@ -89,9 +89,11 @@ XMLValue parseCharacter(ISource &source)
 {
   if (source.match("&#")) {
     return (parseCharacterReference(source));
-  } else if (source.current() == '&') {
+  }
+  if (source.current() == '&') {
     return (parseEntityReference(source));
-  } else if (validChar(source.current())) {
+  }
+  if (validChar(source.current())) {
     const std::string character{ toUtf8(source.current()) };
     source.next();
     return (XMLValue{ character, character });

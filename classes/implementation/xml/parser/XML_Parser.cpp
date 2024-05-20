@@ -91,10 +91,12 @@ bool XML_Parser::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
   if (source.match("<!--")) {
     xProlog.addChild(parseComment(source));
     return (true);
-  } else if (source.match("<?")) {
+  }
+  if (source.match("<?")) {
     xProlog.addChild(parsePI(source));
     return (true);
-  } else if (source.isWS()) {
+  }
+  if (source.isWS()) {
     parseWhiteSpaceToContent(source, xProlog);
     return (true);
   }

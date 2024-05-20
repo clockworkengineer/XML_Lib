@@ -134,5 +134,5 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
 /// Parse externally defined DTD.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
-void DTD_Impl::parseExternal(ISource & /*source*/) { parseExternalReferenceContent(); }
+void DTD_Impl::parseExternal([[maybe_unused]] ISource & source) { parseExternalReferenceContent(); }
 }// namespace XML_Lib

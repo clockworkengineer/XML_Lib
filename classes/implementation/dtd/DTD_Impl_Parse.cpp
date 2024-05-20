@@ -96,35 +96,43 @@ void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute) c
     attribute.type = XDTD::AttributeType::cdata;
     source.ignoreWS();
     return;
-  } else if (source.match("IDREFS")) {
+  }
+  if (source.match("IDREFS")) {
     attribute.type = XDTD::AttributeType::idrefs;
     source.ignoreWS();
     return;
-  } else if (source.match("IDREF")) {
+  }
+  if (source.match("IDREF")) {
     attribute.type = XDTD::AttributeType::idref;
     source.ignoreWS();
     return;
-  } else if (source.match("ID")) {
+  }
+  if (source.match("ID")) {
     attribute.type = XDTD::AttributeType::id;
     source.ignoreWS();
     return;
-  } else if (source.match("NMTOKENS")) {
+  }
+  if (source.match("NMTOKENS")) {
     attribute.type = XDTD::AttributeType::nmtokens;
     source.ignoreWS();
     return;
-  } else if (source.match("NMTOKEN")) {
+  }
+  if (source.match("NMTOKEN")) {
     attribute.type = XDTD::AttributeType::nmtoken;
     source.ignoreWS();
     return;
-  } else if (source.match("ENTITY")) {
+  }
+  if (source.match("ENTITY")) {
     attribute.type = XDTD::AttributeType::entity;
     source.ignoreWS();
     return;
-  } else if (source.match("ENTITIES")) {
+  }
+  if (source.match("ENTITIES")) {
     attribute.type = XDTD::AttributeType::entities;
     source.ignoreWS();
     return;
-  } else if (source.match("NOTATION")) {
+  }
+  if (source.match("NOTATION")) {
     attribute.type = XDTD::AttributeType::notation;
     source.ignoreWS();
   }
