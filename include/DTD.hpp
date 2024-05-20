@@ -23,7 +23,7 @@ public:
   DTD &operator=(const DTD &other) = delete;
   DTD(DTD &&other) = delete;
   DTD &operator=(DTD &&other) = delete;
-  ~DTD();
+  ~DTD() override;
   // Parse XML DTD from source
   void parse(ISource &source) override;
   // Stringify XML DTD to text destination

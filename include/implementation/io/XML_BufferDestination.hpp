@@ -22,7 +22,7 @@ public:
   BufferDestination &operator=(const BufferDestination &other) = delete;
   BufferDestination(BufferDestination &&other) = delete;
   BufferDestination &operator=(BufferDestination &&other) = delete;
-  ~BufferDestination() = default;
+  ~BufferDestination() override = default;
 
   void add(const std::string &bytes) override
   {

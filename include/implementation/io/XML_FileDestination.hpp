@@ -27,7 +27,7 @@ public:
   FileDestination &operator=(const FileDestination &other) = delete;
   FileDestination(FileDestination &&other) = delete;
   FileDestination &operator=(FileDestination &&other) = delete;
-  ~FileDestination() = default;
+  ~FileDestination() override = default;
 
   void add(const Char c) override { add(toUtf8(c)); }
   void add(const std::string &bytes) override

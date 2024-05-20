@@ -14,7 +14,7 @@ struct XDeclaration final : Variant
   XDeclaration &operator=(const XDeclaration &other) = delete;
   XDeclaration(XDeclaration &&other) = default;
   XDeclaration &operator=(XDeclaration &&other) = default;
-  ~XDeclaration() = default;
+  ~XDeclaration() override = default;
   // Get reference to declaration attibutes
   [[nodiscard]] const std::string &version() const { return xmlVersion; }
   [[nodiscard]] const std::string &encoding() const { return xmlEncoding; }

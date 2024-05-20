@@ -10,7 +10,7 @@ struct XEntityReference final : Variant
   XEntityReference &operator=(const XEntityReference &other) = delete;
   XEntityReference(XEntityReference &&other) = default;
   XEntityReference &operator=(XEntityReference &&other) = default;
-  ~XEntityReference() = default;
+  ~XEntityReference() override = default;
   // Return reference to entity reference
   [[nodiscard]] const XMLValue &value() const { return entityReferenceValue; }
   // Return Variant contents

@@ -18,6 +18,6 @@ struct XSelf final : XElement
   XSelf &operator=(const XSelf &other) = delete;
   XSelf(XSelf &&other) = default;
   XSelf &operator=(XSelf &&other) = default;
-  ~XSelf() = default;
+  ~XSelf() override = default;
 };
 }// namespace XML_Lib

@@ -14,7 +14,7 @@ struct XPI final : Variant
   XPI &operator=(const XPI &other) = delete;
   XPI(XPI &&other) = default;
   XPI &operator=(XPI &&other) = default;
-  ~XPI() = default;
+  ~XPI() override = default;
   // Return reference to name
   [[nodiscard]] const std::string &name() const { return piName; }
   // Return reference to parameters

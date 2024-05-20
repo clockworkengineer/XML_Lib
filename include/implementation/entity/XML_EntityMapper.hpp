@@ -63,7 +63,7 @@ public:
   XML_EntityMapper &operator=(const XML_EntityMapper &other) = delete;
   XML_EntityMapper(XML_EntityMapper &&other) = delete;
   XML_EntityMapper &operator=(XML_EntityMapper &&other) = delete;
-  ~XML_EntityMapper();
+  ~XML_EntityMapper() override;
   // Is entity reference mapping entry present ?
   [[nodiscard]] bool isPresent(const std::string &entityName) const override;
   // Determine entity type

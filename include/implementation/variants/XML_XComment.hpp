@@ -12,7 +12,7 @@ struct XComment final : Variant
   XComment &operator=(const XComment &other) = delete;
   XComment(XComment &&other) = default;
   XComment &operator=(XComment &&other) = default;
-  ~XComment() = default;
+  ~XComment() override = default;
   // Return reference to comment
   [[nodiscard]] const std::string &comment() const { return xmlComment; }
 

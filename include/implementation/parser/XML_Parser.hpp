@@ -18,11 +18,11 @@ public:
   XML_Parser &operator=(const XML_Parser &other) = delete;
   XML_Parser(XML_Parser &&other) = delete;
   XML_Parser &operator=(XML_Parser &&other) = delete;
-  ~XML_Parser() = default;
+  ~XML_Parser() override = default;
 
-  [[nodiscard]] virtual XNode parse(ISource &source);
-  [[nodiscard]] virtual bool canValidate();
-  virtual void validate(XNode &xProlog);
+  [[nodiscard]] XNode parse(ISource &source) override;
+  [[nodiscard]] bool canValidate() override;
+  void validate(XNode &xProlog) override;
 
 private:
   // XML Parser

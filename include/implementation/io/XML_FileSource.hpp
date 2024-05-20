@@ -31,7 +31,7 @@ public:
   FileSource &operator=(const FileSource &other) = delete;
   FileSource(FileSource &&other) = delete;
   FileSource &operator=(FileSource &&other) = delete;
-  ~FileSource() = default;
+  ~FileSource() override = default;
 
   [[nodiscard]] Char current() const override { return current_character(); }
   void next() override

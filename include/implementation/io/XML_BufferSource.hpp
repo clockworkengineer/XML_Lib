@@ -43,7 +43,7 @@ public:
   BufferSource &operator=(const BufferSource &other) = delete;
   BufferSource(BufferSource &&other) = delete;
   BufferSource &operator=(BufferSource &&other) = delete;
-  ~BufferSource() = default;
+  ~BufferSource() override = default;
 
   [[nodiscard]] Char current() const override
   {

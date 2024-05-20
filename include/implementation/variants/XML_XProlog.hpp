@@ -10,6 +10,6 @@ struct XProlog final : Variant
   XProlog &operator=(const XProlog &other) = delete;
   XProlog(XProlog &&other) = default;
   XProlog &operator=(XProlog &&other) = default;
-  ~XProlog() = default;
+  ~XProlog() override = default;
 };
 }// namespace XML_Lib

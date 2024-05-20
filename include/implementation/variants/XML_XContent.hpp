@@ -12,7 +12,7 @@ struct XContent final : Variant
   XContent &operator=(const XContent &other) = delete;
   XContent(XContent &&other) = default;
   XContent &operator=(XContent &&other) = default;
-  ~XContent() = default;
+  ~XContent() override = default;
   // Get reference to content string
   [[nodiscard]] std::string getContent() const { return xmlContent; }
   // Add to content

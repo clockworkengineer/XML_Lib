@@ -71,7 +71,7 @@ struct XDTD final : Variant
   XDTD &operator=(const XDTD &other) = delete;
   XDTD(XDTD &&other) = default;
   XDTD &operator=(XDTD &&other) = delete;
-  ~XDTD() = default;
+  ~XDTD() override = default;
   [[nodiscard]] std::string unparsed() const { return unparsedDTD; }
   void setUnparsed(const std::string &unparsed) { unparsedDTD = unparsed; }
   [[nodiscard]] uint16_t getType() const { return dtdNodeType; }

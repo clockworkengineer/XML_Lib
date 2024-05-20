@@ -44,13 +44,9 @@ public:
   // Get external reference details
   [[nodiscard]] const std::string getType() const
   {
-    if (type == Type::publicID) {
-      return kPublicID;
-    } else if (type == Type::systemID) {
-      return kSystemID;
-    } else {
-      throw Error("External reference type not set.");
-    }
+    if (type == Type::publicID) { return kPublicID; }
+    if (type == Type::systemID) { return kSystemID; }
+    throw Error("External reference type not set.");
   }
   // Check which reference is set
   [[nodiscard]] bool isPublic() { return type == Type::publicID; }
@@ -58,19 +54,13 @@ public:
   // Get reference values
   [[nodiscard]] const std::string &getSystemID() const
   {
-    if (type != Type::base) {
-      return systemID;
-    } else {
-      throw Error("External reference has no system value set.");
-    }
+    if (type != Type::base) { return systemID; }
+    throw Error("External reference has no system value set.");
   }
   [[nodiscard]] const std::string &getPublicID() const
   {
-    if (type == Type::publicID) {
-      return publicID;
-    } else {
-      throw Error("External reference is not public.");
-    }
+    if (type == Type::publicID) { return publicID; }
+    throw Error("External reference is not public.");
   }
 
 private:

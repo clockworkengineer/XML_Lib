@@ -19,7 +19,7 @@ struct XElement : Variant
   XElement &operator=(const XElement &other) = delete;
   XElement(XElement &&other) = default;
   XElement &operator=(XElement &&other) = default;
-  ~XElement() = default;
+  ~XElement() override = default;
   // Is an attribute present ?
   [[nodiscard]] bool isAttributePresent(const std::string &attributeName) const
   {

@@ -18,6 +18,6 @@ struct XRoot final : XElement
   XRoot &operator=(const XRoot &other) = delete;
   XRoot(XRoot &&other) = default;
   XRoot &operator=(XRoot &&other) = default;
-  ~XRoot() = default;
+  ~XRoot() override = default;
 };
 }// namespace XML_Lib

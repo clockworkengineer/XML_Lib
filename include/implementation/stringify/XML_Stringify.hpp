@@ -18,7 +18,7 @@ public:
   XML_Stringify &operator=(const XML_Stringify &other) = delete;
   XML_Stringify(XML_Stringify &&other) = delete;
   XML_Stringify &operator=(XML_Stringify &&other) = delete;
-  ~XML_Stringify() = default;
+  ~XML_Stringify() override = default;
 
   void stringify(const XNode &xNode, IDestination &destination) const override;
 
