@@ -60,7 +60,7 @@ public:
   // =====================================
   // Is the current character whitespace ?
   // =====================================
-  [[nodiscard]] bool isWS() const { return std::iswspace(static_cast<wint_t>(current())) != 0; }
+  [[nodiscard]] bool isWS() const { return std::iswspace(current()) != 0; }
   // ==================================
   // Ignore whitespace on source stream
   // ==================================

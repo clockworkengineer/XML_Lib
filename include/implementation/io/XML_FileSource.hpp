@@ -58,7 +58,7 @@ public:
       source.seekg(0, std::ios_base::beg);
     }
   }
-  [[nodiscard]] long position() const override { return static_cast<long>(source.tellg()); }
+  [[nodiscard]] long position() const override { return source.tellg(); }
   void reset() override
   {
     lineNo = 1;
@@ -69,7 +69,7 @@ public:
   [[nodiscard]] std::string getRange(const long start, const long end) override
   {
     std::string rangeBuffer(static_cast<std::size_t>(end) - start, ' ');
-    const long currentPosition = (long)source.tellg();
+    const long currentPosition = source.tellg();
     source.seekg(start, std::ios_base::beg);
     source.read(&rangeBuffer[0], static_cast<std::streamsize>(end) - start);
     source.seekg(currentPosition, std::ios_base::beg);

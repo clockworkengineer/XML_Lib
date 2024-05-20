@@ -9,7 +9,7 @@ namespace XML_Lib {
 inline const XNode &XNode::operator[](const int index) const
 {
   if (index >= 0 && index < static_cast<int>(getChildren().size())) { return getChildren()[index]; }
-  throw XNode::Error("Invalid index used to access XNode array.");
+  throw Error("Invalid index used to access XNode array.");
 }
 // =================
 // XNode name access
@@ -21,7 +21,7 @@ inline const XNode &XNode::operator[](const std::string &name) const
           [&name](const XNode &child) { return child.isNameable() && XRef<XElement>(child).name() == name; });
         xNode != getChildren().end()) { return *xNode; }
   }
-  throw XNode::Error("Element '" + name + "' does not exist.");
+  throw Error("Element '" + name + "' does not exist.");
 }
 // =====================
 // XElement index access
