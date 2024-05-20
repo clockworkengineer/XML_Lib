@@ -22,7 +22,7 @@ public:
 
   [[nodiscard]] virtual XNode parse(ISource &source);
   [[nodiscard]] virtual bool canValidate();
-  virtual void validate(XNode &prolog);
+  virtual void validate(XNode &xProlog);
 
 private:
   // XML Parser
@@ -39,10 +39,10 @@ private:
   static void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
   void parseElementInternal(ISource &source, XNode &xNode);
   [[nodiscard]] XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces);
-  [[nodiscard]] XNode parseDeclaration(ISource &source);
+  [[nodiscard]] static XNode parseDeclaration(ISource &source);
   [[nodiscard]] XNode parseDTD(ISource &source);
   [[nodiscard]] XNode parseProlog(ISource &source);
-  void parseEpilog(ISource &source, XNode &xProlog);
+  static void parseEpilog(ISource &source, XNode &xProlog);
   // XML tree has root
   bool hasRoot{ false };
   // Parser validator

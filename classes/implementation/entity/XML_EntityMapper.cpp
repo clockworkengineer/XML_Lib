@@ -146,10 +146,10 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, const ch
   bool matchFound;
   do {
     matchFound = false;
-    for (auto &entity : entityMappings) {
-      if (entity.first[0] == type) {
-        if (const size_t position = translated.find(entity.first); position != std::string::npos) {
-          translated.replace(position, entity.first.length(), entity.second.getInternal());
+    for (const auto &[fst, snd] : entityMappings) {
+      if (fst[0] == type) {
+        if (const size_t position = translated.find(fst); position != std::string::npos) {
+          translated.replace(position, fst.length(), snd.getInternal());
           matchFound = true;
           break;
         }
@@ -221,8 +221,8 @@ void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExter
 void XML_EntityMapper::checkForRecursion()
 {
   std::set<std::string> currentEntities{};
-  for (auto &entityName : entityMappings) {
-    recurseOverEntityReference(entityName.first, entityName.first[0], currentEntities);
+  for (auto &[fst, snd] : entityMappings) {
+    recurseOverEntityReference(fst, fst[0], currentEntities);
   }
 }
 }// namespace XML_Lib

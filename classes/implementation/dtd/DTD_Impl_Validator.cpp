@@ -125,6 +125,7 @@ void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &at
 ///
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
+/// <param name="attribute">Attribute to check against.</param>
 void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute)
 {
   const auto &xElement = XRef<XElement>(xNode);
@@ -214,7 +215,7 @@ void DTD_Impl::checkAttributes(const XNode &xNode)
 /// Check elements structure.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
-void DTD_Impl::checkContentSpecification(const XNode &xNode)
+void DTD_Impl::checkContentSpecification(const XNode &xNode) const
 {
   const auto &xElement = XRef<XElement>(xNode);
   if (xDTD.getElementCount() == 0) { return; }
