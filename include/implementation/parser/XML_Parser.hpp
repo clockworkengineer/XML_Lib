@@ -29,14 +29,14 @@ private:
   void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
   [[nodiscard]] static std::string
     parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
-  [[nodiscard]] bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
+  [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
   void parseContent(ISource &source, XNode &xNode);
   [[nodiscard]] static std::string parseTagName(ISource &source);
   [[nodiscard]] std::vector<XMLAttribute> parseAttributes(ISource &source) const;
   [[nodiscard]] static XNode parseComment(ISource &source);
-  [[nodiscard]] XNode parseCDATA(ISource &source);
-  [[nodiscard]] XNode parsePI(ISource &source);
-  void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
+  [[nodiscard]] static XNode parseCDATA(ISource &source);
+  [[nodiscard]] static XNode parsePI(ISource &source);
+  static void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
   void parseElementInternal(ISource &source, XNode &xNode);
   [[nodiscard]] XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces);
   [[nodiscard]] XNode parseDeclaration(ISource &source);

@@ -51,27 +51,27 @@ XNode &XML::declaration() const { return (implementation->declaration()); }
 /// Return root node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to root element XNode.</returns>
-XNode &XML::root() { return (implementation->root()); }
+XNode &XML::root() const { return (implementation->root()); }
 
 /// <summary>
 /// Validate XML against any DTD provided to see whether it is valid. If an
 /// exception is thrown then there is a validation issue and the XML is not valid.
 /// </summary>
-void XML::validate() { implementation->validate(); }
+void XML::validate() const { implementation->validate(); }
 
 /// <summary>
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well formed).
 /// </summary>
-void XML::parse(ISource &source) { implementation->parse(source); }
-void XML::parse(ISource &&source) { implementation->parse(source); }
+void XML::parse(ISource &source) const { implementation->parse(source); }
+void XML::parse(ISource &&source) const { implementation->parse(source); }
 
 /// <summary>
 /// Create XML text from an XML object.
 /// </summary>
 /// <param name="destination">XML destination stream.</param>
-void XML::stringify(IDestination &destination) { implementation->stringify(destination); }
-void XML::stringify(IDestination &&destination) { implementation->stringify(destination); }
+void XML::stringify(IDestination &destination) const { implementation->stringify(destination); }
+void XML::stringify(IDestination &&destination) const { implementation->stringify(destination); }
 
 /// <summary>
 /// Open a XML file, read its contents into a string buffer and return

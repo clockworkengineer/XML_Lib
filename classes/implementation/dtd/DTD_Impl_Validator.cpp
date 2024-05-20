@@ -78,13 +78,14 @@ bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren().em
 ///
 /// Validate attribute value which can be:
 ///
-/// value	        The default value of the attribute
+/// value	    The default value of the attribute
 /// #REQUIRED       The attribute is required
 /// #IMPLIED	    The attribute is optional
-/// #FIXED value	The attribute value is fixed
+/// #FIXED value    The attribute value is fixed
 ///
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
+/// <param name="attribute">Attribute to check against.</param>
 void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute) const
 {
   const auto &xElement = XRef<XElement>(xNode);

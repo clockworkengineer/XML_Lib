@@ -29,7 +29,7 @@ std::vector<std::string> splitString(const std::string &target, const char delim
 /// <summary>
 /// Trimm whitespace from beginning and end of a string.
 /// </summary>
-/// <param name="stringToTrimm">String to trimm.</param>
+/// <param name="target">String to trimm.</param>
 std::string trimmString(const std::string &target)
 {
   std::string trimmedString{ target };

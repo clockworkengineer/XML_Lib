@@ -18,6 +18,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="entityName">Entity mapping name.</param>
 /// <param name="type">Entity mapping type.</param>
+/// <param name="currentEntities">Currently defined entities.</param>
 void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
   const Char type,
   std::set<std::string> &currentEntities)

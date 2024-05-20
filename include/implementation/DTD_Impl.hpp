@@ -42,7 +42,7 @@ private:
   void parseExternalReferenceContent();
   void parseAttributeList(ISource &source) const;
   void parseNotation(ISource &source) const;
-  void parseEntity(ISource &source);
+  void parseEntity(ISource &source) const;
   void parseElement(ISource &source);
   [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source) const;
   void parseAttributeType(ISource &source, XDTD::Attribute &attribute) const;
@@ -63,7 +63,7 @@ private:
   void checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute) const;
   void checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute);
   [[nodiscard]] static bool checkIsPCDATA(const XNode &xNode);
-  [[nodiscard]] bool checkIsEMPTY(const XNode &xNode);
+  [[nodiscard]] static bool checkIsEMPTY(const XNode &xNode);
   void checkAgainstDTD(const XNode &prolog);
 
   std::set<std::string> assignedIDValues;

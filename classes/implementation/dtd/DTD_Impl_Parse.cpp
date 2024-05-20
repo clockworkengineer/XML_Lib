@@ -197,7 +197,7 @@ void DTD_Impl::parseNotation(ISource &source) const
 /// Parse DTD entity.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
-void DTD_Impl::parseEntity(ISource &source)
+void DTD_Impl::parseEntity(ISource &source) const
 {
   std::string entityName = "&";
   source.ignoreWS();

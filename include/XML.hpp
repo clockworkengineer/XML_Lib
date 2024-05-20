@@ -35,17 +35,17 @@ public:
   // Get reference to declaration XNode
   [[nodiscard]] XNode &declaration() const;
   // Get reference to root element XNode
-  [[nodiscard]] XNode &root();
+  [[nodiscard]] XNode &root() const;
   // Validate XML
-  void validate();
+  void validate() const;
   // Return version string
   [[nodiscard]] std::string version() const;
   // Parse XML source
-  void parse(ISource &source);
-  void parse(ISource &&source);
+  void parse(ISource &source) const;
+  void parse(ISource &&source) const;
   // Stringify XML object to destination text
-  void stringify(IDestination &destination);
-  void stringify(IDestination &&destination);
+  void stringify(IDestination &destination) const;
+  void stringify(IDestination &&destination) const;
   // Read/Write XML to/from file
   [[nodiscard]] static std::string fromFile(const std::string &fileName);
   static void toFile(const std::string &fileName, const std::string &xmlString, Format format = Format::utf8);
