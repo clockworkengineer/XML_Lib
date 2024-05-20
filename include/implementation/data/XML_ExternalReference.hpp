@@ -15,7 +15,7 @@ public:
   static constexpr char kPublicID[] = "PUBLIC";
   static constexpr char kSystemID[] = "SYSTEM";
   // ExternalReference Error
-  struct Error : public std::runtime_error
+  struct Error final : public std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("ExternalReference Error: " + message) {}
   };

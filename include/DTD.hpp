@@ -13,7 +13,7 @@ class ISource;
 class IDestination;
 struct XNode;
 
-class DTD : public IValidator
+class DTD final : public IValidator
 {
 public:
   // Constructors/Destructors

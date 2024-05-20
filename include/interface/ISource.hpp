@@ -21,7 +21,7 @@ public:
   // =============
   // ISource Error
   // =============
-  struct Error : public std::runtime_error
+  struct Error final : public std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("ISource Error: " + message) {}
   };
@@ -76,7 +76,7 @@ public:
     long index = 0;
     while (more() && current() == target[index]) {
       next();
-      if (++index == (long)target.length()) { return true; }
+      if (++index == static_cast<long>(target.length())) { return true; }
     }
     backup(index);
     return false;
@@ -86,7 +86,7 @@ public:
     long index = 0;
     while (more() && current() == static_cast<Char>(target[index])) {
       next();
-      if (++index == (long)std::strlen(target)) { return true; }
+      if (++index == static_cast<long>(std::strlen(target))) { return true; }
     }
     backup(index);
     return false;

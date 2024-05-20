@@ -10,7 +10,7 @@
 
 namespace XML_Lib {
 
-struct XML_EntityMapper : public IEntityMapper
+struct XML_EntityMapper final : public IEntityMapper
 {
 public:
   // Entity mapping data
@@ -53,7 +53,7 @@ public:
     std::string notation{};
   };
   // EntityMapper Error
-  struct Error : public std::runtime_error
+  struct Error final : public std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("EntityMapper Error: " + message) {}
   };

@@ -9,7 +9,7 @@
 
 namespace XML_Lib {
 
-class XML_Parser : public IParser
+class XML_Parser final : public IParser
 {
 public:
   // Constructors/Destructors

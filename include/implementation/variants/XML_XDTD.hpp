@@ -13,7 +13,7 @@ namespace XML_Lib {
 // ===================================================
 class IEntityMapper;
 
-struct XDTD : Variant
+struct XDTD final : Variant
 {
   //
   // DTD Type

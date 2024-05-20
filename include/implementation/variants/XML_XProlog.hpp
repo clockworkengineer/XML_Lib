@@ -2,7 +2,7 @@
 
 namespace XML_Lib {
 
-struct XProlog : Variant
+struct XProlog final : Variant
 {
   // Constructors/Destructors
   XProlog() : Variant(Variant::Type::prolog) {}

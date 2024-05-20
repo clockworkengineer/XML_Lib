@@ -5,7 +5,7 @@
 
 namespace XML_Lib {
 
-struct XRoot : XElement
+struct XRoot final : XElement
 {
   // Constructors/Destructors
   XRoot() : XElement(Variant::Type::root) {}

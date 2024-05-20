@@ -8,11 +8,11 @@
 
 namespace XML_Lib {
 
-class BufferDestination : public IDestination
+class BufferDestination final : public IDestination
 {
 public:
   // BufferDestination Error
-  struct Error : public std::runtime_error
+  struct Error final : public std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("BufferDestination Error: " + message) {}
   };
@@ -26,7 +26,7 @@ public:
 
   void add(const std::string &bytes) override
   {
-    std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
+    std::ranges::copy(bytes, std::back_inserter(buffer));
   }
   void add(const Char ch) override { add(toUtf8(ch)); }
   [[nodiscard]] std::string getBuffer() const { return buffer; }

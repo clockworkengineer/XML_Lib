@@ -4,7 +4,7 @@
 
 namespace XML_Lib {
 
-struct XContent : Variant
+struct XContent final : Variant
 {
   // Constructors/Destructors
   explicit XContent(const bool whiteSpaceDefault = true) : Variant(Variant::Type::content), whiteSpace(whiteSpaceDefault) {}

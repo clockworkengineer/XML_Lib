@@ -4,7 +4,7 @@
 
 namespace XML_Lib {
 
-struct XDeclaration : Variant
+struct XDeclaration final : Variant
 {
   // Constructors/Destructors
   XDeclaration(const std::string &version, const std::string &encoding, const std::string &standalone)

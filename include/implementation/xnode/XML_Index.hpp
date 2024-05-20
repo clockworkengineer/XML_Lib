@@ -17,7 +17,7 @@ inline const XNode &XNode::operator[](const int index) const
 inline const XNode &XNode::operator[](const std::string &name) const
 {
   if (isIndexable()) {
-    auto xNode = std::find_if(getChildren().begin(), getChildren().end(), [&name](const XNode &xNode) {
+    const auto xNode = std::ranges::find_if(getChildren(), [&name](const XNode &xNode) {
       return xNode.isNameable() && XRef<XElement>(xNode).name() == name;
     });
     if (xNode != getChildren().end()) { return *xNode; }
@@ -45,8 +45,7 @@ inline const XElement &XElement::operator[](int index) const
 // =========================
 inline const XMLAttribute &XElement::operator[](const std::string &name) const
 {
-  auto attribute = std::find_if(
-    attributes.begin(), attributes.end(), [&name](const XMLAttribute &attribute) { return attribute.getName() == name; });
+  auto attribute = std::ranges::find_if(attributes, [&name](const XMLAttribute &attribute) { return attribute.getName() == name; });
   if (attribute != attributes.end()) { return *attribute; }
   throw XNode::Error("Attribute '" + name + "' does not exist.");
 }

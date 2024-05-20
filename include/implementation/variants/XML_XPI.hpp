@@ -4,7 +4,7 @@
 
 namespace XML_Lib {
 
-struct XPI : Variant
+struct XPI final : Variant
 {
   // Constructors/Destructors
   XPI(const std::string &name, const std::string &parameters)

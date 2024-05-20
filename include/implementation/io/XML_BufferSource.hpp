@@ -10,13 +10,13 @@
 
 namespace XML_Lib {
 
-class BufferSource : public ISource
+class BufferSource final : public ISource
 {
 public:
   // Bits per byte
-  static const int kBitsPerByte{ 8 };
+  static constexpr int kBitsPerByte{ 8 };
   // BufferSource Error
-  struct Error : public std::runtime_error
+  struct Error final : public std::runtime_error
   {
     explicit Error(const std::string &message) : std::runtime_error("BufferSource Error: " + message) {}
   };
@@ -26,7 +26,7 @@ public:
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     std::u16string utf16xml{ sourceBuffer };
     if (utf16xml.starts_with(u"<?xml")) {
-      std::transform(utf16xml.begin(), utf16xml.end(), utf16xml.begin(), [](const char16_t &ch) {
+      std::ranges::transform(utf16xml, utf16xml.begin(), [](const char16_t &ch) {
         return static_cast<uint16_t>(ch) >> kBitsPerByte | static_cast<uint16_t>(ch) << kBitsPerByte;
       });
     }

@@ -2,7 +2,7 @@
 
 namespace XML_Lib {
 
-struct XEntityReference : Variant
+struct XEntityReference final : Variant
 {
   // Constructors/Destructors
   explicit XEntityReference(const XMLValue &value) : Variant(Variant::Type::entity), entityReferenceValue(value) {}

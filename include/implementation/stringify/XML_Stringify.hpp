@@ -9,7 +9,7 @@
 
 namespace XML_Lib {
 
-class XML_Stringify : public IStringify
+class XML_Stringify final : public IStringify
 {
 public:
   // Constructors/Destructors
@@ -20,7 +20,7 @@ public:
   XML_Stringify &operator=(XML_Stringify &&other) = delete;
   ~XML_Stringify() = default;
 
-  virtual void stringify(const XNode &xNode, IDestination &destination) const;
+  void stringify(const XNode &xNode, IDestination &destination) const override;
 
 private:
 };

@@ -5,7 +5,7 @@
 
 namespace XML_Lib {
 
-struct XSelf : XElement
+struct XSelf final : XElement
 {
   // Constructors/Destructors
   XSelf() : XElement(Variant::Type::self) {}
