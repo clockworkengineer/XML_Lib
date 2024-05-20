@@ -25,14 +25,14 @@ std::string XML_Impl::version()
 {
   std::stringstream versionString;
   versionString << "XML_Lib Version " << XML_VERSION_MAJOR << "." << XML_VERSION_MINOR << "." << XML_VERSION_PATCH;
-  return (versionString.str());
+  return versionString.str();
 }
 
 XNode &XML_Impl::dtd()
 {
   if (parser->canValidate()) {
     for (auto &element : prolog().getChildren()) {
-      if (element.isDTD()) { return (element); }
+      if (element.isDTD()) { return element; }
     }
   }
   throw Error("No DTD found.");
@@ -41,18 +41,17 @@ XNode &XML_Impl::dtd()
 XNode &XML_Impl::prolog()
 {
   if (!xmlRoot.isEmpty()) {
-    return (xmlRoot);
-  } else {
-    throw Error("No XML has been parsed.");
+    return xmlRoot;
   }
+  throw Error("No XML has been parsed.");
 }
 
-XNode &XML_Impl::declaration() { return (prolog().getChildren()[0]); }
+XNode &XML_Impl::declaration() { return prolog().getChildren()[0]; }
 
 XNode &XML_Impl::root()
 {
   for (auto &element : prolog().getChildren()) {
-    if (element.isRoot() || element.isSelf()) { return (element); }
+    if (element.isRoot() || element.isSelf()) { return element; }
   }
   throw Error("No root element found.");
 }

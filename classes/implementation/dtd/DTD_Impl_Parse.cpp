@@ -34,7 +34,7 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
     throw SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
   }
   // Only one ID attribute allowed per element
-  else if ((dtdAttribute.type & XDTD::AttributeType::id) != 0) {
+   if ((dtdAttribute.type & XDTD::AttributeType::id) != 0) {
     if (xDTD.getElement(elementName).idAttributePresent) {
       throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
     }
@@ -81,7 +81,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
   enumerationType += toUtf8(source.current());
   source.next();
   source.ignoreWS();
-  return (enumerationType);
+  return enumerationType;
 }
 
 /// <summary>
@@ -241,7 +241,7 @@ void DTD_Impl::parseElement(ISource &source)
     xDTD.addElement(elementName, XDTD::Element(elementName, XMLValue{ "ANY", "ANY" }));
   } else {
     std::string unparsed;
-    while (source.more() && (source.current() != '<') && (source.current() != '>')) {
+    while (source.more() && source.current() != '<' && source.current() != '>') {
       unparsed += toUtf8(source.current());
       source.next();
     }

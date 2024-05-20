@@ -54,7 +54,7 @@ std::string readXMLString(const std::ifstream &xmlFile)
 {
   std::ostringstream xmlFileBuffer;
   xmlFileBuffer << xmlFile.rdbuf();
-  return (xmlFileBuffer.str());
+  return xmlFileBuffer.str();
 }
 std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
 {
@@ -78,7 +78,7 @@ std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
   } else {
     throw Error("Unsupported XML file format (Byte Order Mark) specified in call to readXMLString().");
   }
-  return (utf16String);
+  return utf16String;
 }
 
 /// <summary>
@@ -94,13 +94,13 @@ XML::Format XML_Impl::getFileFormat(const std::string &fileName)
   byteOrderMark |= static_cast<unsigned char>(xmlFile.get()) << 16;
   byteOrderMark |= static_cast<unsigned char>(xmlFile.get()) << 8;
   byteOrderMark |= static_cast<unsigned char>(xmlFile.get());
-  if (byteOrderMark == 0x0000FEFF) { return (XML::Format::utf32BE); }
-  if (byteOrderMark == 0xFFFE0000) { return (XML::Format::utf32LE); }
-  if ((byteOrderMark & 0xFFFFFF00) == 0xEFBBBF00) { return (XML::Format::utf8BOM); }
-  if ((byteOrderMark & 0xFFFF0000) == 0xFEFF0000) { return (XML::Format::utf16BE); }
-  if ((byteOrderMark & 0xFFFF0000) == 0xFFFE0000) { return (XML::Format::utf16LE); }
+  if (byteOrderMark == 0x0000FEFF) { return XML::Format::utf32BE; }
+  if (byteOrderMark == 0xFFFE0000) { return XML::Format::utf32LE; }
+  if ((byteOrderMark & 0xFFFFFF00) == 0xEFBBBF00) { return XML::Format::utf8BOM; }
+  if ((byteOrderMark & 0xFFFF0000) == 0xFEFF0000) { return XML::Format::utf16BE; }
+  if ((byteOrderMark & 0xFFFF0000) == 0xFFFE0000) { return XML::Format::utf16LE; }
   xmlFile.close();
-  return (XML::Format::utf8);
+  return XML::Format::utf8;
 }
 
 /// <summary>
@@ -139,7 +139,7 @@ std::string XML_Impl::fromFile(const std::string &fileName)
     translated.replace(pos, 2, kLF);
     pos = translated.find(kCRLF, pos + 1);
   }
-  return (translated);
+  return translated;
 }
 
 /// <summary>

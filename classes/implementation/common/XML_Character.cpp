@@ -20,8 +20,8 @@ XMLValue parseCharacterReference(ISource &source);
 /// <returns>true then valid otherwise false.</returns>
 bool validChar(const Char c)
 {
-  return ((c == 0x09) || (c == kLineFeed) || (c == kCarriageReturn) || (c >= 0x20 && c <= 0xD7FF)
-          || (c >= 0xE000 && c <= 0xFFFD));
+  return c == 0x09 || c == kLineFeed || c == kCarriageReturn || (c >= 0x20 && c <= 0xD7FF)
+         || (c >= 0xE000 && c <= 0xFFFD);
 }
 
 /// <summary>
@@ -31,11 +31,11 @@ bool validChar(const Char c)
 /// <returns>true then valid otherwise false.</returns>
 bool validNameStartChar(const Char c)
 {
-  return ((c == ':') || (c == '_') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= 0xC0 && c <= 0xD6)
-          || (c >= 0xD8 && c <= 0xF6) || (c >= 0xF8 && c <= 0x2FF) || (c >= 0x370 && c <= 0x37D)
-          || (c >= 0x37F && c <= 0x1FFF) || (c >= 0x200C && c <= 0x200D) || (c >= 0x2070 && c <= 0x218F)
-          || (c >= 0x2C00 && c <= 0x2FEF) || (c >= 0x3001 && c <= 0xD7FF) || (c >= 0xF900 && c <= 0xFDCF)
-          || (c >= 0xFDF0 && c <= 0xFFFD));
+  return c == ':' || c == '_' || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= 0xC0 && c <= 0xD6)
+         || (c >= 0xD8 && c <= 0xF6) || (c >= 0xF8 && c <= 0x2FF) || (c >= 0x370 && c <= 0x37D)
+         || (c >= 0x37F && c <= 0x1FFF) || (c >= 0x200C && c <= 0x200D) || (c >= 0x2070 && c <= 0x218F)
+         || (c >= 0x2C00 && c <= 0x2FEF) || (c >= 0x3001 && c <= 0xD7FF) || (c >= 0xF900 && c <= 0xFDCF)
+         || (c >= 0xFDF0 && c <= 0xFFFD);
 }
 
 /// <summary>
@@ -45,8 +45,8 @@ bool validNameStartChar(const Char c)
 /// <returns>true then valid otherwise false.</returns>
 bool validNameChar(const Char c)
 {
-  return (validNameStartChar(c) || (c == '-') || (c == '.') || (c >= '0' && c <= '9') || (c == 0xB7)
-          || (c >= 0x0300 && c <= 0x036F) || (c >= 0x203F && c <= 0x2040));
+  return validNameStartChar(c) || c == '-' || c == '.' || (c >= '0' && c <= '9') || c == 0xB7
+         || (c >= 0x0300 && c <= 0x036F) || (c >= 0x203F && c <= 0x2040);
 }
 
 /// <summary>
@@ -56,7 +56,7 @@ bool validNameChar(const Char c)
 /// <returns>true then valid otherwise false.</returns>
 bool validReservedName(const String &name)
 {
-  return ((name.find(u"xmlns") == 0) || (name.find(u"xml-stylesheet") == 0) || (name == u"xml"));
+  return name.find(u"xmlns") == 0 || name.find(u"xml-stylesheet") == 0 || name == u"xml";
 }
 
 /// <summary>
@@ -67,17 +67,17 @@ bool validReservedName(const String &name)
 bool validName(const String &name)
 {
   String localName{ name };
-  if (localName.empty()) { return (false); }
+  if (localName.empty()) { return false; }
   std::ranges::transform(
     localName, localName.begin(), [](const Char c) {
     return static_cast<Char>(std::tolower(static_cast<int>(c)));
   });
-  if (localName.find(u"xml") == 0 && !(validReservedName(localName))) { return (false); }
-  if (!validNameStartChar(localName[0])) { return (false); }
+  if (localName.find(u"xml") == 0 && !validReservedName(localName)) { return false; }
+  if (!validNameStartChar(localName[0])) { return false; }
   for (auto it = localName.begin() + 1; it != localName.end(); ++it) {
-    if (!validNameChar(*it)) { return (false); }
+    if (!validNameChar(*it)) { return false; }
   }
-  return (true);
+  return true;
 }
 
 /// <summary>
@@ -95,21 +95,20 @@ bool validAttributeValue(const XMLValue &value)
         parseCharacterReference(source);
       } else if (source.current() == '&') {
         auto entity = parseEntityReference(source);
-      } else if ((source.current() == '"') || (source.current() == '\'')) {
+      } else if (source.current() == '"' || source.current() == '\'') {
         if (source.current() == value.getQuote()) {
-          return (false);
-        } else {
-          source.next();
-          continue;
+          return false;
         }
+        source.next();
+        continue;
       } else if (source.current() == '<') {
-        return (false);
+        return false;
       } else {
         source.next();
       }
     }
   }
-  return (true);
+  return true;
 }
 
 }// namespace  XML_Lib

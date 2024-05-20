@@ -120,12 +120,13 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
 {
   if (source.match("SYSTEM")) {
     source.ignoreWS();
-    return (XMLExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" });
-  } else if (source.match(XMLExternalReference::kPublicID)) {
+    return XMLExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" };
+  }
+  if (source.match(XMLExternalReference::kPublicID)) {
     source.ignoreWS();
     const std::string publicID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     const std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
-    return (XMLExternalReference{ XMLExternalReference::kPublicID, systemID, publicID });
+    return XMLExternalReference{ XMLExternalReference::kPublicID, systemID, publicID };
   }
   throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
 }

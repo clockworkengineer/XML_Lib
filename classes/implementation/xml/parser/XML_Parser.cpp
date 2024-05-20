@@ -35,13 +35,13 @@ void addContentToElementChildList(XNode &xNode, const std::string &content)
   if (xNode.getChildren().empty() || !xNode.getChildren().back().isContent()) {
     bool isWhiteSpace = true;
     if (!xNode.getChildren().empty()) {
-      if ((xNode.getChildren().back().isCDATA()) || (xNode.getChildren().back().isEntity())) { isWhiteSpace = false; }
+      if (xNode.getChildren().back().isCDATA() || xNode.getChildren().back().isEntity()) { isWhiteSpace = false; }
     }
     xNode.addChild(XNode::make<XContent>(isWhiteSpace));
   }
   XContent &xmlContent = XRef<XContent>(xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
-    if (std::ranges::all_of(content, [](const char ch) { return (std::iswspace(ch)); })) {
+    if (std::ranges::all_of(content, [](const char ch) { return std::iswspace(ch); })) {
       xmlContent.setIsWhiteSpace(true);
     } else {
       xmlContent.setIsWhiteSpace(false);
@@ -59,7 +59,7 @@ void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<X
 {
   for (const auto &attribute : attributes) {
     if (attribute.getName().starts_with("xmlns")) {
-      namespaces.emplace_back((attribute.getName().size() > 5) ? attribute.getName().substr(6) : ":",
+      namespaces.emplace_back(attribute.getName().size() > 5 ? attribute.getName().substr(6) : ":",
         XMLValue{ attribute.getUnparsed(), attribute.getParsed() });
     }
   }
@@ -90,17 +90,17 @@ bool XML_Parser::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
 {
   if (source.match("<!--")) {
     xProlog.addChild(parseComment(source));
-    return (true);
+    return true;
   }
   if (source.match("<?")) {
     xProlog.addChild(parsePI(source));
-    return (true);
+    return true;
   }
   if (source.isWS()) {
     parseWhiteSpaceToContent(source, xProlog);
-    return (true);
+    return true;
   }
-  return (false);
+  return false;
 }
 
 /// <summary>
@@ -108,7 +108,7 @@ bool XML_Parser::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Element tag name.</returns>
-std::string XML_Parser::parseTagName(ISource &source) { return (parseName(source)); }
+std::string XML_Parser::parseTagName(ISource &source) { return parseName(source); }
 
 /// <summary>
 /// Parse declaration attribute and validate its value.
@@ -130,7 +130,7 @@ std::string
   } else {
     throw SyntaxError(source.getPosition(), "Missing '=' after " + name + ".");
   }
-  return (value);
+  return value;
 }
 
 /// <summary>
@@ -147,7 +147,7 @@ XNode XML_Parser::parseComment(ISource &source)
     source.next();
   }
   if (!source.match(">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
-  return (XNode::make<XComment>(comment));
+  return XNode::make<XComment>(comment);
 }
 
 /// <summary>
@@ -168,7 +168,7 @@ XNode XML_Parser::parsePI(ISource &source)
     parameters += toUtf8(source.current());
     source.next();
   }
-  return (XNode::make<XPI>(name, parameters));
+  return XNode::make<XPI>(name, parameters);
 }
 
 /// <summary>
@@ -187,7 +187,7 @@ XNode XML_Parser::parseCDATA(ISource &source)
     cdata += toUtf8(source.current());
     source.next();
   }
-  return (XNode::make<XCDATA>(cdata));
+  return XNode::make<XCDATA>(cdata);
 }
 
 /// <summary>
@@ -214,7 +214,7 @@ std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source) const
     }
     attributes.emplace_back(attributeName, attributeValue);
   }
-  return (attributes);
+  return attributes;
 }
 
 /// <summary>
@@ -250,10 +250,8 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode)
         return;
       }
       // NO XML into entity elements list.
-      else {
-        parseEntityReferenceXML(xEntityReference, content);
-        resetWhiteSpace(xNode);
-      }
+      parseEntityReferenceXML(xEntityReference, content);
+      resetWhiteSpace(xNode);
     }
     xNode.addChild(std::move(xEntityReference));
   } else {
@@ -288,7 +286,8 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode)
   } else {
     if (source.match("</")) {
       throw SyntaxError(source.getPosition(), "Missing closing tag.");
-    } else if (source.match("]]>")) {
+    }
+    if (source.match("]]>")) {
       throw SyntaxError(source.getPosition(), "']]>' invalid in element content area.");
     }
     parseContent(source, xNode);
@@ -319,10 +318,10 @@ XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> 
       xNode = XNode::make<XElement>(name, attributes, namespaces);
     }
     while (source.more() && !source.match("</")) { parseElementInternal(source, xNode); }
-    if (source.match(toUtf16(XRef<XElement>(xNode).name()) + u">")) { return (xNode); }
+    if (source.match(toUtf16(XRef<XElement>(xNode).name()) + u">")) { return xNode; }
   } else if (source.match("/>")) {
     // Self closing element tag
-    return (XNode::make<XSelf>(name, attributes, namespaces));
+    return XNode::make<XSelf>(name, attributes, namespaces);
   }
   throw SyntaxError(source.getPosition(), "Missing closing tag.");
 }
@@ -352,7 +351,7 @@ XNode XML_Parser::parseDeclaration(ISource &source)
     }
     if (!source.match("?>")) { throw SyntaxError(source.getPosition(), "Declaration end tag not found."); }
   }
-  return (XNode::make<XDeclaration>(version, encoding, standalone));
+  return XNode::make<XDeclaration>(version, encoding, standalone);
 }
 
 /// <summary>
@@ -380,7 +379,7 @@ XNode XML_Parser::parseDTD(ISource &source)
   auto xNode = XNode::make<XDTD>(entityMapper);
   validator = std::make_unique<DTD>(xNode);
   validator->parse(source);
-  return (xNode);
+  return xNode;
 }
 /// <summary>
 /// Parse XML prolog and create the necessary element XNodes for it. Valid
@@ -404,7 +403,7 @@ XNode XML_Parser::parseProlog(ISource &source)
       throw SyntaxError(source.getPosition(), "Content detected before root element.");
     }
   }
-  return (xProlog);
+  return xProlog;
 }
 
 /// <summary>
@@ -429,7 +428,7 @@ XNode XML_Parser::parse(ISource &source)
   }
   // Handle any epilog
   parseEpilog(source, xmlRoot);
-  return (xmlRoot);
+  return xmlRoot;
 }
 /// <summary>
 /// Validate XML against parsed DTD.
@@ -447,5 +446,5 @@ void XML_Parser::validate(XNode &xProlog)
 /// Parser can validate XML.
 /// </summary>
 /// <returns>Returns true if parser can validate XML.</returns>
-bool XML_Parser::canValidate() { return (validator.get() != nullptr); }
+bool XML_Parser::canValidate() { return validator.get() != nullptr; }
 }// namespace XML_Lib

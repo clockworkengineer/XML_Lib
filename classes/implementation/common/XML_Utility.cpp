@@ -39,7 +39,7 @@ std::string trimmString(const std::string &target)
     std::ranges::find_if(trimmedString.rbegin(), trimmedString.rend(), [](const unsigned char ch) { return !std::iswspace(ch); })
       .base(),
     trimmedString.end());
-  return (trimmedString);
+  return trimmedString;
 }
 
 /// <summary>
@@ -53,7 +53,7 @@ std::string toUpperString(const std::string &target)
     upperCaseString, upperCaseString.begin(), [](const unsigned int c) {
     return static_cast<char>(std::toupper(c));
   });
-  return (upperCaseString);
+  return upperCaseString;
 }
 
 /// <summary>
@@ -67,6 +67,6 @@ std::string toLowerString(const std::string &target)
     lowerCaseString, lowerCaseString.begin(), [](const unsigned int c) {
     return static_cast<char>(std::tolower(c));
   });
-  return (lowerCaseString);
+  return lowerCaseString;
 }
 }// namespace  XML_Lib

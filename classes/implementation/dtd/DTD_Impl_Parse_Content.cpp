@@ -24,7 +24,7 @@ bool DTD_Impl::parseIsChoiceOrSequence(ISource &contentSpecSource)
   }
   if (contentSpecSource.more() && contentSpecSource.current() == '|') { choice = true; }
   contentSpecSource.backup(contentSpecSource.position() - start);
-  return (choice);
+  return choice;
 }
 
 /// <summary>
@@ -192,13 +192,12 @@ XMLValue DTD_Impl::parseElementInternalpecification(const std::string &elementNa
     } else {
       throw SyntaxError("Invalid element content specification.");
     }
-    return (XMLValue{ contentSpec.getUnparsed(), contentSpecDestination.getBuffer() });
+    return XMLValue{ contentSpec.getUnparsed(), contentSpecDestination.getBuffer() };
   } catch (SyntaxError &e) {
     if (e.what() == std::string("XML Syntax Error: Invalid element content specification.")) {
       throw SyntaxError("Invalid content specification for element <" + elementName + ">.");
-    } else {
-      throw;
     }
+    throw;
   }
 }
 }// namespace XML_Lib

@@ -29,10 +29,10 @@ bool DTD_Impl::checkIsNMTOKENOK(const std::string &nmTokenValue)
 {
   BufferSource nmTokenValueSource(trimmString(nmTokenValue));
   while (nmTokenValueSource.more()) {
-    if (!validNameChar(nmTokenValueSource.current())) { return (false); }
+    if (!validNameChar(nmTokenValueSource.current())) { return false; }
     nmTokenValueSource.next();
   }
-  return (true);
+  return true;
 }
 
 /// <summary>
@@ -46,9 +46,9 @@ bool DTD_Impl::checkIsIDOK(const std::string &idValue)
     BufferSource idSource(idValue);
     auto name = parseName(idSource);
   } catch (std::exception &) {
-    return (false);
+    return false;
   }
-  return (true);
+  return true;
 }
 
 /// <summary>
@@ -60,11 +60,11 @@ bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 {
   if (auto &children = xNode.getChildren(); std::ranges::all_of(
         children, [](const XNode &element) {
-        return (!(element.isElement()) || (element.isSelf()));
+        return !element.isElement() || element.isSelf();
       })) {
-    return (!xNode.getContents().empty());
+    return !xNode.getContents().empty();
   }
-  return (false);
+  return false;
 }
 
 /// <summary>
@@ -72,7 +72,7 @@ bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <returns>true if element empty otherwise false.</returns>
-bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return (xNode.getChildren().empty() || xNode.isSelf()); }
+bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().empty() || xNode.isSelf(); }
 
 /// <summary>
 ///
@@ -231,7 +231,7 @@ void DTD_Impl::checkContentSpecification(const XNode &xNode) const
   const std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
   std::string elements;
   for (auto &element : xElement.getChildren()) {
-    if ((element.isElement()) || (element.isSelf())) {
+    if (element.isElement() || element.isSelf()) {
       elements += "<" + XRef<XElement>(element).name() + ">";
     } else if (element.isContent()) {
       if (!XRef<XContent>(element).isWhiteSpace()) { elements += "<#PCDATA>"; }

@@ -59,7 +59,7 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
     content += toUtf8(entitySource.current());
     entitySource.next();
   }
-  return (content);
+  return content;
 }
 
 /// <summary>
@@ -70,7 +70,7 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 XML_EntityMapper::XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
 {
   if (!isPresent(entityName)) { entityMappings.emplace(std::make_pair(entityName, XML_EntityMapping())); }
-  if (const auto entity = entityMappings.find(entityName); entity != entityMappings.end()) { return (entity->second); }
+  if (const auto entity = entityMappings.find(entityName); entity != entityMappings.end()) { return entity->second; }
   throw Error("Could not find entity reference in map.");
 }
 
@@ -104,7 +104,7 @@ XML_EntityMapper::~XML_EntityMapper() {}
 /// <returns></returns>
 bool XML_EntityMapper::isPresent(const std::string &entityName) const
 {
-  return (entityMappings.contains(entityName));
+  return entityMappings.contains(entityName);
 }
 
 /// <summary>
@@ -130,7 +130,7 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
                           + entityMapping.getExternal().getSystemID() + "' does not exist.");
       }
     }
-    return (XMLValue{ entityReference.getUnparsed(), parsed });
+    return XMLValue{ entityReference.getUnparsed(), parsed };
   }
   throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' does not exist.");
 }
@@ -156,15 +156,15 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, const ch
       }
     }
   } while (matchFound);
-  return (translated);
+  return translated;
 }
 
 /// <summary>
 /// Determine entity type
 /// </summary>
-bool XML_EntityMapper::isInternal(const std::string &entityName) { return (getEntityMapping(entityName).isInternal()); }
-bool XML_EntityMapper::isExternal(const std::string &entityName) { return (getEntityMapping(entityName).isExternal()); }
-bool XML_EntityMapper::isNotation(const std::string &entityName) { return (getEntityMapping(entityName).isNotation()); }
+bool XML_EntityMapper::isInternal(const std::string &entityName) { return getEntityMapping(entityName).isInternal(); }
+bool XML_EntityMapper::isExternal(const std::string &entityName) { return getEntityMapping(entityName).isExternal(); }
+bool XML_EntityMapper::isNotation(const std::string &entityName) { return getEntityMapping(entityName).isNotation(); }
 
 /// <summary>
 /// Get entity mapping values.
@@ -172,26 +172,23 @@ bool XML_EntityMapper::isNotation(const std::string &entityName) { return (getEn
 const std::string &XML_EntityMapper::getInternal(const std::string &entityName)
 {
   if (auto entity = getEntityMapping(entityName); entity.isInternal()) {
-    return (getEntityMapping(entityName).getInternal());
-  } else {
-    throw Error("Internal entity reference not found for '"+entityName+"'.");
+    return getEntityMapping(entityName).getInternal();
   }
+  throw Error("Internal entity reference not found for '"+entityName+"'.");
 }
 const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
 {
   if (auto entity = getEntityMapping(entityName); entity.isNotation()) {
-    return (getEntityMapping(entityName).getNotation());
-  } else {
-     throw Error("Notation entity reference not found for '"+entityName+"'.");
+    return getEntityMapping(entityName).getNotation();
   }
+  throw Error("Notation entity reference not found for '"+entityName+"'.");
 }
 const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
 {
   if (auto entity = getEntityMapping(entityName); entity.isExternal()) {
-    return (getEntityMapping(entityName).getExternal());
-  } else {
-  throw Error("External entity reference not found for '"+entityName+"'.");
+    return getEntityMapping(entityName).getExternal();
   }
+  throw Error("External entity reference not found for '"+entityName+"'.");
 }
 
 /// <summary>

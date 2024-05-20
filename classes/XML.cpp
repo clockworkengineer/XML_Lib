@@ -27,31 +27,31 @@ XML::~XML() {}
 /// Get XML_Lib version.
 /// </summary>
 /// <returns>Library version string.</returns>
-std::string XML::version() const { return (implementation->version()); }
+std::string XML::version() const { return implementation->version(); }
 
 /// <summary>
 /// Return reference to any internal DTD for parsed XML.
 /// </summary>
 /// <returns>Reference to DTD XNode.</returns>
-XNode &XML::dtd() const { return (implementation->dtd()); }
+XNode &XML::dtd() const { return implementation->dtd(); }
 
 /// <summary>
 /// Return prolog node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to prolog XNode.</returns>
-XNode &XML::prolog() const { return (implementation->prolog()); }
+XNode &XML::prolog() const { return implementation->prolog(); }
 
 /// <summary>
 /// Return declaration node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to declaration XNode.</returns>
-XNode &XML::declaration() const { return (implementation->declaration()); }
+XNode &XML::declaration() const { return implementation->declaration(); }
 
 /// <summary>
 /// Return root node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to root element XNode.</returns>
-XNode &XML::root() const { return (implementation->root()); }
+XNode &XML::root() const { return implementation->root(); }
 
 /// <summary>
 /// Validate XML against any DTD provided to see whether it is valid. If an
@@ -79,7 +79,7 @@ void XML::stringify(IDestination &&destination) const { implementation->stringif
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML string.</returns>
-std::string XML::fromFile(const std::string &fileName) { return (XML_Impl::fromFile(fileName)); }
+std::string XML::fromFile(const std::string &fileName) { return XML_Impl::fromFile(fileName); }
 
 /// <summary>
 /// Create an XML file and write XML string to it.
@@ -96,5 +96,5 @@ void XML::toFile(const std::string &fileName, const std::string &xmlString, cons
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML file format.</returns>
-XML::Format XML::getFileFormat(const std::string &fileName) { return (XML_Impl::getFileFormat(fileName)); }
+XML::Format XML::getFileFormat(const std::string &fileName) { return XML_Impl::getFileFormat(fileName); }
 }// namespace XML_Lib

@@ -23,11 +23,11 @@ void Variant::addChild(XNode &&child) const
 std::vector<XNode> &Variant::getChildren()
 {
   if (children.get() == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
-  return (*children);
+  return *children;
 }
 const std::vector<XNode> &Variant::getChildren() const
 {
   if (children.get() == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
-  return (*children);
+  return *children;
 }
 }// namespace XML_Lib
