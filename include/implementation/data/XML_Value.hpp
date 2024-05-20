@@ -7,7 +7,7 @@ namespace XML_Lib {
 struct XMLValue
 {
   // Constructors/Destructors
-  XMLValue(const std::string &unparsed = "", const std::string &parsed = "", const char quote = '\'')
+  explicit XMLValue(const std::string &unparsed = "", const std::string &parsed = "", const char quote = '\'')
     : unparsed(unparsed), parsed(parsed), quote(quote)
   {}
   XMLValue() = delete;

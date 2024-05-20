@@ -103,7 +103,7 @@ void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &at
     }
   }
   if (!attributePresent) {
-    xElement.addAttribute(attribute.name, { attribute.value.getParsed(), attribute.value.getParsed() });
+    xElement.addAttribute(attribute.name, XMLValue(attribute.value.getParsed(), attribute.value.getParsed() ));
   }
 }
 

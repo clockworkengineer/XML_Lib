@@ -12,7 +12,6 @@ namespace XML_Lib {
 
 struct XML_EntityMapper final : IEntityMapper
 {
-public:
   // Entity mapping data
   struct XML_EntityMapping
   {
