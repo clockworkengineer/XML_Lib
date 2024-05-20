@@ -31,7 +31,7 @@ public:
   // Get reference to DTD XNode
   [[nodiscard]] XNode &dtd() const;
   // Get reference to prolog XNode
-  [[nodiscard]] XNode &prolog();
+  [[nodiscard]] XNode &prolog() const;
   // Get reference to declaration XNode
   [[nodiscard]] XNode &declaration();
   // Get reference to root element XNode

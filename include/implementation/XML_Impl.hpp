@@ -27,7 +27,7 @@ public:
   void parse(ISource &source);
   void stringify(IDestination &destination);
   void validate();
-  [[nodiscard]] std::string version();
+  [[nodiscard]] static std::string version();
 
   [[nodiscard]] static std::string fromFile(const std::string &fileName);
   static void toFile(const std::string &fileName, const std::string &xmlString, XML::Format format);

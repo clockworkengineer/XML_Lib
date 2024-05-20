@@ -166,7 +166,7 @@ void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute) 
 /// Parse DTD attribute list.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
-void DTD_Impl::parseAttributeList(ISource &source)
+void DTD_Impl::parseAttributeList(ISource &source) const
 {
   source.ignoreWS();
   const std::string elementName = parseName(source);

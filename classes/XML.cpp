@@ -39,7 +39,7 @@ XNode &XML::dtd() const { return (implementation->dtd()); }
 /// Return prolog node of parsed XML tree.
 /// </summary>
 /// <returns>Reference to prolog XNode.</returns>
-XNode &XML::prolog() { return (implementation->prolog()); }
+XNode &XML::prolog() const { return (implementation->prolog()); }
 
 /// <summary>
 /// Return declaration node of parsed XML tree.

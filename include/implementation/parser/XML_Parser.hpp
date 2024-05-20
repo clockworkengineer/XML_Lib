@@ -27,11 +27,11 @@ public:
 private:
   // XML Parser
   void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
-  [[nodiscard]] std::string
+  [[nodiscard]] static std::string
     parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
   [[nodiscard]] bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
   void parseContent(ISource &source, XNode &xNode);
-  [[nodiscard]] std::string parseTagName(ISource &source);
+  [[nodiscard]] static std::string parseTagName(ISource &source);
   [[nodiscard]] std::vector<XMLAttribute> parseAttributes(ISource &source) const;
   [[nodiscard]] XNode parseComment(ISource &source);
   [[nodiscard]] XNode parseCDATA(ISource &source);
