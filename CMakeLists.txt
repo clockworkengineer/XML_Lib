@@ -23,93 +23,92 @@ set(XML_LIBRARY_NAME ${PROJECT_NAME})
 
 # XML sources
 set(XML_SOURCES
-  ./classes/XML.cpp
-  ./classes/implementation/xml/XML_Impl.cpp
-  ./classes/implementation/xml/file/XML_File.cpp
-  ./classes/implementation/xml/parser/XML_Parser.cpp
-  ./classes/implementation/xml/stringify/XML_Stringify.cpp
-  ./classes/implementation/variant/XML_Variant.cpp
-  ./classes/DTD.cpp
-  ./classes/implementation/dtd/DTD_Impl.cpp
-  ./classes/implementation/dtd/DTD_Impl_Validator.cpp
-  ./classes/implementation/dtd/DTD_Impl_Parse.cpp
-  ./classes/implementation/dtd/DTD_Impl_Parse_Content.cpp
-  ./classes/implementation/dtd/DTD_Impl_Parse_External.cpp
-  ./classes/implementation/common/XML_Character.cpp
-  ./classes/implementation/common/XML_Parse.cpp
-  ./classes/implementation/common/XML_Utility.cpp
-
-  ./classes/implementation/entity/XML_EntityMapper.cpp
+  ./classes/source/XML.cpp
+  ./classes/source/implementation/xml/XML_Impl.cpp
+  ./classes/source/implementation/xml/file/XML_File.cpp
+  ./classes/source/implementation/xml/parser/XML_Parser.cpp
+  ./classes/source/implementation/xml/stringify/XML_Stringify.cpp
+  ./classes/source/implementation/variant/XML_Variant.cpp
+  ./classes/source/DTD.cpp
+  ./classes/source/implementation/dtd/DTD_Impl.cpp
+  ./classes/source/implementation/dtd/DTD_Impl_Validator.cpp
+  ./classes/source/implementation/dtd/DTD_Impl_Parse.cpp
+  ./classes/source/implementation/dtd/DTD_Impl_Parse_Content.cpp
+  ./classes/source/implementation/dtd/DTD_Impl_Parse_External.cpp
+  ./classes/source/implementation/common/XML_Character.cpp
+  ./classes/source/implementation/common/XML_Parse.cpp
+  ./classes/source/implementation/common/XML_Utility.cpp
+  ./classes/source/implementation/entity/XML_EntityMapper.cpp
 )
 
 # Platform specific sources
-list(APPEND XML_SOURCES "./classes/implementation/common/converter/${PLATFORM}/XML_Converter.cpp")
+list(APPEND XML_SOURCES "./classes/source/implementation/common/converter/${PLATFORM}/XML_Converter.cpp")
 
 # XML  includes
 set(XML_INCLUDES
   XML_Config.hpp
-  ./include/XML.hpp
-  ./include/DTD.hpp
-  ./include/interface/ISource.hpp
-  ./include/interface/IDestination.hpp
-  ./include/interface/IEntityMapper.hpp
-  ./include/interface/IValidator.hpp
-  ./include/interface/IParser.hpp
-  ./include/interface/IStringify.hpp
-  ./include/interface/XML_Interfaces.hpp
-  ./include/implementation/XML_Core.hpp
-  ./include/implementation/common/XML_Character.hpp
-  ./include/implementation/common/XML_Converter.hpp
-  ./include/implementation/common/XML_Error.hpp
-  ./include/implementation/common/XML_Parse.hpp
-  ./include/implementation/common/XML_Utility.hpp
-  ./include/implementation/data/XML_Value.hpp
-  ./include/implementation/data/XML_Attribute.hpp
-  ./include/implementation/data/XML_ExternalReference.hpp
-  ./include/implementation/DTD_Impl.hpp
-  ./include/implementation/entity/XML_EntityMapper.hpp
-  ./include/implementation/io/XML_Sources.hpp
-  ./include/implementation/io/XML_BufferSource.hpp
-  ./include/implementation/io/XML_FileSource.hpp
-  ./include/implementation/io/XML_Destinations.hpp
-  ./include/implementation/io/XML_BufferDestination.hpp
-  ./include/implementation/io/XML_FileDestination.hpp
-  ./include/implementation/XML_Impl.hpp
-  ./include/implementation/parser/XML_Parser.hpp
-  ./include/implementation/stringify/XML_Stringify.hpp
-  ./include/implementation/xnode/XML_XNode.hpp
-  ./include/implementation/xnode/XML_Reference.hpp
-  ./include/implementation/xnode/XML_Creation.hpp
-  ./include/implementation/xnode/XML_Index.hpp
-  ./include/implementation/variants/XML_XProlog.hpp
-  ./include/implementation/variants/XML_XDeclaration.hpp
-  ./include/implementation/variants/XML_XContent.hpp
-  ./include/implementation/variants/XML_XCDATA.hpp
-  ./include/implementation/variants/XML_XEntityReference.hpp
-  ./include/implementation/variants/XML_XElement.hpp
-  ./include/implementation/variants/XML_XRoot.hpp
-  ./include/implementation/variants/XML_XSelf.hpp
-  ./include/implementation/variants/XML_XComment.hpp
-  ./include/implementation/variants/XML_XPI.hpp
-  ./include/implementation/variants/XML_XDTD.hpp
-  ./include/implementation/variants/XML_Variant.hpp
+  ./classes/include/XML.hpp
+  ./classes/include/DTD.hpp
+  ./classes/include/interface/ISource.hpp
+  ./classes/include/interface/IDestination.hpp
+  ./classes/include/interface/IEntityMapper.hpp
+  ./classes/include/interface/IValidator.hpp
+  ./classes/include/interface/IParser.hpp
+  ./classes/include/interface/IStringify.hpp
+  ./classes/include/interface/XML_Interfaces.hpp
+  ./classes/include/implementation/XML_Core.hpp
+  ./classes/include/implementation/common/XML_Character.hpp
+  ./classes/include/implementation/common/XML_Converter.hpp
+  ./classes/include/implementation/common/XML_Error.hpp
+  ./classes/include/implementation/common/XML_Parse.hpp
+  ./classes/include/implementation/common/XML_Utility.hpp
+  ./classes/include/implementation/data/XML_Value.hpp
+  ./classes/include/implementation/data/XML_Attribute.hpp
+  ./classes/include/implementation/data/XML_ExternalReference.hpp
+  ./classes/include/implementation/DTD_Impl.hpp
+  ./classes/include/implementation/entity/XML_EntityMapper.hpp
+  ./classes/include/implementation/io/XML_Sources.hpp
+  ./classes/include/implementation/io/XML_BufferSource.hpp
+  ./classes/include/implementation/io/XML_FileSource.hpp
+  ./classes/include/implementation/io/XML_Destinations.hpp
+  ./classes/include/implementation/io/XML_BufferDestination.hpp
+  ./classes/include/implementation/io/XML_FileDestination.hpp
+  ./classes/include/implementation/XML_Impl.hpp
+  ./classes/include/implementation/parser/XML_Parser.hpp
+  ./classes/include/implementation/stringify/XML_Stringify.hpp
+  ./classes/include/implementation/xnode/XML_XNode.hpp
+  ./classes/include/implementation/xnode/XML_Reference.hpp
+  ./classes/include/implementation/xnode/XML_Creation.hpp
+  ./classes/include/implementation/xnode/XML_Index.hpp
+  ./classes/include/implementation/variants/XML_XProlog.hpp
+  ./classes/include/implementation/variants/XML_XDeclaration.hpp
+  ./classes/include/implementation/variants/XML_XContent.hpp
+  ./classes/include/implementation/variants/XML_XCDATA.hpp
+  ./classes/include/implementation/variants/XML_XEntityReference.hpp
+  ./classes/include/implementation/variants/XML_XElement.hpp
+  ./classes/include/implementation/variants/XML_XRoot.hpp
+  ./classes/include/implementation/variants/XML_XSelf.hpp
+  ./classes/include/implementation/variants/XML_XComment.hpp
+  ./classes/include/implementation/variants/XML_XPI.hpp
+  ./classes/include/implementation/variants/XML_XDTD.hpp
+  ./classes/include/implementation/variants/XML_Variant.hpp
 )
 
 # XML library
 add_library(${XML_LIBRARY_NAME} ${XML_SOURCES} ${XML_INCLUDES})
 target_include_directories(${XML_LIBRARY_NAME} PUBLIC
-  ${PROJECT_SOURCE_DIR}/include
-  ${PROJECT_SOURCE_DIR}/include/interface
-  ${PROJECT_SOURCE_DIR}/include/implementation
-  ${PROJECT_SOURCE_DIR}/include/implementation/common
-  ${PROJECT_SOURCE_DIR}/include/implementation/data
-  ${PROJECT_SOURCE_DIR}/include/implementation/entity
-  ${PROJECT_SOURCE_DIR}/include/implementation/io
-  ${PROJECT_SOURCE_DIR}/include/implementation/parser
-  ${PROJECT_SOURCE_DIR}/include/implementation/validator
-  ${PROJECT_SOURCE_DIR}/include/implementation/xnode
-  ${PROJECT_SOURCE_DIR}/include/implementation/stringify
-  ${PROJECT_SOURCE_DIR}/include/implementation/variants
+  ${PROJECT_SOURCE_DIR}/classes/include
+  ${PROJECT_SOURCE_DIR}/classes/include/interface
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/common
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/data
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/entity
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/io
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/parser
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/validator
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/xnode
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/variants
   ${PROJECT_BINARY_DIR})
 
 # Add tests
