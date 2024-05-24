@@ -20,7 +20,7 @@ DTD::DTD(XNode &xNode) : implementation(std::make_unique<DTD_Impl>(xNode)) {}
 /// <summary>
 /// DTD destructor.
 /// </summary>
-DTD::~DTD() {}
+DTD::~DTD() = default;
 
 /// <summary>
 /// Parse DTD read from source stream.

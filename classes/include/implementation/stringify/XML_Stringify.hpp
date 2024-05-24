@@ -20,7 +20,7 @@ public:
   XML_Stringify &operator=(XML_Stringify &&other) = delete;
   ~XML_Stringify() override = default;
 
-// <summary>
+/// <summary>
 /// Recursively parse XNode passed in to produce XML output on a
 /// destination stream in UTF-8 encoding.
 /// </summary>

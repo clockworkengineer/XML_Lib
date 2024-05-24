@@ -304,9 +304,9 @@ XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> 
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
-  const std::vector<XMLAttribute> attributes{ parseAttributes(source) };
+  const std::vector attributes{ parseAttributes(source) };
   // Add any new namespaces
-  std::vector<XMLAttribute> namespaces{ outerNamespaces };
+  std::vector namespaces{ outerNamespaces };
   addNewNameSpaces(attributes, namespaces);
   // Create element XNode
   if (XNode xNode; source.match(">")) {
@@ -396,7 +396,6 @@ XNode XML_Parser::parseProlog(ISource &source)
     if (source.match("<!DOCTYPE")) {
       xProlog.addChild(parseDTD(source));
     } else if (parseCommentsPIAndWhiteSpace(source, xProlog)) {
-      continue;
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {

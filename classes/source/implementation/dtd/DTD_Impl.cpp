@@ -18,7 +18,7 @@ DTD_Impl::DTD_Impl(XNode &xNode) : xDTD(XRef<XDTD>(xNode)) {}
 /// <summary>
 /// DTD_Impl destructor.
 /// </summary>
-DTD_Impl::~DTD_Impl() {}
+DTD_Impl::~DTD_Impl() = default;
 
 /// <summary>
 /// Parse DTD read from source stream.

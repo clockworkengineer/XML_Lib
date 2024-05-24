@@ -90,7 +90,7 @@ XML_EntityMapper::XML_EntityMapping &XML_EntityMapper::getEntityMapping(const st
 /// <summary>
 /// Initialise entity mapping table with defaults.
 /// </summary>
-void XML_EntityMapper::XML_EntityMapper::reset()
+void XML_EntityMapper::reset()
 {
   resetToDefault();
 }
@@ -179,21 +179,21 @@ bool XML_EntityMapper::isNotation(const std::string &entityName) { return getEnt
 /// </summary>
 const std::string &XML_EntityMapper::getInternal(const std::string &entityName)
 {
-  if (auto entity = getEntityMapping(entityName); entity.isInternal()) {
+  if (const auto entity = getEntityMapping(entityName); entity.isInternal()) {
     return getEntityMapping(entityName).getInternal();
   }
   throw Error("Internal entity reference not found for '"+entityName+"'.");
 }
 const std::string &XML_EntityMapper::getNotation(const std::string &entityName)
 {
-  if (auto entity = getEntityMapping(entityName); entity.isNotation()) {
+  if (const auto entity = getEntityMapping(entityName); entity.isNotation()) {
     return getEntityMapping(entityName).getNotation();
   }
   throw Error("Notation entity reference not found for '"+entityName+"'.");
 }
 const XMLExternalReference &XML_EntityMapper::getExternal(const std::string &entityName)
 {
-  if (auto entity = getEntityMapping(entityName); entity.isExternal()) {
+  if (const auto entity = getEntityMapping(entityName); entity.isExternal()) {
     return getEntityMapping(entityName).getExternal();
   }
   throw Error("External entity reference not found for '"+entityName+"'.");

@@ -70,7 +70,7 @@ bool validName(const String &name)
   if (localName.empty()) { return false; }
   std::ranges::transform(
     localName, localName.begin(), [](const Char c) {
-    return static_cast<Char>(std::tolower(static_cast<int>(c)));
+    return static_cast<Char>(std::tolower(c));
   });
   if (localName.find(u"xml") == 0 && !validReservedName(localName)) { return false; }
   if (!validNameStartChar(localName[0])) { return false; }
@@ -95,15 +95,11 @@ bool validAttributeValue(const XMLValue &value)
         parseCharacterReference(source);
       } else if (source.current() == '&') {
         auto entity = parseEntityReference(source);
-      } else if (source.current() == '"' || source.current() == '\'') {
-        if (source.current() == value.getQuote()) {
-          return false;
-        }
+      } else if (source.current() != '"' && source.current() != '\'') {
+        if (source.current() == '<') { return false; }
         source.next();
-        continue;
-      } else if (source.current() == '<') {
-        return false;
       } else {
+        if (source.current() == value.getQuote()) { return false; }
         source.next();
       }
     }

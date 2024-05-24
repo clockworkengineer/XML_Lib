@@ -262,8 +262,6 @@ void DTD_Impl::checkElements(const XNode &xNode)
   if (xNode.isProlog()) {
     for (auto &element : xNode.getChildren()) { checkElements(element); }
   } else if (xNode.isDeclaration()) {
-    // Nothing for present
-    ;
   } else if (xNode.isRoot() || xNode.isElement()) {
     if (xNode.isRoot() && XRef<XElement>(xNode).name() != xDTD.getRootName()) {
       throw ValidationError(
@@ -274,8 +272,6 @@ void DTD_Impl::checkElements(const XNode &xNode)
   } else if (xNode.isSelf()) {
     checkElement(xNode);
   } else if (xNode.isComment() || xNode.isEntity() || xNode.isPI() || xNode.isCDATA() || xNode.isDTD()) {
-    // Nothing for present
-    ;
   } else if (xNode.isContent()) {
     for (const auto &ch : XRef<XContent>(xNode).getContent()) {
       if (ch == kLineFeed) { lineNumber++; }

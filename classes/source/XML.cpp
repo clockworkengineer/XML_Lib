@@ -87,7 +87,7 @@ std::string XML::fromFile(const std::string &fileName) { return XML_Impl::fromFi
 /// <param name="fileName">XML file name</param>
 /// <param name="xmlString">XML string</param>
 /// <param name="format">XML file format</param>
-void XML::toFile(const std::string &fileName, const std::string &xmlString, const XML::Format format)
+void XML::toFile(const std::string &fileName, const std::string &xmlString, const Format format)
 {
   XML_Impl::toFile(fileName, xmlString, format);
 }
