@@ -27,7 +27,6 @@ set(XML_SOURCES
   ./classes/source/implementation/xml/XML_Impl.cpp
   ./classes/source/implementation/xml/file/XML_File.cpp
   ./classes/source/implementation/xml/parser/XML_Parser.cpp
-  ./classes/source/implementation/xml/stringify/XML_Stringify.cpp
   ./classes/source/implementation/variant/XML_Variant.cpp
   ./classes/source/DTD.cpp
   ./classes/source/implementation/dtd/DTD_Impl.cpp
