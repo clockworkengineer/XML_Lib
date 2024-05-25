@@ -196,7 +196,7 @@ XNode XML_Parser::parseCDATA(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>XML element attribute list.</returns>
-std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source) const
+std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source, IEntityMapper &entityMapper)
 {
   std::vector<XMLAttribute> attributes;
   while (source.more() && source.current() != '/' && source.current() != '>') {
@@ -304,7 +304,7 @@ XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> 
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
-  const std::vector attributes{ parseAttributes(source) };
+  const std::vector attributes{ parseAttributes(source, entityMapper) };
   // Add any new namespaces
   std::vector namespaces{ outerNamespaces };
   addNewNameSpaces(attributes, namespaces);
