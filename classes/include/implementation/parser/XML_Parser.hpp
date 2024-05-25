@@ -40,13 +40,13 @@ private:
   void parseElementInternal(ISource &source, XNode &xNode);
   [[nodiscard]] XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces);
   [[nodiscard]] static XNode parseDeclaration(ISource &source);
-  [[nodiscard]] XNode parseDTD(ISource &source);
-  [[nodiscard]] XNode parseProlog(ISource &source);
+  [[nodiscard]] static XNode parseDTD(ISource &source, IEntityMapper &entityMapper);
+  [[nodiscard]] static XNode parseProlog(ISource &source, IEntityMapper &entityMapper);
   static void parseEpilog(ISource &source, XNode &xProlog);
   // XML tree has root
   bool hasRoot{ false };
   // Parser validator
-  std::unique_ptr<IValidator> validator;
+  inline static std::unique_ptr<IValidator> validator;
   // Entity mapper reference
   IEntityMapper &entityMapper;
 };

@@ -373,7 +373,7 @@ void XML_Parser::parseEpilog(ISource &source, XNode &xProlog)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to DTD XNode.</returns>
-XNode XML_Parser::parseDTD(ISource &source)
+XNode XML_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 {
   if (validator != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
   auto xNode = XNode::make<XDTD>(entityMapper);
@@ -388,13 +388,13 @@ XNode XML_Parser::parseDTD(ISource &source)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Pointer to prolog XNode.</returns>
-XNode XML_Parser::parseProlog(ISource &source)
+XNode XML_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 {
   auto xProlog = XNode::make<XProlog>();
   xProlog.addChild(parseDeclaration(source));
   while (source.more()) {
     if (source.match("<!DOCTYPE")) {
-      xProlog.addChild(parseDTD(source));
+      xProlog.addChild(parseDTD(source, entityMapper));
     } else if (parseCommentsPIAndWhiteSpace(source, xProlog)) {
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
@@ -418,7 +418,7 @@ XNode XML_Parser::parse(ISource &source)
   hasRoot = false;
   validator.reset();
   // Handle prolog
-  XNode xmlRoot = parseProlog(source);
+  XNode xmlRoot = parseProlog(source, entityMapper);
   // Handle main body
   if (source.match("<")) {
     xmlRoot.addChild(parseElement(source, {}));
