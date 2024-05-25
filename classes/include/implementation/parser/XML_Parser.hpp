@@ -26,25 +26,25 @@ public:
 
 private:
   // XML Parser
-  void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference);
+  static void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper);
   [[nodiscard]] static std::string
     parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
   [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
-  void parseContent(ISource &source, XNode &xNode);
+  void static parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper);
   [[nodiscard]] static std::string parseTagName(ISource &source);
   [[nodiscard]] static std::vector<XMLAttribute> parseAttributes(ISource &source, IEntityMapper &entityMapper);
   [[nodiscard]] static XNode parseComment(ISource &source);
   [[nodiscard]] static XNode parseCDATA(ISource &source);
   [[nodiscard]] static XNode parsePI(ISource &source);
   static void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
-  void parseElementInternal(ISource &source, XNode &xNode);
-  [[nodiscard]] XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces);
+  static void parseElementInternal(ISource &source, XNode &xNode, IEntityMapper & entityMapper);
+  [[nodiscard]] static XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, IEntityMapper & entityMapper);
   [[nodiscard]] static XNode parseDeclaration(ISource &source);
   [[nodiscard]] static XNode parseDTD(ISource &source, IEntityMapper &entityMapper);
   [[nodiscard]] static XNode parseProlog(ISource &source, IEntityMapper &entityMapper);
   static void parseEpilog(ISource &source, XNode &xProlog);
   // XML tree has root
-  bool hasRoot{ false };
+  inline static bool hasRoot{ false };
   // Parser validator
   inline static std::unique_ptr<IValidator> validator;
   // Entity mapper reference

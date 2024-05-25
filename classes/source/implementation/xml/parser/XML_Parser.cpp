@@ -70,12 +70,12 @@ void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<X
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="entityReference">Entity reference to be parsed for XML.</param>
-void XML_Parser::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference)
+void XML_Parser::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper)
 {
   auto xElement = XNode::make<XElement>();
   BufferSource entitySource(entityReference.getParsed());
   // Parse entity XML
-  while (entitySource.more()) { parseElementInternal(entitySource, xNode); }
+  while (entitySource.more()) { parseElementInternal(entitySource, xNode, entityMapper); }
   // Place into XNode (element) child list
   for (auto &xNodeChild : xElement.getChildren()) { xNode.addChild(xNodeChild); }
 }
@@ -237,7 +237,7 @@ void XML_Parser::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
-void XML_Parser::parseContent(ISource &source, XNode &xNode)
+void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper)
 {
   if (XMLValue content{ parseCharacter(source) }; content.isReference()) {
     if (content.isEntityReference()) { content = entityMapper.map(content); }
@@ -246,11 +246,11 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode)
       // Does entity contain start tag ?
       // YES then XML into current element list
       if (content.getParsed().starts_with("<")) {
-        parseEntityReferenceXML(xNode, content);
+        parseEntityReferenceXML(xNode, content,entityMapper);
         return;
       }
       // NO XML into entity elements list.
-      parseEntityReferenceXML(xEntityReference, content);
+      parseEntityReferenceXML(xEntityReference, content, entityMapper);
       resetWhiteSpace(xNode);
     }
     xNode.addChild(std::move(xEntityReference));
@@ -266,7 +266,7 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode)
 /// </summary>
 /// <param name="source">XMl source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
-void XML_Parser::parseElementInternal(ISource &source, XNode &xNode)
+void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapper & entityMapper)
 {
   if (source.match("<!--")) {
     xNode.addChild(parseComment(source));
@@ -276,7 +276,7 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode)
     resetWhiteSpace(xNode);
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
-    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNamespaceList()));
+    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNamespaceList(), entityMapper));
     const XElement &xNodeChildElement = XRef<XElement>(xNode.getChildren().back());
     if (const auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
@@ -290,7 +290,7 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode)
     if (source.match("]]>")) {
       throw SyntaxError(source.getPosition(), "']]>' invalid in element content area.");
     }
-    parseContent(source, xNode);
+    parseContent(source, xNode, entityMapper);
   }
 }
 
@@ -300,7 +300,7 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode)
 /// <param name="source">XML source stream.</param>
 /// <param name="outerNamespaces">Current list of outerNamespaces.</param>
 /// <returns>Pointer to element XNode.</returns>
-XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces)
+XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, IEntityMapper & entityMapper)
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
@@ -317,7 +317,7 @@ XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> 
     } else {
       xNode = XNode::make<XElement>(name, attributes, namespaces);
     }
-    while (source.more() && !source.match("</")) { parseElementInternal(source, xNode); }
+    while (source.more() && !source.match("</")) { parseElementInternal(source, xNode, entityMapper); }
     if (source.match(toUtf16(XRef<XElement>(xNode).name()) + u">")) { return xNode; }
   } else if (source.match("/>")) {
     // Self closing element tag
@@ -421,7 +421,7 @@ XNode XML_Parser::parse(ISource &source)
   XNode xmlRoot = parseProlog(source, entityMapper);
   // Handle main body
   if (source.match("<")) {
-    xmlRoot.addChild(parseElement(source, {}));
+    xmlRoot.addChild(parseElement(source, {}, entityMapper));
   } else {
     throw SyntaxError(source.getPosition(), "Missing root element.");
   }
