@@ -30,14 +30,14 @@ private:
   [[nodiscard]] static std::string
     parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
   [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
-  void static parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper);
+  static void  parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper);
   [[nodiscard]] static std::string parseTagName(ISource &source);
   [[nodiscard]] static std::vector<XMLAttribute> parseAttributes(ISource &source, IEntityMapper &entityMapper);
   [[nodiscard]] static XNode parseComment(ISource &source);
   [[nodiscard]] static XNode parseCDATA(ISource &source);
   [[nodiscard]] static XNode parsePI(ISource &source);
   static void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
-  static void parseElementInternal(ISource &source, XNode &xNode, IEntityMapper & entityMapper);
+  static void parseElementInternal(ISource &source, XNode &xNode, IEntityMapper &entityMapper);
   [[nodiscard]] static XNode parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, IEntityMapper & entityMapper);
   [[nodiscard]] static XNode parseDeclaration(ISource &source);
   [[nodiscard]] static XNode parseDTD(ISource &source, IEntityMapper &entityMapper);
