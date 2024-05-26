@@ -70,6 +70,7 @@ void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<X
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="entityReference">Entity reference to be parsed for XML.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 void XML_Parser::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper)
 {
   auto xElement = XNode::make<XElement>();
@@ -195,6 +196,7 @@ XNode XML_Parser::parseCDATA(ISource &source)
 /// the list of attributes associated with the current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>XML element attribute list.</returns>
 std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source, IEntityMapper &entityMapper)
 {
@@ -237,6 +239,7 @@ void XML_Parser::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper)
 {
   if (XMLValue content{ parseCharacter(source) }; content.isReference()) {
@@ -266,6 +269,7 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &enti
 /// </summary>
 /// <param name="source">XMl source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapper & entityMapper)
 {
   if (source.match("<!--")) {
@@ -299,6 +303,7 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapp
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="outerNamespaces">Current list of outerNamespaces.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to element XNode.</returns>
 XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, IEntityMapper & entityMapper)
 {
@@ -372,6 +377,7 @@ void XML_Parser::parseEpilog(ISource &source, XNode &xProlog)
 /// Parse XML DTD and return any XNode created for it.
 /// </summary>
 /// <param name="source">XML source stream.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to DTD XNode.</returns>
 XNode XML_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 {
@@ -387,6 +393,7 @@ XNode XML_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 /// processing instructions, comments, whitespace and a Document Type Declaration (DTD).
 /// </summary>
 /// <param name="source">XML source stream.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to prolog XNode.</returns>
 XNode XML_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 {
