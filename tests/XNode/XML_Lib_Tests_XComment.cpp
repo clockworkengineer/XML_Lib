@@ -10,7 +10,6 @@ using namespace XML_Lib;
 
 TEST_CASE("Create and use XComment XNode.","[XNode][XComment][API]")
 {
-  XML xml;
   SECTION("Create defalt XComment XNode.", "[XML][XNode][XComment][API]")
   {
     REQUIRE_NOTHROW(XComment());

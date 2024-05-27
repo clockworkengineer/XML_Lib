@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML_Lib_Tests_Comment.cpp
+// Unit Tests: XML_Lib_Tests_XContent.cpp
 //
 // Description: Create and use XContent XNode
 //
@@ -10,7 +10,6 @@ using namespace XML_Lib;
 
 TEST_CASE("Create and use XContent XNode.","[XNode][XContent][API]")
 {
-  XML xml;
   SECTION("Create defalt XContent XNode.", "[XML][XNode][XContent][API]")
   {
     REQUIRE_NOTHROW(XContent(""));
