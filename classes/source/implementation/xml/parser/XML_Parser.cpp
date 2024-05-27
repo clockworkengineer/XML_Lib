@@ -37,7 +37,7 @@ void addContentToElementChildList(XNode &xNode, const std::string &content)
     if (!xNode.getChildren().empty()) {
       if (xNode.getChildren().back().isCDATA() || xNode.getChildren().back().isEntity()) { isWhiteSpace = false; }
     }
-    xNode.addChild(XNode::make<XContent>(isWhiteSpace));
+    xNode.addChild(XNode::make<XContent>("", isWhiteSpace));
   }
   auto &xmlContent = XRef<XContent>(xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
