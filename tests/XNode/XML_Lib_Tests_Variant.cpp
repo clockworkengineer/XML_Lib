@@ -8,10 +8,10 @@
 
 using namespace XML_Lib;
 
-TEST_CASE("Create and use XNode variants", "[XML][XNode][Variant][API]")
+TEST_CASE("Create and use Variant", "[XML][XNode][Variant][API]")
 {
   XML xml;
-  SECTION("Create default variant.", "[XML][Variant][Create]")
+  SECTION("Create default variant.", "[XML][Variant][API]")
   {
     REQUIRE_NOTHROW(Variant());
   }
