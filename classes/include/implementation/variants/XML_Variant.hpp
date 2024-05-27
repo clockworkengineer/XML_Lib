@@ -20,7 +20,7 @@ public:
   virtual ~Variant() = default;
   // Check what XNode variant
   [[nodiscard]] bool isNameable() const { return xmlNodeType >= Type::root && xmlNodeType <= Type::element; }
-  [[nodiscard]] bool isIndexable() const { return xmlNodeType <= Type::element; }
+  [[nodiscard]] bool isIndexable() const { return xmlNodeType > Type::base && xmlNodeType <= Type::element; }
   [[nodiscard]] bool isProlog() const { return xmlNodeType == Type::prolog; }
   [[nodiscard]] bool isDeclaration() const { return xmlNodeType == Type::declaration; }
   [[nodiscard]] bool isRoot() const { return xmlNodeType == Type::root; }
