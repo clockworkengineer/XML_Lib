@@ -50,6 +50,7 @@ set(TEST_SOURCES
         XNode/XML_Lib_Tests_Variant.cpp
         XNode/XML_Lib_Tests_XComment.cpp
         XNode/XML_Lib_Tests_XContent.cpp
+        XNode/XML_Lib_Tests_XDeclaration.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})

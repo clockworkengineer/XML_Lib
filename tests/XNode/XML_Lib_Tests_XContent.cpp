@@ -10,7 +10,7 @@ using namespace XML_Lib;
 
 TEST_CASE("Create and use XContent XNode.","[XNode][XContent][API]")
 {
-  SECTION("Create defalt XContent XNode.", "[XML][XNode][XContent][API]")
+  SECTION("Create default XContent XNode.", "[XML][XNode][XContent][API]")
   {
     REQUIRE_NOTHROW(XContent(""));
   }
