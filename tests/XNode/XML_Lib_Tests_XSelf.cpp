@@ -27,7 +27,7 @@ TEST_CASE("Create and use XSelf XNode.","[XNode][XSelf][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = XNode::make<XSelf>("test", namespaces, attributes);
-    REQUIRE_FALSE(!xNode.isRoot());
+    REQUIRE_FALSE(!xNode.isSelf());
     REQUIRE(XRef<XSelf>(xNode).name()=="test");
   }
 }
