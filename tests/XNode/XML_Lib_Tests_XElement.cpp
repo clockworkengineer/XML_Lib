@@ -73,11 +73,12 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE(xElement.getNameSpace("b:namespace").getUnparsed()=="value2");
     REQUIRE(xElement.getNameSpace("b:namespace").getParsed()=="value2");
   }
-  // SECTION("Create and use XElement using make/JRef API.", "[XML][XNode][XElement][Make][XRef][API]")
-  // {
-  //   XNode xNode = XNode::make<XElement>("This is a test comment.");
-  //   REQUIRE_FALSE(!xNode.isComment());
-  //   REQUIRE(XRef<XElement>(xNode).comment()=="This is a test comment.");
-  // }
+  SECTION("Create and use XElement using make/JRef API.", "[XML][XNode][XElement][Make][XRef][API]")
+  {
+    std::vector<XMLAttribute> namespaces, attributes;
+    auto xNode = XNode::make<XElement>("test", namespaces, attributes);
+    REQUIRE_FALSE(!xNode.isElement());
+    REQUIRE(XRef<XElement>(xNode).name()=="test");
+  }
 }
 
