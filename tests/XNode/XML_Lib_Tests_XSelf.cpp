@@ -23,7 +23,7 @@ TEST_CASE("Create and use XSelf XNode.","[XNode][XSelf][API]")
     REQUIRE_FALSE(!xSelf.getNamespaceList().empty());
     REQUIRE(xSelf.getContents()=="");
   }
-  SECTION("Create and use XSelf using make/JRef API.", "[XML][XNode][XSelf][Make][XRef][API]")
+  SECTION("Create and use XSelf using make/XRef API.", "[XML][XNode][XSelf][Make][XRef][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = XNode::make<XSelf>("test", namespaces, attributes);

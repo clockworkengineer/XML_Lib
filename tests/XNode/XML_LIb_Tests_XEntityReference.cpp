@@ -22,7 +22,7 @@ TEST_CASE("Create and use XEntityReference XNode.","[XNode][XEntityReference][AP
     REQUIRE(xEntityReference.value().getParsed() == "parsed");
     REQUIRE(xEntityReference.value().getUnparsed() == "unparsed");
   }
-  SECTION("Create and use XEntityReference using make/JRef API.", "[XML][XNode][XEntityReference][Make][XRef][API]")
+  SECTION("Create and use XEntityReference using make/XRef API.", "[XML][XNode][XEntityReference][Make][XRef][API]")
   {
     XNode xNode = XNode::make<XEntityReference>(XMLValue("unparsed", "parsed"));
     REQUIRE_FALSE(!xNode.isEntity());

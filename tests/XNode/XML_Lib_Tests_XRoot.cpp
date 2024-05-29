@@ -23,7 +23,7 @@ TEST_CASE("Create and use XRoot XNode.","[XNode][XRoot][API]")
     REQUIRE_FALSE(!xRoot.getNamespaceList().empty());
     REQUIRE(xRoot.getContents()=="");
   }
-  SECTION("Create and use XRoot using make/JRef API.", "[XML][XNode][XRoot][Make][XRef][API]")
+  SECTION("Create and use XRoot using make/XRef API.", "[XML][XNode][XRoot][Make][XRef][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = XNode::make<XRoot>("test", namespaces, attributes);

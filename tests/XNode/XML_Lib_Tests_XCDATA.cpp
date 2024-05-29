@@ -23,7 +23,7 @@ TEST_CASE("Create and use XCDATA XNode.","[XNode][XCDATA][API]")
     XCDATA xCDATA = XCDATA("&apos;Test&apos;");
     REQUIRE(xCDATA.CDATA() == "&apos;Test&apos;");
   }
-  SECTION("Create and use XCDATA using make/JRef API.", "[XML][XNode][XCDATA][Make][XRef][API]")
+  SECTION("Create and use XCDATA using make/XRef API.", "[XML][XNode][XCDATA][Make][XRef][API]")
   {
     XNode xNode = XNode::make<XCDATA>("&apos;Test&apos;");
     REQUIRE_FALSE(!xNode.isCDATA());

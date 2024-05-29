@@ -73,7 +73,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE(xElement.getNameSpace("b:namespace").getUnparsed()=="value2");
     REQUIRE(xElement.getNameSpace("b:namespace").getParsed()=="value2");
   }
-  SECTION("Create and use XElement using make/JRef API.", "[XML][XNode][XElement][Make][XRef][API]")
+  SECTION("Create and use XElement using make/XRef API.", "[XML][XNode][XElement][Make][XRef][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = XNode::make<XElement>("test", namespaces, attributes);

@@ -21,7 +21,7 @@ TEST_CASE("Create and use XPI XNode.","[XNode][XPI][API]")
     REQUIRE(xPI.parameters() == "type='text/xsl' href='style.xsl'");
 
   }
-  SECTION("Create and use XPI using make/JRef API.", "[XML][XNode][XPI][Make][XRef][API]")
+  SECTION("Create and use XPI using make/XRef API.", "[XML][XNode][XPI][Make][XRef][API]")
   {
     XNode xNode = XNode::make<XPI>("xml-stylesheet", "type='text/xsl' href='style.xsl'");
     REQUIRE_FALSE(!xNode.isPI());
