@@ -54,6 +54,9 @@ set(TEST_SOURCES
         XNode/XML_Lib_Tests_XElement.cpp
         XNode/XML_Lib_Tests_XCDATA.cpp
         XNode/XML_Lib_Tests_XPI.cpp
+        XNode/XML_Lib_Tests_XProlog.cpp
+        XNode/XML_Lib_Tests_XRoot.cpp
+        XNode/XML_Lib_Tests_XSelf.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})
