@@ -29,10 +29,13 @@ struct XElement : Variant
   void addAttribute(const std::string &name, const XMLValue &value) const { attributes.emplace_back(name, value); }
   // Return reference to attribute list
   [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return attributes; }
+  // Is namespace present  ?
   [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
   {
     return XMLAttribute::isAttrubutePresent(namespaces, name);
   }
+  // Add an namespace
+  void addNameSpace(const std::string &name, const XMLValue &value) const { namespaces.emplace_back(name, value); }
   // Is a namespace present ?
   [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const
   {
@@ -57,6 +60,6 @@ struct XElement : Variant
 private:
   std::string elementName;
   mutable std::vector<XMLAttribute> attributes;
-  std::vector<XMLAttribute> namespaces;
+  mutable std::vector<XMLAttribute> namespaces;
 };
 }// namespace XML_Lib
