@@ -53,6 +53,7 @@ set(TEST_SOURCES
         XNode/XML_Lib_Tests_XDeclaration.cpp
         XNode/XML_Lib_Tests_XElement.cpp
         XNode/XML_Lib_Tests_XCDATA.cpp
+        XNode/XML_Lib_Tests_XPI.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})
