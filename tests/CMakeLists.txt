@@ -58,6 +58,7 @@ set(TEST_SOURCES
         xnode/XML_Lib_Tests_XRoot.cpp
         xnode/XML_Lib_Tests_XSelf.cpp
         xnode/XML_LIb_Tests_XEntityReference.cpp
+        xnode/XML_Lib_Tests_XDTD.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})
