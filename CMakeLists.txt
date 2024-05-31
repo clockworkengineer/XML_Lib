@@ -91,6 +91,7 @@ set(XML_INCLUDES
   ./classes/include/implementation/variants/XML_XPI.hpp
   ./classes/include/implementation/variants/XML_XDTD.hpp
   ./classes/include/implementation/variants/XML_Variant.hpp
+        ./classes/include/interface/IAction.hpp
 )
 
 # XML library
