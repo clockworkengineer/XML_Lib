@@ -18,9 +18,9 @@ void addAttributes(const XElement &xElement)
 }
 void addNameSpaces(const XElement &xElement)
 {
-  xElement.addNameSpace("a:namespace", XMLValue {"value1", "value1"});
-  xElement.addNameSpace("b:namespace", XMLValue {"value2", "value2"});
-  xElement.addNameSpace("c:namespace", XMLValue {"value3", "value3"});
+  xElement.addNameSpace("a", XMLValue {"value1", "value1"});
+  xElement.addNameSpace("b", XMLValue {"value2", "value2"});
+  xElement.addNameSpace("c", XMLValue {"value3", "value3"});
 
 }
 TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
@@ -35,7 +35,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE( xElement.name() == "test");
     REQUIRE_FALSE(!xElement.getAttributeList().empty());
     REQUIRE_FALSE(!xElement.getNamespaceList().empty());
-    REQUIRE(xElement.getContents()=="");
+    REQUIRE_FALSE(!xElement.getContents().empty());
   }
   SECTION("Create XElement with a given name and add attributes to it.", "[XML][XNode][XElement][API]")
   {
@@ -63,15 +63,15 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE(xElement["attr2"].getUnparsed() == "value2");
     REQUIRE(xElement["attr2"].getParsed() == "value2");
   }
-  SECTION("Create XElement with a given name, add namespaces to it, check that b:namespace exists and get its values.", "[XML][XNode][XElement][API]")
+  SECTION("Create XElement with a given name, add namespaces to it, check that b exists and get its values.", "[XML][XNode][XElement][API]")
   {
     auto xElement = XElement("test", {}, {});
     REQUIRE( xElement.name() == "test");
     addNameSpaces(xElement);
     REQUIRE(xElement.getNamespaceList().size()==3);
-    REQUIRE_FALSE(!xElement.isNameSpacePresent(("b:namespace")));
-    REQUIRE(xElement.getNameSpace("b:namespace").getUnparsed()=="value2");
-    REQUIRE(xElement.getNameSpace("b:namespace").getParsed()=="value2");
+    REQUIRE_FALSE(!xElement.isNameSpacePresent(("b")));
+    REQUIRE(xElement.getNameSpace("b").getUnparsed()=="value2");
+    REQUIRE(xElement.getNameSpace("b").getParsed()=="value2");
   }
   SECTION("Create and use XElement using make/XRef API.", "[XML][XNode][XElement][Make][XRef][API]")
   {
