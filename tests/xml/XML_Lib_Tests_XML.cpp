@@ -10,7 +10,7 @@ using namespace XML_Lib;
 TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
 {
   XML xml;
-  SECTION("Check XML Lib version.", "[XML][XNode][Version]") { REQUIRE(xml.version() == "XML_Lib Version 1.0.0"); }
+  SECTION("Check XML Lib version.", "[XML][XNode][Version]") { REQUIRE(xml.version() == "XML_Lib Version 1.1.0"); }
   SECTION("Check prolog with no parsed XML.", "[XML][Prolog][No XML]")
   {
     REQUIRE_THROWS((void)xml.prolog(), "XML Error: No XML has been parsed.");

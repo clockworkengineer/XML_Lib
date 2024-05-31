@@ -14,6 +14,7 @@ namespace XML_Lib {
 class XML_Impl;
 class ISource;
 class IDestination;
+class IAction;
 struct XNode;
 
 class XML
@@ -46,6 +47,9 @@ public:
   // Stringify XML object to destination text
   void stringify(IDestination &destination) const;
   void stringify(IDestination &&destination) const;
+  // Traverse XML tree
+  void traverse(IAction &action);
+  void traverse(IAction &action) const;
   // Read/Write XML to/from file
   [[nodiscard]] static std::string fromFile(const std::string &fileName);
   static void toFile(const std::string &fileName, const std::string &xmlString, Format format = Format::utf8);

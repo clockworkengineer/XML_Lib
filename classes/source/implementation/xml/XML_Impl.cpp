@@ -62,4 +62,14 @@ void XML_Impl::parse(ISource &source) { xmlRoot = parser->parse(source); }
 
 void XML_Impl::stringify(IDestination &destination) { stringifier->stringify(prolog(), destination); }
 
+void XML_Impl::traverse(IAction &action)
+{
+  if (xmlRoot.isEmpty()) { throw Error("No XML to traverse."); }
+  traverseXNodes(xmlRoot, action);
+}
+void XML_Impl::traverse(IAction &action) const
+{
+  if (xmlRoot.isEmpty()) { throw Error("No XML to traverse."); }
+  traverseXNodes(xmlRoot, action);
+}
 }// namespace XML_Lib

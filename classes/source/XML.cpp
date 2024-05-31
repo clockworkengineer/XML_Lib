@@ -74,6 +74,16 @@ void XML::stringify(IDestination &destination) const { implementation->stringify
 void XML::stringify(IDestination &&destination) const { implementation->stringify(destination); }
 
 /// <summary>
+/// Recursively traverse XNode structure calling IAction methods (read only)
+///  or to change the XML tree node directly.
+/// </summary>
+/// <param name="action">Action methods to call during traversal.</param>
+/// Traverse using non-const JSON so can change JSON tree
+void XML::traverse(IAction &action) { implementation->traverse(action); }
+// Traverse using const JSON so cannot change JSON tree
+void XML::traverse(IAction &action) const { std::as_const(*implementation).traverse(action); }
+
+/// <summary>
 /// Open a XML file, read its contents into a string buffer and return
 /// the buffer.
 /// </summary>
