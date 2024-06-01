@@ -114,6 +114,9 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
 # Add tests
 add_subdirectory(tests)
 
+# Add examples
+add_subdirectory(examples)
+
 # install
 install(TARGETS ${XML_LIBRARY_NAME} DESTINATION lib)
 install(FILES ${XML_INCLUDES} DESTINATION include)
