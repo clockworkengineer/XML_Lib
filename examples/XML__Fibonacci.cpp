@@ -26,7 +26,7 @@ std::string xmlFibonacciFile() { return (std::filesystem::current_path() / "file
 /// </summary>
 void nextFibonacci()
 {
-  xl::XML xml;
+  const xl::XML xml;
   if (!std::filesystem::exists(xmlFibonacciFile())) {
     // If XML file does not exist create intial sequence
     xml.parse(xl::BufferSource{ R"(<root><row>1</row><row>1</row><row>2</row></root>)" });
@@ -34,9 +34,9 @@ void nextFibonacci()
     // Parse in current sequence
     xml.parse(xl::FileSource{ xmlFibonacciFile() });
     // Get index of last element
-    auto last = xml.root().getChildren().size()- 1;
-    auto first = std::atol(xl::XRef<xl::XElement>(xml.root()[last-1]).getContents().c_str());
-    auto second = std::atol(xl::XRef<xl::XElement>(xml.root()[last]).getContents().c_str());
+    const auto last = xml.root().getChildren().size() - 1;
+    const auto first = std::stol(xl::XRef<xl::XElement>(xml.root()[last - 1]).getContents());
+    const auto second = std::stol(xl::XRef<xl::XElement>(xml.root()[last]).getContents());
     auto  xNode = xl::XNode::make<xl::XElement>("row");
     xNode.addChild(xl::XNode::make<xl::XContent>(std::to_string(first+second)));
     xml.root().addChild(xNode);
