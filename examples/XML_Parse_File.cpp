@@ -49,11 +49,11 @@ void processXMLFile(const std::string &fileName)
   PLOG_INFO << elapsedTime(start, stop) << " microseconds to stringify to buffer.";
   // Parse from buffer
   start = chrono::high_resolution_clock::now();
-  xmlon.parse(xml::BufferSource{ xmlonDestination.getBuffer() });
+  xmlon.parse(xml::BufferSource{ xmlonDestination.toString() });
   stop = chrono::high_resolution_clock::now();
   PLOG_INFO << elapsedTime(start, stop) << " microseconds to parse from buffer.";
   // Display contents
-  if (xmlonDestination.getBuffer().size() < kMaxFileLengthToDisplay) { PLOG_INFO << "[" << xmlonDestination.getBuffer() << "]"; }
+  if (xmlonDestination.toString().size() < kMaxFileLengthToDisplay) { PLOG_INFO << "[" << xmlonDestination.toString() << "]"; }
   PLOG_INFO << "--------------------FILE PROCESSED OK--------------------";
   PLOG_INFO << "Finished " << fileName << ".";
 }
