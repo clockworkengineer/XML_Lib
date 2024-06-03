@@ -17,21 +17,21 @@ TEST_CASE("Creation and use of IDestination (Buffer) interface.", "[XML][Parse][
   SECTION("Create BufferDestination and get buffer which should be empty.", "[XML][Stringify][BufferDestination]")
   {
     BufferDestination buffer;
-    REQUIRE_FALSE(!buffer.getBuffer().empty());
+    REQUIRE_FALSE(!buffer.size() == 0);
   }
   SECTION("Create BufferDestination and add one character.", "[XML][Stringify][BufferDestination]")
   {
     BufferDestination buffer;
     buffer.add("i");
-    REQUIRE(buffer.getBuffer().size() == 1);
+    REQUIRE(buffer.size() == 1);
   }
   SECTION(
     "Create BufferDestination and add an stringified integer and check result.", "[XML][Stringify][BufferDestination]")
   {
     BufferDestination buffer;
     buffer.add("65767");
-    REQUIRE(buffer.getBuffer().size() == 5);
-    REQUIRE(buffer.getBuffer() == ("65767"));
+    REQUIRE(buffer.size() == 5);
+    REQUIRE(buffer.toString() == ("65767"));
   }
 }
 TEST_CASE("Creation and use of IDestination (File) interface.", "[XML][Parse][FileDestination]")

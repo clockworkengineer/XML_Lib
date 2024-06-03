@@ -29,7 +29,9 @@ public:
     std::ranges::copy(bytes, std::back_inserter(buffer));
   }
   void add(const Char ch) override { add(toUtf8(ch)); }
-  [[nodiscard]] std::string getBuffer() const { return buffer; }
+
+  [[nodiscard]] std::string toString() const { return buffer; }
+  [[nodiscard]] std::size_t size() const { return buffer.size(); }
 
 private:
   std::string buffer;

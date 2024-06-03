@@ -44,7 +44,7 @@ TEST_CASE("Use XML to stringify previously parsed XML.", "[XML][Stringify]")
     xml.parse(source);
     BufferDestination destination;
     xml.stringify(destination);
-    REQUIRE(destination.getBuffer() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AddressBook/>");
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AddressBook/>");
   }
   SECTION("Stringify XML with self closing root tag  with attributes.", "[XML][Stringify]")
   {
@@ -280,6 +280,6 @@ TEST_CASE("Stringify ENTITY that contains XML parsable into new structure.", "[X
     xml.parse(source);
     BufferDestination destination;
     xml.stringify(destination);
-    REQUIRE(destination.getBuffer() == expanded);
+    REQUIRE(destination.toString() == expanded);
   }
 }

@@ -192,7 +192,7 @@ XMLValue DTD_Impl::parseElementInternalpecification(const std::string &elementNa
     } else {
       throw SyntaxError("Invalid element content specification.");
     }
-    return XMLValue{ contentSpec.getUnparsed(), contentSpecDestination.getBuffer() };
+    return XMLValue{ contentSpec.getUnparsed(), contentSpecDestination.toString() };
   } catch (SyntaxError &e) {
     if (e.what() == std::string("XML Syntax Error: Invalid element content specification.")) {
       throw SyntaxError("Invalid content specification for element <" + elementName + ">.");

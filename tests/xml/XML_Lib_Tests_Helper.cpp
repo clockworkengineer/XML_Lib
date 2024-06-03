@@ -66,5 +66,5 @@ void checkStringify(const std::string &xmlString)
   xml.parse(source);
   BufferDestination destination;
   xml.stringify(destination);
-  REQUIRE(destination.getBuffer() == xmlString);
+  REQUIRE(destination.toString() == xmlString);
 }

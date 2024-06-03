@@ -89,7 +89,7 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     XRef<XDeclaration>(xml.declaration()).setEncoding("UTF-16");
     BufferDestination utf8xml;
     xml.stringify(utf8xml);
-    XML::toFile(kGeneratedXMLFile, utf8xml.getBuffer(), XML::Format::utf16BE);
+    XML::toFile(kGeneratedXMLFile, utf8xml.toString(), XML::Format::utf16BE);
     REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf16BE);
     xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-16");
@@ -102,7 +102,7 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     XRef<XDeclaration>(xml.declaration()).setEncoding("UTF-16");
     BufferDestination utf8xml;
     xml.stringify(utf8xml);
-    XML::toFile(kGeneratedXMLFile, utf8xml.getBuffer(), XML::Format::utf16LE);
+    XML::toFile(kGeneratedXMLFile, utf8xml.toString(), XML::Format::utf16LE);
     REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf16LE);
     xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-16");
@@ -115,7 +115,7 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     XRef<XDeclaration>(xml.declaration()).setEncoding("UTF-8");
     BufferDestination utf16xml;
     xml.stringify(utf16xml);
-    XML::toFile(kGeneratedXMLFile, utf16xml.getBuffer(), XML::Format::utf8BOM);
+    XML::toFile(kGeneratedXMLFile, utf16xml.toString(), XML::Format::utf8BOM);
     REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf8BOM);
     xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
@@ -128,7 +128,7 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     XRef<XDeclaration>(xml.declaration()).setEncoding("UTF-8");
     BufferDestination utf16xml;
     xml.stringify(utf16xml);
-    XML::toFile(kGeneratedXMLFile, utf16xml.getBuffer(), XML::Format::utf8BOM);
+    XML::toFile(kGeneratedXMLFile, utf16xml.toString(), XML::Format::utf8BOM);
     REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf8BOM);
     xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
     REQUIRE(XRef<XDeclaration>(xml.declaration()).encoding() == "UTF-8");
