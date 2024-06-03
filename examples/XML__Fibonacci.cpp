@@ -13,7 +13,7 @@
 #include "XML.hpp"
 #include "XML_Core.hpp"
 
-namespace xml = XML_Lib;
+namespace xl = XML_Lib;
 
 /// <summary>
 /// Return Fibonaci xml file name.
@@ -22,27 +22,27 @@ namespace xml = XML_Lib;
 std::string xmlFibonacciFile() { return (std::filesystem::current_path() / "files" / "fibonacci.xml").string(); }
 /// <summary>
 /// Read in current fibonacci sequence from XML file, calculate the
-//  next in sequence and write back to XML file.
+/// next in sequence and write back to XML file.
 /// </summary>
 void nextFibonacci()
 {
-  xml::XML xml;
+  xl::XML xml;
   if (!std::filesystem::exists(xmlFibonacciFile())) {
     // If XML file does not exist create intial sequence
-    xml.parse(xml::BufferSource{ "<root><row>1</row><row>1</row><row>2</row></root>" });
+    xml.parse(xl::BufferSource{ R"(<root><row>1</row><row>1</row><row>2</row></root>)" });
   } else {
     // Parse in current sequence
-    xml.parse(xml::FileSource{ xmlFibonacciFile() });
+    xml.parse(xl::FileSource{ xmlFibonacciFile() });
     // Get index of last element
-    // auto last = xml::XRef<xml::Array>(xml.root()).size() - 1;
-    // // Next is sum of last two entries
-    // auto next = xml::XRef<xml::Number>(xml[last]).value<int>();
-    // next += xml::XRef<xml::Number>(xml[last - 1]).value<int>();
-    // // Expand array by one and add next in sequence
-    // xml[last + 1] = next;
+    auto last = xml.root().getChildren().size()- 1;
+    auto first = std::atol(xl::XRef<xl::XElement>(xml.root()[last-1]).getContents().c_str());
+    auto second = std::atol(xl::XRef<xl::XElement>(xml.root()[last]).getContents().c_str());
+    auto  xNode = xl::XNode::make<xl::XElement>("row");
+    xNode.addChild(xl::XNode::make<xl::XContent>(std::to_string(first+second)));
+    xml.root().addChild(xNode);
   }
   // Write updated sequence back to file
-  xml.stringify(xml::FileDestination{ xmlFibonacciFile() });
+  xml.stringify(xl::FileDestination{ xmlFibonacciFile() });
 }
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
@@ -52,7 +52,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     plog::init(plog::debug, "XML_Fibonacci.log");
     PLOG_INFO << "XML_Fibonacci started ...";
     // Log version
-    PLOG_INFO << xml::XML().version();
+    PLOG_INFO << xl::XML().version();
     // Update current sequence
     nextFibonacci();
   } catch (std::exception &ex) {

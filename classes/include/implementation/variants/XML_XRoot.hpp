@@ -8,7 +8,7 @@ namespace XML_Lib {
 struct XRoot final : XElement
 {
   // Constructors/Destructors
-  XRoot() : XElement(Type::root) {}
+  explicit XRoot(const std::string &name="") : XElement(name ,Type::root) {}
   XRoot(const std::string &name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces)

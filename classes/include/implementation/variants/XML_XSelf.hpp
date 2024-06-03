@@ -8,7 +8,7 @@ namespace XML_Lib {
 struct XSelf final : XElement
 {
   // Constructors/Destructors
-  XSelf() : XElement(Type::self) {}
+  explicit XSelf(const std::string &name="") : XElement(name,Type::self) {}
   XSelf(const std::string &name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces)
