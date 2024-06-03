@@ -28,7 +28,8 @@ file(GLOB EXAMPLE_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${CMAKE_CURRENT_
 foreach(EXAMPLE_PROGRAM ${EXAMPLE_SOURCES})
     string(REPLACE ".cpp" "" EXAMPLE_TARGET ${EXAMPLE_PROGRAM})
     add_executable(${EXAMPLE_TARGET} ${EXAMPLE_PROGRAM}
-            include/XML_Utility.hpp)
+            include/XML_Utility.hpp
+            XML__Fibonacci.cpp)
     target_link_libraries(${EXAMPLE_TARGET} XML_Lib)
     target_include_directories(${EXAMPLE_TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/include/external)
     install(TARGETS ${EXAMPLE_TARGET} DESTINATION bin)
