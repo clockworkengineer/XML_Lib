@@ -29,7 +29,7 @@ void nextFibonacci()
   xml::XML xml;
   if (!std::filesystem::exists(xmlFibonacciFile())) {
     // If XML file does not exist create intial sequence
-    xml.parse(xml::BufferSource{ "[0, 1]" });
+    xml.parse(xml::BufferSource{ "<root><row>1</row><row>1</row><row>2</row></root>" });
   } else {
     // Parse in current sequence
     xml.parse(xml::FileSource{ xmlFibonacciFile() });
