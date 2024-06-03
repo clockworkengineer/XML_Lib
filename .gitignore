@@ -5,7 +5,6 @@
 /nbproject/private/
 /CMakeFiles/
 .vscode/
-external/
 .cache/clangd/index/
 /.idea/.gitignore
 /cmake-build-debug/.ninja_deps
