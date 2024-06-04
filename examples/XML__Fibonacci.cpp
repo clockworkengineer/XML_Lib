@@ -35,8 +35,10 @@ void nextFibonacci()
     xml.parse(xl::FileSource{ xmlFibonacciFile() });
     // Get index of last element
     const auto last = xml.root().getChildren().size() - 1;
+    // Get last two in sequence
     const auto first = std::stol(xl::XRef<xl::XElement>(xml.root()[last - 1]).getContents());
     const auto second = std::stol(xl::XRef<xl::XElement>(xml.root()[last]).getContents());
+    // Create new element for next in sequence
     auto  xNode = xl::XNode::make<xl::XElement>("row");
     xNode.addChild(xl::XNode::make<xl::XContent>(std::to_string(first+second)));
     xml.root().addChild(xNode);
