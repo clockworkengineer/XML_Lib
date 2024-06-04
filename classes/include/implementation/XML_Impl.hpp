@@ -81,5 +81,6 @@ template<typename T> void XML_Impl::traverseXNodes(T &xNode, IAction &action)
   } else {
     throw Error("Unknown XNode type encountered during tree traversal.");
   }
+  for (auto &child : xNode.getChildren()) { traverseXNodes(child, action); }
 }
 }// namespace XML_Lib
