@@ -4,7 +4,7 @@
 
 namespace XML_Lib {
 // ===============================
-// Construct JNode from raw values
+// Construct XNode from raw values
 // ===============================
 template<typename T> XNode::XNode(T value)
 {

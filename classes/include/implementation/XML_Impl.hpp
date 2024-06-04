@@ -48,7 +48,7 @@ private:
   std::unique_ptr<IStringify> stringifier;
 };
 /// <summary>
-/// Recursively traverse JNode tree calling IAction methods and possibly
+/// Recursively traverse XNode tree calling IAction methods and possibly
 /// modifying the tree contents or even structure.
 /// </summary>
 /// <param name="xNode">XNode tree to be traversed.</param>
