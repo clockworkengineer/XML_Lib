@@ -164,4 +164,27 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 0);
   }
+  SECTION("Parse minimum XML (root and no prolog and multiple element (some self terminated) and traverse", "[XML][Traverse][Minumum]")
+  {
+    BufferSource source{ "<root><element> test content </element>"
+                         "<element> test content </element>"
+                         "<element> test content </element>"
+                         "<self />"
+                         "<self /></root>" };
+    xml.parse(source);
+    XML_Analyzer analyzer;
+    xml.traverse(analyzer);
+    REQUIRE(analyzer.totalNodes == 11);
+    REQUIRE(analyzer.totalCDATA == 0);
+    REQUIRE(analyzer.totalComment == 0);
+    REQUIRE(analyzer.totalContent == 3);
+    REQUIRE(analyzer.totalDeclaration == 1);
+    REQUIRE(analyzer.totalDTD == 0);
+    REQUIRE(analyzer.totalElement == 3);
+    REQUIRE(analyzer.totalEntityReference == 0);
+    REQUIRE(analyzer.totalPI == 0);
+    REQUIRE(analyzer.totalProlog == 1);
+    REQUIRE(analyzer.totalRoot == 1);
+    REQUIRE(analyzer.totalSelf == 2);
+  }
 }
