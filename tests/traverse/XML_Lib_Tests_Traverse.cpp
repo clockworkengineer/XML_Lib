@@ -119,47 +119,49 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 0);
   }
-  // SECTION("Parse minimum XML (root and no prolog, an entity references and traverse", "[XML][Traverse][Minumum]")
-  // {
-  //   BufferSource source{
-  //     "<root> &apos; </root>"
-  //   };
-  //   xml.parse(source);
-  //   XML_Analyzer analyzer;
-  //   xml.traverse(analyzer);
-  //   REQUIRE(analyzer.totalNodes == 7);
-  //   REQUIRE(analyzer.totalCDATA == 0);
-  //   REQUIRE(analyzer.totalComment == 0);
-  //   REQUIRE(analyzer.totalContent == 2);
-  //   REQUIRE(analyzer.totalDeclaration == 1);
-  //   REQUIRE(analyzer.totalDTD == 0);
-  //   REQUIRE(analyzer.totalElement == 0);
-  //   REQUIRE(analyzer.totalEntityReference == 1);
-  //   REQUIRE(analyzer.totalPI == 0);
-  //   REQUIRE(analyzer.totalProlog == 1);
-  //   REQUIRE(analyzer.totalRoot == 1);
-  //   REQUIRE(analyzer.totalSelf == 0);
-  // }
-  // SECTION("Parse minimum XML (root and no prolog, content, two entity references and comments) and traverse", "[XML][Traverse][Minumum]")
-  // {
-  //   BufferSource source{
-  //     "<!-- comment 1 -->"
-  //     "<root> &apos;test content&apos; <!-- comment 2 --></root>"
-  //   };
-  //   xml.parse(source);
-  //   XML_Analyzer analyzer;
-  //   xml.traverse(analyzer);
-  //   REQUIRE(analyzer.totalNodes == 12);
-  //   REQUIRE(analyzer.totalCDATA == 0);
-  //   REQUIRE(analyzer.totalComment == 2);
-  //   REQUIRE(analyzer.totalContent == 1);
-  //   REQUIRE(analyzer.totalDeclaration == 1);
-  //   REQUIRE(analyzer.totalDTD == 0);
-  //   REQUIRE(analyzer.totalElement == 0);
-  //   REQUIRE(analyzer.totalEntityReference == 0);
-  //   REQUIRE(analyzer.totalPI == 0);
-  //   REQUIRE(analyzer.totalProlog == 1);
-  //   REQUIRE(analyzer.totalRoot == 1);
-  //   REQUIRE(analyzer.totalSelf == 0);
-  // }
+  SECTION("Parse minimum XML (root and no prolog, an entity reference and traverse", "[XML][Traverse][Minumum]")
+  {
+    BufferSource source{
+      "<root> &apos; </root>"
+    };
+    xml.parse(source);
+    XML_Analyzer analyzer;
+    xml.traverse(analyzer);
+    REQUIRE(analyzer.totalNodes == 7);
+    REQUIRE(analyzer.totalCDATA == 0);
+    REQUIRE(analyzer.totalComment == 0);
+    REQUIRE(analyzer.totalContent == 2);
+    REQUIRE(analyzer.totalDeclaration == 1);
+    REQUIRE(analyzer.totalDTD == 0);
+    REQUIRE(analyzer.totalElement == 0);
+    // Each enenity reference includes all child nodes created for it which in this case is a character reference
+    // or it could be nodes that make up valid XML
+    REQUIRE(analyzer.totalEntityReference == 2);
+    REQUIRE(analyzer.totalPI == 0);
+    REQUIRE(analyzer.totalProlog == 1);
+    REQUIRE(analyzer.totalRoot == 1);
+    REQUIRE(analyzer.totalSelf == 0);
+  }
+  SECTION("Parse minimum XML (root and no prolog, content, two entity references and comments) and traverse", "[XML][Traverse][Minumum]")
+  {
+    BufferSource source{
+      "<!-- comment 1 -->"
+      "<root> &apos;test content&apos; <!-- comment 2 --></root>"
+    };
+    xml.parse(source);
+    XML_Analyzer analyzer;
+    xml.traverse(analyzer);
+    REQUIRE(analyzer.totalNodes == 12);
+    REQUIRE(analyzer.totalCDATA == 0);
+    REQUIRE(analyzer.totalComment == 2);
+    REQUIRE(analyzer.totalContent == 3);
+    REQUIRE(analyzer.totalDeclaration == 1);
+    REQUIRE(analyzer.totalDTD == 0);
+    REQUIRE(analyzer.totalElement == 0);
+    REQUIRE(analyzer.totalEntityReference == 4);
+    REQUIRE(analyzer.totalPI == 0);
+    REQUIRE(analyzer.totalProlog == 1);
+    REQUIRE(analyzer.totalRoot == 1);
+    REQUIRE(analyzer.totalSelf == 0);
+  }
 }
