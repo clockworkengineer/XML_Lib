@@ -10,7 +10,7 @@
 
 using namespace XML_Lib;
 
-class XML_Analyzer : public IAction
+class XML_Analyzer final : public IAction
 {
 public:
   XML_Analyzer() = default;
@@ -43,7 +43,7 @@ public:
   // DTD
   int64_t totalDTD{};
   // Element
-  int64_t totalElement {};
+  int64_t totalElement{};
   // Entity Reference
   int64_t totalEntityReference{};
   // PI
@@ -54,7 +54,6 @@ public:
   int64_t totalRoot{};
   // Self
   int64_t totalSelf{};
- 
 };
 
 TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
@@ -62,9 +61,7 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
   const XML xml;
   SECTION("Parse minimum XML (root and no prolog) and traverse", "[XML][Traverse][Minumum]")
   {
-    BufferSource source{
-      "<root></root>"
-    };
+    BufferSource source{ "<root></root>" };
     xml.parse(source);
     XML_Analyzer analyzer;
     xml.traverse(analyzer);
@@ -81,5 +78,88 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 0);
   }
-  
+  SECTION("Parse minimum XML (root and no prolog and content) and traverse", "[XML][Traverse][Minumum]")
+  {
+    BufferSource source{ "<root> test content </root>" };
+    xml.parse(source);
+    XML_Analyzer analyzer;
+    xml.traverse(analyzer);
+    REQUIRE(analyzer.totalNodes == 4);
+    REQUIRE(analyzer.totalCDATA == 0);
+    REQUIRE(analyzer.totalComment == 0);
+    REQUIRE(analyzer.totalContent == 1);
+    REQUIRE(analyzer.totalDeclaration == 1);
+    REQUIRE(analyzer.totalDTD == 0);
+    REQUIRE(analyzer.totalElement == 0);
+    REQUIRE(analyzer.totalEntityReference == 0);
+    REQUIRE(analyzer.totalPI == 0);
+    REQUIRE(analyzer.totalProlog == 1);
+    REQUIRE(analyzer.totalRoot == 1);
+    REQUIRE(analyzer.totalSelf == 0);
+  }
+  SECTION("Parse minimum XML (root and no prolog, content, an entity reference and comments) and traverse", "[XML][Traverse][Minumum]")
+  {
+    BufferSource source{
+      "<!-- comment 1 -->"
+      "<root> test content <!-- comment 2 --></root>"
+    };
+    xml.parse(source);
+    XML_Analyzer analyzer;
+    xml.traverse(analyzer);
+    REQUIRE(analyzer.totalNodes == 6);
+    REQUIRE(analyzer.totalCDATA == 0);
+    REQUIRE(analyzer.totalComment == 2);
+    REQUIRE(analyzer.totalContent == 1);
+    REQUIRE(analyzer.totalDeclaration == 1);
+    REQUIRE(analyzer.totalDTD == 0);
+    REQUIRE(analyzer.totalElement == 0);
+    REQUIRE(analyzer.totalEntityReference == 0);
+    REQUIRE(analyzer.totalPI == 0);
+    REQUIRE(analyzer.totalProlog == 1);
+    REQUIRE(analyzer.totalRoot == 1);
+    REQUIRE(analyzer.totalSelf == 0);
+  }
+  // SECTION("Parse minimum XML (root and no prolog, an entity references and traverse", "[XML][Traverse][Minumum]")
+  // {
+  //   BufferSource source{
+  //     "<root> &apos; </root>"
+  //   };
+  //   xml.parse(source);
+  //   XML_Analyzer analyzer;
+  //   xml.traverse(analyzer);
+  //   REQUIRE(analyzer.totalNodes == 7);
+  //   REQUIRE(analyzer.totalCDATA == 0);
+  //   REQUIRE(analyzer.totalComment == 0);
+  //   REQUIRE(analyzer.totalContent == 2);
+  //   REQUIRE(analyzer.totalDeclaration == 1);
+  //   REQUIRE(analyzer.totalDTD == 0);
+  //   REQUIRE(analyzer.totalElement == 0);
+  //   REQUIRE(analyzer.totalEntityReference == 1);
+  //   REQUIRE(analyzer.totalPI == 0);
+  //   REQUIRE(analyzer.totalProlog == 1);
+  //   REQUIRE(analyzer.totalRoot == 1);
+  //   REQUIRE(analyzer.totalSelf == 0);
+  // }
+  // SECTION("Parse minimum XML (root and no prolog, content, two entity references and comments) and traverse", "[XML][Traverse][Minumum]")
+  // {
+  //   BufferSource source{
+  //     "<!-- comment 1 -->"
+  //     "<root> &apos;test content&apos; <!-- comment 2 --></root>"
+  //   };
+  //   xml.parse(source);
+  //   XML_Analyzer analyzer;
+  //   xml.traverse(analyzer);
+  //   REQUIRE(analyzer.totalNodes == 12);
+  //   REQUIRE(analyzer.totalCDATA == 0);
+  //   REQUIRE(analyzer.totalComment == 2);
+  //   REQUIRE(analyzer.totalContent == 1);
+  //   REQUIRE(analyzer.totalDeclaration == 1);
+  //   REQUIRE(analyzer.totalDTD == 0);
+  //   REQUIRE(analyzer.totalElement == 0);
+  //   REQUIRE(analyzer.totalEntityReference == 0);
+  //   REQUIRE(analyzer.totalPI == 0);
+  //   REQUIRE(analyzer.totalProlog == 1);
+  //   REQUIRE(analyzer.totalRoot == 1);
+  //   REQUIRE(analyzer.totalSelf == 0);
+  // }
 }

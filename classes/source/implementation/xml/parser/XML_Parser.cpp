@@ -242,7 +242,8 @@ void XML_Parser::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 /// <param name="entityMapper">Entity mapper interface object.</param>
 void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper)
 {
-  if (XMLValue content{ parseCharacter(source) }; content.isReference()) {
+  XMLValue content{ parseCharacter(source) };
+  if ( content.isReference()) {
     if (content.isEntityReference()) { content = entityMapper.map(content); }
     auto xEntityReference = XNode::make<XEntityReference>(content);
     if (content.isEntityReference()) {
