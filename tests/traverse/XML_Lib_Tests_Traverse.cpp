@@ -187,4 +187,23 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 2);
   }
+  SECTION("Parse testfile001.xml and traverse", "[XML][Traverse][File]")
+  {
+    FileSource source("./files/testfile001.xml");
+    xml.parse(source);
+    XML_Analyzer analyzer;
+    xml.traverse(analyzer);
+    REQUIRE(analyzer.totalNodes == 761);
+    REQUIRE(analyzer.totalCDATA == 0);
+    REQUIRE(analyzer.totalComment == 0);
+    REQUIRE(analyzer.totalContent == 506);
+    REQUIRE(analyzer.totalDeclaration == 1);
+    REQUIRE(analyzer.totalDTD == 0);
+    REQUIRE(analyzer.totalElement == 252);
+    REQUIRE(analyzer.totalEntityReference == 0);
+    REQUIRE(analyzer.totalPI == 0);
+    REQUIRE(analyzer.totalProlog == 1);
+    REQUIRE(analyzer.totalRoot == 1);
+    REQUIRE(analyzer.totalSelf == 0);
+  }
 }
