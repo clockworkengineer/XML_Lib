@@ -15,7 +15,7 @@ class XML_Analyzer final : public IAction
 public:
   XML_Analyzer() = default;
   ~XML_Analyzer() override = default;
-  // Add JNode details to analysis
+  // Add XNode details to analysis
   void onXNode([[maybe_unused]] const XNode &xNode) override { totalNodes++; }
   void onCDATA([[maybe_unused]] const XNode &xNode) override { totalCDATA++; }
   void onComment([[maybe_unused]] const XNode &xNode) override { totalComment++; }
