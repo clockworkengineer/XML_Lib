@@ -10,7 +10,7 @@
 #include "XML_Utility.hpp"
 #include "XML_Analyzer.hpp"
 
-namespace js = XML_Lib;
+namespace xl = XML_Lib;
 
 /// <summary>
 /// Parse XML file and analyze its XML tree.
@@ -19,11 +19,11 @@ namespace js = XML_Lib;
 void processXMLFile(const std::string &fileName)
 {
   PLOG_INFO << "Analyzing " << fileName;
-  const js::XML json;
-  XML_Analyzer jsonAnalyzer;
-  json.parse(js::FileSource{ fileName });
-  json.traverse(jsonAnalyzer);
-  PLOG_INFO << jsonAnalyzer.dump();
+  const xl::XML xml;
+  XML_Analyzer xmlAnalyzer;
+  xml.parse(xl::FileSource{ fileName });
+  xml.traverse(xmlAnalyzer);
+  PLOG_INFO << xmlAnalyzer.dump();
   PLOG_INFO << "Finished " << fileName << ".";
 }
 
@@ -33,7 +33,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
   plog::init(plog::debug, "XML_Analyze_File.log");
   PLOG_INFO << "XML_Analyze_File started ...";
   // Output XML Lib version and data structure metrics
-  PLOG_INFO << js::XML().version();
+  PLOG_INFO << xl::XML().version();
   PLOG_INFO << XML_Analyzer::dumpNumericSizes();
   PLOG_INFO << XML_Analyzer::dumpXNodeSizes();
   // Analyze XML files.
@@ -41,7 +41,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     try {
       processXMLFile(fileName);
     } catch (std::exception &ex) {
-      PLOG_INFO << ex.what() << "\n";
+      PLOG_ERROR << "Error: " << ex.what();
     }
   }
   PLOG_INFO << "XML_Analyze_File exited.";
