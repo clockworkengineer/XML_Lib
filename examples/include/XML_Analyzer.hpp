@@ -1,7 +1,6 @@
 
 #pragma once
 
-#include <set>
 #include <sstream>
 
 #include "XML.hpp"
@@ -21,17 +20,17 @@ public:
   void onCDATA([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalCDATA++;
-    sizeInBytes += sizeof(XML_Lib::XCDATA);
+    sizeInBytes += sizeof(XML_Lib::XCDATA) + XML_Lib::XRef<XML_Lib::XCDATA>(xNode).value().size();
   }
   void onComment([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalComment++;
-    sizeInBytes += sizeof(XML_Lib::XComment);
+    sizeInBytes += sizeof(XML_Lib::XComment)+ XML_Lib::XRef<XML_Lib::XComment>(xNode).value().size();
   }
   void onContent([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalContent++;
-    sizeInBytes += sizeof(XML_Lib::XContent);
+    sizeInBytes += sizeof(XML_Lib::XContent)+ XML_Lib::XRef<XML_Lib::XContent>(xNode).value().size();
   }
   void onDeclaration([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
