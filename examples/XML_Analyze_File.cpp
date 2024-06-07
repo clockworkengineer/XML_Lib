@@ -30,7 +30,7 @@ void processXMLFile(const std::string &fileName)
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   // Initialise logging.
-  plog::init(plog::debug, "XML_Analyze_File.log");
+  init(plog::debug, "XML_Analyze_File.log");
   PLOG_INFO << "XML_Analyze_File started ...";
   // Output XML Lib version and data structure metrics
   PLOG_INFO << xl::XML().version();

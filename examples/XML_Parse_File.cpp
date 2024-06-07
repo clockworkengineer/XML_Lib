@@ -61,7 +61,7 @@ void processXMLFile(const std::string &fileName)
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   // Initialise logging.
-  plog::init(plog::debug, "XML_Parse_Files.log");
+  init(plog::debug, "XML_Parse_Files.log");
   PLOG_INFO << "XML_Parse_Files started ...";
   PLOG_INFO << xl::XML().version();
   // For each xml parse it, stringify it and display unless its to large.

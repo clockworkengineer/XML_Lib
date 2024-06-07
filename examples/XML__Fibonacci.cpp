@@ -51,7 +51,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   try {
     // Initialise logging.
-    plog::init(plog::debug, "XML_Fibonacci.log");
+    init(plog::debug, "XML_Fibonacci.log");
     PLOG_INFO << "XML_Fibonacci started ...";
     // Log version
     PLOG_INFO << xl::XML().version();
