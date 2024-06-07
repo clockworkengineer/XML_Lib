@@ -13,18 +13,66 @@ public:
   XML_Analyzer() = default;
   ~XML_Analyzer() override = default;
   // Add XNode details to analysis
-  void onXNode([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalNodes++; }
-  void onCDATA([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalCDATA++; }
-  void onComment([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalComment++; }
-  void onContent([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalContent++; }
-  void onDeclaration([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalDeclaration++; }
-  void onDTD([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalDTD++; }
-  void onElement([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalElement++; }
-  void onEntityReference([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalEntityReference++; }
-  void onPI([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalPI++; }
-  void onProlog([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalProlog++; }
-  void onRoot([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalRoot++; }
-  void onSelf([[maybe_unused]] const XML_Lib::XNode &xNode) override { totalSelf++; }
+  void onXNode([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalNodes++;
+    sizeInBytes += sizeof(XML_Lib::XNode);
+  }
+  void onCDATA([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalCDATA++;
+    sizeInBytes += sizeof(XML_Lib::XCDATA);
+  }
+  void onComment([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalComment++;
+    sizeInBytes += sizeof(XML_Lib::XComment);
+  }
+  void onContent([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalContent++;
+    sizeInBytes += sizeof(XML_Lib::XContent);
+  }
+  void onDeclaration([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalDeclaration++;
+    sizeInBytes += sizeof(XML_Lib::XDeclaration);
+  }
+  void onDTD([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalDTD++;
+    sizeInBytes += sizeof(XML_Lib::XDTD);
+  }
+  void onElement([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalElement++;
+    sizeInBytes += sizeof(XML_Lib::XElement);
+  }
+  void onEntityReference([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalEntityReference++;
+    sizeInBytes += sizeof(XML_Lib::XEntityReference);
+  }
+  void onPI([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalPI++;
+    sizeInBytes += sizeof(XML_Lib::XPI);
+  }
+  void onProlog([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalProlog++;
+    sizeInBytes += sizeof(XML_Lib::XProlog);
+  }
+  void onRoot([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalRoot++;
+    sizeInBytes += sizeof(XML_Lib::XRoot);
+  }
+  void onSelf([[maybe_unused]] const XML_Lib::XNode &xNode) override
+  {
+    totalSelf++;
+    sizeInBytes += sizeof(XML_Lib::XSelf);
+  }
   // Output analysis details
   [[nodiscard]] std::string dump() const
   {
