@@ -14,7 +14,7 @@ struct XCDATA final : Variant
   XCDATA &operator=(XCDATA &&other) = default;
   ~XCDATA() override = default;
   // Return reference to cdata
-  [[nodiscard]] const std::string &CDATA() const { return cdata; }
+  [[nodiscard]] const std::string &value() const { return cdata; }
   // Return Variant contents
   [[nodiscard]] std::string getContents() const override { return cdata; }
   

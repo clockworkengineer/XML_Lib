@@ -31,7 +31,7 @@ TEST_CASE("Parse CDATA section.", "[XML][Parse][CDATA]")
     };
     xml.parse(source);
     REQUIRE(xml.root().getContents() == "\n   <message> Welcome to Tutorials Point </message>   ");
-    REQUIRE(XRef<XCDATA>(xml.root().getChildren()[1]).CDATA() == "<message> Welcome to Tutorials Point </message>");
+    REQUIRE(XRef<XCDATA>(xml.root().getChildren()[1]).value() == "<message> Welcome to Tutorials Point </message>");
   }
   SECTION("Parse XML root containing CDDATA containing nested CDATA ", "[XML][Parse][CDATA]")
   {

@@ -2,18 +2,19 @@
 
 #include <string>
 #include <algorithm>
+#include <utility>
 
 namespace XML_Lib {
 
 struct XElement : Variant
 {
   // Constructors/Destructors
-  explicit XElement(const std::string &name="",const Type nodeType = Type::element) : Variant(nodeType), elementName(name) {}
-  XElement(const std::string &name,
+  explicit XElement(std::string name="",const Type nodeType = Type::element) : Variant(nodeType), elementName(std::move(name)) {}
+  XElement(std::string name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces,
     const Type nodeType = Type::element)
-    : Variant(nodeType), elementName(name), attributes(attributes), namespaces(namespaces)
+    : Variant(nodeType), elementName(std::move(name)), attributes(attributes), namespaces(namespaces)
   {}
   XElement(const XElement &other) = delete;
   XElement &operator=(const XElement &other) = delete;

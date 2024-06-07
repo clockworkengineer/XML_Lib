@@ -273,7 +273,7 @@ void DTD_Impl::checkElements(const XNode &xNode)
     checkElement(xNode);
   } else if (xNode.isComment() || xNode.isEntity() || xNode.isPI() || xNode.isCDATA() || xNode.isDTD()) {
   } else if (xNode.isContent()) {
-    for (const auto &ch : XRef<XContent>(xNode).getContent()) {
+    for (const auto &ch : XRef<XContent>(xNode).value()) {
       if (ch == kLineFeed) { lineNumber++; }
     }
   } else {

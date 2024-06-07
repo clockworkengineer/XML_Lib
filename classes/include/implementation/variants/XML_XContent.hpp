@@ -14,7 +14,7 @@ struct XContent final : Variant
   XContent &operator=(XContent &&other) = default;
   ~XContent() override = default;
   // Get reference to content string
-  [[nodiscard]] std::string getContent() const { return xmlContent; }
+  [[nodiscard]] std::string value() const { return xmlContent; }
   // Add to content
   void addContent(const std::string &content) { xmlContent += content; }
   // Is content all whitespace

@@ -21,13 +21,13 @@ TEST_CASE("Create and use XComment XNode.","[XNode][XComment][API]")
   SECTION("Create XComment XNode and fetch comment related to it.", "[XML][XNode][XComment][API]")
   {
     XComment xComment = XComment("This is a test comment.");
-    REQUIRE(xComment.comment() == "This is a test comment.");
+    REQUIRE(xComment.value() == "This is a test comment.");
   }
   SECTION("Create and use XComment using make/XRef API.", "[XML][XNode][XComment][Make][XRef][API]")
   {
     XNode xNode = XNode::make<XComment>("This is a test comment.");
     REQUIRE_FALSE(!xNode.isComment());
-    REQUIRE(XRef<XComment>(xNode).comment()=="This is a test comment.");
+    REQUIRE(XRef<XComment>(xNode).value()=="This is a test comment.");
   }
 }
 

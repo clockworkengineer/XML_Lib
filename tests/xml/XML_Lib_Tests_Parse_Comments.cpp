@@ -52,13 +52,13 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     REQUIRE(xDeclaration.standalone() == "no");
     REQUIRE(xRoot.name() == "AddressBook");
     REQUIRE(xRoot.getChildren().size() == 13);
-    REQUIRE(XRef<XComment>(xRoot.getChildren()[1]).comment() == "Address one ");
+    REQUIRE(XRef<XComment>(xRoot.getChildren()[1]).value() == "Address one ");
     REQUIRE(xRoot[0].name() == "Address");
     REQUIRE(xRoot[0].getContents() == "    This is some contents 1   ");
-    REQUIRE(XRef<XComment>(xRoot.getChildren()[5]).comment() == "Address two ");
+    REQUIRE(XRef<XComment>(xRoot.getChildren()[5]).value() == "Address two ");
     REQUIRE(xRoot[1].name() == "Address");
     REQUIRE(xRoot[1].getContents() == "    This is some contents 2   ");
-    REQUIRE(XRef<XComment>(xRoot.getChildren()[9]).comment() == "Address three ");
+    REQUIRE(XRef<XComment>(xRoot.getChildren()[9]).value() == "Address three ");
     REQUIRE(xRoot[2].name() == "Address");
     REQUIRE(xRoot[2].getContents() == "    This is some contents 3   ");
   }

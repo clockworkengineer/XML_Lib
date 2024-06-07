@@ -21,13 +21,13 @@ TEST_CASE("Create and use XCDATA XNode.","[XNode][XCDATA][API]")
   SECTION("Create XCDATA XNode and fetch comment related to it.", "[XML][XNode][XCDATA][API]")
   {
     XCDATA xCDATA = XCDATA("&apos;Test&apos;");
-    REQUIRE(xCDATA.CDATA() == "&apos;Test&apos;");
+    REQUIRE(xCDATA.value() == "&apos;Test&apos;");
   }
   SECTION("Create and use XCDATA using make/XRef API.", "[XML][XNode][XCDATA][Make][XRef][API]")
   {
     XNode xNode = XNode::make<XCDATA>("&apos;Test&apos;");
     REQUIRE_FALSE(!xNode.isCDATA());
-    REQUIRE(XRef<XCDATA>(xNode).CDATA()=="&apos;Test&apos;");
+    REQUIRE(XRef<XCDATA>(xNode).value()=="&apos;Test&apos;");
   }
 }
 

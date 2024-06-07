@@ -56,12 +56,12 @@ void stringify(const XNode &xNode, IDestination &destination) const override
   // XML comments
   else if (xNode.isComment()) {
     const auto &xNodeComment = XRef<XComment>(xNode);
-    destination.add("<!--" + xNodeComment.comment() + "-->");
+    destination.add("<!--" + xNodeComment.value() + "-->");
   }
   // XML element content
   else if (xNode.isContent()) {
     const auto &xNodeContent = XRef<XContent>(xNode);
-    destination.add(xNodeContent.getContent());
+    destination.add(xNodeContent.value());
   }
   // XML character entity
   else if (xNode.isEntity()) {
@@ -76,7 +76,7 @@ void stringify(const XNode &xNode, IDestination &destination) const override
   // XML CDATA section
   else if (xNode.isCDATA()) {
     const auto &xNodeCDATA = XRef<XCDATA>(xNode);
-    destination.add("<![CDATA[" + xNodeCDATA.CDATA() + "]]>");
+    destination.add("<![CDATA[" + xNodeCDATA.value() + "]]>");
   }
   // XML DTD
   else if (xNode.isDTD()) {
