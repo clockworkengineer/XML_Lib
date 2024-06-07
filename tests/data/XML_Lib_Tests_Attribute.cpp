@@ -49,17 +49,17 @@ TEST_CASE("XML attribute useage tests cases.", "[XML][Value]")
   SECTION("Create an  vector of three attributes and perform a successful search.", "[XML][Attribute][API]")
   {
     std::vector<XMLAttribute> attributes;
-    attributes.push_back(XMLAttribute("test1", XMLValue("&test1;", "parsed")));
-    attributes.push_back(XMLAttribute("test2", XMLValue("&test2;", "parsed")));
-    attributes.push_back(XMLAttribute("test3", XMLValue("&test3;", "parsed")));
+    attributes.emplace_back("test1", XMLValue("&test1;", "parsed"));
+    attributes.emplace_back("test2", XMLValue("&test2;", "parsed"));
+    attributes.emplace_back("test3", XMLValue("&test3;", "parsed"));
     REQUIRE_FALSE(!XMLAttribute::isAttrubutePresent(attributes, "test3"));
   }
   SECTION("Create an  vector of three attributes and perform a failed search.", "[XML][Attribute][API]")
   {
     std::vector<XMLAttribute> attributes;
-    attributes.push_back(XMLAttribute("test1", XMLValue("&test1;", "parsed")));
-    attributes.push_back(XMLAttribute("test2", XMLValue("&test2;", "parsed")));
-    attributes.push_back(XMLAttribute("test3", XMLValue("&test3;", "parsed")));
+    attributes.emplace_back("test1", XMLValue("&test1;", "parsed"));
+    attributes.emplace_back("test2", XMLValue("&test2;", "parsed"));
+    attributes.emplace_back("test3", XMLValue("&test3;", "parsed"));
     REQUIRE_FALSE(XMLAttribute::isAttrubutePresent(attributes, "test4"));
   }
 }
