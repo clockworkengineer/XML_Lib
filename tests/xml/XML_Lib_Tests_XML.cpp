@@ -130,3 +130,10 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     REQUIRE(XRef<XElement>(xml.root()).getContents() == "John Doe Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }
+// TEST_CASE("Check XML creation apis.", "[XML][Creation][API]")
+// {
+//   SECTION("Create XML from passed in empty constructor string.", "[XML][Creation][Constructor]")
+//   {
+//     XML xml {""};
+//   }
+// }

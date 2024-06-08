@@ -16,7 +16,7 @@ namespace XML_Lib {
 /// <summary>
 /// XML constructor.
 /// </summary>
-XML::XML() : implementation(std::make_unique<XML_Impl>()) {}
+XML::XML(IStringify *stringify, IParser *parser) : implementation(std::make_unique<XML_Impl>(stringify, parser)) {}
 
 /// <summary>
 /// XML destructor.

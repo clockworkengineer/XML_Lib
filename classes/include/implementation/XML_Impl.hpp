@@ -13,7 +13,7 @@ class XML_Impl
 {
 public:
   // Constructors/Destructors
-  XML_Impl();
+  explicit XML_Impl(IStringify *stringify, IParser *parser);
   XML_Impl(const XML_Impl &other) = delete;
   XML_Impl &operator=(const XML_Impl &other) = delete;
   XML_Impl(XML_Impl &&other) = delete;
@@ -43,9 +43,9 @@ private:
   // Entity mapper
   std::unique_ptr<IEntityMapper> entityMapper;
   // XML parser
-  std::unique_ptr<IParser> parser;
+  std::unique_ptr<IParser> xmlParser;
   // XML stringifier
-  std::unique_ptr<IStringify> stringifier;
+  std::unique_ptr<IStringify> xmlStringifier;
 };
 /// <summary>
 /// Recursively traverse XNode tree calling IAction methods and possibly

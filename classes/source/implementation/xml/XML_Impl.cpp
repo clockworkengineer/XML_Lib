@@ -12,14 +12,22 @@
 
 namespace XML_Lib {
 
-XML_Impl::XML_Impl()
+XML_Impl::XML_Impl(IStringify *stringify, IParser *parser)
 {
   entityMapper = std::make_unique<XML_EntityMapper>();
-  parser = std::make_unique<XML_Parser>(*entityMapper);
-  stringifier = std::make_unique<XML_Stringify>();
+  if (parser==nullptr) {
+    xmlParser = std::make_unique<XML_Parser>(*entityMapper);
+  } else {
+    xmlParser.reset(parser);
+  }
+  if (stringify==nullptr) {
+    xmlStringifier = std::make_unique<XML_Stringify>();
+  } else {
+    xmlStringifier.reset(stringify);
+  }
 }
 
-XML_Impl::~XML_Impl() {}
+XML_Impl::~XML_Impl() = default;
 
 std::string XML_Impl::version()
 {
@@ -30,7 +38,7 @@ std::string XML_Impl::version()
 
 XNode &XML_Impl::dtd()
 {
-  if (parser->canValidate()) {
+  if (xmlParser->canValidate()) {
     for (auto &element : prolog().getChildren()) {
       if (element.isDTD()) { return element; }
     }
@@ -56,11 +64,11 @@ XNode &XML_Impl::root()
   throw Error("No root element found.");
 }
 
-void XML_Impl::validate() { parser->validate(prolog()); }
+void XML_Impl::validate() { xmlParser->validate(prolog()); }
 
-void XML_Impl::parse(ISource &source) { xmlRoot = parser->parse(source); }
+void XML_Impl::parse(ISource &source) { xmlRoot = xmlParser->parse(source); }
 
-void XML_Impl::stringify(IDestination &destination) { stringifier->stringify(prolog(), destination); }
+void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(prolog(), destination); }
 
 void XML_Impl::traverse(IAction &action)
 {

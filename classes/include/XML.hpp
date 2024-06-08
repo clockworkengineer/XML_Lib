@@ -15,6 +15,8 @@ class XML_Impl;
 class ISource;
 class IDestination;
 class IAction;
+class IParser;
+class IStringify;
 struct XNode;
 
 class XML
@@ -23,7 +25,7 @@ public:
   // XML file formats
   enum class Format : uint8_t { utf8 = 0, utf8BOM, utf16BE, utf16LE, utf32BE, utf32LE };
   // Constructors/Destructors
-  XML();
+  explicit XML(IStringify *stringify=nullptr, IParser *parser= nullptr);
   XML(const XML &other) = delete;
   XML &operator=(const XML &other) = delete;
   XML(XML &&other) = delete;
