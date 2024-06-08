@@ -19,9 +19,19 @@ namespace XML_Lib {
 XML::XML(IStringify *stringify, IParser *parser) : implementation(std::make_unique<XML_Impl>(stringify, parser)) {}
 
 /// <summary>
+/// XML constructor (parse in a default XML string).
+/// </summary>
+XML::XML(const std::string &xmlString) : XML() { parse(BufferSource{ xmlString }); }
+
+/// <summary>
+/// XML assignment (parse in a default XML string).
+/// </summary>
+XML &XML::operator=(const std::string &xmlString) { parse(BufferSource{ xmlString }); return(*this);}
+
+/// <summary>
 /// XML destructor.
 /// </summary>
-XML::~XML() {}
+XML::~XML() = default;
 
 /// <summary>
 /// Get XML_Lib version.

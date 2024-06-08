@@ -130,10 +130,21 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     REQUIRE(XRef<XElement>(xml.root()).getContents() == "John Doe Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }
-// TEST_CASE("Check XML creation apis.", "[XML][Creation][API]")
-// {
-//   SECTION("Create XML from passed in empty constructor string.", "[XML][Creation][Constructor]")
-//   {
-//     XML xml {""};
-//   }
-// }
+TEST_CASE("Check XML creation apis.", "[XML][Creation][API]")
+{
+  SECTION("Create XML from passed string to constructor.", "[XML][Creation][Constructor]")
+  {
+    const XML xml {"<root>test content</root>"};
+    BufferDestination destination;
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>test content</root>)");
+  }
+  SECTION("Create XML from assigned string.", "[XML][Creation][Assignment]")
+  {
+    XML xml;
+    xml = "<root>test content</root>";
+    BufferDestination destination;
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>test content</root>)");
+  }
+}

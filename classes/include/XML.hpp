@@ -26,8 +26,11 @@ public:
   enum class Format : uint8_t { utf8 = 0, utf8BOM, utf16BE, utf16LE, utf32BE, utf32LE };
   // Constructors/Destructors
   explicit XML(IStringify *stringify=nullptr, IParser *parser= nullptr);
+  // Pass in default XML to parse
+  explicit XML(const std::string &xmlString);
   XML(const XML &other) = delete;
   XML &operator=(const XML &other) = delete;
+  XML &operator=(const std::string &xmlString);
   XML(XML &&other) = delete;
   XML &operator=(XML &&other) = delete;
   ~XML();
