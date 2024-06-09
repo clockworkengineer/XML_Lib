@@ -7,6 +7,7 @@
 #include "XML_Lib_Tests.hpp"
 
 using namespace XML_Lib;
+
 TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
 {
   XML xml;
