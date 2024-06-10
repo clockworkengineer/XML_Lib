@@ -59,7 +59,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE( xElement.name() == "test");
     addAttributes(xElement);
     REQUIRE(xElement.getAttributeList().size()==3);
-    REQUIRE_FALSE(!xElement.isAttributePresent(("attr2")));
+    REQUIRE_FALSE(!xElement.hasAttribute(("attr2")));
     REQUIRE(xElement["attr2"].getUnparsed() == "value2");
     REQUIRE(xElement["attr2"].getParsed() == "value2");
   }
@@ -69,7 +69,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE( xElement.name() == "test");
     addNameSpaces(xElement);
     REQUIRE(xElement.getNamespaceList().size()==3);
-    REQUIRE_FALSE(!xElement.isNameSpacePresent(("b")));
+    REQUIRE_FALSE(!xElement.hasNameSpace(("b")));
     REQUIRE(xElement.getNameSpace("b").getUnparsed()=="value2");
     REQUIRE(xElement.getNameSpace("b").getParsed()=="value2");
   }

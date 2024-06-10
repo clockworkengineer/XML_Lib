@@ -89,7 +89,7 @@ bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().emp
 void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute) const
 {
   const auto &xElement = XRef<XElement>(xNode);
-  const bool attributePresent = xElement.isAttributePresent(attribute.name);
+  const bool attributePresent = xElement.hasAttribute(attribute.name);
   if ((attribute.type & XDTD::AttributeType::required) != 0) {
     if (!attributePresent) { elementError(xElement, "is missing required attribute '" + attribute.name + "'."); }
   } else if ((attribute.type & XDTD::AttributeType::fixed) != 0) {
@@ -206,7 +206,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
 void DTD_Impl::checkAttributes(const XNode &xNode)
 {
   for (const auto &xElement = XRef<XElement>(xNode); auto &attribute : xDTD.getElement(xElement.name()).attributes) {
-    if (xElement.isAttributePresent(attribute.name)) { checkAttributeType(xNode, attribute); }
+    if (xElement.hasAttribute(attribute.name)) { checkAttributeType(xNode, attribute); }
     checkAttributeValue(xNode, attribute);
   }
 }

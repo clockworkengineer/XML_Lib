@@ -211,7 +211,7 @@ std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source, IEntityMa
     if (!validAttributeValue(attributeValue)) {
       throw SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
     }
-    if (XMLAttribute::isAttrubutePresent(attributes, attributeName)) {
+    if (XMLAttribute::contains(attributes, attributeName)) {
       throw SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag.");
     }
     attributes.emplace_back(attributeName, attributeValue);
@@ -284,7 +284,7 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapp
     xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNamespaceList(), entityMapper));
     const XElement &xNodeChildElement = XRef<XElement>(xNode.getChildren().back());
     if (const auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
-      if (!xNodeChildElement.isNameSpacePresent(xNodeChildElement.name().substr(0, pos))) {
+      if (!xNodeChildElement.hasNameSpace(xNodeChildElement.name().substr(0, pos))) {
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
       }
     }

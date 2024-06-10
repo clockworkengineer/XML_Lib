@@ -22,26 +22,25 @@ struct XElement : Variant
   XElement &operator=(XElement &&other) = default;
   ~XElement() override = default;
   // Is an attribute present ?
-  [[nodiscard]] bool isAttributePresent(const std::string &attributeName) const
+  [[nodiscard]] bool hasAttribute(const std::string &attributeName) const
   {
-    return XMLAttribute::isAttrubutePresent(attributes, attributeName);
+    return XMLAttribute::contains(attributes, attributeName);
   }
   // Add an attribute
   void addAttribute(const std::string &name, const XMLValue &value) const { attributes.emplace_back(name, value); }
   // Return reference to attribute list
   [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return attributes; }
   // Is namespace present  ?
-  [[nodiscard]] bool isNameSpacePresent(const std::string &name) const
+  [[nodiscard]] bool hasNameSpace(const std::string &name) const
   {
-    return XMLAttribute::isAttrubutePresent(namespaces, name);
+    return XMLAttribute::contains(namespaces, name);
   }
   // Add an namespace
   void addNameSpace(const std::string &name, const XMLValue &value) const { namespaces.emplace_back(name, value); }
   // Is a namespace present ?
   [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const
   {
-    return *std::find_if(
-      namespaces.rbegin(), namespaces.rend(), [&name](const XMLAttribute &ns) { return ns.getName() == name; });
+    return XMLAttribute::find(namespaces, name);
   }
   // Return reference to namespace list
   [[nodiscard]] const std::vector<XMLAttribute> &getNamespaceList() const { return namespaces; }
