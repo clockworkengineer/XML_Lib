@@ -44,10 +44,12 @@ inline const XElement &XElement::operator[](const int index) const
 // =========================
 inline const XMLAttribute &XElement::operator[](const std::string &name) const
 {
-  if (const auto attribute = std::ranges::find_if(
-        attributes, [&name](const XMLAttribute &attr) { return attr.getName() == name; });
-      attribute != attributes.end()) { return *attribute; }
-  throw XNode::Error("Attribute '" + name + "' does not exist.");
+  if (name.starts_with("xmlns")) {
+    auto namespaceName = name.substr(6);
+    return(XMLAttribute::find(namespaces, (namespaceName.empty() ? ":" : namespaceName)));
+  } else {
+    return(XMLAttribute::find(attributes, name));
+  }
 }
 
 }// namespace XML_Lib

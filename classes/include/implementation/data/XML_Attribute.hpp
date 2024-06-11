@@ -27,8 +27,12 @@ struct XMLAttribute : XMLValue
   // Return attribute entry
   [[nodiscard]] static const XMLAttribute &find(const std::vector<XMLAttribute> &attributes, const std::string &name)
   {
-    return *std::find_if(
+    auto attribute = std::find_if(
       attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &ns) { return ns.getName() == name; });
+    if (attribute!=attributes.rend()) {
+      return (*attribute);
+    }
+    throw XNode::Error("Attribute '" + name + "' does not exist.");
   }
 
 private:

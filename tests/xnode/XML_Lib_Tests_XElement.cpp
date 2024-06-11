@@ -70,8 +70,8 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     addNameSpaces(xElement);
     REQUIRE(xElement.getNameSpaces().size()==3);
     REQUIRE_FALSE(!xElement.hasNameSpace(("b")));
-    REQUIRE(xElement.getNameSpace("b").getUnparsed()=="value2");
-    REQUIRE(xElement.getNameSpace("b").getParsed()=="value2");
+    REQUIRE(xElement["xmlns:b"].getUnparsed()=="value2");
+    REQUIRE(xElement["xmlns:b"].getParsed()=="value2");
   }
   SECTION("Create and use XElement using make/XRef API.", "[XML][XNode][XElement][Make][XRef][API]")
   {
