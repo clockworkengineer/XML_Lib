@@ -122,9 +122,9 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
     REQUIRE_FALSE(!xml.root().isRoot());
-    REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[1]["number"].getParsed() == "2001");
-    REQUIRE(XRef<XElement>(xml.root())[2].getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root())[2].getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[2]["number"].getParsed() == "2001");
   }
   SECTION("XML with a DTD that specifies an element attribute that has a default value if it is not defined. ",
@@ -149,9 +149,9 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
     REQUIRE_FALSE(!xml.root().isRoot());
-    REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[1]["number"].getParsed() == "2002");
-    REQUIRE(XRef<XElement>(xml.root())[2].getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root())[2].getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[2]["number"].getParsed() == "2001");
   }
   SECTION("Validate XML with DTD that contains a enumeration attribute gender with a default value if 'F'.",
@@ -188,10 +188,10 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE(xDTD.getRootName() == "queue");
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(XRef<XElement>(xml.root())[0].name() == "person");
-    REQUIRE(XRef<XElement>(xml.root())[0].getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root())[0].getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[0]["gender"].getParsed() == "M");
     REQUIRE(XRef<XElement>(xml.root())[1].name() == "person");
-    REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[1]["gender"].getParsed() == "F");
   }
   SECTION("Validate XML with DTD that contains a enumeration attribute gender that is not valid.",

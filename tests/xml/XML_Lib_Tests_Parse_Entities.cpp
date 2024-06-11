@@ -80,7 +80,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
       "</root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root()).getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())["attr1"].getParsed() == " &#x26;&#x22;&#x27;&#x3E;&#x3C; ");
   }
   SECTION("Parse references &#x00A5;&#163 in attribute value", "[XML][Parse][Entities]")
@@ -90,7 +90,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
       "<root attr1=\" &#x00A5;&#163; \"></root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root()).getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())["attr1"].getParsed() == " ¥£ ");
   }
   SECTION("Parse entity &lamp; (non-existant named) in contents area", "[XML][Parse][Entities]")

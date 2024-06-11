@@ -29,7 +29,7 @@ struct XElement : Variant
   // Add an attribute
   void addAttribute(const std::string &name, const XMLValue &value) const { attributes.emplace_back(name, value); }
   // Return reference to attribute list
-  [[nodiscard]] const std::vector<XMLAttribute> &getAttributeList() const { return attributes; }
+  [[nodiscard]] const std::vector<XMLAttribute> &getAttributes() const { return attributes; }
   // Is namespace present  ?
   [[nodiscard]] bool hasNameSpace(const std::string &name) const
   {
@@ -43,7 +43,7 @@ struct XElement : Variant
     return XMLAttribute::find(namespaces, name);
   }
   // Return reference to namespace list
-  [[nodiscard]] const std::vector<XMLAttribute> &getNamespaceList() const { return namespaces; }
+  [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaces() const { return namespaces; }
   // Return reference to element tag name
   [[nodiscard]] const std::string &name() const { return elementName; }
   // XElement Index overloads

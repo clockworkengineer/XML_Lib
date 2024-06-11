@@ -281,7 +281,7 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapp
     resetWhiteSpace(xNode);
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
-    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNamespaceList(), entityMapper));
+    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNameSpaces(), entityMapper));
     const XElement &xNodeChildElement = XRef<XElement>(xNode.getChildren().back());
     if (const auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.hasNameSpace(xNodeChildElement.name().substr(0, pos))) {

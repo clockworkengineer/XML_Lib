@@ -33,8 +33,8 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
   {
     auto xElement = XElement("test", {}, {});
     REQUIRE( xElement.name() == "test");
-    REQUIRE_FALSE(!xElement.getAttributeList().empty());
-    REQUIRE_FALSE(!xElement.getNamespaceList().empty());
+    REQUIRE_FALSE(!xElement.getAttributes().empty());
+    REQUIRE_FALSE(!xElement.getNameSpaces().empty());
     REQUIRE_FALSE(!xElement.getContents().empty());
   }
   SECTION("Create XElement with a given name and add attributes to it.", "[XML][XNode][XElement][API]")
@@ -42,23 +42,23 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     auto xElement = XElement("test", {}, {});
     REQUIRE( xElement.name() == "test");
     addAttributes(xElement);
-    REQUIRE(xElement.getAttributeList().size()==3);
-    REQUIRE_FALSE(!xElement.getNamespaceList().empty());
+    REQUIRE(xElement.getAttributes().size()==3);
+    REQUIRE_FALSE(!xElement.getNameSpaces().empty());
   }
   SECTION("Create XElement with a given name and add namespaces to it.", "[XML][XNode][XElement][API]")
   {
     auto xElement = XElement("test", {}, {});
     REQUIRE( xElement.name() == "test");
     addNameSpaces(xElement);
-    REQUIRE_FALSE(!xElement.getAttributeList().empty());
-    REQUIRE(xElement.getNamespaceList().size()==3);
+    REQUIRE_FALSE(!xElement.getAttributes().empty());
+    REQUIRE(xElement.getNameSpaces().size()==3);
   }
   SECTION("Create XElement with a given name, add attributes to it, check that attr2 exists and get its values.", "[XML][XNode][XElement][API]")
   {
     auto xElement = XElement("test", {}, {});
     REQUIRE( xElement.name() == "test");
     addAttributes(xElement);
-    REQUIRE(xElement.getAttributeList().size()==3);
+    REQUIRE(xElement.getAttributes().size()==3);
     REQUIRE_FALSE(!xElement.hasAttribute(("attr2")));
     REQUIRE(xElement["attr2"].getUnparsed() == "value2");
     REQUIRE(xElement["attr2"].getParsed() == "value2");
@@ -68,7 +68,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     auto xElement = XElement("test", {}, {});
     REQUIRE( xElement.name() == "test");
     addNameSpaces(xElement);
-    REQUIRE(xElement.getNamespaceList().size()==3);
+    REQUIRE(xElement.getNameSpaces().size()==3);
     REQUIRE_FALSE(!xElement.hasNameSpace(("b")));
     REQUIRE(xElement.getNameSpace("b").getUnparsed()=="value2");
     REQUIRE(xElement.getNameSpace("b").getParsed()=="value2");

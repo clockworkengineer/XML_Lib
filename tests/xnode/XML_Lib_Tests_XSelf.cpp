@@ -19,8 +19,8 @@ TEST_CASE("Create and use XSelf XNode.","[XNode][XSelf][API]")
   {
     XSelf xSelf = XSelf("test", {}, {});
     REQUIRE( xSelf.name() == "test");
-    REQUIRE_FALSE(!xSelf.getAttributeList().empty());
-    REQUIRE_FALSE(!xSelf.getNamespaceList().empty());
+    REQUIRE_FALSE(!xSelf.getAttributes().empty());
+    REQUIRE_FALSE(!xSelf.getNameSpaces().empty());
     REQUIRE(xSelf.getContents()=="");
   }
   SECTION("Create and use XSelf using make/XRef API.", "[XML][XNode][XSelf][Make][XRef][API]")

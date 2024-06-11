@@ -26,7 +26,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(xDeclaration.standalone() == "no");
     REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(xRoot.name() == "AddressBook");
-    REQUIRE(xRoot.getAttributeList().size() == 1);
+    REQUIRE(xRoot.getAttributes().size() == 1);
     REQUIRE(xRoot["number"].getParsed() == "15");
   }
   SECTION("Root element with 3 attached attributes number, away, flat", "[XML][Parse][[Attributes]")
@@ -44,7 +44,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE(xDeclaration.standalone() == "no");
     REQUIRE(xml.prolog().getChildren().size() == 4);
     REQUIRE(xRoot.name() == "AddressBook");
-    REQUIRE(xRoot.getAttributeList().size() == 3);
+    REQUIRE(xRoot.getAttributes().size() == 3);
     REQUIRE(xRoot["number"].getParsed() == "15");
     REQUIRE(xRoot["away"].getParsed() == "yes");
     REQUIRE(xRoot["flat"].getParsed() == "no");

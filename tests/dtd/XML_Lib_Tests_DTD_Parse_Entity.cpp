@@ -105,7 +105,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
     REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.getEntityMapper().getInternal("&x;") == "&lt;");
-    REQUIRE(XRef<XElement>(xml.root()).getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root()).getAttributes().size() == 1);
     auto &attribute = XRef<XElement>(xml.root())["attr"];
     REQUIRE(attribute.getName() == "attr");
     REQUIRE(attribute.getUnparsed() == "&x;");

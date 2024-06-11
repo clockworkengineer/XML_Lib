@@ -42,7 +42,7 @@ void stringify(const XNode &xNode, IDestination &destination) const override
   else if (xNode.isRoot() || xNode.isElement() || xNode.isSelf()) {
     const auto &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
-    for (auto &attribute : xElement.getAttributeList()) {
+    for (auto &attribute : xElement.getAttributes()) {
       destination.add(" " + attribute.getName() + "=\"" + attribute.getUnparsed() + "\"");
     }
     if (!xNode.isSelf()) {

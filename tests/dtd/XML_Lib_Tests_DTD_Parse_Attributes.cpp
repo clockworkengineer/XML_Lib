@@ -187,12 +187,12 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     REQUIRE(xDTD.getRootName() == "queue");
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(XRef<XElement>(xml.root())[0].name() == "person");
-    REQUIRE(XRef<XElement>(xml.root())[0].getAttributeList().size() == 1);
+    REQUIRE(XRef<XElement>(xml.root())[0].getAttributes().size() == 1);
     XMLAttribute attribute = XRef<XElement>(xml.root())[0]["gender"];
     REQUIRE(attribute.getName() == "gender");
     REQUIRE(attribute.getParsed() == "M");
     REQUIRE(XRef<XElement>(xml.root())[1].name() == "person");
-    REQUIRE(XRef<XElement>(xml.root())[1].getAttributeList().size() == 0);
+    REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 0);
   }
   SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing enumeration name).",
     "[XML][DTD][Parse][Error][Attributes]")

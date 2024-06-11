@@ -19,8 +19,8 @@ TEST_CASE("Create and use XRoot XNode.","[XNode][XRoot][API]")
   {
     XRoot xRoot = XRoot("test", {}, {});
     REQUIRE( xRoot.name() == "test");
-    REQUIRE_FALSE(!xRoot.getAttributeList().empty());
-    REQUIRE_FALSE(!xRoot.getNamespaceList().empty());
+    REQUIRE_FALSE(!xRoot.getAttributes().empty());
+    REQUIRE_FALSE(!xRoot.getNameSpaces().empty());
     REQUIRE(xRoot.getContents()=="");
   }
   SECTION("Create and use XRoot using make/XRef API.", "[XML][XNode][XRoot][Make][XRef][API]")

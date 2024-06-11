@@ -45,7 +45,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     };
     xml.parse(source);
     auto &xRoot = XRef<XElement>(xml.root());
-    REQUIRE(xRoot.getAttributeList().size() == 1);
+    REQUIRE(xRoot.getAttributes().size() == 1);
     REQUIRE(xRoot["attr1"].getName() == "attr1");
     REQUIRE(xRoot["attr1"].getParsed() == "1");
   }
@@ -57,7 +57,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     };
     xml.parse(source);
     auto &xRoot = XRef<XElement>(xml.root());
-    REQUIRE(xRoot.getAttributeList().size() == 1);
+    REQUIRE(xRoot.getAttributes().size() == 1);
     REQUIRE_THROWS_WITH(xRoot["attr1"].getName(), "XNode Error: Attribute 'attr1' does not exist.");
   }
   SECTION("Access root element multiple attributes.", "[XML][API][Attribute]")
@@ -68,7 +68,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     };
     xml.parse(source);
     auto &xRoot = XRef<XElement>(xml.root());
-    REQUIRE(xRoot.getAttributeList().size() == 3);
+    REQUIRE(xRoot.getAttributes().size() == 3);
     REQUIRE(xRoot["attr1"].getName() == "attr1");
     REQUIRE(xRoot["attr1"].getParsed() == "1");
     REQUIRE(xRoot["attr2"].getName() == "attr2");
