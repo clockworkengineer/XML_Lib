@@ -1,8 +1,8 @@
 //
 // Program: XML_Create_At_Runtime
 //
-// Description: Create XML programatically at runtime using a combination
-// of the XML class, indexing/key operators plus the use of intializer lists.
+// Description: Create XML programmatically at runtime using a combination
+// of the XML class, indexing/key operators plus the use of initializer lists.
 //
 // Dependencies: C++20, PLOG, XML_Lib.
 //

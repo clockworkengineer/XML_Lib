@@ -45,6 +45,7 @@ struct XElement : Variant
   [[nodiscard]] const XElement &operator[](int index) const;
   [[nodiscard]] XElement &operator[](int index);
   [[nodiscard]] const XMLAttribute &operator[](const std::string &name) const;
+  [[nodiscard]] XMLAttribute &operator[](const std::string &name);
   // Return Variant contents
   [[nodiscard]] std::string getContents() const override
   {

@@ -2,13 +2,14 @@
 
 #include <string>
 #include <algorithm>
+#include <utility>
 
 namespace XML_Lib {
 
 struct XMLAttribute : XMLValue
 {
   // Constructors/Destructors
-  XMLAttribute(const std::string &name, const XMLValue &value) : XMLValue(value) , name(name) {} 
+  XMLAttribute(std::string name, const XMLValue &value) : XMLValue(value) , name(std::move(name)) {}
   XMLAttribute() = delete;
   XMLAttribute(const XMLAttribute &other) = default;
   XMLAttribute &operator=(const XMLAttribute &other) = default;
@@ -29,11 +30,18 @@ struct XMLAttribute : XMLValue
   {
     auto attribute = std::find_if(
       attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &ns) { return ns.getName() == name; });
-    if (attribute != attributes.rend()) return (*attribute);
+    if (attribute != attributes.rend()) return *attribute;
 
     throw XNode::Error("Attribute '" + name + "' does not exist.");
   }
+  [[nodiscard]] static  XMLAttribute &find(std::vector<XMLAttribute> &attributes, const std::string &name)
+  {
+    auto attribute = std::find_if(
+      attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &ns) { return ns.getName() == name; });
+    if (attribute != attributes.rend()) return *attribute;
 
+    throw XNode::Error("Attribute '" + name + "' does not exist.");
+  }
 private:
   // Attribute name
   std::string name;

@@ -64,5 +64,13 @@ inline const XMLAttribute &XElement::operator[](const std::string &name) const
     return(XMLAttribute::find(attributes, name));
   }
 }
-
+inline  XMLAttribute &XElement::operator[](const std::string &name)
+{
+  if (name.starts_with("xmlns")) {
+    auto namespaceName = name.substr(6);
+    return(XMLAttribute::find(namespaces, (namespaceName.empty() ? ":" : namespaceName)));
+  } else {
+    return(XMLAttribute::find(attributes, name));
+  }
+}
 }// namespace XML_Lib

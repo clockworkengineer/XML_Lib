@@ -16,7 +16,7 @@
 namespace xl = XML_Lib;
 
 /// <summary>
-/// Return Fibonaci xml file name.
+/// Return Fibonacci xml file name.
 /// </summary>
 /// <returns>XML settings file name.</returns>
 std::string xmlFibonacciFile() { return (std::filesystem::current_path() / "files" / "fibonacci.xml").string(); }
@@ -28,7 +28,7 @@ void nextFibonacci()
 {
   const xl::XML xml;
   if (!std::filesystem::exists(xmlFibonacciFile())) {
-    // If XML file does not exist create intial sequence
+    // If XML file does not exist create initial sequence
     xml.parse(xl::BufferSource{ R"(<root><row>1</row><row>1</row><row>2</row></root>)" });
   } else {
     // Parse in current sequence
