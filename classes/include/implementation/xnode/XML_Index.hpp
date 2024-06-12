@@ -39,6 +39,19 @@ inline const XElement &XElement::operator[](const int index) const
   }
   throw XNode::Error("Invalid index used to access XNode array.");
 }
+inline  XElement &XElement::operator[](const int index)
+{
+  if (index >= 0 && index < static_cast<int>(getChildren().size())) {
+    int number = 0;
+    for (auto &child : getChildren()) {
+      if (child.isIndexable()) {
+        if (number == index) { return XRef<XElement>(child); }
+        number++;
+      }
+    }
+  }
+  throw XNode::Error("Invalid index used to access XNode array.");
+}
 // =========================
 // XElement attribute access
 // =========================
