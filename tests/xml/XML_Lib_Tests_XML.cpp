@@ -49,7 +49,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     REQUIRE(xRoot["attr1"].getName() == "attr1");
     REQUIRE(xRoot["attr1"].getParsed() == "1");
   }
-  SECTION("Access non existant element attribute.", "[XML][API][Attribute]")
+  SECTION("Access non existent element attribute.", "[XML][API][Attribute]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -135,10 +135,11 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
 {
   SECTION("Create XML from passed string to constructor.", "[XML][Creation][Constructor]")
   {
-    const XML xml {"<root>test content</root>"};
+    const XML xml{ "<root>test content</root>" };
     BufferDestination destination;
     xml.stringify(destination);
-    REQUIRE(destination.toString() == R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>test content</root>)");
+    REQUIRE(
+      destination.toString() == R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>test content</root>)");
   }
   SECTION("Create XML from assigned string.", "[XML][Creation][Assignment]")
   {
@@ -146,30 +147,55 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     xml = "<root>test content</root>";
     BufferDestination destination;
     xml.stringify(destination);
-    REQUIRE(destination.toString() == R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>test content</root>)");
+    REQUIRE(
+      destination.toString() == R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>test content</root>)");
   }
   SECTION("Create XML and read attributes.", "[XML][Attribute][Read]")
   {
     XML xml;
     xml = "<root first='1' second='2'>test content</root>";
     BufferDestination destination;
-    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed()=="1");
-    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed()=="2");
+    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed() == "1");
+    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed() == "2");
   }
   SECTION("Create XML and read attributes with wrong name", "[XML][Attribute][Read]")
   {
     XML xml;
     xml = "<root first='1' second='2'>test content</root>";
     BufferDestination destination;
-    REQUIRE_THROWS_WITH(XRef<XElement>(xml.root())["frst"],"XNode Error: Attribute 'frst' does not exist.");
+    REQUIRE_THROWS_WITH(XRef<XElement>(xml.root())["frst"], "XNode Error: Attribute 'frst' does not exist.");
   }
   SECTION("Create XML and read attributes and namespaces", "[XML][Attribute][Read]")
   {
     XML xml;
     xml = "<root first='1' second='2' xmlns:f='http://www.w3.org/TR/html4/'>test content</root>";
     BufferDestination destination;
-    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed()=="1");
-    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed()=="2");
-    REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed()=="http://www.w3.org/TR/html4/");
+    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed() == "1");
+    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed() == "2");
+    REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
+  }
+  SECTION("A root document defining one namespace that is inherited by a child", "[XML][Parse][Namespace]")
+  {
+    XML xml;
+    BufferSource source{
+      "<root xmlns:h='http://www.w3.org/TR/html4/'>\n"
+      "<h:table><h:tr><h:td>Apples</h:td><h:td>Bananas</h:td></h:tr></h:table>\n"
+      "</root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xRoot[0].name() == "h:table");
+    REQUIRE(xRoot[0].getNameSpaces().size() == 1);
+    REQUIRE(xRoot[0]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0][0].getNameSpaces().size() == 1);
+    REQUIRE(xRoot[0][0].name() == "h:tr");
+    REQUIRE(xRoot[0][0]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0][0][0].getNameSpaces().size() == 1);
+    REQUIRE(xRoot[0][0][0].name() == "h:td");
+    REQUIRE(xRoot[0][0][0].getContents() == "Apples");
+    REQUIRE(xRoot[0][0][0]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0][0][1].name() == "h:td");
+    REQUIRE(xRoot[0][0][1].getContents() == "Bananas");
+    REQUIRE(xRoot[0][0][1]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
   }
 }
