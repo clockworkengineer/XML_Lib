@@ -8,9 +8,9 @@
 
 using namespace XML_Lib;
 
-TEST_CASE("XML attribute useage tests cases.", "[XML][Value]")
+TEST_CASE("XML attribute usage tests cases.", "[XML][Value]")
 {
-  SECTION("Create an empty attribute does not throw exeception.", "[XML][Attribute][Create]")
+  SECTION("Create an empty attribute does not throw exception.", "[XML][Attribute][Create]")
   {
     REQUIRE_NOTHROW(XMLAttribute("", XMLValue("")));
   }

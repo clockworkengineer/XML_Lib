@@ -131,7 +131,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     REQUIRE(XRef<XElement>(xml.root()).getContents() == "John Doe Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }
-TEST_CASE("Check XML creation apis.", "[XML][Creation][API]")
+TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
 {
   SECTION("Create XML from passed string to constructor.", "[XML][Creation][Constructor]")
   {
@@ -147,5 +147,29 @@ TEST_CASE("Check XML creation apis.", "[XML][Creation][API]")
     BufferDestination destination;
     xml.stringify(destination);
     REQUIRE(destination.toString() == R"(<?xml version="1.0" encoding="UTF-8" standalone="no"?><root>test content</root>)");
+  }
+  SECTION("Create XML and read attributes.", "[XML][Attribute][Read]")
+  {
+    XML xml;
+    xml = "<root first='1' second='2'>test content</root>";
+    BufferDestination destination;
+    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed()=="1");
+    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed()=="2");
+  }
+  SECTION("Create XML and read attributes with wrong name", "[XML][Attribute][Read]")
+  {
+    XML xml;
+    xml = "<root first='1' second='2'>test content</root>";
+    BufferDestination destination;
+    REQUIRE_THROWS_WITH(XRef<XElement>(xml.root())["frst"],"XNode Error: Attribute 'frst' does not exist.");
+  }
+  SECTION("Create XML and read attributes and namespaces", "[XML][Attribute][Read]")
+  {
+    XML xml;
+    xml = "<root first='1' second='2' xmlns:f='http://www.w3.org/TR/html4/'>test content</root>";
+    BufferDestination destination;
+    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed()=="1");
+    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed()=="2");
+    REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed()=="http://www.w3.org/TR/html4/");
   }
 }
