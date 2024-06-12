@@ -176,13 +176,11 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
   }
   SECTION("A root document defining one namespace that is inherited by a child", "[XML][Parse][Namespace]")
   {
-    XML xml;
-    BufferSource source{
+    XML xml{
       "<root xmlns:h='http://www.w3.org/TR/html4/'>\n"
       "<h:table><h:tr><h:td>Apples</h:td><h:td>Bananas</h:td></h:tr></h:table>\n"
       "</root>\n"
     };
-    REQUIRE_NOTHROW(xml.parse(source));
     auto &xRoot = XRef<XElement>(xml.root());
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNameSpaces().size() == 1);
