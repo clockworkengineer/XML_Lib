@@ -25,5 +25,9 @@ public:
   // ========================
   virtual void add(const std::string &bytes) = 0;
   virtual void add(Char c) = 0;
+  // =============================
+  // Clear the current destination
+  // =============================
+  virtual void clear() = 0;
 };
 }// namespace XML_Lib

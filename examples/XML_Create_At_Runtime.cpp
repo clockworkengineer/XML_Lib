@@ -12,7 +12,6 @@
 #include "XML_Core.hpp"
 
 namespace xl = XML_Lib;
-namespace fs = std::filesystem;
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
@@ -23,8 +22,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     // Log version
     PLOG_INFO << xl::XML().version();
     // create an empty structure (null)
-    xl::XML xml;
+    xl::XML xml { "<root attrib1='value1' attrib2='value2' > contents </root>"};
     xl::BufferDestination destination;
+    xml.stringify(destination);
+    PLOG_INFO << "attrib1 = " <<xl::XRef<xl::XElement>(xml.root())["attrib1"].getUnparsed();
+    PLOG_INFO << "attrib2 = " << xl::XRef<xl::XElement>(xml.root())["attrib2"].getUnparsed();
+    PLOG_INFO << destination.toString();
+    xml = "<root attrib1='value1' attrib2='value2' attrib3='value3' attrib4='value4'> contents </root>";
+    destination.clear();
     xml.stringify(destination);
     PLOG_INFO << destination.toString();
   } catch (std::exception &ex) {
