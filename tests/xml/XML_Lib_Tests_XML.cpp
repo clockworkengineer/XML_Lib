@@ -196,4 +196,26 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     REQUIRE(xRoot[0][0][1].getContents() == "Bananas");
     REQUIRE(xRoot[0][0][1]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
   }
+  SECTION("Create XML and read attributes and write away new first name/value .", "[XML][Attribute][Write]")
+  {
+    XML xml;
+    xml = "<root first='1' second='2'>test content</root>";
+    BufferDestination destination;
+    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed() == "1");
+    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed() == "2");
+    XRef<XElement>(xml.root())["first"] = XMLAttribute("newfirst", XMLValue{ "new", "new" });
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root newfirst=\"new\" second=\"2\">test content</root>");
+  }
+  SECTION("Create XML and read attributes and write away new first value .", "[XML][Attribute][Write]")
+  {
+    XML xml;
+    xml = "<root first='1' second='2'>test content</root>";
+    BufferDestination destination;
+    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed() == "1");
+    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed() == "2");
+    XRef<XElement>(xml.root())["first"] = XMLValue{ "new", "new" };
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root first=\"new\" second=\"2\">test content</root>");
+  }
 }

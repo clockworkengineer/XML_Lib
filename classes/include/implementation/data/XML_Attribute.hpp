@@ -15,6 +15,7 @@ struct XMLAttribute : XMLValue
   XMLAttribute &operator=(const XMLAttribute &other) = default;
   XMLAttribute(XMLAttribute &&other) = default;
   XMLAttribute &operator=(XMLAttribute &&other) = default;
+  XMLAttribute &operator=(const XMLValue &other)  { setValue(other.getUnparsed(), other.getParsed()); return *this; };
   ~XMLAttribute() = default;
   // Get attribute name
   [[nodiscard]] const std::string &getName() const { return name; }
