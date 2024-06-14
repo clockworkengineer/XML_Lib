@@ -9,13 +9,22 @@ namespace XML_Lib {
 struct XElement : Variant
 {
   // Constructors/Destructors
-  explicit XElement(std::string name="",const Type nodeType = Type::element) : Variant(nodeType), elementName(std::move(name)) {}
+  explicit XElement(std::string name = "", const Type nodeType = Type::element)
+    : Variant(nodeType), elementName(std::move(name))
+  {}
   XElement(std::string name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces,
     const Type nodeType = Type::element)
     : Variant(nodeType), elementName(std::move(name)), attributes(attributes), namespaces(namespaces)
-  {}
+  {
+    for (const auto &attribute : attributes) {
+      if (attribute.getName().starts_with("xmlns")) {
+        this->namespaces.emplace_back(attribute.getName().size() > 5 ? attribute.getName().substr(6) : ":",
+          XMLValue{ attribute.getUnparsed(), attribute.getParsed() });
+      }
+    }
+  }
   XElement(const XElement &other) = delete;
   XElement &operator=(const XElement &other) = delete;
   XElement(XElement &&other) = default;
@@ -31,10 +40,7 @@ struct XElement : Variant
   // Return reference to attribute list
   [[nodiscard]] const std::vector<XMLAttribute> &getAttributes() const { return attributes; }
   // Is namespace present  ?
-  [[nodiscard]] bool hasNameSpace(const std::string &name) const
-  {
-    return XMLAttribute::contains(namespaces, name);
-  }
+  [[nodiscard]] bool hasNameSpace(const std::string &name) const { return XMLAttribute::contains(namespaces, name); }
   // Add a namespace
   void addNameSpace(const std::string &name, const XMLValue &value) const { namespaces.emplace_back(name, value); }
   // Return reference to namespace list

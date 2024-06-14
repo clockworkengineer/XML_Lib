@@ -51,21 +51,6 @@ void addContentToElementChildList(XNode &xNode, const std::string &content)
 }
 
 /// <summary>
-/// Add new namespaces to current global list.
-/// </summary>
-/// <param name="attributes">Current element attrutes..</param>
-/// <param name="namespaces">Current global namespace list.</param>
-void addNewNameSpaces(const std::vector<XMLAttribute> &attributes, std::vector<XMLAttribute> &namespaces)
-{
-  for (const auto &attribute : attributes) {
-    if (attribute.getName().starts_with("xmlns")) {
-      namespaces.emplace_back(attribute.getName().size() > 5 ? attribute.getName().substr(6) : ":",
-        XMLValue{ attribute.getUnparsed(), attribute.getParsed() });
-    }
-  }
-}
-
-/// <summary>
 /// Parse entity reference as XML and add XNodes produced to the current XNode.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
@@ -160,7 +145,7 @@ XNode XML_Parser::parseComment(ISource &source)
 XNode XML_Parser::parsePI(ISource &source)
 {
   std::string name{ parseName(source) };
-  // Check not a declartion
+  // Check not a declaration
   if (name == "xml") {
     throw SyntaxError(source.getPosition(), "Declaration allowed only at the start of the document.");
   }
@@ -303,17 +288,14 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapp
 /// Parse current XML element found.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="outerNamespaces">Current list of outerNamespaces.</param>
+/// <param name="namespaces">Current list of outerNamespaces.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to element XNode.</returns>
-XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> &outerNamespaces, IEntityMapper & entityMapper)
+XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, IEntityMapper & entityMapper)
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
   const std::vector attributes{ parseAttributes(source, entityMapper) };
-  // Add any new namespaces
-  std::vector namespaces{ outerNamespaces };
-  addNewNameSpaces(attributes, namespaces);
   // Create element XNode
   if (XNode xNode; source.match(">")) {
     // Normal element tag
@@ -326,7 +308,7 @@ XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> 
     while (source.more() && !source.match("</")) { parseElementInternal(source, xNode, entityMapper); }
     if (source.match(toUtf16(XRef<XElement>(xNode).name()) + u">")) { return xNode; }
   } else if (source.match("/>")) {
-    // Self closing element tag
+    // Self-closing element tag
     return XNode::make<XSelf>(name, attributes, namespaces);
   }
   throw SyntaxError(source.getPosition(), "Missing closing tag.");
