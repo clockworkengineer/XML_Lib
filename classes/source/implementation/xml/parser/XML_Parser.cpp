@@ -70,7 +70,7 @@ void XML_Parser::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
 /// Parse any comments, PI or whitespace in prolog/epilog of XML file.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="xProlog">XMLprolog XNode.</param>
+/// <param name="xProlog">XML prolog XNode.</param>
 /// <returns>True then items parsed.</returns>
 bool XML_Parser::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog)
 {
