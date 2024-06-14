@@ -12,25 +12,25 @@
 namespace XML_Lib {
 
 /// <summary>
-/// Split a string into a vector of strings using the passed in delimeter.
+/// Split a string into a vector of strings using the passed in delimiter.
 /// </summary>
 /// <param name="target">String to split up.</param>
-/// <param name="delimeter">Character delimeter to split on.</param>
+/// <param name="delimiter">Character delimiter to split on.</param>
 /// <returns>Vector of split strings.</returns>
-std::vector<std::string> splitString(const std::string &target, const char delimeter)
+std::vector<std::string> splitString(const std::string &target, const char delimiter)
 {
   std::stringstream sourceStream(target);
   std::string splitOffItem;
   std::vector<std::string> splitStrings;
-  while (std::getline(sourceStream, splitOffItem, delimeter)) { splitStrings.push_back(splitOffItem); }
+  while (std::getline(sourceStream, splitOffItem, delimiter)) { splitStrings.push_back(splitOffItem); }
   return splitStrings;
 }
 
 /// <summary>
-/// Trimm whitespace from beginning and end of a string.
+/// Trim whitespace from beginning and end of a string.
 /// </summary>
-/// <param name="target">String to trimm.</param>
-std::string trimmString(const std::string &target)
+/// <param name="target">String to trim.</param>
+std::string trimString(const std::string &target)
 {
   std::string trimmedString{ target };
   trimmedString.erase(trimmedString.begin(),

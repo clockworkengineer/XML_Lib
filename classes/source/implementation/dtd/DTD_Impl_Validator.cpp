@@ -27,7 +27,7 @@ void DTD_Impl::elementError(const XElement &xElement, const std::string &error) 
 /// <returns>true then token is valid otherwise false.</returns>
 bool DTD_Impl::checkIsNMTOKENOK(const std::string &nmTokenValue)
 {
-  BufferSource nmTokenValueSource(trimmString(nmTokenValue));
+  BufferSource nmTokenValueSource(trimString(nmTokenValue));
   while (nmTokenValueSource.more()) {
     if (!validNameChar(nmTokenValueSource.current())) { return false; }
     nmTokenValueSource.next();
