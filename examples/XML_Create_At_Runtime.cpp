@@ -21,13 +21,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     PLOG_INFO << "XML_Create_At_Runtime started ...";
     // Log version
     PLOG_INFO << xl::XML().version();
-    // create an empty structure (null)
+    // Create XML using constructor
     xl::XML xml { "<root attrib1='value1' attrib2='value2' > contents </root>"};
     xl::BufferDestination destination;
     xml.stringify(destination);
     PLOG_INFO << "attrib1 = " <<xl::XRef<xl::XElement>(xml.root())["attrib1"].getUnparsed();
     PLOG_INFO << "attrib2 = " << xl::XRef<xl::XElement>(xml.root())["attrib2"].getUnparsed();
     PLOG_INFO << destination.toString();
+    // Create XML using assignment
     xml = "<root attrib1='value1' attrib2='value2' attrib3='value3' attrib4='value4'> contents </root>";
     destination.clear();
     xml.stringify(destination);
