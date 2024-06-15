@@ -19,7 +19,9 @@ inline const XNode &XNode::operator[](const std::string &name) const
   if (isIndexable()) {
     if (const auto xNode = std::ranges::find_if(getChildren(),
           [&name](const XNode &child) { return child.isNameable() && XRef<XElement>(child).name() == name; });
-        xNode != getChildren().end()) { return *xNode; }
+        xNode != getChildren().end()) {
+      return *xNode;
+    }
   }
   throw Error("Element '" + name + "' does not exist.");
 }
@@ -39,7 +41,7 @@ inline const XElement &XElement::operator[](const int index) const
   }
   throw XNode::Error("Invalid index used to access XNode array.");
 }
-inline  XElement &XElement::operator[](const int index)
+inline XElement &XElement::operator[](const int index)
 {
   if (index >= 0 && index < static_cast<int>(getChildren().size())) {
     int number = 0;
@@ -57,20 +59,7 @@ inline  XElement &XElement::operator[](const int index)
 // =========================
 inline const XMLAttribute &XElement::operator[](const std::string &name) const
 {
-  if (name.starts_with("xmlns")) {
-    auto namespaceName = name.substr(6);
-    return(XMLAttribute::find(namespaces, (namespaceName.empty() ? ":" : namespaceName)));
-  } else {
-    return(XMLAttribute::find(attributes, name));
-  }
+  return (XMLAttribute::find(attributes, name));
 }
-inline  XMLAttribute &XElement::operator[](const std::string &name)
-{
-  if (name.starts_with("xmlns")) {
-    auto namespaceName = name.substr(6);
-    return(XMLAttribute::find(namespaces, (namespaceName.empty() ? ":" : namespaceName)));
-  } else {
-    return(XMLAttribute::find(attributes, name));
-  }
-}
+inline XMLAttribute &XElement::operator[](const std::string &name) { return (XMLAttribute::find(attributes, name)); }
 }// namespace XML_Lib

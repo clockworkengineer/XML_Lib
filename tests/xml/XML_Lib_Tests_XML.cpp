@@ -184,17 +184,17 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     auto &xRoot = XRef<XElement>(xml.root());
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNameSpaces().size() == 1);
-    REQUIRE(xRoot[0]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0].getNameSpace("h").getUnparsed() == "http://www.w3.org/TR/html4/");
     REQUIRE(xRoot[0][0].getNameSpaces().size() == 1);
     REQUIRE(xRoot[0][0].name() == "h:tr");
-    REQUIRE(xRoot[0][0]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0][0].getNameSpace("h").getUnparsed() == "http://www.w3.org/TR/html4/");
     REQUIRE(xRoot[0][0][0].getNameSpaces().size() == 1);
     REQUIRE(xRoot[0][0][0].name() == "h:td");
     REQUIRE(xRoot[0][0][0].getContents() == "Apples");
-    REQUIRE(xRoot[0][0][0]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0][0][0].getNameSpace("h").getUnparsed() == "http://www.w3.org/TR/html4/");
     REQUIRE(xRoot[0][0][1].name() == "h:td");
     REQUIRE(xRoot[0][0][1].getContents() == "Bananas");
-    REQUIRE(xRoot[0][0][1]["xmlns:h"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(xRoot[0][0][1].getNameSpace("h").getUnparsed() == "http://www.w3.org/TR/html4/");
   }
   SECTION("Create XML and read attributes and write away new first name/value .", "[XML][Attribute][Write]")
   {
