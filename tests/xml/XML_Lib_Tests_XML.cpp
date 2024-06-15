@@ -222,28 +222,26 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root first=\"new\" second=\"2\">test content</root>");
   }
-//  SECTION("Create XML with read namespaces and write away new first.", "[XML][Attribute][Write]")
-//  {
-//    XML xml;
-//    xml = "<root xmlns:f='http://www.w3.org/TR/html4/' xmlns:s='http://www.w3.org/TR/html5/'>test content</root>";
-//    BufferDestination destination;
-//    REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
-//    REQUIRE(XRef<XElement>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
-////    XRef<XElement>(xml.root())["xmlns:f"] = XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/", "new" });
-//    REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
-//    REQUIRE(XRef<XElement>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
-//    xml.stringify(destination);
-//    REQUIRE(destination.toString() == "");
-//  }
-//  SECTION("Create XML and read attributes and write away new first value .", "[XML][Attribute][Write]")
-//  {
-//    XML xml;
-//    xml = "<root first='1' second='2'>test content</root>";
-//    BufferDestination destination;
-//    REQUIRE(XRef<XElement>(xml.root())["first"].getUnparsed() == "1");
-//    REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed() == "2");
-//    XRef<XElement>(xml.root())["first"] = XMLValue{ "new", "new" };
-//    xml.stringify(destination);
-//    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root first=\"new\" second=\"2\">test content</root>");
-//  }
+  SECTION("Create XML with read namespaces and write away new first.", "[XML][Attribute][Write]")
+  {
+    XML xml;
+    xml = "<root xmlns:f='http://www.w3.org/TR/html4/' xmlns:s='http://www.w3.org/TR/html5/'>test content</root>";
+    BufferDestination destination;
+    REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(XRef<XElement>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
+    XRef<XElement>(xml.root())["xmlns:f"] = XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/" });
+    REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html6/");
+    REQUIRE(XRef<XElement>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root xmlns:f=\"http://www.w3.org/TR/html6/\" xmlns:s=\"http://www.w3.org/TR/html5/\">test content</root>");
+  }
+  SECTION("Create XML with read namespaces and write away new first.", "[XML][Attribute][Write]")
+  {
+    XML xml;
+    xml = "<root xmlns:f='http://www.w3.org/TR/html4/' xmlns:s='http://www.w3.org/TR/html5/'>test content</root>";
+    XRef<XElement>(xml.root())["xmlns:f"] = XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/" });
+    REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html6/");
+    // Change does not get passed through to cache at present
+    REQUIRE(XRef<XElement>(xml.root()).getNameSpace("f").getUnparsed() == "http://www.w3.org/TR/html4/");
+  }
 }
