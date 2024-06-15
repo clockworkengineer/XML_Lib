@@ -14,17 +14,6 @@
 namespace XML_Lib {
 
 /// <summary>
-/// Reset content node whitespace flag if set.
-/// </summary>
-/// <param name="xNode">Current element XNode.</param>
-void resetWhiteSpace(XNode &xNode)
-{
-  if (!xNode.getChildren().empty()) {
-    if (xNode.getChildren().back().isContent()) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
-  }
-}
-
-/// <summary>
 /// Add content XNode to elements child list.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
@@ -240,7 +229,9 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &enti
       }
       // NO XML into entity elements list.
       parseEntityReferenceXML(xEntityReference, content, entityMapper);
-      resetWhiteSpace(xNode);
+      if (!xNode.getChildren().empty()) {
+        if (xNode.getChildren().back().isContent()) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+      }
     }
     xNode.addChild(std::move(xEntityReference));
   } else {
@@ -263,7 +254,9 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapp
   } else if (source.match("<?")) {
     xNode.addChild(parsePI(source));
   } else if (source.match("<![CDATA[")) {
-    resetWhiteSpace(xNode);
+    if (!xNode.getChildren().empty()) {
+      if (xNode.getChildren().back().isContent()) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+    }
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
     xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNameSpaces(), entityMapper));
