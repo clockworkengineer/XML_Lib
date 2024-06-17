@@ -1,14 +1,15 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 namespace XML_Lib {
 
 struct XMLValue
 {
   // Constructors/Destructors
-  explicit XMLValue(const std::string &unparsed = "", const std::string &parsed = "", const char quote = '\'')
-    : unparsed(unparsed), parsed(parsed), quote(quote)
+  explicit XMLValue(std::string unparsed = "", const std::string &parsed = "", const char quote = '\'')
+    : unparsed(std::move(unparsed)), parsed(parsed), quote(quote)
   {}
   XMLValue() = delete;
   XMLValue(const XMLValue &other) = default;
