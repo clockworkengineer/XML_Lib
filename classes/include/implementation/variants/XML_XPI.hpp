@@ -1,14 +1,15 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 namespace XML_Lib {
 
 struct XPI final : Variant
 {
   // Constructors/Destructors
-  XPI(const std::string &name, const std::string &parameters)
-    : Variant(Type::pi), piName(name), piParameters(parameters)
+  XPI(std::string name, const std::string &parameters)
+    : Variant(Type::pi), piName(std::move(name)), piParameters(parameters)
   {}
   XPI(const XPI &other) = delete;
   XPI &operator=(const XPI &other) = delete;

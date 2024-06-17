@@ -1,3 +1,5 @@
+#include <utility>
+
 #pragma once
 
 namespace XML_Lib {
@@ -5,7 +7,7 @@ namespace XML_Lib {
 struct XEntityReference final : Variant
 {
   // Constructors/Destructors
-  explicit XEntityReference(const XMLValue &value) : Variant(Type::entity), entityReferenceValue(value) {}
+  explicit XEntityReference(XMLValue value) : Variant(Type::entity), entityReferenceValue(std::move(value)) {}
   XEntityReference(const XEntityReference &other) = delete;
   XEntityReference &operator=(const XEntityReference &other) = delete;
   XEntityReference(XEntityReference &&other) = default;

@@ -1,13 +1,14 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 namespace XML_Lib {
 
 struct XComment final : Variant
 {
   // Constructors/Destructors
-  explicit XComment(const std::string &comment = "") : Variant(Type::comment), xmlComment(comment) {}
+  explicit XComment(std::string comment = "") : Variant(Type::comment), xmlComment(std::move(comment)) {}
   XComment(const XComment &other) = delete;
   XComment &operator=(const XComment &other) = delete;
   XComment(XComment &&other) = default;

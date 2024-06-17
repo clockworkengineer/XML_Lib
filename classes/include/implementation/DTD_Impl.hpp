@@ -38,7 +38,7 @@ private:
   void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpecDestination);
   static void parseElementName(ISource &contentSpecSource, IDestination &contentSpecDestination);
   static void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpecDestination);
-  [[nodiscard]] XMLValue parseElementInternalpecification(const std::string &elementName, const XMLValue &contentSpec);
+  [[nodiscard]] XMLValue parseElementInternalSpecification(const std::string &elementName, const XMLValue &contentSpec);
   void parseExternalReferenceContent();
   void parseAttributeList(ISource &source) const;
   void parseNotation(ISource &source) const;

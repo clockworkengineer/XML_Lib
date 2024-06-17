@@ -23,9 +23,9 @@ struct XML_EntityMapper final : IEntityMapper
     XML_EntityMapping() = default;
     explicit XML_EntityMapping(const std::string &value) { setInternal(value); }
     // Entity reference get/set details
-    const std::string &getInternal() const { return internal; }
-    const std::string &getNotation() const { return notation; }
-    const XMLExternalReference &getExternal() const { return external; }
+    [[nodiscard]] const std::string &getInternal() const { return internal; }
+    [[nodiscard]] const std::string &getNotation() const { return notation; }
+    [[nodiscard]] const XMLExternalReference &getExternal() const { return external; }
     void setInternal(const std::string &value)
     {
       mappingType = Type::internal;

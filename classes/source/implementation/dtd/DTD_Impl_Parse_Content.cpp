@@ -174,7 +174,7 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
 /// </summary>
 /// <param name="elementName">Elements name.</param>
 /// <param name="contentSpec">Elements content specification.</param>
-XMLValue DTD_Impl::parseElementInternalpecification(const std::string &elementName, const XMLValue &contentSpec)
+XMLValue DTD_Impl::parseElementInternalSpecification(const std::string &elementName, const XMLValue &contentSpec)
 {
   try {
     BufferSource contentSpecSource(contentSpec.getUnparsed());

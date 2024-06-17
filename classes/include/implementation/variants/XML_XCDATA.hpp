@@ -1,13 +1,14 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 namespace XML_Lib {
 
 struct XCDATA final : Variant
 {
   // Constructors/Destructors
-  explicit XCDATA(const std::string &cdata) : Variant(Type::cdata), cdata(cdata) {}
+  explicit XCDATA(std::string cdata) : Variant(Type::cdata), cdata(std::move(cdata)) {}
   XCDATA(const XCDATA &other) = delete;
   XCDATA &operator=(const XCDATA &other) = delete;
   XCDATA(XCDATA &&other) = default;

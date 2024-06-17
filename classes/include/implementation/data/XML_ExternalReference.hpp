@@ -23,8 +23,8 @@ public:
   // Constructors/Destructors
   explicit XMLExternalReference(const std::string &referenceType,
     std::string systemID = "",
-    const std::string &publicID = "")
-    : systemID(std::move(systemID)), publicID(publicID)
+    std::string publicID = "")
+    : systemID(std::move(systemID)), publicID(std::move(publicID))
   {
     if (referenceType == kSystemID) {
       type = Type::systemID;
