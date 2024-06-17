@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 namespace XML_Lib {
 
@@ -21,9 +22,9 @@ public:
   };
   // Constructors/Destructors
   explicit XMLExternalReference(const std::string &referenceType,
-    const std::string &systemID = "",
+    std::string systemID = "",
     const std::string &publicID = "")
-    : systemID(systemID), publicID(publicID)
+    : systemID(std::move(systemID)), publicID(publicID)
   {
     if (referenceType == kSystemID) {
       type = Type::systemID;
