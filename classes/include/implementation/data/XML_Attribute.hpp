@@ -15,7 +15,7 @@ struct XMLAttribute : XMLValue
   XMLAttribute &operator=(const XMLAttribute &other) = default;
   XMLAttribute(XMLAttribute &&other) = default;
   XMLAttribute &operator=(XMLAttribute &&other) = default;
-  XMLAttribute &operator=(const XMLValue &other)
+  XMLAttribute &operator=(const XMLValue &other) override
   {
     setValue(other.getUnparsed(), other.getParsed());
     return *this;
@@ -26,7 +26,6 @@ struct XMLAttribute : XMLValue
   // Search for an attribute in vector of unique attributes
   [[nodiscard]] static bool contains(const std::vector<XMLAttribute> &attributes, const std::string &name);
   // Return attribute entry
-  [[nodiscard]] static const XMLAttribute &find(const std::vector<XMLAttribute> &attributes, const std::string &name);
   [[nodiscard]] static XMLAttribute &find(std::vector<XMLAttribute> &attributes, const std::string &name);
 
 private:
@@ -41,15 +40,6 @@ private:
   }) != attributes.rend();
 }
 
-[[nodiscard]] inline const XMLAttribute &XMLAttribute::find(const std::vector<XMLAttribute> &attributes,
-  const std::string &name)
-{
-  auto attribute = std::find_if(
-    attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return attr.getName() == name; });
-  if (attribute != attributes.rend()) return *attribute;
-
-  throw XNode::Error("Attribute '" + name + "' does not exist.");
-}
 [[nodiscard]] inline XMLAttribute &XMLAttribute::find(std::vector<XMLAttribute> &attributes, const std::string &name)
 {
   auto attribute = std::find_if(
