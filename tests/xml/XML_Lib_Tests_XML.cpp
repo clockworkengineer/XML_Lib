@@ -203,7 +203,9 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     BufferDestination destination;
     XRef<XElement>(xml.root()).addAttribute("attribute1", XMLValue("value1", "value1", '\''));
     xml.stringify(destination);
-    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root attribute1=\"value1\">test content</root>");
+    REQUIRE(
+      destination.toString()
+      == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root attribute1=\"value1\">test content</root>");
     XRef<XElement>(xml.root()).addAttribute("attribute2", XMLValue("value2", "value2", '\''));
     XRef<XElement>(xml.root()).addAttribute("attribute3", XMLValue("value3", "value3", '\''));
     destination.clear();
@@ -236,6 +238,22 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     REQUIRE(XRef<XElement>(xml.root())["second"].getUnparsed() == "2");
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root first=\"new\" second=\"2\">test content</root>");
+  }
+  SECTION("Create XML from passed string to constructor and add namespaces.", "[XML][Namespaces][Write]")
+  {
+    const XML xml{ "<root>test content</root>" };
+    BufferDestination destination;
+    XRef<XElement>(xml.root())
+      .addNameSpace("xmlns:f", XMLValue("http://www.w3.org/TR/html4/", "http://www.w3.org/TR/html4/"));
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root>test content</root>");
+    REQUIRE_FALSE(!XRef<XElement>(xml.root()).hasNameSpace("xmlns:f"));
+    REQUIRE(XRef<XElement>(xml.root()).getNameSpace("xmlns:f").getUnparsed()=="http://www.w3.org/TR/html4/");
+    XRef<XElement>(xml.root())
+      .addAttribute("xmlns:f", XMLValue("http://www.w3.org/TR/html4/", "http://www.w3.org/TR/html4/"));
+    destination.clear();
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root xmlns:f=\"http://www.w3.org/TR/html4/\">test content</root>");
   }
   SECTION("Create XML with read namespaces and write away new first.", "[XML][Namespace][Write]")
   {
