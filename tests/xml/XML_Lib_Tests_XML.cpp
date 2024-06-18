@@ -87,7 +87,8 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
       "</AddressBook>"
     };
     xml.parse(source);
-    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
+    auto &xRoot = XRef<XElement>(xml.root());
+    REQUIRE(xRoot.name() == "AddressBook");
     REQUIRE(XRef<XElement>(xml.root()["Address"]).name() == "Address");
     REQUIRE(XRef<XElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
@@ -196,6 +197,20 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     REQUIRE(xRoot[0][0][1].getContents() == "Bananas");
     REQUIRE(xRoot[0][0][1].getNameSpace("h").getUnparsed() == "http://www.w3.org/TR/html4/");
   }
+  SECTION("Create XML from passed string to constructor and add attributes.", "[XML][Attribute][Write]")
+  {
+    const XML xml{ "<root>test content</root>" };
+    BufferDestination destination;
+    XRef<XElement>(xml.root()).addAttribute("attribute1", XMLValue("value1", "value1", '\''));
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root attribute1=\"value1\">test content</root>");
+    XRef<XElement>(xml.root()).addAttribute("attribute2", XMLValue("value2", "value2", '\''));
+    XRef<XElement>(xml.root()).addAttribute("attribute3", XMLValue("value3", "value3", '\''));
+    destination.clear();
+    xml.stringify(destination);
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root attribute1="
+            "\"value1\" attribute2=\"value2\" attribute3=\"value3\">test content</root>");
+  }
   SECTION("Create XML and read attributes and write away new first name/value .", "[XML][Attribute][Write]")
   {
     XML xml;
@@ -222,24 +237,26 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root first=\"new\" second=\"2\">test content</root>");
   }
-  SECTION("Create XML with read namespaces and write away new first.", "[XML][Attribute][Write]")
+  SECTION("Create XML with read namespaces and write away new first.", "[XML][Namespace][Write]")
   {
     XML xml;
     xml = "<root xmlns:f='http://www.w3.org/TR/html4/' xmlns:s='http://www.w3.org/TR/html5/'>test content</root>";
     BufferDestination destination;
     REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
     REQUIRE(XRef<XElement>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
-    XRef<XElement>(xml.root())["xmlns:f"] = XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/" });
+    XRef<XElement>(xml.root())["xmlns:f"] =
+      XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/" });
     REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html6/");
     REQUIRE(XRef<XElement>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root xmlns:f=\"http://www.w3.org/TR/html6/\" xmlns:s=\"http://www.w3.org/TR/html5/\">test content</root>");
   }
-  SECTION("Create XML with read namespaces and write away new first.", "[XML][Attribute][Write]")
+  SECTION("Create XML with read namespaces and write away new first.", "[XML][Namespace][Write]")
   {
     XML xml;
     xml = "<root xmlns:f='http://www.w3.org/TR/html4/' xmlns:s='http://www.w3.org/TR/html5/'>test content</root>";
-    XRef<XElement>(xml.root())["xmlns:f"] = XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/" });
+    XRef<XElement>(xml.root())["xmlns:f"] =
+      XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/" });
     REQUIRE(XRef<XElement>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html6/");
     // Change does not get passed through to cache at present
     REQUIRE(XRef<XElement>(xml.root()).getNameSpace("f").getUnparsed() == "http://www.w3.org/TR/html4/");
