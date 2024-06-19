@@ -86,6 +86,9 @@ public:
   {
     std::stringstream os;
     os << "\n--------------------XML_Lib::XNode Sizes---------------------\n";
+    os << "XML_Lib::XMLAttribute size " << sizeof(XML_Lib::XMLAttribute) << " in bytes.\n";
+    os << "XML_Lib::XMLExternalReference size " << sizeof(XML_Lib::XMLExternalReference) << " in bytes.\n";
+    os << "XML_Lib::XMLValue size " << sizeof(XML_Lib::XMLValue) << " in bytes.\n";
     os << "XML_Lib::XNode size " << sizeof(XML_Lib::XNode) << " in bytes.\n";
     os << "XML_Lib::XCDATA size " << sizeof(XML_Lib::XCDATA) << " in bytes.\n";
     os << "XML_Lib::XComment Entry size " << sizeof(XML_Lib::XComment) << " in bytes.\n";
