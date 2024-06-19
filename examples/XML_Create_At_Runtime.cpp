@@ -33,6 +33,28 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     destination.clear();
     xml.stringify(destination);
     PLOG_INFO << destination.toString();
+    // Add attributes to base XML
+    xml = "<root>test content</root>" ;
+    XRef<xl::XElement>(xml.root()).addAttribute("attribute1", xl::XMLValue("value1", "value1"));
+    destination.clear();
+    xml.stringify(destination);
+    PLOG_INFO << destination.toString();
+    XRef<xl::XElement>(xml.root()).addAttribute("attribute2", xl::XMLValue("value2", "value2"));
+    XRef<xl::XElement>(xml.root()).addAttribute("attribute3", xl::XMLValue("value3", "value3"));
+    destination.clear();
+    xml.stringify(destination);
+    PLOG_INFO << destination.toString();
+    // Add namespaces to base XML
+    xml = "<root>test content</root>" ;
+    XRef<xl::XElement>(xml.root()).addNameSpace("xmlns:f", xl::XMLValue("http://www.w3.org/TR/html4/", "http://www.w3.org/TR/html4/"));
+    destination.clear();
+    xml.stringify(destination);
+    PLOG_INFO << destination.toString();
+    XRef<xl::XElement>(xml.root()).addNameSpace("xmlns:h", xl::XMLValue("http://www.w3.org/TR/html5/", "http://www.w3.org/TR/html5/"));
+    XRef<xl::XElement>(xml.root()).addNameSpace("xmlns:i", xl::XMLValue("http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/"));
+    destination.clear();
+    xml.stringify(destination);
+    PLOG_INFO << destination.toString();
   } catch (std::exception &ex) {
     PLOG_ERROR << "Error: " << ex.what();
   }
