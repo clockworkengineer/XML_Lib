@@ -199,7 +199,7 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
   }
   SECTION("Create XML from passed string to constructor and add attributes.", "[XML][Attribute][Write]")
   {
-    const XML xml{ "<root>test content</root>" };
+    XML xml{ "<root>test content</root>" };
     BufferDestination destination;
     XRef<XElement>(xml.root()).addAttribute("attribute1", XMLValue("value1", "value1", '\''));
     xml.stringify(destination);
@@ -246,14 +246,9 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     XRef<XElement>(xml.root())
       .addNameSpace("xmlns:f", XMLValue("http://www.w3.org/TR/html4/", "http://www.w3.org/TR/html4/"));
     xml.stringify(destination);
-    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root>test content</root>");
+    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root xmlns:f=\"http://www.w3.org/TR/html4/\">test content</root>");
     REQUIRE_FALSE(!XRef<XElement>(xml.root()).hasNameSpace("xmlns:f"));
     REQUIRE(XRef<XElement>(xml.root()).getNameSpace("xmlns:f").getUnparsed()=="http://www.w3.org/TR/html4/");
-    XRef<XElement>(xml.root())
-      .addAttribute("xmlns:f", XMLValue("http://www.w3.org/TR/html4/", "http://www.w3.org/TR/html4/"));
-    destination.clear();
-    xml.stringify(destination);
-    REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root xmlns:f=\"http://www.w3.org/TR/html4/\">test content</root>");
   }
   SECTION("Create XML with read namespaces and write away new first.", "[XML][Namespace][Write]")
   {

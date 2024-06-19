@@ -50,7 +50,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     auto xElement = XElement("test", {}, {});
     REQUIRE( xElement.name() == "test");
     addNameSpaces(xElement);
-    REQUIRE_FALSE(!xElement.getAttributes().empty());
+    REQUIRE(xElement.getAttributes().size()==3);
     REQUIRE(xElement.getNameSpaces().size()==3);
   }
   SECTION("Create XElement with a given name, add attributes to it, check that attr2 exists and get its values.", "[XML][XNode][XElement][API]")

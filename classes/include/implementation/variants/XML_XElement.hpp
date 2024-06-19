@@ -42,8 +42,15 @@ struct XElement : Variant
   // Is namespace present  ?
   [[nodiscard]] bool hasNameSpace(const std::string &name) const { return XMLAttribute::contains(namespaces, name); }
   // Add a namespace
-  void addNameSpace(const std::string &name, const XMLValue &value) const { namespaces.emplace_back(name, value); }
-  [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const { return XMLAttribute::find(namespaces, name);}
+  void addNameSpace(const std::string &name, const XMLValue &value) const
+  {
+    namespaces.emplace_back(name, value);
+    addAttribute(name, value);
+  }
+  [[nodiscard]] const XMLAttribute &getNameSpace(const std::string &name) const
+  {
+    return XMLAttribute::find(namespaces, name);
+  }
   // Return reference to namespace list
   [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaces() const { return namespaces; }
   // Return reference to element tag name
