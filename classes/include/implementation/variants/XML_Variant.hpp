@@ -12,7 +12,7 @@ protected:
 
 public:
   // Constructors/Destructors
-  explicit Variant(const Type nodeType = Type::base) : xmlNodeType(nodeType) {}
+  explicit Variant(Type nodeType = Type::base);
   Variant(const Variant &other) = delete;
   Variant &operator=(const Variant &other) = delete;
   Variant(Variant &&other) = default;

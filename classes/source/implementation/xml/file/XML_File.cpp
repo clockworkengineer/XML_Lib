@@ -3,7 +3,7 @@
 //
 // Description: XML class implementation layer to read and write
 // XML files in a number of different formats. Note that these
-// methods are all static and do not need a XML object to invoke.
+// methods are all static and do not need an XML object to invoke.
 // For more information on byte marks and their meaning check out link
 // https://en.wikipedia.org/wiki/Byte_order_mark.
 //
@@ -31,14 +31,14 @@ void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, con
   if (format == XML::Format::utf16BE) {
     xmlFile << static_cast<unsigned char>(0xFE) << static_cast<unsigned char>(0xFF);
     for (const auto ch : xmlString) {
-      xmlFile.put(static_cast<unsigned char>(ch >> 8));
-      xmlFile.put(static_cast<unsigned char>(ch));
+      xmlFile.put(static_cast<char>(ch >> 8));
+      xmlFile.put(static_cast<char>(ch));
     }
   } else if (format == XML::Format::utf16LE) {
     xmlFile << static_cast<unsigned char>(0xFF) << static_cast<unsigned char>(0xFE);
     for (const auto ch : xmlString) {
-      xmlFile.put(static_cast<unsigned char>(ch));
-      xmlFile.put(static_cast<unsigned char>(ch >> 8));
+      xmlFile.put(static_cast<char>(ch));
+      xmlFile.put(static_cast<char>(ch >> 8));
     }
   } else {
     throw Error("Unsupported XML file format (Byte Order Mark) specified in call to writeXMLString().");

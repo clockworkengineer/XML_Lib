@@ -3,7 +3,7 @@
 //
 // Description: Convert characters to/from UTF8/UTF16.
 //
-// Dependencies: C++20 - Language standard features used..
+// Dependencies: C++20 - Language standard features used.
 //
 
 #include <codecvt>

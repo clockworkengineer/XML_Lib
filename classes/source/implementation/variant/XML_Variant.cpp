@@ -1,9 +1,9 @@
 //
 // Class: XML_EntityMapper
 //
-// Description: XML entity refernce mapper.
+// Description: XML entity reference mapper.
 //
-// Dependencies: C++20 - Language standard features used..
+// Dependencies: C++20 - Language standard features used.
 //
 
 #include "XML_Impl.hpp"
@@ -30,4 +30,5 @@ const std::vector<XNode> &Variant::getChildren() const
   if (children == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
   return *children;
 }
+Variant::Variant(const Variant::Type nodeType) : xmlNodeType(nodeType) {}
 }// namespace XML_Lib

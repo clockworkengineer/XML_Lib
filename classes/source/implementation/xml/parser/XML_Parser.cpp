@@ -5,7 +5,7 @@
 // converted the characters to UTF-16 to make the process easier (any data once
 // parsed is stored in UTF-8 strings).
 //
-// Dependencies: C++20 - Language standard features used..
+// Dependencies: C++20 - Language standard features used.
 //
 
 #include "XML_Parser.hpp"
@@ -174,7 +174,7 @@ XNode XML_Parser::parseCDATA(ISource &source)
 /// <returns>XML element attribute list.</returns>
 std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source, IEntityMapper &entityMapper)
 {
-  std::vector<XMLAttribute> attributes;
+  std::vector<XMLAttribute> attributes {};
   while (source.more() && source.current() != '/' && source.current() != '>') {
     std::string attributeName{ parseName(source) };
     if (!source.match("=")) {

@@ -27,7 +27,7 @@ public:
   // =====================================
   virtual void stringify(IDestination &destination) = 0;
   // =========================
-  // Validate XML agaisnt DTD
+  // Validate XML against DTD
   // =========================
   virtual void validate(const XNode &xNode) = 0;
 };
