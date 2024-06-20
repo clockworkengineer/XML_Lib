@@ -43,7 +43,7 @@ void stringify(const XNode &xNode, IDestination &destination) const override
     const auto &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto &attribute : xElement.getAttributes()) {
-      destination.add(" " + attribute.getName() + "=\"" + attribute.getUnparsed() + "\"");
+      destination.add(" " + attribute.getName() + "=" + attribute.getQuote() + attribute.getUnparsed() + attribute.getQuote());
     }
     if (!xNode.isSelf()) {
       destination.add(">");

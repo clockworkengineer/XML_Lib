@@ -70,7 +70,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
       "<?xml version=\"1.0\"?>\n"
       "<root> &#16A; </root>\n"
     };
-  REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 18] Cannot convert character reference.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 18] Cannot convert character reference.");
   }
   SECTION("Parse entity &amp;&quot;&apos;&gt;&lt; in attribute value", "[XML][Parse][Entities]")
   {
