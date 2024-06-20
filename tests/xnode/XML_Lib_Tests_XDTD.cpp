@@ -15,7 +15,7 @@ TEST_CASE("Create and use XDTD XNode.","[XNode][XDTD][API]")
     XML_EntityMapper mapper;
     REQUIRE_NOTHROW(XDTD(mapper));
   }
-  SECTION("Create XDTD XNode and check root name hasnt been ser.", "[XML][XNode][XDTD][API]")
+  SECTION("Create XDTD XNode and check root name hasn't been ser.", "[XML][XNode][XDTD][API]")
   {
     XML_EntityMapper mapper;
     XDTD xDTD (mapper);

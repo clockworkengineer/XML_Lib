@@ -59,7 +59,7 @@ public:
 TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
 {
   const XML xml;
-  SECTION("Parse minimum XML (root and no prolog) and traverse", "[XML][Traverse][Minumum]")
+  SECTION("Parse minimum XML (root and no prolog) and traverse", "[XML][Traverse][Minimum]")
   {
     BufferSource source{ "<root></root>" };
     xml.parse(source);
@@ -78,7 +78,7 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 0);
   }
-  SECTION("Parse minimum XML (root and no prolog and content) and traverse", "[XML][Traverse][Minumum]")
+  SECTION("Parse minimum XML (root and no prolog and content) and traverse", "[XML][Traverse][Minimum]")
   {
     BufferSource source{ "<root> test content </root>" };
     xml.parse(source);
@@ -97,7 +97,7 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 0);
   }
-  SECTION("Parse minimum XML (root and no prolog, content, an entity reference and comments) and traverse", "[XML][Traverse][Minumum]")
+  SECTION("Parse minimum XML (root and no prolog, content, an entity reference and comments) and traverse", "[XML][Traverse][Minimum]")
   {
     BufferSource source{
       "<!-- comment 1 -->"
@@ -119,7 +119,7 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 0);
   }
-  SECTION("Parse minimum XML (root and no prolog, an entity reference and traverse", "[XML][Traverse][Minumum]")
+  SECTION("Parse minimum XML (root and no prolog, an entity reference and traverse", "[XML][Traverse][Minimum]")
   {
     BufferSource source{
       "<root> &apos; </root>"
@@ -134,7 +134,7 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalDeclaration == 1);
     REQUIRE(analyzer.totalDTD == 0);
     REQUIRE(analyzer.totalElement == 0);
-    // Each enenity reference includes all child nodes created for it which in this case is a character reference
+    // Each entity reference includes all child nodes created for it which in this case is a character reference
     // or it could be nodes that make up valid XML
     REQUIRE(analyzer.totalEntityReference == 2);
     REQUIRE(analyzer.totalPI == 0);
@@ -142,7 +142,7 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 0);
   }
-  SECTION("Parse minimum XML (root and no prolog, content, two entity references and comments) and traverse", "[XML][Traverse][Minumum]")
+  SECTION("Parse minimum XML (root and no prolog, content, two entity references and comments) and traverse", "[XML][Traverse][Minimum]")
   {
     BufferSource source{
       "<!-- comment 1 -->"
@@ -164,7 +164,7 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
     REQUIRE(analyzer.totalRoot == 1);
     REQUIRE(analyzer.totalSelf == 0);
   }
-  SECTION("Parse minimum XML (root and no prolog and multiple element (some self terminated) and traverse", "[XML][Traverse][Minumum]")
+  SECTION("Parse minimum XML (root and no prolog and multiple element (some self terminated) and traverse", "[XML][Traverse][Minimum]")
   {
     BufferSource source{ "<root><element> test content </element>"
                          "<element> test content </element>"

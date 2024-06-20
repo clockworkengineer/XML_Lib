@@ -68,7 +68,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     REQUIRE(xRoot[1].getNameSpace("f").getParsed() == "https://www.w3schools.com/furniture");
   }
   SECTION(
-    "A root document and two namespaces defined in the root element and non-existant namespace g for one of tables.",
+    "A root document and two namespaces defined in the root element and non-existent namespace g for one of tables.",
     "[XML][Parse][Namespace]")
   {
 

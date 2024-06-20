@@ -45,7 +45,6 @@ private:
   auto attribute = std::find_if(
     attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return attr.getName() == name; });
   if (attribute != attributes.rend()) return *attribute;
-
   throw XNode::Error("Attribute '" + name + "' does not exist.");
 }
 }// namespace XML_Lib

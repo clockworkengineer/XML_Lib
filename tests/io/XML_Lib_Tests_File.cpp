@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML_Lib_Tests_Parse_Files
+// Unit Tests: XML_Lib_Tests_File
 //
 // Description:
 //
@@ -8,11 +8,11 @@
 
 using namespace XML_Lib;
 
-TEST_CASE("Sample XML files to read and parse.", "[XML][Parse][File]")
+TEST_CASE("Sample XML files to read and parse.", "[XML][Parse]")
 {
   TEST_FILE_LIST(file);
   XML xml;
-  SECTION("Load file into buffer and parse.", "[XML][Parse]")
+  SECTION("Load file into buffer and parse.", "[XML][Parse][Buffer]")
   {
     BufferSource source{ XML::fromFile(file) };
     REQUIRE_NOTHROW(xml.parse(source));

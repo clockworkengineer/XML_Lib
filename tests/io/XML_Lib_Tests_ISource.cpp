@@ -21,7 +21,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
   {
     REQUIRE_NOTHROW(FileSource(prefixPath(KEmptyXMLFile)));
   }
-  SECTION("Create FileSource with non existants file.", "[XML][FileSource][Exception]")
+  SECTION("Create FileSource with non existent file.", "[XML][FileSource][Exception]")
   {
     REQUIRE_THROWS_AS(FileSource(prefixPath(kNonExistantXMLFile)), FileSource::Error);
     REQUIRE_THROWS_WITH(FileSource(prefixPath(kNonExistantXMLFile)),

@@ -8,9 +8,9 @@
 
 using namespace XML_Lib;
 
-TEST_CASE("XML external reference useage tests cases.", "[XML][ExternalReference]")
+TEST_CASE("XML external reference usage tests cases.", "[XML][ExternalReference]")
 {
-  SECTION("Create an empty external reference does not throw exeception.", "[XML][ExternalReference][Create]")
+  SECTION("Create an empty external reference does not throw exception.", "[XML][ExternalReference][Create]")
   {
     REQUIRE_NOTHROW(XMLExternalReference(""));
   }

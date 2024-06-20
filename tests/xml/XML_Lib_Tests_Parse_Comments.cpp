@@ -133,7 +133,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     REQUIRE_THROWS_WITH(xml.parse(source),
       "XML Syntax Error [Line: 2 Column: 10] Declaration allowed only at the start of the document.");
   }
-  SECTION("A commentat at start with no declaratiion.", "[XML][Parse][Comments]")
+  SECTION("A comment at start with no declaration.", "[XML][Parse][Comments]")
   {
     BufferSource source{
       "<!-- A single line comment -->\n"

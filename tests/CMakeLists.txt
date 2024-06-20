@@ -20,11 +20,11 @@ set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
 set(TEST_SOURCES
         io/XML_Lib_Tests_ISource.cpp
         io/XML_Lib_Tests_IDestination.cpp
+        io/XML_Lib_Tests_File.cpp
         xml/XML_Lib_Tests_Parse_Misc.cpp
         xml/XML_Lib_Tests_Parse_Declaration.cpp
         xml/XML_Lib_Tests_Parse_Tags.cpp
         xml/XML_Lib_Tests_Parse_Root.cpp
-        xml/XML_Lib_Tests_Parse_Files.cpp
         xml/XML_Lib_Tests_Parse_Attributes.cpp
         xml/XML_Lib_Tests_Parse_Comments.cpp
         xml/XML_Lib_Tests_Parse_Unicode.cpp

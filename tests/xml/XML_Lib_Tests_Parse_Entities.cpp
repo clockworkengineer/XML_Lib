@@ -8,7 +8,7 @@
 
 using namespace XML_Lib;
 
-TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][Entities]")
+TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][Entities]")
 {
   XML xml;
   SECTION("Parse entity &amp; in contents area", "[XML][Parse][Entities]")
@@ -93,7 +93,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     REQUIRE(XRef<XElement>(xml.root()).getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())["attr1"].getParsed() == " ¥£ ");
   }
-  SECTION("Parse entity &lamp; (non-existant named) in contents area", "[XML][Parse][Entities]")
+  SECTION("Parse entity &lamp; (non-existent named) in contents area", "[XML][Parse][Entities]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -101,7 +101,7 @@ TEST_CASE("Check the pasring of character entities/reference.", "[XML][Parse][En
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Entity '&lamp;' does not exist.");
   }
-  SECTION("Parse entity &lamp; (non-existant named) in attribute.", "[XML][Parse][Entities]")
+  SECTION("Parse entity &lamp; (non-existent named) in attribute.", "[XML][Parse][Entities]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"

@@ -246,7 +246,7 @@ TEST_CASE("Check the Stringify of XML containing program instructions", "[XML][S
 }
 TEST_CASE("Stringify CDATA SECTION", "[XML][Stringify][CDATA]")
 {
-  SECTION("Stringify XML root containing CDDATA containing a XML tags", "[XML][Stringify][CDATA]")
+  SECTION("Stringify XML root containing CDATA containing a XML tags", "[XML][Stringify][CDATA]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
