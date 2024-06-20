@@ -4,11 +4,11 @@
 // XML Core
 // ==========
 
-#include "XML_Variant.hpp"
-#include "XML_XNode.hpp"
 #include "XML_Value.hpp"
 #include "XML_Attribute.hpp"
 #include "XML_ExternalReference.hpp"
+#include "XML_Variant.hpp"
+#include "XML_XNode.hpp"
 #include "XML_XProlog.hpp"
 #include "XML_XDeclaration.hpp"
 #include "XML_XContent.hpp"

@@ -58,7 +58,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     xml.parse(source);
     auto &xRoot = XRef<XElement>(xml.root());
     REQUIRE(xRoot.getAttributes().size() == 1);
-    REQUIRE_THROWS_WITH(xRoot["attr1"].getName(), "XNode Error: Attribute 'attr1' does not exist.");
+    REQUIRE_THROWS_WITH(xRoot["attr1"].getName(), "Attribute Error: Attribute 'attr1' does not exist.");
   }
   SECTION("Access root element multiple attributes.", "[XML][API][Attribute]")
   {
@@ -164,7 +164,7 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     XML xml;
     xml = "<root first='1' second='2'>test content</root>";
     BufferDestination destination;
-    REQUIRE_THROWS_WITH(XRef<XElement>(xml.root())["frst"], "XNode Error: Attribute 'frst' does not exist.");
+    REQUIRE_THROWS_WITH(XRef<XElement>(xml.root())["frst"], "Attribute Error: Attribute 'frst' does not exist.");
   }
   SECTION("Create XML and read attributes and namespaces", "[XML][Attribute][Read]")
   {

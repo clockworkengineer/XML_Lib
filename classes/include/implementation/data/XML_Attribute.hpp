@@ -3,11 +3,17 @@
 #include <string>
 #include <algorithm>
 #include <utility>
+#include <vector>
 
 namespace XML_Lib {
 
 struct XMLAttribute : XMLValue
 {
+  // XMLAttribute Error
+  struct Error final : std::runtime_error
+  {
+    explicit Error(const std::string &message) : std::runtime_error("Attribute Error: " + message) {}
+  };
   // Constructors/Destructors
   XMLAttribute(std::string name, const XMLValue &value) : XMLValue(value), name(std::move(name)) {}
   XMLAttribute() = delete;
@@ -45,6 +51,6 @@ private:
   auto attribute = std::find_if(
     attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return attr.getName() == name; });
   if (attribute != attributes.rend()) return *attribute;
-  throw XNode::Error("Attribute '" + name + "' does not exist.");
+  throw Error("Attribute '" + name + "' does not exist.");
 }
 }// namespace XML_Lib
