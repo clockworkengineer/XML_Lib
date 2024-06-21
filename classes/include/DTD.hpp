@@ -3,14 +3,14 @@
 #include <memory>
 #include <regex>
 
+#include "XML_Interfaces.hpp"
+
 namespace XML_Lib {
 
 // ===================================================
 // Forward declarations for interfaces/classes/structs
 // ===================================================
 class DTD_Impl;
-class ISource;
-class IDestination;
 struct XNode;
 
 class DTD final : public IValidator

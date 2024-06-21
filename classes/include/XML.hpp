@@ -13,11 +13,6 @@ namespace XML_Lib {
 // Forward declarations for interfaces/classes/structs
 // ===================================================
 class XML_Impl;
-//class ISource;
-//class IDestination;
-//class IAction;
-//class IParser;
-//class IStringify;
 struct XNode;
 
 class XML
