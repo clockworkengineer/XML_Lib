@@ -1,6 +1,12 @@
 #pragma once
 
 namespace XML_Lib {
+
+// ===================================================
+// Forward declarations for interfaces/classes/structs
+// ===================================================
+struct XNode;
+
 // ===============================
 // Interface for DTD XML validator
 // ===============================

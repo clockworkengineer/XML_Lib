@@ -5,6 +5,7 @@
 #include <stdexcept>
 
 #include "XML_Config.hpp"
+#include "XML_Interfaces.hpp"
 
 namespace XML_Lib {
 
@@ -12,11 +13,11 @@ namespace XML_Lib {
 // Forward declarations for interfaces/classes/structs
 // ===================================================
 class XML_Impl;
-class ISource;
-class IDestination;
-class IAction;
-class IParser;
-class IStringify;
+//class ISource;
+//class IDestination;
+//class IAction;
+//class IParser;
+//class IStringify;
 struct XNode;
 
 class XML
