@@ -16,14 +16,14 @@ struct XEntityReference final : Variant
   // Return reference to entity reference
   [[nodiscard]] const XMLValue &value() const { return entityReferenceValue; }
   // Return Variant contents
-  [[nodiscard]] std::string getContents() const override
-  {
-    if (std::string result; !getChildren().empty()) {
-      for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
-      return result;
-    }
-    return entityReferenceValue.getParsed();
-  }
+  [[nodiscard]] std::string getContents() const override;
+//  {
+//    if (std::string result; !getChildren().empty()) {
+//      for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
+//      return result;
+//    }
+//    return entityReferenceValue.getParsed();
+//  }
 
 private:
   XMLValue entityReferenceValue;

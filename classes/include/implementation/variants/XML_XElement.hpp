@@ -61,12 +61,12 @@ struct XElement : Variant
   [[nodiscard]] const XMLAttribute &operator[](const std::string &name) const;
   [[nodiscard]] XMLAttribute &operator[](const std::string &name);
   // Return Variant contents
-  [[nodiscard]] std::string getContents() const override
-  {
-    std::string result;
-    for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
-    return result;
-  }
+  [[nodiscard]] std::string getContents() const override;
+//  {
+//    std::string result;
+//    for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
+//    return result;
+//  }
 
 private:
   std::string elementName;

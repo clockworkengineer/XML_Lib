@@ -92,6 +92,7 @@ set(XML_INCLUDES
   ./classes/include/implementation/variants/XML_XDTD.hpp
   ./classes/include/implementation/variants/XML_Variant.hpp
         ./classes/include/interface/IAction.hpp
+        classes/include/implementation/xnode/XML_Content.hpp
 )
 
 # XML library

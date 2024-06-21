@@ -16,6 +16,13 @@ class IEntityMapper;
 struct XDTD final : Variant
 {
   //
+  // DTD Error
+  //
+  struct Error final : std::runtime_error
+  {
+    explicit Error(const std::string &message) : std::runtime_error("DTD Error: " + message) {}
+  };
+  //
   // DTD Type
   //
   enum Type : uint8_t { internal = 0x1 << 0, external = 0x1 << 1 };
@@ -87,7 +94,7 @@ struct XDTD final : Variant
   [[nodiscard]] Element &getElement(const std::string &elementName)
   {
     if (const auto element = elements.find(elementName); element != elements.end()) { return element->second; }
-    throw XNode::Error("Could not find notation name.");
+    throw Error("Could not find notation name.");
   }
   void addElement(const std::string &elementName, const Element &element)
   {
@@ -97,7 +104,7 @@ struct XDTD final : Variant
   [[nodiscard]] XMLExternalReference &getNotation(const std::string &notationName)
   {
     if (const auto notation = notations.find(notationName); notation != notations.end()) { return notation->second; }
-    throw XNode::Error("Could not find notation name.");
+    throw Error("Could not find notation name.");
   }
   void addNotation(const std::string &notationName, const XMLExternalReference &notation)
   {
