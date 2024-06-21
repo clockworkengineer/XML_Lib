@@ -8,7 +8,6 @@ namespace XML_Lib {
 // ====================
 // Forward declarations
 // ====================
-class IDestination;
 struct XNode;
 
 // ==================================

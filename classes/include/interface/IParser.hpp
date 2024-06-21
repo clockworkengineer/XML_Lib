@@ -10,7 +10,6 @@ namespace XML_Lib {
 // Forward declarations
 // ====================
 
-class ISource;
 struct XNode;
 
 // =========================

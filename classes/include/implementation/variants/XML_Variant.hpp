@@ -1,9 +1,7 @@
 #pragma once
 #include <vector>
 namespace XML_Lib {
-// ====
-// Base
-// ====
+
 struct Variant
 {
   // XNode Types

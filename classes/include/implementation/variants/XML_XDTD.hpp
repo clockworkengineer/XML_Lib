@@ -8,10 +8,6 @@
 #include <unordered_map>
 
 namespace XML_Lib {
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
-class IEntityMapper;
 
 struct XDTD final : Variant
 {
