@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include <sstream>
-
 #include "XML.hpp"
 #include "XML_Core.hpp"
 

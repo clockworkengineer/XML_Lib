@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <stdexcept>
+#include <chrono>
 
 #include "plog/Initializers/RollingFileInitializer.h"
 #include "plog/Log.h"
