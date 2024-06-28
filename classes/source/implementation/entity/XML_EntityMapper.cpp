@@ -79,10 +79,10 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 /// Get entity reference from map.
 /// </summary>
 /// <param name="entityName">.</param>
-/// <returns>Reference to entity mapping in intermal map.</returns>
-XML_EntityMapper::XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
+/// <returns>Reference to entity mapping in internal map.</returns>
+XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
 {
-  if (!isPresent(entityName)) { entityMappings.emplace(std::make_pair(entityName, XML_EntityMapping())); }
+  if (!isPresent(entityName)) { entityMappings.emplace(entityName, XML_EntityMapping()); }
   if (const auto entity = entityMappings.find(entityName); entity != entityMappings.end()) { return entity->second; }
   throw Error("Could not find entity reference in map.");
 }

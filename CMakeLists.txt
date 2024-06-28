@@ -93,6 +93,7 @@ set(XML_INCLUDES
   ./classes/include/implementation/variants/XML_Variant.hpp
         ./classes/include/interface/IAction.hpp
         classes/include/implementation/xnode/XML_Content.hpp
+        classes/include/implementation/entity/XML_EntityMapping.hpp
 )
 
 # XML library

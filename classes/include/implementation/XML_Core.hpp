@@ -34,6 +34,7 @@
 #include "XML_Creation.hpp"
 
 // Entity Mapper
+#include "XML_EntityMapping.hpp"
 #include "XML_EntityMapper.hpp"
 
 // IO
