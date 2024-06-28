@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-#include <cwctype>
-#include <cstring>
-
 #include "XML_Converter.hpp"
 
 namespace XML_Lib {

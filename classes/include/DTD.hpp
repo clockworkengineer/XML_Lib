@@ -1,15 +1,14 @@
 #pragma once
 
-#include <memory>
 #include <regex>
 
 #include "XML_Interfaces.hpp"
 
 namespace XML_Lib {
 
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
+// ====================
+// Forward declarations
+// ====================
 class DTD_Impl;
 struct XNode;
 

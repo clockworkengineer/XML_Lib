@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-#include <stdexcept>
-#include <memory>
-
 #include "XML.hpp"
 #include "XML_Core.hpp"
 

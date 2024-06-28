@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-#include <algorithm>
-#include <utility>
-
 namespace XML_Lib {
 
 struct XElement : Variant

@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <algorithm>
-
 namespace XML_Lib {
 
 struct XSelf final : XElement

@@ -1,9 +1,6 @@
 
 #pragma once
 
-#include <string>
-#include <stdexcept>
-
 namespace XML_Lib {
 
 // ====================

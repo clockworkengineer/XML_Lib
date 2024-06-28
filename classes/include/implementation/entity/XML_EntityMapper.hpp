@@ -1,10 +1,5 @@
 #pragma once
 
-#include <string>
-#include <map>
-#include <filesystem>
-#include <set>
-
 #include "XML.hpp"
 #include "XML_Core.hpp"
 

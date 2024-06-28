@@ -1,8 +1,5 @@
 #pragma once
 
-#include <set>
-#include <map>
-
 namespace XML_Lib {
 
 // ===================================================

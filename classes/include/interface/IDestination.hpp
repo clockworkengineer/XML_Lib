@@ -1,8 +1,7 @@
 #pragma once
 
-#include <string>
-
 namespace XML_Lib {
+
 // =======================================================================
 // Interface for writing destination stream during XML/DTD stringification
 // =======================================================================

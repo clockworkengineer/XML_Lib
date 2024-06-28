@@ -1,9 +1,5 @@
 #pragma once
 
-#include <fstream>
-#include <string>
-#include <stdexcept>
-
 #include "ISource.hpp"
 
 namespace XML_Lib {

@@ -1,12 +1,5 @@
 #pragma once
 
-#include <utility>
-#include <vector>
-#include <string>
-#include <memory>
-#include <algorithm>
-#include <unordered_map>
-
 namespace XML_Lib {
 
 struct XDTD final : Variant

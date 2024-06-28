@@ -1,10 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <memory>
-#include <stdexcept>
-
 namespace XML_Lib {
 
 struct XNode

@@ -1,11 +1,5 @@
 #pragma once
 
-#include <fstream>
-#include <string>
-#include <stdexcept>
-#include <type_traits>
-#include <algorithm>
-
 #include "ISource.hpp"
 
 namespace XML_Lib {

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <type_traits>
-
 namespace XML_Lib {
 // =========================
 // XNode reference converter

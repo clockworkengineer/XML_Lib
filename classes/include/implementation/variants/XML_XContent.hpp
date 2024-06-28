@@ -1,8 +1,5 @@
 #pragma once
 
-#include <string>
-#include <utility>
-
 namespace XML_Lib {
 
 struct XContent final : Variant

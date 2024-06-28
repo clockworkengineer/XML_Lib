@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+
 namespace XML_Lib {
 
 struct Variant

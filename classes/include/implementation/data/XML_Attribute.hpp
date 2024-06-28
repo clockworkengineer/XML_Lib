@@ -1,10 +1,5 @@
 #pragma once
 
-#include <string>
-#include <algorithm>
-#include <utility>
-#include <vector>
-
 namespace XML_Lib {
 
 struct XMLAttribute : XMLValue

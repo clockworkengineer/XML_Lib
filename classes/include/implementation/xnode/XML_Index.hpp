@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 namespace XML_Lib {
 // ====================
 // XNode index access

@@ -3,15 +3,27 @@
 #include <memory>
 #include <string>
 #include <stdexcept>
+#include <algorithm>
+#include <utility>
+#include <vector>
+#include <map>
+#include <filesystem>
+#include <set>
+#include <fstream>
+#include <type_traits>
+#include <unordered_map>
+#include <cwctype>
+#include <cstring>
+
 
 #include "XML_Config.hpp"
 #include "XML_Interfaces.hpp"
 
 namespace XML_Lib {
 
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
+// ====================
+// Forward declarations
+// ====================
 class XML_Impl;
 struct XNode;
 
