@@ -23,15 +23,7 @@ public:
     std::string publicID = "")
     : systemID(std::move(systemID)), publicID(std::move(publicID))
   {
-    if (referenceType == kSystemID) {
-      type = Type::systemID;
-    } else if (referenceType == kPublicID) {
-      type = Type::publicID;
-    } else if (referenceType == "") {
-      type = Type::base;
-    } else {
-      throw Error("Invalid reference type passed.");
-    }
+    setReferenceType(referenceType);
   }
   XMLExternalReference() = delete;
   XMLExternalReference(const XMLExternalReference &other) = default;
@@ -66,5 +58,17 @@ private:
   Type type{};
   std::string systemID{};
   std::string publicID{};
+  // Set internal reference type from string
+  void setReferenceType(const std::string &referenceType) {
+    if (referenceType == kSystemID) {
+      type = Type::systemID;
+    } else if (referenceType == kPublicID) {
+      type = Type::publicID;
+    } else if (referenceType.empty()) {
+      type = Type::base;
+    } else {
+      throw Error("Invalid reference type passed.");
+    }
+  }
 };
 }// namespace XML_Lib
