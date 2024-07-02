@@ -5,7 +5,6 @@ namespace XML_Lib {
 struct Variant
 {
   // XNode Types
-protected:
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
 
 public:
@@ -30,6 +29,10 @@ public:
   [[nodiscard]] bool isCDATA() const { return xmlNodeType == Type::cdata; }
   [[nodiscard]] bool isPI() const { return xmlNodeType == Type::pi; }
   [[nodiscard]] bool isDTD() const { return xmlNodeType == Type::dtd; }
+  // Get XNode type
+  [[nodiscard]] Type getNodeType() const {
+    return(xmlNodeType);
+  }
   // Get XNode children reference
   [[nodiscard]] std::vector<XNode> &getChildren();
   [[nodiscard]] const std::vector<XNode> &getChildren() const;
