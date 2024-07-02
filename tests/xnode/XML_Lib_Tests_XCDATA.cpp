@@ -26,7 +26,7 @@ TEST_CASE("Create and use XCDATA XNode.","[XNode][XCDATA][API]")
   SECTION("Create and use XCDATA using make/XRef API.", "[XML][XNode][XCDATA][Make][XRef][API]")
   {
     XNode xNode = XNode::make<XCDATA>("&apos;Test&apos;");
-    REQUIRE_FALSE(!xNode.isCDATA());
+    REQUIRE_FALSE(!isA<XCDATA>(xNode));
     REQUIRE(XRef<XCDATA>(xNode).value()=="&apos;Test&apos;");
   }
 }

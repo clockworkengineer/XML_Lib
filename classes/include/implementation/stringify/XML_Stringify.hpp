@@ -25,23 +25,23 @@ public:
 void stringify(const XNode &xNode, IDestination &destination) const override
   {
   // XML prolog
-  if (xNode.isProlog()) {
+  if (isA<XProlog>(xNode)) {
     for (auto &child : xNode.getChildren()) { stringify(child, destination); }
   }
   // XML declaration
-  else if (xNode.isDeclaration()) {
+  else if (isA<XDeclaration>(xNode)) {
     auto &xNodeDeclaration = XRef<XDeclaration>(xNode);
     destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
                     + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
   }
   // XML root or child elements
-  else if (xNode.isRoot() || xNode.isElement() || xNode.isSelf()) {
+  else if (isA<XRoot>(xNode) || isA<XElement>(xNode) || isA<XSelf>(xNode)) {
     const auto &xElement = XRef<XElement>(xNode);
     destination.add("<" + xElement.name());
     for (auto &attribute : xElement.getAttributes()) {
       destination.add(" " + attribute.getName() + "=" + attribute.getQuote() + attribute.getUnparsed() + attribute.getQuote());
     }
-    if (!xNode.isSelf()) {
+    if (!isA<XSelf>(xNode)) {
       destination.add(">");
       for (auto &child : xNode.getChildren()) { stringify(child, destination); }
       destination.add("</" + xElement.name() + ">");
@@ -50,32 +50,32 @@ void stringify(const XNode &xNode, IDestination &destination) const override
     }
   }
   // XML comments
-  else if (xNode.isComment()) {
+  else if (isA<XComment>(xNode)) {
     const auto &xNodeComment = XRef<XComment>(xNode);
     destination.add("<!--" + xNodeComment.value() + "-->");
   }
   // XML element content
-  else if (xNode.isContent()) {
+  else if (isA<XContent>(xNode)) {
     const auto &xNodeContent = XRef<XContent>(xNode);
     destination.add(xNodeContent.value());
   }
   // XML character entity
-  else if (xNode.isEntity()) {
+  else if (isA<XEntityReference>(xNode)) {
     const auto &xNodeEntity = XRef<XEntityReference>(xNode);
     destination.add(xNodeEntity.value().getUnparsed());
   }
   // XML processing instruction
-  else if (xNode.isPI()) {
+  else if (isA<XPI>(xNode)) {
     const XPI &xNodePI = XRef<XPI>(xNode);
     destination.add("<?" + xNodePI.name() + " " + xNodePI.parameters() + "?>");
   }
   // XML CDATA section
-  else if (xNode.isCDATA()) {
+  else if (isA<XCDATA>(xNode)) {
     const auto &xNodeCDATA = XRef<XCDATA>(xNode);
     destination.add("<![CDATA[" + xNodeCDATA.value() + "]]>");
   }
   // XML DTD
-  else if (xNode.isDTD()) {
+  else if (isA<XDTD>(xNode)) {
     destination.add(XRef<XDTD>(xNode).unparsed());
   } else {
     throw Error("Invalid XNode encountered during stringify.");

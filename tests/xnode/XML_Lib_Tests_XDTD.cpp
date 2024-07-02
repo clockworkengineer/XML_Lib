@@ -26,7 +26,7 @@ TEST_CASE("Create and use XDTD XNode.","[XNode][XDTD][API]")
   {
     XML_EntityMapper mapper;
     XNode xNode = XNode::make<XDTD>(mapper);
-    REQUIRE_FALSE(!xNode.isDTD());
+    REQUIRE_FALSE(!isA<XDTD>(xNode));
     REQUIRE(XRef<XDTD>(xNode).getRootName()=="");
     REQUIRE(XRef<XDTD>(xNode).getElementCount()==0);
   }

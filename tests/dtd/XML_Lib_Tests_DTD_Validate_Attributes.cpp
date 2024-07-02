@@ -121,7 +121,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE_FALSE(!xml.root().isRoot());
+    REQUIRE_FALSE(!isA<XRoot>(xml.root()));
     REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[1]["number"].getParsed() == "2001");
     REQUIRE(XRef<XElement>(xml.root())[2].getAttributes().size() == 1);
@@ -148,7 +148,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE_FALSE(!xml.root().isRoot());
+    REQUIRE_FALSE(!isA<XRoot>(xml.root()));
     REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 1);
     REQUIRE(XRef<XElement>(xml.root())[1]["number"].getParsed() == "2002");
     REQUIRE(XRef<XElement>(xml.root())[2].getAttributes().size() == 1);
@@ -177,7 +177,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
+    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.isElementPresent("person") == true);
     REQUIRE(xDTD.getElement("person").attributes.size() == 1);
     REQUIRE(xDTD.getElement("person").attributes[0].name == "gender");

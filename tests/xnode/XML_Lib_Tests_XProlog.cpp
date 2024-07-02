@@ -17,7 +17,7 @@ TEST_CASE("Create and use XProlog XNode.","[XNode][XProlog][API]")
   SECTION("Create and use XProlog using make/XRef API.", "[XML][XNode][XProlog][Make][XRef][API]")
   {
     XNode xNode = XNode::make<XProlog>();
-    REQUIRE_FALSE(!xNode.isProlog());
+    REQUIRE_FALSE(!isA<XProlog>(xNode));
   }
 }
 

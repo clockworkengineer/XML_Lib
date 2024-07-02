@@ -28,7 +28,7 @@ TEST_CASE("Create and use XContent XNode.","[XNode][XContent][API]")
   SECTION("Create and use XContent using make/XRef API.", "[XML][XNode][XContent][Make][XRef][API]")
   {
     XNode xNode = XNode::make<XContent>("This is a test comment.");
-    REQUIRE_FALSE(!xNode.isContent());
+    REQUIRE_FALSE(!isA<XContent>(xNode));
     REQUIRE(XRef<XContent>(xNode).value()=="This is a test comment.");
     XRef<XContent>(xNode).addContent("More content.");
     REQUIRE(XRef<XContent>(xNode).value()=="This is a test comment.More content.");

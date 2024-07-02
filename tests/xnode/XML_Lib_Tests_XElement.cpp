@@ -77,7 +77,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = XNode::make<XElement>("test", namespaces, attributes);
-    REQUIRE_FALSE(!xNode.isElement());
+    REQUIRE_FALSE(!isA<XElement>(xNode));
     REQUIRE(XRef<XElement>(xNode).name()=="test");
   }
 }

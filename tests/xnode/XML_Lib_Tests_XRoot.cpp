@@ -27,7 +27,7 @@ TEST_CASE("Create and use XRoot XNode.","[XNode][XRoot][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = XNode::make<XRoot>("test", namespaces, attributes);
-    REQUIRE_FALSE(!xNode.isRoot());
+    REQUIRE_FALSE(!isA<XRoot>(xNode));
     REQUIRE(XRef<XRoot>(xNode).name()=="test");
   }
 }

@@ -21,10 +21,10 @@ namespace XML_Lib {
 void addContentToElementChildList(XNode &xNode, const std::string &content)
 {
   // Make sure there is a content XNode to receive characters
-  if (xNode.getChildren().empty() || !xNode.getChildren().back().isContent()) {
+  if (xNode.getChildren().empty() || !isA<XContent>(xNode.getChildren().back())) {
     bool isWhiteSpace = true;
     if (!xNode.getChildren().empty()) {
-      if (xNode.getChildren().back().isCDATA() || xNode.getChildren().back().isEntity()) { isWhiteSpace = false; }
+      if (isA<XCDATA>(xNode.getChildren().back()) || isA<XEntityReference>(xNode.getChildren().back())) { isWhiteSpace = false; }
     }
     xNode.addChild(XNode::make<XContent>("", isWhiteSpace));
   }
@@ -52,7 +52,7 @@ void XML_Parser::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
   // Parse entity XML
   while (entitySource.more()) { parseElementInternal(entitySource, xNode, entityMapper); }
   // Place into XNode (element) child list
-  for (auto &xNodeChild : xElement.getChildren()) { xNode.addChild(xNodeChild); }
+  for (auto &child : xElement.getChildren()) { xNode.addChild(child); }
 }
 
 /// <summary>
@@ -230,7 +230,7 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &enti
       // NO XML into entity elements list.
       parseEntityReferenceXML(xEntityReference, content, entityMapper);
       if (!xNode.getChildren().empty()) {
-        if (xNode.getChildren().back().isContent()) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+        if (isA<XContent>(xNode.getChildren().back())) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
       }
     }
     xNode.addChild(std::move(xEntityReference));
@@ -255,7 +255,7 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapp
     xNode.addChild(parsePI(source));
   } else if (source.match("<![CDATA[")) {
     if (!xNode.getChildren().empty()) {
-      if (xNode.getChildren().back().isContent()) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+      if (isA<XContent>(xNode.getChildren().back())) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
     }
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {

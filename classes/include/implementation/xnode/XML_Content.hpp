@@ -8,7 +8,7 @@ namespace XML_Lib {
 [[nodiscard]] inline std::string XEntityReference::getContents() const
 {
   if (std::string result; !getChildren().empty()) {
-    for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
+    for (const auto &child : getChildren()) { result += child.getContents(); }
     return result;
   }
   return entityReferenceValue.getParsed();
@@ -16,7 +16,7 @@ namespace XML_Lib {
 [[nodiscard]] inline std::string XElement::getContents() const
 {
   std::string result;
-  for (const auto &xNode : getChildren()) { result += xNode.getContents(); }
+  for (const auto &child : getChildren()) { result += child.getContents(); }
   return result;
 }
 }// namespace XML_Lib

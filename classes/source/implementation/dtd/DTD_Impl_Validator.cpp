@@ -58,9 +58,8 @@ bool DTD_Impl::checkIsIDOK(const std::string &idValue)
 /// <returns>true if element contains characters otherwise false.</returns>
 bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 {
-  if (auto &children = xNode.getChildren(); std::ranges::all_of(
-        children, [](const XNode &element) {
-        return !element.isElement() || element.isSelf();
+  if (auto &child = xNode.getChildren(); std::ranges::all_of(child, [](const XNode &element) {
+        return !isA<XElement>(element) || isA<XSelf>(element);
       })) {
     return !xNode.getContents().empty();
   }
@@ -72,7 +71,7 @@ bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <returns>true if element empty otherwise false.</returns>
-bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().empty() || xNode.isSelf(); }
+bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().empty() || isA<XSelf>(xNode); }
 
 /// <summary>
 ///
@@ -230,11 +229,11 @@ void DTD_Impl::checkContentSpecification(const XNode &xNode) const
   if (xDTD.getElement(xElement.name()).content.getParsed() == "ANY") { return; }
   const std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
   std::string elements;
-  for (auto &element : xElement.getChildren()) {
-    if (element.isElement() || element.isSelf()) {
-      elements += "<" + XRef<XElement>(element).name() + ">";
-    } else if (element.isContent()) {
-      if (!XRef<XContent>(element).isWhiteSpace()) { elements += "<#PCDATA>"; }
+  for (auto &child : xElement.getChildren()) {
+    if (isA<XElement>(child) || isA<XSelf>(child)) {
+      elements += "<" + XRef<XElement>(child).name() + ">";
+    } else if (isA<XContent>(child)) {
+      if (!XRef<XContent>(child).isWhiteSpace()) { elements += "<#PCDATA>"; }
     }
   }
   if (!std::regex_match(elements, match)) {
@@ -259,20 +258,20 @@ void DTD_Impl::checkElement(const XNode &xNode)
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkElements(const XNode &xNode)
 {
-  if (xNode.isProlog()) {
+  if (isA<XProlog>(xNode)) {
     for (auto &element : xNode.getChildren()) { checkElements(element); }
-  } else if (xNode.isDeclaration()) {
-  } else if (xNode.isRoot() || xNode.isElement()) {
-    if (xNode.isRoot() && XRef<XElement>(xNode).name() != xDTD.getRootName()) {
+  } else if (isA<XDeclaration>(xNode)) {
+  } else if (isA<XRoot>(xNode) || isA<XElement>(xNode)) {
+    if (isA<XRoot>(xNode) && XRef<XElement>(xNode).name() != xDTD.getRootName()) {
       throw ValidationError(
         lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
     for (auto &element : xNode.getChildren()) { checkElements(element); }
-  } else if (xNode.isSelf()) {
+  } else if (isA<XSelf>(xNode)) {
     checkElement(xNode);
-  } else if (xNode.isComment() || xNode.isEntity() || xNode.isPI() || xNode.isCDATA() || xNode.isDTD()) {
-  } else if (xNode.isContent()) {
+  } else if (isA<XComment>(xNode) || isA<XEntityReference>(xNode) || isA<XPI>(xNode) || isA<XCDATA>(xNode) || isA<XDTD>(xNode)) {
+  } else if (isA<XContent>(xNode)) {
     for (const auto &ch : XRef<XContent>(xNode).value()) {
       if (ch == kLineFeed) { lineNumber++; }
     }

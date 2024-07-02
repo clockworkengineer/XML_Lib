@@ -57,7 +57,7 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
       "<root></root>\n"
     };
     xml.parse(source);
-    REQUIRE_FALSE(!xml.prolog().getChildren()[2].isPI());
+    REQUIRE_FALSE(!isA<XPI>(xml.prolog().getChildren()[2]));
     REQUIRE(XRef<XPI>(xml.prolog().getChildren()[2]).name() == "xml-stylesheet");
     REQUIRE(
       XRef<XPI>(xml.prolog().getChildren()[2]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
@@ -71,7 +71,7 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
     };
     xml.parse(source);
     auto &xRootChildren = xml.root().getChildren();
-    REQUIRE_FALSE(!xRootChildren[0].isPI());
+    REQUIRE_FALSE(!isA<XPI>(xRootChildren[0]));
     REQUIRE(XRef<XPI>(xRootChildren[0]).name() == "xml-stylesheet");
     REQUIRE(XRef<XPI>(xRootChildren[0]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
   }

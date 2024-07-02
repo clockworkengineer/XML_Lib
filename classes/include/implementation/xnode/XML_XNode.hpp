@@ -21,17 +21,6 @@ struct XNode
   [[nodiscard]] bool isEmpty() const { return xmlVariant == nullptr; }
   [[nodiscard]] bool isNameable() const { return xmlVariant->isNameable(); }
   [[nodiscard]] bool isIndexable() const { return xmlVariant->isIndexable(); }
-  [[nodiscard]] bool isProlog() const { return xmlVariant->isProlog(); }
-  [[nodiscard]] bool isDeclaration() const { return xmlVariant->isDeclaration(); }
-  [[nodiscard]] bool isRoot() const { return xmlVariant->isRoot(); }
-  [[nodiscard]] bool isSelf() const { return xmlVariant->isSelf(); }
-  [[nodiscard]] bool isElement() const { return xmlVariant->isElement(); }
-  [[nodiscard]] bool isContent() const { return xmlVariant->isContent(); }
-  [[nodiscard]] bool isEntity() const { return xmlVariant->isEntity(); }
-  [[nodiscard]] bool isComment() const { return xmlVariant->isComment(); }
-  [[nodiscard]] bool isCDATA() const { return xmlVariant->isCDATA(); }
-  [[nodiscard]] bool isPI() const { return xmlVariant->isPI(); }
-  [[nodiscard]] bool isDTD() const { return xmlVariant->isDTD(); }
   // Return XNode contents
   [[nodiscard]] std::string getContents() const { return xmlVariant->getContents(); }
   // XNode Index overloads

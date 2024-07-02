@@ -50,21 +50,21 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
 
     xml.parse(source);
     auto &xRootChildren = xml.root().getChildren();
-    REQUIRE_FALSE(!xRootChildren[0].isContent());
+    REQUIRE_FALSE(!isA<XContent>(xRootChildren[0]));
     REQUIRE(XRef<XContent>(xml.root().getChildren()[0]).isWhiteSpace() == true);
-    REQUIRE_FALSE(!xRootChildren[1].getChildren()[0].isContent());
+    REQUIRE_FALSE(!isA<XContent>(xRootChildren[1].getChildren()[0]));
     REQUIRE(XRef<XContent>((xRootChildren[1])[0]).isWhiteSpace() == false);
-    REQUIRE_FALSE(!xRootChildren[2].getChildren()[0].isContent());
+    REQUIRE_FALSE(!isA<XContent>(xRootChildren[2].getChildren()[0]));
     REQUIRE(XRef<XContent>((xRootChildren[2])[0]).isWhiteSpace() == true);
-    REQUIRE_FALSE(!xRootChildren[3].getChildren()[0].isContent());
+    REQUIRE_FALSE(!isA<XContent>(xRootChildren[3].getChildren()[0]));
     REQUIRE(XRef<XContent>((xRootChildren[3])[0]).isWhiteSpace() == false);
-    REQUIRE_FALSE(!xRootChildren[3].getChildren()[1].isEntity());
-    REQUIRE_FALSE(!xRootChildren[3].getChildren()[2].isContent());
+    REQUIRE_FALSE(!isA<XEntityReference>(xRootChildren[3].getChildren()[1]));
+    REQUIRE_FALSE(!isA<XContent>(xRootChildren[3].getChildren()[2]));
     REQUIRE(XRef<XContent>((xRootChildren[3])[2]).isWhiteSpace() == false);
-    REQUIRE_FALSE(!xRootChildren[4].getChildren()[0].isContent());
+    REQUIRE_FALSE(!isA<XContent>(xRootChildren[4].getChildren()[0]));
     REQUIRE(XRef<XContent>((xRootChildren[4])[0]).isWhiteSpace() == false);
-    REQUIRE_FALSE(!xRootChildren[4].getChildren()[1].isCDATA());
-    REQUIRE_FALSE(!xRootChildren[4].getChildren()[2].isContent());
+    REQUIRE_FALSE(!isA<XCDATA>(xRootChildren[4].getChildren()[1]));
+    REQUIRE_FALSE(!isA<XContent>(xRootChildren[4].getChildren()[2]));
     REQUIRE(XRef<XContent>((xRootChildren[4])[2]).isWhiteSpace() == false);
   }
 }

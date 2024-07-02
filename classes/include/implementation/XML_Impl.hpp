@@ -52,27 +52,27 @@ private:
 template<typename T> void XML_Impl::traverseXNodes(T &xNode, IAction &action)
 {
   action.onXNode(xNode);
-  if (xNode.isProlog()) {
+  if (isA<XProlog>(xNode)) {
     action.onProlog(xNode);
-  } else if (xNode.isDeclaration()) {
+  } else if (isA<XDeclaration>(xNode)) {
     action.onDeclaration(xNode);
-  } else if (xNode.isRoot()) {
+  } else if (isA<XRoot>(xNode)) {
     action.onRoot(xNode);
-  } else if (xNode.isSelf()) {
+  } else if (isA<XSelf>(xNode)) {
     action.onSelf(xNode);
-  } else if (xNode.isElement()) {
+  } else if (isA<XElement>(xNode)) {
     action.onElement(xNode);
-  } else if (xNode.isContent()) {
+  } else if (isA<XContent>(xNode)) {
     action.onContent(xNode);
-  } else if (xNode.isEntity()) {
+  } else if (isA<XEntityReference>(xNode)) {
     action.onEntityReference(xNode);
-  } else if (xNode.isComment()) {
+  } else if (isA<XComment>(xNode)) {
     action.onComment(xNode);
-  } else if (xNode.isCDATA()) {
+  } else if (isA<XCDATA>(xNode)) {
     action.onCDATA(xNode);
-  } else if (xNode.isPI()) {
+  } else if (isA<XPI>(xNode)) {
     action.onPI(xNode);
-  } else if (xNode.isDTD()) {
+  } else if (isA<XDTD>(xNode)) {
     action.onDTD(xNode);
   } else {
     throw Error("Unknown XNode type encountered during tree traversal.");

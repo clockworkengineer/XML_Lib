@@ -59,7 +59,7 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
+    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(xDTD.getRootName() == "TVSCHEDULE");
@@ -118,7 +118,7 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
     };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE_FALSE(!xml.prolog().getChildren()[1].isDTD());
+    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[1]));
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
     REQUIRE(xDTD.getRootName() == "CATALOG");
@@ -175,7 +175,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     };
     xml.parse(source);
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
+    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.isElementPresent("person") == true);
     REQUIRE(xDTD.getElement("person").attributes.size() == 1);
@@ -334,7 +334,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
     };
     REQUIRE_NOTHROW(xml.parse(source));
     XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE_FALSE(!xml.prolog().getChildren()[2].isDTD());
+    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == XDTD::Type::internal);
     REQUIRE(xDTD.isElementPresent("mountain") == true);
     REQUIRE(xDTD.getElement("mountain").attributes.size() == 2);
