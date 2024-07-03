@@ -15,7 +15,6 @@
 #include <cwctype>
 #include <cstring>
 
-
 #include "XML_Config.hpp"
 #include "XML_Interfaces.hpp"
 
