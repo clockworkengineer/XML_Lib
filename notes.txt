@@ -1,0 +1,21 @@
+Current sizes:
+
+XML_Lib::XMLAttribute size 112 in bytes.
+XML_Lib::XMLExternalReference size 72 in bytes.
+XML_Lib::XMLValue size 80 in bytes.
+XML_Lib::XNode size 8 in bytes.
+XML_Lib::XCDATA size 56 in bytes.
+XML_Lib::XComment Entry size 56 in bytes.
+XML_Lib::XContent size 64 in bytes.
+XML_Lib::XDeclaration size 120 in bytes.
+XML_Lib::XDTD size 296 in bytes.
+XML_Lib::XElement size 104 in bytes.
+XML_Lib::XEntityReference size 104 in bytes.
+XML_Lib::XPI size 88 in bytes.
+XML_Lib::XProlog size 24 in bytes.
+XML_Lib::XRoot size 104 in bytes.
+XML_Lib::XSelf size 104 in bytes.
+
+|
+|
+V
