@@ -33,4 +33,4 @@ foreach(EXAMPLE_PROGRAM ${EXAMPLE_SOURCES})
     install(TARGETS ${EXAMPLE_TARGET} DESTINATION bin)
 endforeach(EXAMPLE_PROGRAM ${EXAMPLE_SOURCES})
 
-add_custom_command(TARGET XML_Parse_File POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/files $<CONFIG>/files)
+add_custom_command(TARGET XML_Parse_File POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/files ${PROJECT_BINARY_DIR}/files)
