@@ -29,7 +29,7 @@ template<typename T> bool isA(const XNode &xNode)
   } else if constexpr (std::is_same_v<T, XDTD>) {
     return xNode.getVariant().getNodeType() == Variant::Type::dtd;
   } else {
-    static_assert(false, "Not a valid XNode variant.");
+    return false;
   }
 }
 // =========================
