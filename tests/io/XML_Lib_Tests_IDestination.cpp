@@ -17,7 +17,7 @@ TEST_CASE("Creation and use of IDestination (Buffer) interface.", "[XML][Parse][
   SECTION("Create BufferDestination and get buffer which should be empty.", "[XML][Stringify][BufferDestination]")
   {
     BufferDestination buffer;
-    REQUIRE_FALSE(!buffer.size() == 0);
+    REQUIRE(buffer.size() == 0);
   }
   SECTION("Create BufferDestination and add one character.", "[XML][Stringify][BufferDestination]")
   {
