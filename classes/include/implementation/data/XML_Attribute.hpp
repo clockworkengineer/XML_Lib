@@ -21,7 +21,7 @@ struct XMLAttribute : XMLValue
     setValue(other.getUnparsed(), other.getParsed());
     return *this;
   };
-  ~XMLAttribute() = default;
+  virtual ~XMLAttribute() = default;
   // Get attribute name
   [[nodiscard]] const std::string &getName() const { return name; }
   // Search for an attribute in vector of unique attributes
