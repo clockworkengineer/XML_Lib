@@ -12,12 +12,12 @@ TEST_CASE("Create and use XProlog XNode.","[XNode][XProlog][API]")
 {
   SECTION("Create default XProlog XNode.", "[XML][XNode][XProlog][API]")
   {
-    REQUIRE_NOTHROW(XProlog());
+    REQUIRE_NOTHROW(Prolog());
   }
   SECTION("Create and use XProlog using make/XRef API.", "[XML][XNode][XProlog][Make][XRef][API]")
   {
-    XNode xNode = XNode::make<XProlog>();
-    REQUIRE_FALSE(!isA<XProlog>(xNode));
+    XNode xNode = XNode::make<Prolog>();
+    REQUIRE_FALSE(!isA<Prolog>(xNode));
   }
 }
 

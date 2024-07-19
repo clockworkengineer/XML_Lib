@@ -2,15 +2,15 @@
 
 namespace XML_Lib {
 
-struct XCDATA final : Variant
+struct CDATA final : Variant
 {
   // Constructors/Destructors
-  explicit XCDATA(std::string cdata) : Variant(Type::cdata), cdata(std::move(cdata)) {}
-  XCDATA(const XCDATA &other) = delete;
-  XCDATA &operator=(const XCDATA &other) = delete;
-  XCDATA(XCDATA &&other) = default;
-  XCDATA &operator=(XCDATA &&other) = default;
-  ~XCDATA() override = default;
+  explicit CDATA(std::string cdata) : Variant(Type::cdata), cdata(std::move(cdata)) {}
+  CDATA(const CDATA &other) = delete;
+  CDATA &operator=(const CDATA &other) = delete;
+  CDATA(CDATA &&other) = default;
+  CDATA &operator=(CDATA &&other) = default;
+  ~CDATA() override = default;
   // Return reference to cdata
   [[nodiscard]] const std::string &value() const { return cdata; }
   // Return Variant contents

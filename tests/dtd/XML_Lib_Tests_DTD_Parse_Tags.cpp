@@ -1,17 +1,17 @@
 //
 // Unit Tests: XML_Lib_Tests_DTD_Parse_Tags
 //
-// Description: Unit tests for DTD parsing.
+// Description: Unit tests for DTD_Validator parsing.
 //
 
 #include "XML_Lib_Tests.hpp"
 
 using namespace XML_Lib;
 
-TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Parse][Tags][Error]")
+TEST_CASE("Parse XML DTD_Validator with missing terminating '>' on tags.", "[XML][DTD_Validator][Parse][Tags][Error]")
 {
   XML xml;
-  SECTION("XML with internal DTD with missing terminating '>' on !ELEMENT", "[XML][DTD][Parse]")
+  SECTION("XML with internal DTD_Validator with missing terminating '>' on !ELEMENT", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -29,7 +29,7 @@ TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Par
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 4 Column: 2] Missing '>' terminator.");
   }
-  SECTION("XML with internal DTD with missing terminating '>' on !ATTLIST", "[XML][DTD][Parse][Tags][Error]")
+  SECTION("XML with internal DTD_Validator with missing terminating '>' on !ATTLIST", "[XML][DTD_Validator][Parse][Tags][Error]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -53,7 +53,7 @@ TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Par
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 15 Column: 2] Missing '>' terminator.");
   }
-  SECTION("XML with internal DTD with missing terminating '>' on !ENTITY", "[XML][DTD][Parse][Tags][Error]")
+  SECTION("XML with internal DTD_Validator with missing terminating '>' on !ENTITY", "[XML][DTD_Validator][Parse][Tags][Error]")
   {
     BufferSource source{
       "<!DOCTYPE REPORT [\n"
@@ -64,7 +64,7 @@ TEST_CASE("Parse XML DTD with missing terminating '>' on tags.", "[XML][DTD][Par
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 4 Column: 36] Missing '>' terminator.");
   }
-  SECTION("XML with internal DTD with missing terminating '>' on !NOTATION", "[XML][DTD][Parse][Tags][Error]")
+  SECTION("XML with internal DTD_Validator with missing terminating '>' on !NOTATION", "[XML][DTD_Validator][Parse][Tags][Error]")
   {
     BufferSource source{
       "<!DOCTYPE REPORT [\n"

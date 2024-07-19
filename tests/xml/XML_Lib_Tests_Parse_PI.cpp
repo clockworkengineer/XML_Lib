@@ -57,10 +57,10 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
       "<root></root>\n"
     };
     xml.parse(source);
-    REQUIRE_FALSE(!isA<XPI>(xml.prolog().getChildren()[2]));
-    REQUIRE(XRef<XPI>(xml.prolog().getChildren()[2]).name() == "xml-stylesheet");
+    REQUIRE_FALSE(!isA<PI>(xml.prolog().getChildren()[2]));
+    REQUIRE(XRef<PI>(xml.prolog().getChildren()[2]).name() == "xml-stylesheet");
     REQUIRE(
-      XRef<XPI>(xml.prolog().getChildren()[2]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
+      XRef<PI>(xml.prolog().getChildren()[2]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
   }
   SECTION("Parse XML containing PI in root section and check values", "[XML][Parse][PI]")
   {
@@ -71,8 +71,8 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
     };
     xml.parse(source);
     auto &xRootChildren = xml.root().getChildren();
-    REQUIRE_FALSE(!isA<XPI>(xRootChildren[0]));
-    REQUIRE(XRef<XPI>(xRootChildren[0]).name() == "xml-stylesheet");
-    REQUIRE(XRef<XPI>(xRootChildren[0]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
+    REQUIRE_FALSE(!isA<PI>(xRootChildren[0]));
+    REQUIRE(XRef<PI>(xRootChildren[0]).name() == "xml-stylesheet");
+    REQUIRE(XRef<PI>(xRootChildren[0]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
   }
 }

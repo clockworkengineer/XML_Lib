@@ -2,13 +2,13 @@
 
 namespace XML_Lib {
 
-struct XElement : Variant
+struct Element : Variant
 {
   // Constructors/Destructors
-  explicit XElement(std::string name = "", const Type nodeType = Type::element)
+  explicit Element(std::string name = "", const Type nodeType = Type::element)
     : Variant(nodeType), elementName(std::move(name))
   {}
-  XElement(std::string name,
+  Element(std::string name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces,
     const Type nodeType = Type::element)
@@ -21,11 +21,11 @@ struct XElement : Variant
       }
     }
   }
-  XElement(const XElement &other) = delete;
-  XElement &operator=(const XElement &other) = delete;
-  XElement(XElement &&other) = default;
-  XElement &operator=(XElement &&other) = default;
-  ~XElement() override = default;
+  Element(const Element &other) = delete;
+  Element &operator=(const Element &other) = delete;
+  Element(Element &&other) = default;
+  Element &operator=(Element &&other) = default;
+  ~Element() override = default;
   // Is an attribute present ?
   [[nodiscard]] bool hasAttribute(const std::string &attributeName) const
   {
@@ -52,8 +52,8 @@ struct XElement : Variant
   // Return reference to element tag name
   [[nodiscard]] const std::string &name() const { return elementName; }
   // XElement Index overloads
-  [[nodiscard]] const XElement &operator[](int index) const;
-  [[nodiscard]] XElement &operator[](int index);
+  [[nodiscard]] const Element &operator[](int index) const;
+  [[nodiscard]] Element &operator[](int index);
   [[nodiscard]] const XMLAttribute &operator[](const std::string &name) const;
   [[nodiscard]] XMLAttribute &operator[](const std::string &name);
   // Return Variant contents

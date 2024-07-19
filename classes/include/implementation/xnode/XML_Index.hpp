@@ -16,7 +16,7 @@ inline const XNode &XNode::operator[](const std::string &name) const
 {
   if (isIndexable()) {
     if (const auto xNode = std::ranges::find_if(getChildren(),
-          [&name](const XNode &child) { return child.isNameable() && XRef<XElement>(child).name() == name; });
+          [&name](const XNode &child) { return child.isNameable() && XRef<Element>(child).name() == name; });
         xNode != getChildren().end()) {
       return *xNode;
     }
@@ -26,26 +26,26 @@ inline const XNode &XNode::operator[](const std::string &name) const
 // =====================
 // XElement index access
 // =====================
-inline const XElement &XElement::operator[](const int index) const
+inline const Element &Element::operator[](const int index) const
 {
   if (index >= 0 && index < static_cast<int>(getChildren().size())) {
     int number = 0;
     for (const auto &child : getChildren()) {
       if (child.isIndexable()) {
-        if (number == index) { return XRef<XElement>(child); }
+        if (number == index) { return XRef<Element>(child); }
         number++;
       }
     }
   }
   throw XNode::Error("Invalid index used to access XNode array.");
 }
-inline XElement &XElement::operator[](const int index)
+inline Element &Element::operator[](const int index)
 {
   if (index >= 0 && index < static_cast<int>(getChildren().size())) {
     int number = 0;
     for (auto &child : getChildren()) {
       if (child.isIndexable()) {
-        if (number == index) { return XRef<XElement>(child); }
+        if (number == index) { return XRef<Element>(child); }
         number++;
       }
     }
@@ -55,9 +55,9 @@ inline XElement &XElement::operator[](const int index)
 // =========================
 // XElement attribute access
 // =========================
-inline const XMLAttribute &XElement::operator[](const std::string &name) const
+inline const XMLAttribute &Element::operator[](const std::string &name) const
 {
   return (XMLAttribute::find(attributes, name));
 }
-inline XMLAttribute &XElement::operator[](const std::string &name) { return (XMLAttribute::find(attributes, name)); }
+inline XMLAttribute &Element::operator[](const std::string &name) { return (XMLAttribute::find(attributes, name)); }
 }// namespace XML_Lib

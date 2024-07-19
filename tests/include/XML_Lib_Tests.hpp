@@ -8,7 +8,7 @@
 // =========================
 #include "XML.hpp"
 #include "XML_Core.hpp"
-#include "DTD.hpp"
+#include "DTD_Validator.hpp"
 // ============
 // STL includes
 // ============

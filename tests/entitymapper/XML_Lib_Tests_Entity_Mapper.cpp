@@ -95,13 +95,13 @@ TEST_CASE("XML entity mapper usage tests cases.", "[XML][EntityMapper]")
   {
     XML_EntityMapper entityMapper;
     XMLExternalReference externalReference{
-      XMLExternalReference::kPublicID, "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", "-//W3C//DTD XHTML 1.0 Transitional//EN"
+      XMLExternalReference::kPublicID, "http://www.w3.org/TR/xhtml1/DTD_Validator/xhtml1-transitional.dtd", "-//W3C//DTD_Validator XHTML 1.0 Transitional//EN"
     };
     entityMapper.setExternal("&test;", externalReference);
     REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
     REQUIRE_FALSE(!entityMapper.isExternal("&test;"));
-    REQUIRE(entityMapper.getExternal("&test;").getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
+    REQUIRE(entityMapper.getExternal("&test;").getPublicID() == "-//W3C//DTD_Validator XHTML 1.0 Transitional//EN");
     REQUIRE(
-      entityMapper.getExternal("&test;").getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+      entityMapper.getExternal("&test;").getSystemID() == "http://www.w3.org/TR/xhtml1/DTD_Validator/xhtml1-transitional.dtd");
   }
 }

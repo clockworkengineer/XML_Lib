@@ -1,17 +1,17 @@
 //
 // Unit Tests: XML_Lib_Tests_DTD_Validate_Elements
 //
-// Description: Unit tests for XML DTD element validation.
+// Description: Unit tests for XML DTD_Validator element validation.
 //
 
 #include "XML_Lib_Tests.hpp"
 
 using namespace XML_Lib;
 
-TEST_CASE("Parse XML with various DTD issues.", "[XML][DTD][Validate]")
+TEST_CASE("Parse XML with various DTD_Validator issues.", "[XML][DTD_Validator][Validate]")
 {
   XML xml;
-  SECTION("XML with no DTD and try to validate.", "[XML][DTD][Validate]")
+  SECTION("XML with no DTD_Validator and try to validate.", "[XML][DTD_Validator][Validate]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -21,9 +21,9 @@ TEST_CASE("Parse XML with various DTD issues.", "[XML][DTD][Validate]")
       "</root>\n"
     };
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "IParser Error: No DTD specified for validation.");
+    REQUIRE_THROWS_WITH(xml.validate(), "IParser Error: No DTD_Validator specified for validation.");
   }
-  SECTION("XML parse 2 xml strings with DTD.", "[XML][DTD][Validate][Elements]")
+  SECTION("XML parse 2 xml strings with DTD_Validator.", "[XML][DTD_Validator][Validate][Elements]")
   {
     BufferSource source1{
       "<?xml version=\"1.0\"?>\n"

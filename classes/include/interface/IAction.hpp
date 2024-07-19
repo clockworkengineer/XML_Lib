@@ -50,7 +50,7 @@ public:
   virtual void onDeclaration([[maybe_unused]] XNode &XNode){ };
   virtual void onDeclaration([[maybe_unused]] const XNode &XNode){ };
   // ================================
-  // DTD XNode encountered so process
+  // DTD_Validator XNode encountered so process
   // ================================
   virtual void onDTD([[maybe_unused]] XNode &XNode){ };
   virtual void onDTD([[maybe_unused]] const XNode &XNode){ };

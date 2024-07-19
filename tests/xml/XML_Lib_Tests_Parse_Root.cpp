@@ -19,8 +19,8 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "<contact-info></contact-info>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");
@@ -34,8 +34,8 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "<AddressBook></AddressBook>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");
@@ -51,8 +51,8 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "</AddressBook>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");
@@ -78,8 +78,8 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "</AddressBook>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");

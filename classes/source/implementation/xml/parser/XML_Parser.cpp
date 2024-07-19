@@ -9,7 +9,7 @@
 //
 
 #include "XML_Parser.hpp"
-#include "DTD.hpp"
+#include "DTD_Validator.hpp"
 
 namespace XML_Lib {
 
@@ -21,14 +21,14 @@ namespace XML_Lib {
 void addContentToElementChildList(XNode &xNode, const std::string &content)
 {
   // Make sure there is a content XNode to receive characters
-  if (xNode.getChildren().empty() || !isA<XContent>(xNode.getChildren().back())) {
+  if (xNode.getChildren().empty() || !isA<Content>(xNode.getChildren().back())) {
     bool isWhiteSpace = true;
     if (!xNode.getChildren().empty()) {
-      if (isA<XCDATA>(xNode.getChildren().back()) || isA<XEntityReference>(xNode.getChildren().back())) { isWhiteSpace = false; }
+      if (isA<CDATA>(xNode.getChildren().back()) || isA<EntityReference>(xNode.getChildren().back())) { isWhiteSpace = false; }
     }
-    xNode.addChild(XNode::make<XContent>("", isWhiteSpace));
+    xNode.addChild(XNode::make<Content>("", isWhiteSpace));
   }
-  auto &xmlContent = XRef<XContent>(xNode.getChildren().back());
+  auto &xmlContent = XRef<Content>(xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
     if (std::ranges::all_of(content, [](const char ch) { return std::iswspace(ch); })) {
       xmlContent.setIsWhiteSpace(true);
@@ -47,7 +47,7 @@ void addContentToElementChildList(XNode &xNode, const std::string &content)
 /// <param name="entityMapper">Entity mapper interface object.</param>
 void XML_Parser::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper)
 {
-  auto xElement = XNode::make<XElement>();
+  auto xElement = XNode::make<Element>();
   BufferSource entitySource(entityReference.getParsed());
   // Parse entity XML
   while (entitySource.more()) { parseElementInternal(entitySource, xNode, entityMapper); }
@@ -122,7 +122,7 @@ XNode XML_Parser::parseComment(ISource &source)
     source.next();
   }
   if (!source.match(">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
-  return XNode::make<XComment>(comment);
+  return XNode::make<Comment>(comment);
 }
 
 /// <summary>
@@ -143,7 +143,7 @@ XNode XML_Parser::parsePI(ISource &source)
     parameters += toUtf8(source.current());
     source.next();
   }
-  return XNode::make<XPI>(name, parameters);
+  return XNode::make<PI>(name, parameters);
 }
 
 /// <summary>
@@ -162,7 +162,7 @@ XNode XML_Parser::parseCDATA(ISource &source)
     cdata += toUtf8(source.current());
     source.next();
   }
-  return XNode::make<XCDATA>(cdata);
+  return XNode::make<CDATA>(cdata);
 }
 
 /// <summary>
@@ -219,7 +219,7 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &enti
   XMLValue content{ parseCharacter(source) };
   if ( content.isReference()) {
     if (content.isEntityReference()) { content = entityMapper.map(content); }
-    auto xEntityReference = XNode::make<XEntityReference>(content);
+    auto xEntityReference = XNode::make<EntityReference>(content);
     if (content.isEntityReference()) {
       // Does entity contain start tag ?
       // YES then XML into current element list
@@ -230,7 +230,7 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &enti
       // NO XML into entity elements list.
       parseEntityReferenceXML(xEntityReference, content, entityMapper);
       if (!xNode.getChildren().empty()) {
-        if (isA<XContent>(xNode.getChildren().back())) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+        if (isA<Content>(xNode.getChildren().back())) { XRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
       }
     }
     xNode.addChild(std::move(xEntityReference));
@@ -255,12 +255,12 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapp
     xNode.addChild(parsePI(source));
   } else if (source.match("<![CDATA[")) {
     if (!xNode.getChildren().empty()) {
-      if (isA<XContent>(xNode.getChildren().back())) { XRef<XContent>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+      if (isA<Content>(xNode.getChildren().back())) { XRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
     }
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
-    xNode.addChild(parseElement(source, XRef<XElement>(xNode).getNameSpaces(), entityMapper));
-    const XElement &xNodeChildElement = XRef<XElement>(xNode.getChildren().back());
+    xNode.addChild(parseElement(source, XRef<Element>(xNode).getNameSpaces(), entityMapper));
+    const Element &xNodeChildElement = XRef<Element>(xNode.getChildren().back());
     if (const auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.hasNameSpace(xNodeChildElement.name().substr(0, pos))) {
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
@@ -293,16 +293,16 @@ XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> 
   if (XNode xNode; source.match(">")) {
     // Normal element tag
     if (!hasRoot) {
-      xNode = XNode::make<XRoot>(name, attributes, namespaces);
+      xNode = XNode::make<Root>(name, attributes, namespaces);
       hasRoot = true;
     } else {
-      xNode = XNode::make<XElement>(name, attributes, namespaces);
+      xNode = XNode::make<Element>(name, attributes, namespaces);
     }
     while (source.more() && !source.match("</")) { parseElementInternal(source, xNode, entityMapper); }
-    if (source.match(toUtf16(XRef<XElement>(xNode).name()) + u">")) { return xNode; }
+    if (source.match(toUtf16(XRef<Element>(xNode).name()) + u">")) { return xNode; }
   } else if (source.match("/>")) {
     // Self-closing element tag
-    return XNode::make<XSelf>(name, attributes, namespaces);
+    return XNode::make<Self>(name, attributes, namespaces);
   }
   throw SyntaxError(source.getPosition(), "Missing closing tag.");
 }
@@ -332,7 +332,7 @@ XNode XML_Parser::parseDeclaration(ISource &source)
     }
     if (!source.match("?>")) { throw SyntaxError(source.getPosition(), "Declaration end tag not found."); }
   }
-  return XNode::make<XDeclaration>(version, encoding, standalone);
+  return XNode::make<Declaration>(version, encoding, standalone);
 }
 
 /// <summary>
@@ -350,30 +350,30 @@ void XML_Parser::parseEpilog(ISource &source, XNode &xProlog)
 }
 
 /// <summary>
-/// Parse XML DTD and return any XNode created for it.
+/// Parse XML DTD_Validator and return any XNode created for it.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-/// <returns>Pointer to DTD XNode.</returns>
+/// <returns>Pointer to DTD_Validator XNode.</returns>
 XNode XML_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 {
   if (validator != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
-  auto xNode = XNode::make<XDTD>(entityMapper);
-  validator = std::make_unique<DTD>(xNode);
+  auto xNode = XNode::make<DTD>(entityMapper);
+  validator = std::make_unique<DTD_Validator>(xNode);
   validator->parse(source);
   return xNode;
 }
 /// <summary>
 /// Parse XML prolog and create the necessary element XNodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
-/// processing instructions, comments, whitespace and a Document Type Declaration (DTD).
+/// processing instructions, comments, whitespace and a Document Type Declaration (DTD_Validator).
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to prolog XNode.</returns>
 XNode XML_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 {
-  auto xProlog = XNode::make<XProlog>();
+  auto xProlog = XNode::make<Prolog>();
   xProlog.addChild(parseDeclaration(source));
   while (source.more()) {
     if (source.match("<!DOCTYPE")) {
@@ -413,7 +413,7 @@ XNode XML_Parser::parse(ISource &source)
   return xmlRoot;
 }
 /// <summary>
-/// Validate XML against parsed DTD.
+/// Validate XML against parsed DTD_Validator.
 /// </summary>
 /// <param name="xProlog">Prolog XNode</param>
 void XML_Parser::validate(XNode &xProlog)
@@ -421,7 +421,7 @@ void XML_Parser::validate(XNode &xProlog)
   if (validator != nullptr) {
     validator->validate(xProlog);
   } else {
-    throw Error("No DTD specified for validation.");
+    throw Error("No DTD_Validator specified for validation.");
   }
 }
 /// <summary>

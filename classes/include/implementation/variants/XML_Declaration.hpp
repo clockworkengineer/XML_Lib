@@ -2,17 +2,17 @@
 
 namespace XML_Lib {
 
-struct XDeclaration final : Variant
+struct Declaration final : Variant
 {
   // Constructors/Destructors
-  XDeclaration(std::string version, const std::string &encoding, const std::string &standalone)
+  Declaration(std::string version, const std::string &encoding, const std::string &standalone)
     : Variant(Type::declaration), xmlVersion(std::move(version)), xmlEncoding(encoding), xmlStandalone(standalone)
   {}
-  XDeclaration(const XDeclaration &other) = delete;
-  XDeclaration &operator=(const XDeclaration &other) = delete;
-  XDeclaration(XDeclaration &&other) = default;
-  XDeclaration &operator=(XDeclaration &&other) = default;
-  ~XDeclaration() override = default;
+  Declaration(const Declaration &other) = delete;
+  Declaration &operator=(const Declaration &other) = delete;
+  Declaration(Declaration &&other) = default;
+  Declaration &operator=(Declaration &&other) = default;
+  ~Declaration() override = default;
   // Get reference to declaration attributes
   [[nodiscard]] const std::string &version() const { return xmlVersion; }
   [[nodiscard]] const std::string &encoding() const { return xmlEncoding; }

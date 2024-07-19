@@ -1,34 +1,34 @@
 //
 // Unit Tests: XML_Lib_Tests_XDTD.cpp
 //
-// Description: Create and use XDTD XNode
+// Description: Create and use DTD XNode
 //
 
 #include "XML_Lib_Tests.hpp"
 
 using namespace XML_Lib;
 
-TEST_CASE("Create and use XDTD XNode.","[XNode][XDTD][API]")
+TEST_CASE("Create and use DTD XNode.","[XNode][DTD][API]")
 {
-  SECTION("Create XDTD XNode.", "[XML][XNode][XDTD][API]")
+  SECTION("Create DTD XNode.", "[XML][XNode][DTD][API]")
   {
     XML_EntityMapper mapper;
-    REQUIRE_NOTHROW(XDTD(mapper));
+    REQUIRE_NOTHROW(DTD(mapper));
   }
-  SECTION("Create XDTD XNode and check root name hasn't been ser.", "[XML][XNode][XDTD][API]")
+  SECTION("Create DTD XNode and check root name hasn't been ser.", "[XML][XNode][DTD][API]")
   {
     XML_EntityMapper mapper;
-    XDTD xDTD (mapper);
+    DTD xDTD (mapper);
     REQUIRE(xDTD.getRootName()=="");
     REQUIRE(xDTD.getElementCount()==0);
   }
-  SECTION("Create and use XDTD using make/XRef API.", "[XML][XNode][XDTD][Make][XRef][API]")
+  SECTION("Create and use DTD using make/XRef API.", "[XML][XNode][DTD][Make][XRef][API]")
   {
     XML_EntityMapper mapper;
-    XNode xNode = XNode::make<XDTD>(mapper);
-    REQUIRE_FALSE(!isA<XDTD>(xNode));
-    REQUIRE(XRef<XDTD>(xNode).getRootName()=="");
-    REQUIRE(XRef<XDTD>(xNode).getElementCount()==0);
+    XNode xNode = XNode::make<DTD>(mapper);
+    REQUIRE_FALSE(!isA<DTD>(xNode));
+    REQUIRE(XRef<DTD>(xNode).getRootName()=="");
+    REQUIRE(XRef<DTD>(xNode).getElementCount()==0);
   }
 }
 

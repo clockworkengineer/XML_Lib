@@ -2,15 +2,15 @@
 
 namespace XML_Lib {
 
-struct XContent final : Variant
+struct Content final : Variant
 {
   // Constructors/Destructors
-  explicit XContent(std::string content, const bool whiteSpaceDefault = true) : Variant(Type::content), xmlContent(std::move(content)), whiteSpace(whiteSpaceDefault) {}
-  XContent(const XContent &other) = delete;
-  XContent &operator=(const XContent &other) = delete;
-  XContent(XContent &&other) = default;
-  XContent &operator=(XContent &&other) = default;
-  ~XContent() override = default;
+  explicit Content(std::string content, const bool whiteSpaceDefault = true) : Variant(Type::content), xmlContent(std::move(content)), whiteSpace(whiteSpaceDefault) {}
+  Content(const Content &other) = delete;
+  Content &operator=(const Content &other) = delete;
+  Content(Content &&other) = default;
+  Content &operator=(Content &&other) = default;
+  ~Content() override = default;
   // Get reference to content string
   [[nodiscard]] std::string value() const { return xmlContent; }
   // Add to content

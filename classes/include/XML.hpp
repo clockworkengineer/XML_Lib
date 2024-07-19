@@ -41,7 +41,7 @@ public:
   XML(XML &&other) = delete;
   XML &operator=(XML &&other) = delete;
   ~XML();
-  // Get reference to DTD XNode
+  // Get reference to DTD_Validator XNode
   [[nodiscard]] XNode &dtd() const;
   // Get reference to prolog XNode
   [[nodiscard]] XNode &prolog() const;

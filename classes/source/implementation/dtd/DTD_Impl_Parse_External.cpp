@@ -1,7 +1,7 @@
 //
 // Class: DTD_impl
 //
-// Description: Parse external XML DTD.
+// Description: Parse external XML DTD_Validator.
 //
 // Dependencies: C++20 - Language standard features used.
 //
@@ -11,9 +11,9 @@
 namespace XML_Lib {
 
 /// <summary>
-/// Parse conditional DTD (recursively if necessary).
+/// Parse conditional DTD_Validator (recursively if necessary).
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 /// <param name="includeOn">If set to false then enclosing conditionals treated as ignored.</param>
 void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
 {
@@ -63,9 +63,9 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
 }
 
 /// <summary>
-/// Parse external DTD.
+/// Parse external DTD_Validator.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseExternalContent(ISource &source)
 {
   while (source.more()) {
@@ -90,7 +90,7 @@ void DTD_Impl::parseExternalContent(ISource &source)
       parseConditional(source);
       continue;
     } else {
-      throw SyntaxError(source.getPosition(), "Invalid DTD tag.");
+      throw SyntaxError(source.getPosition(), "Invalid DTD_Validator tag.");
     }
     if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
     source.next();
@@ -99,7 +99,7 @@ void DTD_Impl::parseExternalContent(ISource &source)
 }
 
 /// <summary>
-/// Parse externally defined DTD into XDTD.
+/// Parse externally defined DTD_Validator into DTD.
 /// </summary>
 void DTD_Impl::parseExternalReferenceContent()
 {
@@ -107,14 +107,14 @@ void DTD_Impl::parseExternalReferenceContent()
     FileSource dtdFile(xDTD.getExternalReference().getSystemID());
     parseExternalContent(dtdFile);
   } else if (xDTD.getExternalReference().getType() == XMLExternalReference::kPublicID) {
-    // Public external DTD currently not supported (Use system id ?)
+    // Public external DTD_Validator currently not supported (Use system id ?)
   }
 }
 
 /// <summary>
 /// Parse an external reference.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 /// <returns>External reference.</returns>
 XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
 {
@@ -128,12 +128,12 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
     const std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     return XMLExternalReference{ XMLExternalReference::kPublicID, systemID, publicID };
   }
-  throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
+  throw SyntaxError(source.getPosition(), "Invalid external DTD_Validator specifier.");
 }
 
 /// <summary>
-/// Parse externally defined DTD.
+/// Parse externally defined DTD_Validator.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseExternal([[maybe_unused]] ISource & source) { parseExternalReferenceContent(); }
 }// namespace XML_Lib

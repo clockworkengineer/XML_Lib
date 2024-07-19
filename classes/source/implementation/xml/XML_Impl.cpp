@@ -40,10 +40,10 @@ XNode &XML_Impl::dtd()
 {
   if (xmlParser->canValidate()) {
     for (auto &child : prolog().getChildren()) {
-      if (isA<XDTD>(child)) { return child; }
+      if (isA<DTD>(child)) { return child; }
     }
   }
-  throw Error("No DTD found.");
+  throw Error("No DTD_Validator found.");
 }
 
 XNode &XML_Impl::prolog()
@@ -59,7 +59,7 @@ XNode &XML_Impl::declaration() { return prolog().getChildren()[0]; }
 XNode &XML_Impl::root()
 {
   for (auto &child : prolog().getChildren()) {
-    if (isA<XRoot>(child) || isA<XSelf>(child)) { return child; }
+    if (isA<Root>(child) || isA<Self>(child)) { return child; }
   }
   throw Error("No root element found.");
 }

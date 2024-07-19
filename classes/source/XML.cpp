@@ -40,9 +40,9 @@ XML::~XML() = default;
 std::string XML::version() const { return implementation->version(); }
 
 /// <summary>
-/// Return reference to any internal DTD for parsed XML.
+/// Return reference to any internal DTD_Validator for parsed XML.
 /// </summary>
-/// <returns>Reference to DTD XNode.</returns>
+/// <returns>Reference to DTD_Validator XNode.</returns>
 XNode &XML::dtd() const { return implementation->dtd(); }
 
 /// <summary>
@@ -64,7 +64,7 @@ XNode &XML::declaration() const { return implementation->declaration(); }
 XNode &XML::root() const { return implementation->root(); }
 
 /// <summary>
-/// Validate XML against any DTD provided to see whether it is valid. If an
+/// Validate XML against any DTD_Validator provided to see whether it is valid. If an
 /// exception is thrown then there is a validation issue and the XML is not valid.
 /// </summary>
 void XML::validate() const { implementation->validate(); }

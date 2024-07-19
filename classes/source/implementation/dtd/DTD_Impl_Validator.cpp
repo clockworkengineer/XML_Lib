@@ -1,7 +1,7 @@
 //
 // Class: DTD_Impl_Validator
 //
-// Description: DTD validator.
+// Description: DTD_Validator validator.
 //
 // Dependencies: C++20 - Language standard features used.
 //
@@ -15,7 +15,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xElement">Element X Node.</param>
 /// <param name="error">Error text string.</param>
-void DTD_Impl::elementError(const XElement &xElement, const std::string &error) const
+void DTD_Impl::elementError(const Element &xElement, const std::string &error) const
 {
   throw ValidationError(lineNumber, "Element <" + xElement.name() + "> " + error);
 }
@@ -59,7 +59,7 @@ bool DTD_Impl::checkIsIDOK(const std::string &idValue)
 bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 {
   if (auto &child = xNode.getChildren(); std::ranges::all_of(child, [](const XNode &element) {
-        return !isA<XElement>(element) || isA<XSelf>(element);
+        return !isA<Element>(element) || isA<Self>(element);
       })) {
     return !xNode.getContents().empty();
   }
@@ -71,7 +71,7 @@ bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <returns>true if element empty otherwise false.</returns>
-bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().empty() || isA<XSelf>(xNode); }
+bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().empty() || isA<Self>(xNode); }
 
 /// <summary>
 ///
@@ -85,13 +85,13 @@ bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().emp
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="attribute">Attribute to check against.</param>
-void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &attribute) const
+void DTD_Impl::checkAttributeValue(const XNode &xNode, const DTD::Attribute &attribute) const
 {
-  const auto &xElement = XRef<XElement>(xNode);
+  const auto &xElement = XRef<Element>(xNode);
   const bool attributePresent = xElement.hasAttribute(attribute.name);
-  if ((attribute.type & XDTD::AttributeType::required) != 0) {
+  if ((attribute.type & DTD::AttributeType::required) != 0) {
     if (!attributePresent) { elementError(xElement, "is missing required attribute '" + attribute.name + "'."); }
-  } else if ((attribute.type & XDTD::AttributeType::fixed) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::fixed) != 0) {
     if (attributePresent) {
       if (const XMLAttribute elementAttribute = xElement[attribute.name];
           attribute.value.getParsed() != elementAttribute.getParsed()) {
@@ -115,8 +115,8 @@ void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &at
 /// ID	          The value is a unique id
 /// IDREF         The value is the id of another element
 /// IDREFS        The value is a list of other ids
-/// NMTOKEN       The value is a valid DTD name
-/// NMTOKENS	    The value is a list of valid DTD names
+/// NMTOKEN       The value is a valid DTD_Validator name
+/// NMTOKENS	    The value is a list of valid DTD_Validator names
 /// ENTITY        The value is an entity
 /// ENTITIES	    The value is a list of entities
 /// NOTATION	    The value is a name of a notation
@@ -125,16 +125,16 @@ void DTD_Impl::checkAttributeValue(const XNode &xNode, const XDTD::Attribute &at
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="attribute">Attribute to check against.</param>
-void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &attribute)
+void DTD_Impl::checkAttributeType(const XNode &xNode, const DTD::Attribute &attribute)
 {
-  const auto &xElement = XRef<XElement>(xNode);
+  const auto &xElement = XRef<Element>(xNode);
   auto &elementAttribute = xElement[attribute.name];
-  if ((attribute.type & XDTD::AttributeType::cdata) != 0) {
+  if ((attribute.type & DTD::AttributeType::cdata) != 0) {
     if (elementAttribute.getParsed().empty())// No character data present.
     {
       elementError(xElement, "attribute '" + attribute.name + "' does not contain character data.");
     }
-  } else if ((attribute.type & XDTD::AttributeType::id) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::id) != 0) {
     if (!checkIsIDOK(elementAttribute.getParsed())) {
       elementError(xElement, "ID attribute '" + attribute.name + "' is invalid.");
     }
@@ -142,40 +142,40 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
       elementError(xElement, "ID attribute '" + attribute.name + "' is not unique.");
     }
     assignedIDValues.insert(elementAttribute.getParsed());
-  } else if ((attribute.type & XDTD::AttributeType::idref) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::idref) != 0) {
     if (!checkIsIDOK(elementAttribute.getParsed())) {
       elementError(xElement, "IDREF attribute '" + attribute.name + "' is invalid.");
     }
     assignedIDREFValues.insert(elementAttribute.getParsed());
-  } else if ((attribute.type & XDTD::AttributeType::idrefs) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::idrefs) != 0) {
     for (const auto &id : splitString(elementAttribute.getParsed(), ' ')) {
       if (!checkIsIDOK(id)) {
         elementError(xElement, "IDREFS attribute '" + attribute.name + "' contains an invalid IDREF.");
       }
       assignedIDREFValues.insert(id);
     }
-  } else if ((attribute.type & XDTD::AttributeType::nmtoken) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::nmtoken) != 0) {
     if (!checkIsNMTOKENOK(elementAttribute.getParsed())) {
       elementError(xElement, "NMTOKEN attribute '" + attribute.name + "' is invalid.");
     }
-  } else if ((attribute.type & XDTD::AttributeType::nmtokens) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::nmtokens) != 0) {
     for (auto &nmtoken : splitString(elementAttribute.getParsed(), ' ')) {
       if (!checkIsNMTOKENOK(nmtoken)) {
         elementError(xElement, "NMTOKEN attribute '" + attribute.name + "' contains an invalid NMTOKEN.");
       }
     }
-  } else if ((attribute.type & XDTD::AttributeType::entity) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::entity) != 0) {
     if (!xDTD.getEntityMapper().isPresent("&" + elementAttribute.getParsed() + ";")) {
       elementError(xElement,
         "ENTITY attribute '" + attribute.name + "' value '" + elementAttribute.getParsed() + "' is not defined.");
     }
-  } else if ((attribute.type & XDTD::AttributeType::entities) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::entities) != 0) {
     for (const auto &entity : splitString(elementAttribute.getParsed(), ' ')) {
       if (!xDTD.getEntityMapper().isPresent("&" + entity + ";")) {
         elementError(xElement, "ENTITIES attribute '" + attribute.name + "' value '" + entity + "' is not defined.");
       }
     }
-  } else if ((attribute.type & XDTD::AttributeType::notation) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::notation) != 0) {
     std::set<std::string> notations;
     for (auto &notation : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
       notations.insert(notation);
@@ -184,7 +184,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
       elementError(xElement,
         "NOTATION attribute '" + attribute.name + "' value '" + elementAttribute.getParsed() + "' is not defined.");
     }
-  } else if ((attribute.type & XDTD::AttributeType::enumeration) != 0) {
+  } else if ((attribute.type & DTD::AttributeType::enumeration) != 0) {
     std::set<std::string> enumeration;
     for (auto &option : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
       enumeration.insert(option);
@@ -204,7 +204,7 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const XDTD::Attribute &att
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkAttributes(const XNode &xNode)
 {
-  for (const auto &xElement = XRef<XElement>(xNode); auto &attribute : xDTD.getElement(xElement.name()).attributes) {
+  for (const auto &xElement = XRef<Element>(xNode); auto &attribute : xDTD.getElement(xElement.name()).attributes) {
     if (xElement.hasAttribute(attribute.name)) { checkAttributeType(xNode, attribute); }
     checkAttributeValue(xNode, attribute);
   }
@@ -216,7 +216,7 @@ void DTD_Impl::checkAttributes(const XNode &xNode)
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkContentSpecification(const XNode &xNode) const
 {
-  const auto &xElement = XRef<XElement>(xNode);
+  const auto &xElement = XRef<Element>(xNode);
   if (xDTD.getElementCount() == 0) { return; }
   if (xDTD.getElement(xElement.name()).content.getParsed() == "((<#PCDATA>))") {
     if (!checkIsPCDATA(xNode)) { elementError(xElement, "does not contain just any parsable data."); }
@@ -230,10 +230,10 @@ void DTD_Impl::checkContentSpecification(const XNode &xNode) const
   const std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
   std::string elements;
   for (auto &child : xElement.getChildren()) {
-    if (isA<XElement>(child) || isA<XSelf>(child)) {
-      elements += "<" + XRef<XElement>(child).name() + ">";
-    } else if (isA<XContent>(child)) {
-      if (!XRef<XContent>(child).isWhiteSpace()) { elements += "<#PCDATA>"; }
+    if (isA<Element>(child) || isA<Self>(child)) {
+      elements += "<" + XRef<Element>(child).name() + ">";
+    } else if (isA<Content>(child)) {
+      if (!XRef<Content>(child).isWhiteSpace()) { elements += "<#PCDATA>"; }
     }
   }
   if (!std::regex_match(elements, match)) {
@@ -258,21 +258,21 @@ void DTD_Impl::checkElement(const XNode &xNode)
 /// <param name="xNode">Current element XNode.</param>
 void DTD_Impl::checkElements(const XNode &xNode)
 {
-  if (isA<XProlog>(xNode)) {
+  if (isA<Prolog>(xNode)) {
     for (auto &element : xNode.getChildren()) { checkElements(element); }
-  } else if (isA<XDeclaration>(xNode)) {
-  } else if (isA<XRoot>(xNode) || isA<XElement>(xNode)) {
-    if (isA<XRoot>(xNode) && XRef<XElement>(xNode).name() != xDTD.getRootName()) {
+  } else if (isA<Declaration>(xNode)) {
+  } else if (isA<Root>(xNode) || isA<Element>(xNode)) {
+    if (isA<Root>(xNode) && XRef<Element>(xNode).name() != xDTD.getRootName()) {
       throw ValidationError(
-        lineNumber, "DOCTYPE name does not match that of root element " + XRef<XElement>(xNode).name() + " of DTD.");
+        lineNumber, "DOCTYPE name does not match that of root element " + XRef<Element>(xNode).name() + " of DTD_Validator.");
     }
     checkElement(xNode);
     for (auto &element : xNode.getChildren()) { checkElements(element); }
-  } else if (isA<XSelf>(xNode)) {
+  } else if (isA<Self>(xNode)) {
     checkElement(xNode);
-  } else if (isA<XComment>(xNode) || isA<XEntityReference>(xNode) || isA<XPI>(xNode) || isA<XCDATA>(xNode) || isA<XDTD>(xNode)) {
-  } else if (isA<XContent>(xNode)) {
-    for (const auto &ch : XRef<XContent>(xNode).value()) {
+  } else if (isA<Comment>(xNode) || isA<EntityReference>(xNode) || isA<PI>(xNode) || isA<CDATA>(xNode) || isA<DTD>(xNode)) {
+  } else if (isA<Content>(xNode)) {
+    for (const auto &ch : XRef<Content>(xNode).value()) {
       if (ch == kLineFeed) { lineNumber++; }
     }
   } else {
@@ -297,7 +297,7 @@ void DTD_Impl::checkAgainstDTD(const XNode &xNode)
 }
 
 /// <summary>
-/// Validate XML against its DTD. Throwing an exception if there is a
+/// Validate XML against its DTD_Validator. Throwing an exception if there is a
 /// issue with the XML that is being validated.
 /// </summary>
 /// <param name="xNode">XNode element containing root of XML to validate.</param>

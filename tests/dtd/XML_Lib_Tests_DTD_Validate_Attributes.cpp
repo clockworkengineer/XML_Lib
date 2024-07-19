@@ -1,17 +1,17 @@
 //
 // Unit Tests: XML_Lib_Tests_DTD_Validate_Attributes
 //
-// Description: Unit tests for XML DTD attribute validation.
+// Description: Unit tests for XML DTD_Validator attribute validation.
 //
 
 #include "XML_Lib_Tests.hpp"
 
 using namespace XML_Lib;
 
-TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][DTD][Validate][Attributes]")
+TEST_CASE("Validate XML with various DTD_Validator attribute validation issues.", "[XML][DTD_Validator][Validate][Attributes]")
 {
   XML xml;
-  SECTION("XML with a DTD that specifies a required attribute that is missing.", "[XML][DTD][Validate][Attributes]")
+  SECTION("XML with a DTD_Validator that specifies a required attribute that is missing.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -32,7 +32,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_THROWS_WITH(
       xml.validate(), "XML Validation Error [Line: 11] Element <child2> is missing required attribute 'number'.");
   }
-  SECTION("XML with a DTD that specifies a required attribute that is present.", "[XML][DTD][Validate][Attributes]")
+  SECTION("XML with a DTD_Validator that specifies a required attribute that is present.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -52,8 +52,8 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD that specifies a implied attribute that is present/not present in an element.",
-    "[XML][DTD][Validate][Attributes]")
+  SECTION("XML with a DTD_Validator that specifies a implied attribute that is present/not present in an element.",
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -74,8 +74,8 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD that specifies a fixed attribute trying to have it to more than one value.",
-    "[XML][DTD][Validate][Attributes]")
+  SECTION("XML with a DTD_Validator that specifies a fixed attribute trying to have it to more than one value.",
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -99,9 +99,9 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
       "XML Validation Error [Line: 12] Element <child2> attribute 'number' is '2002' instead of '2001'.");
   }
   SECTION(
-    "XML with a DTD that specifies a fixed element attribute that has not been assigned in the data but should be "
+    "XML with a DTD_Validator that specifies a fixed element attribute that has not been assigned in the data but should be "
     "there for the application. ",
-    "[XML][DTD][Validate][Attributes]")
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -121,14 +121,14 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE_FALSE(!isA<XRoot>(xml.root()));
-    REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 1);
-    REQUIRE(XRef<XElement>(xml.root())[1]["number"].getParsed() == "2001");
-    REQUIRE(XRef<XElement>(xml.root())[2].getAttributes().size() == 1);
-    REQUIRE(XRef<XElement>(xml.root())[2]["number"].getParsed() == "2001");
+    REQUIRE_FALSE(!isA<Root>(xml.root()));
+    REQUIRE(XRef<Element>(xml.root())[1].getAttributes().size() == 1);
+    REQUIRE(XRef<Element>(xml.root())[1]["number"].getParsed() == "2001");
+    REQUIRE(XRef<Element>(xml.root())[2].getAttributes().size() == 1);
+    REQUIRE(XRef<Element>(xml.root())[2]["number"].getParsed() == "2001");
   }
-  SECTION("XML with a DTD that specifies an element attribute that has a default value if it is not defined. ",
-    "[XML][DTD][Validate][Attributes]")
+  SECTION("XML with a DTD_Validator that specifies an element attribute that has a default value if it is not defined. ",
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -148,14 +148,14 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     };
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE_FALSE(!isA<XRoot>(xml.root()));
-    REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 1);
-    REQUIRE(XRef<XElement>(xml.root())[1]["number"].getParsed() == "2002");
-    REQUIRE(XRef<XElement>(xml.root())[2].getAttributes().size() == 1);
-    REQUIRE(XRef<XElement>(xml.root())[2]["number"].getParsed() == "2001");
+    REQUIRE_FALSE(!isA<Root>(xml.root()));
+    REQUIRE(XRef<Element>(xml.root())[1].getAttributes().size() == 1);
+    REQUIRE(XRef<Element>(xml.root())[1]["number"].getParsed() == "2002");
+    REQUIRE(XRef<Element>(xml.root())[2].getAttributes().size() == 1);
+    REQUIRE(XRef<Element>(xml.root())[2]["number"].getParsed() == "2001");
   }
-  SECTION("Validate XML with DTD that contains a enumeration attribute gender with a default value if 'F'.",
-    "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML with DTD_Validator that contains a enumeration attribute gender with a default value if 'F'.",
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -175,27 +175,27 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
       "</queue>\n"
     };
     xml.parse(source);
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
+    DTD &xDTD = XRef<DTD>(xml.dtd());
     REQUIRE_NOTHROW(xml.validate());
-    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[2]));
+    REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.isElementPresent("person") == true);
     REQUIRE(xDTD.getElement("person").attributes.size() == 1);
     REQUIRE(xDTD.getElement("person").attributes[0].name == "gender");
     REQUIRE(
-      xDTD.getElement("person").attributes[0].type == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal));
+      xDTD.getElement("person").attributes[0].type == (DTD::AttributeType::enumeration | DTD::AttributeType::normal));
     REQUIRE(xDTD.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(xDTD.getElement("person").attributes[0].value.getParsed() == "F");
     REQUIRE(xDTD.getRootName() == "queue");
-    REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
-    REQUIRE(XRef<XElement>(xml.root())[0].name() == "person");
-    REQUIRE(XRef<XElement>(xml.root())[0].getAttributes().size() == 1);
-    REQUIRE(XRef<XElement>(xml.root())[0]["gender"].getParsed() == "M");
-    REQUIRE(XRef<XElement>(xml.root())[1].name() == "person");
-    REQUIRE(XRef<XElement>(xml.root())[1].getAttributes().size() == 1);
-    REQUIRE(XRef<XElement>(xml.root())[1]["gender"].getParsed() == "F");
+    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
+    REQUIRE(XRef<Element>(xml.root())[0].name() == "person");
+    REQUIRE(XRef<Element>(xml.root())[0].getAttributes().size() == 1);
+    REQUIRE(XRef<Element>(xml.root())[0]["gender"].getParsed() == "M");
+    REQUIRE(XRef<Element>(xml.root())[1].name() == "person");
+    REQUIRE(XRef<Element>(xml.root())[1].getAttributes().size() == 1);
+    REQUIRE(XRef<Element>(xml.root())[1]["gender"].getParsed() == "F");
   }
-  SECTION("Validate XML with DTD that contains a enumeration attribute gender that is not valid.",
-    "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML with DTD_Validator that contains a enumeration attribute gender that is not valid.",
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -219,8 +219,8 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 11] Element <person> attribute 'gender' contains invalid enumeration value 'B'.");
   }
-  SECTION("Validate XML with DTD that specifies the use of an ID attribute type that has a duplicate value.",
-    "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML with DTD_Validator that specifies the use of an ID attribute type that has a duplicate value.",
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -242,7 +242,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
       xml.validate(), "XML Validation Error [Line: 11] Element <item> ID attribute 'itemID' is not unique.");
   }
   SECTION(
-    "Validate XML that has an element with an ID attribute value that is invalid.", "[XML][DTD][Validate][Attributes]")
+    "Validate XML that has an element with an ID attribute value that is invalid.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -264,7 +264,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_THROWS_WITH(
       xml.validate(), "XML Validation Error [Line: 11] Element <item> ID attribute 'itemID' is invalid.");
   }
-  SECTION("Validate XML that has a missing ID referenced  by an IDREF.", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML that has a missing ID referenced  by an IDREF.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -290,7 +290,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 18] IDREF attribute 'i010' does not reference any element with the ID.");
   }
-  SECTION("Validate XML that has a an IDREF attribute value that is invalid.", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML that has a an IDREF attribute value that is invalid.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -317,7 +317,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
       "IDREF.");
   }
   SECTION("Validate XML that has a an IDREF attribute value that does not exist on an element.",
-    "[XML][DTD][Validate][Attributes]")
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -342,7 +342,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 18] IDREF attribute 'i008' does not reference any element with the ID.");
   }
-  SECTION("Validate XML that has an valid NMTOKEN attributes and usage.", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML that has an valid NMTOKEN attributes and usage.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -365,7 +365,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION(
-    "Validate XML that has an invalid NMTOKEN attribute (internal whitespace).", "[XML][DTD][Validate][Attributes]")
+    "Validate XML that has an invalid NMTOKEN attribute (internal whitespace).", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -388,7 +388,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_THROWS_WITH(
       xml.validate(), "XML Validation Error [Line: 9] Element <mountain> NMTOKEN attribute 'country' is invalid.");
   }
-  SECTION("Validate XML that has an valid NMTOKENS attributes and usage.", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML that has an valid NMTOKENS attributes and usage.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -410,7 +410,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("Validate XML that has a valid ENTITY attribute (photo) and usage.", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML that has a valid ENTITY attribute (photo) and usage.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -433,7 +433,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("Validate XML that has an invalid ENTITY attribute (photo).", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML that has an invalid ENTITY attribute (photo).", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -457,7 +457,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 13] Element <mountain> ENTITY attribute 'photo' value 'None' is not defined.");
   }
-  SECTION("Validate XML that has a valid ENTITIES attribute (photo) and usage.", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML that has a valid ENTITIES attribute (photo) and usage.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -481,7 +481,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("Validate XML that has a invalid ENTITIES attribute (photo).", "[XML][DTD][Validate][Attributes]")
+  SECTION("Validate XML that has a invalid ENTITIES attribute (photo).", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -508,7 +508,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
       "not defined.");
   }
   SECTION(
-    "Validate XML that has a valid NOTATION attribute (photo_type) and usage.", "[XML][DTD][Validate][Attributes]")
+    "Validate XML that has a valid NOTATION attribute (photo_type) and usage.", "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -536,7 +536,7 @@ TEST_CASE("Validate XML with various DTD attribute validation issues.", "[XML][D
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION("Validate XML that has a invalid NOTATION attribute (photo_type BMP) and usage.",
-    "[XML][DTD][Validate][Attributes]")
+    "[XML][DTD_Validator][Validate][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"

@@ -19,20 +19,20 @@ TEST_CASE("Create and use XEntityReference XNode.","[XNode][XEntityReference][AP
 {
   SECTION("Create XEntityReference XNode.", "[XML][XNode][XEntityReference][API]")
   {
-    REQUIRE_NOTHROW(XEntityReference(createXMLValue()));
+    REQUIRE_NOTHROW(EntityReference(createXMLValue()));
   }
   SECTION("Create XEntityReference XNode and fetch value related to it.", "[XML][XNode][XEntityReference][API]")
   {
-    XEntityReference xEntityReference = XEntityReference(createXMLValue());
+    EntityReference xEntityReference = EntityReference(createXMLValue());
     REQUIRE(xEntityReference.value().getParsed() == "parsed");
     REQUIRE(xEntityReference.value().getUnparsed() == "unparsed");
   }
   SECTION("Create and use XEntityReference using make/XRef API.", "[XML][XNode][XEntityReference][Make][XRef][API]")
   {
-    XNode xNode = XNode::make<XEntityReference>(createXMLValue());
-    REQUIRE_FALSE(!isA<XEntityReference>(xNode));
-    REQUIRE(XRef<XEntityReference>(xNode).value().getParsed() == "parsed");
-    REQUIRE(XRef<XEntityReference>(xNode).value().getUnparsed() == "unparsed");
+    XNode xNode = XNode::make<EntityReference>(createXMLValue());
+    REQUIRE_FALSE(!isA<EntityReference>(xNode));
+    REQUIRE(XRef<EntityReference>(xNode).value().getParsed() == "parsed");
+    REQUIRE(XRef<EntityReference>(xNode).value().getUnparsed() == "unparsed");
   }
 }
 

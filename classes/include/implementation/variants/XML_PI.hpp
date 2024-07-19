@@ -2,17 +2,17 @@
 
 namespace XML_Lib {
 
-struct XPI final : Variant
+struct PI final : Variant
 {
   // Constructors/Destructors
-  XPI(std::string name, const std::string &parameters)
+  PI(std::string name, const std::string &parameters)
     : Variant(Type::pi), piName(std::move(name)), piParameters(parameters)
   {}
-  XPI(const XPI &other) = delete;
-  XPI &operator=(const XPI &other) = delete;
-  XPI(XPI &&other) = default;
-  XPI &operator=(XPI &&other) = default;
-  ~XPI() override = default;
+  PI(const PI &other) = delete;
+  PI &operator=(const PI &other) = delete;
+  PI(PI &&other) = default;
+  PI &operator=(PI &&other) = default;
+  ~PI() override = default;
   // Return reference to name
   [[nodiscard]] const std::string &name() const { return piName; }
   // Return reference to parameters

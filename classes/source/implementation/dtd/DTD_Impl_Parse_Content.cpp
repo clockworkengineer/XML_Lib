@@ -1,7 +1,7 @@
 //
-// Class: DTD
+// Class: DTD_Validator
 //
-// Description: Parse XML DTD element content specifications.
+// Description: Parse XML DTD_Validator element content specifications.
 //
 // Dependencies: C++20 - Language standard features used.
 //

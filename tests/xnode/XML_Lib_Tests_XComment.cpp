@@ -12,22 +12,22 @@ TEST_CASE("Create and use XComment XNode.","[XNode][XComment][API]")
 {
   SECTION("Create default XComment XNode.", "[XML][XNode][XComment][API]")
   {
-    REQUIRE_NOTHROW(XComment());
+    REQUIRE_NOTHROW(Comment());
   }
   SECTION("Create XComment XNode.", "[XML][XNode][XComment][API]")
   {
-    REQUIRE_NOTHROW(XComment("This is a test comment."));
+    REQUIRE_NOTHROW(Comment("This is a test comment."));
   }
   SECTION("Create XComment XNode and fetch comment related to it.", "[XML][XNode][XComment][API]")
   {
-    XComment xComment = XComment("This is a test comment.");
+    Comment xComment = Comment("This is a test comment.");
     REQUIRE(xComment.value() == "This is a test comment.");
   }
   SECTION("Create and use XComment using make/XRef API.", "[XML][XNode][XComment][Make][XRef][API]")
   {
-    XNode xNode = XNode::make<XComment>("This is a test comment.");
-    REQUIRE_FALSE(!isA<XComment>(xNode));
-    REQUIRE(XRef<XComment>(xNode).value()=="This is a test comment.");
+    XNode xNode = XNode::make<Comment>("This is a test comment.");
+    REQUIRE_FALSE(!isA<Comment>(xNode));
+    REQUIRE(XRef<Comment>(xNode).value()=="This is a test comment.");
   }
 }
 

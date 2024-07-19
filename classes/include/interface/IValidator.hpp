@@ -8,7 +8,7 @@ namespace XML_Lib {
 struct XNode;
 
 // ===============================
-// Interface for DTD XML validator
+// Interface for DTD_Validator XML validator
 // ===============================
 class IValidator
 {
@@ -25,15 +25,15 @@ public:
   // ========================
   virtual ~IValidator() = default;
   // =========================
-  // Parse XML DTD from source
+  // Parse XML DTD_Validator from source
   // =========================
   virtual void parse(ISource &source) = 0;
   // =====================================
-  // Stringify XML DTD to text destination
+  // Stringify XML DTD_Validator to text destination
   // =====================================
   virtual void stringify(IDestination &destination) = 0;
   // =========================
-  // Validate XML against DTD
+  // Validate XML against DTD_Validator
   // =========================
   virtual void validate(const XNode &xNode) = 0;
 };

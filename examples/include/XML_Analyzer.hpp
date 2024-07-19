@@ -18,57 +18,57 @@ public:
   void onCDATA([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalCDATA++;
-    sizeInBytes += sizeof(XML_Lib::XCDATA) + XML_Lib::XRef<XML_Lib::XCDATA>(xNode).value().size();
+    sizeInBytes += sizeof(XML_Lib::CDATA) + XML_Lib::XRef<XML_Lib::CDATA>(xNode).value().size();
   }
   void onComment([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalComment++;
-    sizeInBytes += sizeof(XML_Lib::XComment)+ XML_Lib::XRef<XML_Lib::XComment>(xNode).value().size();
+    sizeInBytes += sizeof(XML_Lib::Comment)+ XML_Lib::XRef<XML_Lib::Comment>(xNode).value().size();
   }
   void onContent([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalContent++;
-    sizeInBytes += sizeof(XML_Lib::XContent)+ XML_Lib::XRef<XML_Lib::XContent>(xNode).value().size();
+    sizeInBytes += sizeof(XML_Lib::Content)+ XML_Lib::XRef<XML_Lib::Content>(xNode).value().size();
   }
   void onDeclaration([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalDeclaration++;
-    sizeInBytes += sizeof(XML_Lib::XDeclaration);
+    sizeInBytes += sizeof(XML_Lib::Declaration);
   }
   void onDTD([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalDTD++;
-    sizeInBytes += sizeof(XML_Lib::XDTD);
+    sizeInBytes += sizeof(XML_Lib::DTD);
   }
   void onElement([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalElement++;
-    sizeInBytes += sizeof(XML_Lib::XElement);
+    sizeInBytes += sizeof(XML_Lib::Element);
   }
   void onEntityReference([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalEntityReference++;
-    sizeInBytes += sizeof(XML_Lib::XEntityReference);
+    sizeInBytes += sizeof(XML_Lib::EntityReference);
   }
   void onPI([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalPI++;
-    sizeInBytes += sizeof(XML_Lib::XPI);
+    sizeInBytes += sizeof(XML_Lib::PI);
   }
   void onProlog([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalProlog++;
-    sizeInBytes += sizeof(XML_Lib::XProlog);
+    sizeInBytes += sizeof(XML_Lib::Prolog);
   }
   void onRoot([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalRoot++;
-    sizeInBytes += sizeof(XML_Lib::XRoot);
+    sizeInBytes += sizeof(XML_Lib::Root);
   }
   void onSelf([[maybe_unused]] const XML_Lib::XNode &xNode) override
   {
     totalSelf++;
-    sizeInBytes += sizeof(XML_Lib::XSelf);
+    sizeInBytes += sizeof(XML_Lib::Self);
   }
   // Output analysis details
   [[nodiscard]] std::string dump() const
@@ -88,17 +88,17 @@ public:
     os << "XML_Lib::XMLExternalReference size " << sizeof(XML_Lib::XMLExternalReference) << " in bytes.\n";
     os << "XML_Lib::XMLValue size " << sizeof(XML_Lib::XMLValue) << " in bytes.\n";
     os << "XML_Lib::XNode size " << sizeof(XML_Lib::XNode) << " in bytes.\n";
-    os << "XML_Lib::XCDATA size " << sizeof(XML_Lib::XCDATA) << " in bytes.\n";
-    os << "XML_Lib::XComment Entry size " << sizeof(XML_Lib::XComment) << " in bytes.\n";
-    os << "XML_Lib::XContent size " << sizeof(XML_Lib::XContent) << " in bytes.\n";
-    os << "XML_Lib::XDeclaration size " << sizeof(XML_Lib::XDeclaration) << " in bytes.\n";
-    os << "XML_Lib::XDTD size " << sizeof(XML_Lib::XDTD) << " in bytes.\n";
-    os << "XML_Lib::XElement size " << sizeof(XML_Lib::XElement) << " in bytes.\n";
-    os << "XML_Lib::XEntityReference size " << sizeof(XML_Lib::XEntityReference) << " in bytes.\n";
-    os << "XML_Lib::XPI size " << sizeof(XML_Lib::XPI) << " in bytes.\n";
-    os << "XML_Lib::XProlog size " << sizeof(XML_Lib::XProlog) << " in bytes.\n";
-    os << "XML_Lib::XRoot size " << sizeof(XML_Lib::XRoot) << " in bytes.\n";
-    os << "XML_Lib::XSelf size " << sizeof(XML_Lib::XSelf) << " in bytes.\n";
+    os << "XML_Lib::XCDATA size " << sizeof(XML_Lib::CDATA) << " in bytes.\n";
+    os << "XML_Lib::XComment Entry size " << sizeof(XML_Lib::Comment) << " in bytes.\n";
+    os << "XML_Lib::XContent size " << sizeof(XML_Lib::Content) << " in bytes.\n";
+    os << "XML_Lib::XDeclaration size " << sizeof(XML_Lib::Declaration) << " in bytes.\n";
+    os << "XML_Lib::DTD size " << sizeof(XML_Lib::DTD) << " in bytes.\n";
+    os << "XML_Lib::XElement size " << sizeof(XML_Lib::Element) << " in bytes.\n";
+    os << "XML_Lib::XEntityReference size " << sizeof(XML_Lib::EntityReference) << " in bytes.\n";
+    os << "XML_Lib::XPI size " << sizeof(XML_Lib::PI) << " in bytes.\n";
+    os << "XML_Lib::XProlog size " << sizeof(XML_Lib::Prolog) << " in bytes.\n";
+    os << "XML_Lib::XRoot size " << sizeof(XML_Lib::Root) << " in bytes.\n";
+    os << "XML_Lib::XSelf size " << sizeof(XML_Lib::Self) << " in bytes.\n";
     return (os.str());
   }
   static std::string dumpNumericSizes()
@@ -127,7 +127,7 @@ private:
   int64_t totalContent{};
   // Declaration
   int64_t totalDeclaration{};
-  // DTD
+  // DTD_Validator
   int64_t totalDTD{};
   // Element
   int64_t totalElement{};

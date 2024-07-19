@@ -30,7 +30,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     };
 
     xml.parse(source);
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNameSpaces().size() == 1);
     REQUIRE(xRoot[0].getNameSpace("h").getParsed() == "http://www.w3.org/TR/html4/");
@@ -57,7 +57,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     };
 
     xml.parse(source);
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNameSpaces().size() == 2);
     REQUIRE(xRoot[0].getNameSpace("h").getParsed() == "http://www.w3.org/TR/html4/");
@@ -86,7 +86,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
       "<table xmlns=\"http://www.w3.org/TR/html4/\"><tr><td>Apples</td><td>Bananas</td></tr></table>\n"
     };
     xml.parse(source);
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xRoot[0].name() == "tr");
     REQUIRE(xRoot[0].getNameSpaces().size() == 1);
     REQUIRE(xRoot[0].getNameSpace(":").getParsed() == "http://www.w3.org/TR/html4/");
@@ -112,7 +112,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
       "<f:length>120</f:length></f:table></root>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNameSpaces().size() == 2);
     REQUIRE(xRoot[0].getNameSpace("h").getParsed() == "http://www.w3.org/TR/html4/");

@@ -1,7 +1,7 @@
 //
 // Class: DTD_impl
 //
-// Description: Parse XML DTD.
+// Description: Parse XML DTD_Validator.
 //
 // Dependencies: C++20 - Language standard features used.
 //
@@ -27,21 +27,21 @@ void DTD_Impl::parseValidNotations(const std::string &notations) const
 /// </summary>
 /// <param name="elementName">Element associated with attribute.</param>
 /// <param name="dtdAttribute">Attribute description to validate.</param>
-void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD::Attribute &dtdAttribute) const
+void DTD_Impl::parseValidateAttribute(const std::string &elementName, const DTD::Attribute &dtdAttribute) const
 {
   // Attribute cannot be ID and fixed
-  if (dtdAttribute.type == (XDTD::AttributeType::id | XDTD::AttributeType::fixed)) {
+  if (dtdAttribute.type == (DTD::AttributeType::id | DTD::AttributeType::fixed)) {
     throw SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
   }
   // Only one ID attribute allowed per element
-  if ((dtdAttribute.type & XDTD::AttributeType::id) != 0) {
+  if ((dtdAttribute.type & DTD::AttributeType::id) != 0) {
     if (xDTD.getElement(elementName).idAttributePresent) {
       throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
     }
     xDTD.getElement(elementName).idAttributePresent = true;
   }
   // Enumeration contains unique values and default is valid value
-  else if (dtdAttribute.type == (XDTD::AttributeType::enumeration | XDTD::AttributeType::normal)) {
+  else if (dtdAttribute.type == (DTD::AttributeType::enumeration | DTD::AttributeType::normal)) {
     std::set<std::string> options;
     for (auto &option : splitString(dtdAttribute.enumeration.substr(1, dtdAttribute.enumeration.size() - 2), '|')) {
       if (!options.contains(option)) {
@@ -61,7 +61,7 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const XDTD
 /// <summary>
 /// Parse attribute of type enumeration.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 /// <returns>Enumeration string.</returns>
 std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
 {
@@ -85,63 +85,63 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
 }
 
 /// <summary>
-/// Parse DTD attribute type field.
+/// Parse DTD_Validator attribute type field.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 /// <param name="attribute">Attribute description.</param>
 /// <returns>Attribute type as string (UTF-8 encoded).</returns>
-void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute) const
+void DTD_Impl::parseAttributeType(ISource &source, DTD::Attribute &attribute) const
 {
   if (source.match("CDATA")) {
-    attribute.type = XDTD::AttributeType::cdata;
+    attribute.type = DTD::AttributeType::cdata;
     source.ignoreWS();
     return;
   }
   if (source.match("IDREFS")) {
-    attribute.type = XDTD::AttributeType::idrefs;
+    attribute.type = DTD::AttributeType::idrefs;
     source.ignoreWS();
     return;
   }
   if (source.match("IDREF")) {
-    attribute.type = XDTD::AttributeType::idref;
+    attribute.type = DTD::AttributeType::idref;
     source.ignoreWS();
     return;
   }
   if (source.match("ID")) {
-    attribute.type = XDTD::AttributeType::id;
+    attribute.type = DTD::AttributeType::id;
     source.ignoreWS();
     return;
   }
   if (source.match("NMTOKENS")) {
-    attribute.type = XDTD::AttributeType::nmtokens;
+    attribute.type = DTD::AttributeType::nmtokens;
     source.ignoreWS();
     return;
   }
   if (source.match("NMTOKEN")) {
-    attribute.type = XDTD::AttributeType::nmtoken;
+    attribute.type = DTD::AttributeType::nmtoken;
     source.ignoreWS();
     return;
   }
   if (source.match("ENTITY")) {
-    attribute.type = XDTD::AttributeType::entity;
+    attribute.type = DTD::AttributeType::entity;
     source.ignoreWS();
     return;
   }
   if (source.match("ENTITIES")) {
-    attribute.type = XDTD::AttributeType::entities;
+    attribute.type = DTD::AttributeType::entities;
     source.ignoreWS();
     return;
   }
   if (source.match("NOTATION")) {
-    attribute.type = XDTD::AttributeType::notation;
+    attribute.type = DTD::AttributeType::notation;
     source.ignoreWS();
   }
   if (source.current() == '(') {
     attribute.enumeration = parseAttributeEnumerationType(source);
-    if (attribute.type == XDTD::AttributeType::notation) {
+    if (attribute.type == DTD::AttributeType::notation) {
       parseValidNotations(attribute.enumeration);
     } else {
-      attribute.type = XDTD::AttributeType::enumeration;
+      attribute.type = DTD::AttributeType::enumeration;
     }
     return;
   }
@@ -149,37 +149,37 @@ void DTD_Impl::parseAttributeType(ISource &source, XDTD::Attribute &attribute) c
 }
 
 /// <summary>
-/// Parse DTD attribute value.
+/// Parse DTD_Validator attribute value.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 /// <param name="attribute">Attribute description.</param>
-void DTD_Impl::parseAttributeValue(ISource &source, XDTD::Attribute &attribute) const
+void DTD_Impl::parseAttributeValue(ISource &source, DTD::Attribute &attribute) const
 {
   if (source.match("#REQUIRED")) {
-    attribute.type |= XDTD::AttributeType::required;
+    attribute.type |= DTD::AttributeType::required;
   } else if (source.match("#IMPLIED")) {
-    attribute.type |= XDTD::AttributeType::implied;
+    attribute.type |= DTD::AttributeType::implied;
   } else if (source.match("#FIXED")) {
     source.ignoreWS();
     attribute.value = parseValue(source, xDTD.getEntityMapper());
-    attribute.type |= XDTD::AttributeType::fixed;
+    attribute.type |= DTD::AttributeType::fixed;
   } else {
     source.ignoreWS();
     attribute.value = parseValue(source, xDTD.getEntityMapper());
-    attribute.type |= XDTD::AttributeType::normal;
+    attribute.type |= DTD::AttributeType::normal;
   }
 }
 
 /// <summary>
-/// Parse DTD attribute list.
+/// Parse DTD_Validator attribute list.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseAttributeList(ISource &source) const
 {
   source.ignoreWS();
   const std::string elementName = parseName(source);
   while (source.more() && validNameStartChar(source.current())) {
-    XDTD::Attribute dtdAttribute;
+    DTD::Attribute dtdAttribute;
     dtdAttribute.name = parseName(source);
     parseAttributeType(source, dtdAttribute);
     parseAttributeValue(source, dtdAttribute);
@@ -190,9 +190,9 @@ void DTD_Impl::parseAttributeList(ISource &source) const
 }
 
 /// <summary>
-/// Parse DTD notation.
+/// Parse DTD_Validator notation.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseNotation(ISource &source) const
 {
   source.ignoreWS();
@@ -202,9 +202,9 @@ void DTD_Impl::parseNotation(ISource &source) const
 }
 
 /// <summary>
-/// Parse DTD entity.
+/// Parse DTD_Validator entity.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseEntity(ISource &source) const
 {
   std::string entityName = "&";
@@ -228,17 +228,17 @@ void DTD_Impl::parseEntity(ISource &source) const
 }
 
 /// <summary>
-/// Parse an DTD element.
+/// Parse an DTD_Validator element.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseElement(ISource &source)
 {
   source.ignoreWS();
   const std::string elementName = parseName(source);
   if (source.match("EMPTY")) {
-    xDTD.addElement(elementName, XDTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
+    xDTD.addElement(elementName, DTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
   } else if (source.match("ANY")) {
-    xDTD.addElement(elementName, XDTD::Element(elementName, XMLValue{ "ANY", "ANY" }));
+    xDTD.addElement(elementName, DTD::Element(elementName, XMLValue{ "ANY", "ANY" }));
   } else {
     std::string unparsed;
     while (source.more() && source.current() != '<' && source.current() != '>') {
@@ -246,24 +246,24 @@ void DTD_Impl::parseElement(ISource &source)
       source.next();
     }
     xDTD.addElement(
-      elementName, XDTD::Element(elementName, parseElementInternalSpecification(elementName, XMLValue{ unparsed, "" })));
+      elementName, DTD::Element(elementName, parseElementInternalSpecification(elementName, XMLValue{ unparsed, "" })));
   }
   source.ignoreWS();
 }
 
 /// <summary>
-/// Parse DTD comment.
+/// Parse DTD_Validator comment.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseComment(ISource &source)
 {
   while (source.more() && !source.match("--")) { source.next(); }
 }
 
 /// <summary>
-/// Parse DTD parameter entity reference.
+/// Parse DTD_Validator parameter entity reference.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseParameterEntityReference(ISource &source)
 {
   const XMLValue parameterEntity = parseEntityReference(source);
@@ -273,9 +273,9 @@ void DTD_Impl::parseParameterEntityReference(ISource &source)
 }
 
 /// <summary>
-/// Parse internally defined DTD.
+/// Parse internally defined DTD_Validator.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseInternal(ISource &source)
 {
   while (source.more() && !source.match("]>")) {
@@ -293,7 +293,7 @@ void DTD_Impl::parseInternal(ISource &source)
       parseParameterEntityReference(source);
       continue;
     } else {
-      throw SyntaxError(source.getPosition(), "Invalid DTD tag.");
+      throw SyntaxError(source.getPosition(), "Invalid DTD_Validator tag.");
     }
     if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
     source.next();
@@ -302,29 +302,29 @@ void DTD_Impl::parseInternal(ISource &source)
 }
 
 /// <summary>
-/// Parse XML DTD. If the DTD contains an external reference then the DTD
-/// that points to is parsed after any internal DTD that may be specified
+/// Parse XML DTD_Validator. If the DTD_Validator contains an external reference then the DTD_Validator
+/// that points to is parsed after any internal DTD_Validator that may be specified
 /// after it.
 /// </summary>
-/// <param name="source">DTD source stream.</param>
+/// <param name="source">DTD_Validator source stream.</param>
 void DTD_Impl::parseDTD(ISource &source)
 {
-  // We take the easy option for allowing a DTD to be stringified
+  // We take the easy option for allowing a DTD_Validator to be stringified
   // and keeping the correct order for its components by storing it
   // in its raw unparsed form.
   const long start = source.position();
   source.ignoreWS();
   xDTD.setRootName(parseName(source));
-  // Parse in external DTD reference
+  // Parse in external DTD_Validator reference
   if (source.current() != '[') { xDTD.setExternalReference(parseExternalReference(source)); }
-  // We have internal DTD so parse that first
+  // We have internal DTD_Validator so parse that first
   if (source.current() == '[') {
     source.next();
     source.ignoreWS();
     parseInternal(source);
-    xDTD.setType(XDTD::Type::internal);
+    xDTD.setType(DTD::Type::internal);
   }
-  // Missing '>' after external DTD reference
+  // Missing '>' after external DTD_Validator reference
   else if (source.current() != '>') {
     throw SyntaxError(source.getPosition(), "Missing '>' terminator.");
   }
@@ -333,16 +333,16 @@ void DTD_Impl::parseDTD(ISource &source)
     source.next();
     source.ignoreWS();
   }
-  // Parse any DTD in external reference found
+  // Parse any DTD_Validator in external reference found
   if (xDTD.getExternalReference().isPublic() || xDTD.getExternalReference().isSystem()) {
     parseExternal(source);
-    xDTD.setType(xDTD.getType() | XDTD::Type::external);
+    xDTD.setType(xDTD.getType() | DTD::Type::external);
   }
-  // Save away unparsed form of DTD
+  // Save away unparsed form of DTD_Validator
   xDTD.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
   // Make sure no defined entity contains recursion
   xDTD.getEntityMapper().checkForRecursion();
-  // Count lines in DTD
+  // Count lines in DTD_Validator
   std::string unparsedDTD = xDTD.unparsed();
   xDTD.setLineCount(std::ranges::count(unparsedDTD, kLineFeed) + 1);
 }

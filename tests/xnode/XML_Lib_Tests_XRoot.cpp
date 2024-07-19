@@ -13,11 +13,11 @@ TEST_CASE("Create and use XRoot XNode.","[XNode][XRoot][API]")
 {
   SECTION("Create default XRoot XNode.", "[XML][XNode][XRoot][API]")
   {
-    REQUIRE_NOTHROW(XRoot());
+    REQUIRE_NOTHROW(Root());
   }
   SECTION("Create XRoot with a given name.", "[XML][XNode][XRoot][API]")
   {
-    XRoot xRoot = XRoot("test", {}, {});
+    Root xRoot = Root("test", {}, {});
     REQUIRE( xRoot.name() == "test");
     REQUIRE_FALSE(!xRoot.getAttributes().empty());
     REQUIRE_FALSE(!xRoot.getNameSpaces().empty());
@@ -26,9 +26,9 @@ TEST_CASE("Create and use XRoot XNode.","[XNode][XRoot][API]")
   SECTION("Create and use XRoot using make/XRef API.", "[XML][XNode][XRoot][Make][XRef][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
-    auto xNode = XNode::make<XRoot>("test", namespaces, attributes);
-    REQUIRE_FALSE(!isA<XRoot>(xNode));
-    REQUIRE(XRef<XRoot>(xNode).name()=="test");
+    auto xNode = XNode::make<Root>("test", namespaces, attributes);
+    REQUIRE_FALSE(!isA<Root>(xNode));
+    REQUIRE(XRef<Root>(xNode).name()=="test");
   }
 }
 

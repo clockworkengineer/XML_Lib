@@ -50,22 +50,22 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
 
     xml.parse(source);
     auto &xRootChildren = xml.root().getChildren();
-    REQUIRE_FALSE(!isA<XContent>(xRootChildren[0]));
-    REQUIRE(XRef<XContent>(xml.root().getChildren()[0]).isWhiteSpace() == true);
-    REQUIRE_FALSE(!isA<XContent>(xRootChildren[1].getChildren()[0]));
-    REQUIRE(XRef<XContent>((xRootChildren[1])[0]).isWhiteSpace() == false);
-    REQUIRE_FALSE(!isA<XContent>(xRootChildren[2].getChildren()[0]));
-    REQUIRE(XRef<XContent>((xRootChildren[2])[0]).isWhiteSpace() == true);
-    REQUIRE_FALSE(!isA<XContent>(xRootChildren[3].getChildren()[0]));
-    REQUIRE(XRef<XContent>((xRootChildren[3])[0]).isWhiteSpace() == false);
-    REQUIRE_FALSE(!isA<XEntityReference>(xRootChildren[3].getChildren()[1]));
-    REQUIRE_FALSE(!isA<XContent>(xRootChildren[3].getChildren()[2]));
-    REQUIRE(XRef<XContent>((xRootChildren[3])[2]).isWhiteSpace() == false);
-    REQUIRE_FALSE(!isA<XContent>(xRootChildren[4].getChildren()[0]));
-    REQUIRE(XRef<XContent>((xRootChildren[4])[0]).isWhiteSpace() == false);
-    REQUIRE_FALSE(!isA<XCDATA>(xRootChildren[4].getChildren()[1]));
-    REQUIRE_FALSE(!isA<XContent>(xRootChildren[4].getChildren()[2]));
-    REQUIRE(XRef<XContent>((xRootChildren[4])[2]).isWhiteSpace() == false);
+    REQUIRE_FALSE(!isA<Content>(xRootChildren[0]));
+    REQUIRE(XRef<Content>(xml.root().getChildren()[0]).isWhiteSpace() == true);
+    REQUIRE_FALSE(!isA<Content>(xRootChildren[1].getChildren()[0]));
+    REQUIRE(XRef<Content>((xRootChildren[1])[0]).isWhiteSpace() == false);
+    REQUIRE_FALSE(!isA<Content>(xRootChildren[2].getChildren()[0]));
+    REQUIRE(XRef<Content>((xRootChildren[2])[0]).isWhiteSpace() == true);
+    REQUIRE_FALSE(!isA<Content>(xRootChildren[3].getChildren()[0]));
+    REQUIRE(XRef<Content>((xRootChildren[3])[0]).isWhiteSpace() == false);
+    REQUIRE_FALSE(!isA<EntityReference>(xRootChildren[3].getChildren()[1]));
+    REQUIRE_FALSE(!isA<Content>(xRootChildren[3].getChildren()[2]));
+    REQUIRE(XRef<Content>((xRootChildren[3])[2]).isWhiteSpace() == false);
+    REQUIRE_FALSE(!isA<Content>(xRootChildren[4].getChildren()[0]));
+    REQUIRE(XRef<Content>((xRootChildren[4])[0]).isWhiteSpace() == false);
+    REQUIRE_FALSE(!isA<CDATA>(xRootChildren[4].getChildren()[1]));
+    REQUIRE_FALSE(!isA<Content>(xRootChildren[4].getChildren()[2]));
+    REQUIRE(XRef<Content>((xRootChildren[4])[2]).isWhiteSpace() == false);
   }
 }
 TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XNode][R-Value Reference]")
@@ -80,9 +80,9 @@ TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XNode][R-Value Refe
                     "Flat A, West Road, Wolverhampton, W1SSX9"
                     "</Address>"
                     "</AddressBook>" });
-    REQUIRE(XRef<XElement>(xml.root()).name() == "AddressBook");
-    REQUIRE(XRef<XElement>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(XRef<XElement>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(XRef<Element>(xml.root()).name() == "AddressBook");
+    REQUIRE(XRef<Element>(xml.root()["Address"]).name() == "Address");
+    REQUIRE(XRef<Element>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
   SECTION("Parse/Stringify both with R-Value reference (File).", "[XML][MLNode][R-Value Reference]")
   {

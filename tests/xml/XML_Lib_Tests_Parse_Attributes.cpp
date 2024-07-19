@@ -19,8 +19,8 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "</AddressBook>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");
@@ -37,8 +37,8 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       " </AddressBook>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<XDeclaration>(xml.declaration());
-    auto &xRoot = XRef<XElement>(xml.root());
+    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xRoot = XRef<Element>(xml.root());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");
@@ -57,7 +57,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "</AddressBook>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    REQUIRE(XRef<XElement>(xml.root())["number"].getParsed() == "15");
+    REQUIRE(XRef<Element>(xml.root())["number"].getParsed() == "15");
   }
   SECTION("Self closing element with attributes are allowed.", "[XML][Parse][[Attributes]")
   {
@@ -120,7 +120,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<gangster name='George \"Shotgun\" Ziegler'></gangster>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    REQUIRE(XRef<XElement>(xml.root())["name"].getParsed() == "George \"Shotgun\" Ziegler");
+    REQUIRE(XRef<Element>(xml.root())["name"].getParsed() == "George \"Shotgun\" Ziegler");
   }
   SECTION("Element that has an attribute that uses single quotes in value.", "[XML][Parse][[Attributes]")
   {
@@ -129,7 +129,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<gangster name=\"George 'Shotgun' Ziegler\"></gangster>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    REQUIRE(XRef<XElement>(xml.root())["name"].getParsed() == "George 'Shotgun' Ziegler");
+    REQUIRE(XRef<Element>(xml.root())["name"].getParsed() == "George 'Shotgun' Ziegler");
   }
   SECTION("Element that has an attribute that uses single quotes (&quot;) in value.", "[XML][Parse][[Attributes]")
   {
@@ -138,6 +138,6 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<gangster name=\"George &quot;Shotgun&quot; Ziegler\"></gangster>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    REQUIRE(XRef<XElement>(xml.root())["name"].getParsed() == "George &#x22;Shotgun&#x22; Ziegler");
+    REQUIRE(XRef<Element>(xml.root())["name"].getParsed() == "George &#x22;Shotgun&#x22; Ziegler");
   }
 }

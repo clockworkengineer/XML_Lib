@@ -1,7 +1,7 @@
 //
 // Unit Tests: XML_Lib_Tests_DTD_Stringify
 //
-// Description: Unit tests for DTD stringification.
+// Description: Unit tests for DTD_Validator stringification.
 //
 // ================
 // Test definitions
@@ -12,9 +12,9 @@
 // ====================
 using namespace XML_Lib;
 
-TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Stringify]")
+TEST_CASE("Stringify XML with DTD_Validator both internal and external", "[XML][DTD_Validator][Stringify]")
 {
-  SECTION("Stringify XML with internal DTD", "[XML][DTD][Stringify]")
+  SECTION("Stringify XML with internal DTD_Validator", "[XML][DTD_Validator][Stringify]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
@@ -30,7 +30,7 @@ TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Strin
       "<body>Don't forget me this weekend</body>\n"
       "</note>\n");
   }
-  SECTION("Stringify XML with external (SYSTEM) DTD", "[XML][DTD][Stringify]")
+  SECTION("Stringify XML with external (SYSTEM) DTD_Validator", "[XML][DTD_Validator][Stringify]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
@@ -40,18 +40,18 @@ TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Strin
       "<body>Don't forget me this weekend!</body>\n"
       "</note>\n");
   }
-  SECTION("Stringify XML with external (PUBLIC) DTD", "[XML][DTD][Stringify]")
+  SECTION("Stringify XML with external (PUBLIC) DTD_Validator", "[XML][DTD_Validator][Stringify]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
-      "<!DOCTYPE note PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
-      "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+      "<!DOCTYPE note PUBLIC \"-//W3C//DTD_Validator XHTML 1.0 Transitional//EN\" "
+      "\"http://www.w3.org/TR/xhtml1/DTD_Validator/xhtml1-transitional.dtd\">\n"
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend!</body>\n"
       "</note>\n");
   }
-  SECTION("Stringify XML with DTD with entity definitions and uses", "[XML][DTD][Stringify]")
+  SECTION("Stringify XML with DTD_Validator with entity definitions and uses", "[XML][DTD_Validator][Stringify]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
@@ -64,7 +64,7 @@ TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Strin
       "<body>Don't forget me this weekend!</body><footer>&writer;&nbsp;&copyright;</footer>\n"
       "</note>\n");
   }
-  SECTION("Stringify XML with external file DTD.", "[XML][DTD][Stringify]")
+  SECTION("Stringify XML with external file DTD_Validator.", "[XML][DTD_Validator][Stringify]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
@@ -74,15 +74,15 @@ TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Strin
       "</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body>\n"
       "</note>\n");
   }
-  SECTION("Stringify XML with external URL DTD.", "[XML][DTD][Stringify]")
+  SECTION("Stringify XML with external URL DTD_Validator.", "[XML][DTD_Validator][Stringify]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
-      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""
-      " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+      "<!DOCTYPE html PUBLIC \"-//W3C//DTD_Validator XHTML 1.0 Transitional//EN\""
+      " \"http://www.w3.org/TR/xhtml1/DTD_Validator/xhtml1-transitional.dtd\">\n"
       "<html></html>\n");
   }
-  SECTION("Stringify XML with internal DTD with attributes.", "[XML][DTD][Stringify]")
+  SECTION("Stringify XML with internal DTD_Validator with attributes.", "[XML][DTD_Validator][Stringify]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
@@ -104,7 +104,7 @@ TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Strin
       "<!ATTLIST TITLE LANGUAGE CDATA #IMPLIED>]>\n"
       "<TVSCHEDULE></TVSCHEDULE>\n");
   }
-  SECTION("Stringify XML with internal DTD containing comments.", "[XML][DTD][Stringify]")
+  SECTION("Stringify XML with internal DTD_Validator containing comments.", "[XML][DTD_Validator][Stringify]")
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"

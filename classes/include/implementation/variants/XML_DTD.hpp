@@ -2,7 +2,7 @@
 
 namespace XML_Lib {
 
-struct XDTD final : Variant
+struct DTD final : Variant
 {
   //
   // DTD Error
@@ -62,12 +62,12 @@ struct XDTD final : Variant
     std::vector<Attribute> attributes;
   };
   // Constructors/Destructors
-  explicit XDTD(IEntityMapper &entityMapper) : Variant(Variant::Type::dtd), entityMapper(entityMapper) {}
-  XDTD(const XDTD &other) = delete;
-  XDTD &operator=(const XDTD &other) = delete;
-  XDTD(XDTD &&other) = default;
-  XDTD &operator=(XDTD &&other) = delete;
-  ~XDTD() override = default;
+  explicit DTD(IEntityMapper &entityMapper) : Variant(Variant::Type::dtd), entityMapper(entityMapper) {}
+  DTD(const DTD &other) = delete;
+  DTD &operator=(const DTD &other) = delete;
+  DTD(DTD &&other) = default;
+  DTD &operator=(DTD &&other) = delete;
+  ~DTD() override = default;
   [[nodiscard]] std::string unparsed() const { return unparsedDTD; }
   void setUnparsed(const std::string &unparsed) { unparsedDTD = unparsed; }
   [[nodiscard]] uint16_t getType() const { return dtdNodeType; }

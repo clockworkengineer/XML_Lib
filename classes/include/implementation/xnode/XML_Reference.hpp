@@ -6,27 +6,27 @@ namespace XML_Lib {
 // =======================
 template<typename T> bool isA(const XNode &xNode)
 {
-  if constexpr (std::is_same_v<T, XProlog>) {
+  if constexpr (std::is_same_v<T, Prolog>) {
     return xNode.getVariant().getNodeType() == Variant::Type::prolog;
-  } else if constexpr (std::is_same_v<T, XDeclaration>) {
+  } else if constexpr (std::is_same_v<T, Declaration>) {
     return xNode.getVariant().getNodeType() == Variant::Type::declaration;
-  } else if constexpr (std::is_same_v<T, XElement>) {
+  } else if constexpr (std::is_same_v<T, Element>) {
     return xNode.getVariant().getNodeType() == Variant::Type::element;
-  } else if constexpr (std::is_same_v<T, XSelf>) {
+  } else if constexpr (std::is_same_v<T, Self>) {
     return xNode.getVariant().getNodeType() == Variant::Type::self;
-  } else if constexpr (std::is_same_v<T, XRoot>) {
+  } else if constexpr (std::is_same_v<T, Root>) {
     return xNode.getVariant().getNodeType() == Variant::Type::root;
-  } else if constexpr (std::is_same_v<T, XContent>) {
+  } else if constexpr (std::is_same_v<T, Content>) {
     return xNode.getVariant().getNodeType() == Variant::Type::content;
-  } else if constexpr (std::is_same_v<T, XEntityReference>) {
+  } else if constexpr (std::is_same_v<T, EntityReference>) {
     return xNode.getVariant().getNodeType() == Variant::Type::entity;
-  } else if constexpr (std::is_same_v<T, XComment>) {
+  } else if constexpr (std::is_same_v<T, Comment>) {
     return xNode.getVariant().getNodeType() == Variant::Type::comment;
-  } else if constexpr (std::is_same_v<T, XCDATA>) {
+  } else if constexpr (std::is_same_v<T, CDATA>) {
     return xNode.getVariant().getNodeType() == Variant::Type::cdata;
-  } else if constexpr (std::is_same_v<T, XPI>) {
+  } else if constexpr (std::is_same_v<T, PI>) {
     return xNode.getVariant().getNodeType() == Variant::Type::pi;
-  } else if constexpr (std::is_same_v<T, XDTD>) {
+  } else if constexpr (std::is_same_v<T, DTD>) {
     return xNode.getVariant().getNodeType() == Variant::Type::dtd;
   } else {
     return false;
@@ -37,28 +37,28 @@ template<typename T> bool isA(const XNode &xNode)
 // =========================
 template<typename T> void checkXNodeType(const XNode &xNode)
 {
-  if constexpr (std::is_same_v<T, XProlog>) {
+  if constexpr (std::is_same_v<T, Prolog>) {
     if (!isA<T>(xNode)) { throw XNode::Error("Node not a prolog."); }
-  } else if constexpr (std::is_same_v<T, XDeclaration>) {
+  } else if constexpr (std::is_same_v<T, Declaration>) {
     if (!isA<T>(xNode)) { throw XNode::Error("Node not a declaration."); }
-  } else if constexpr (std::is_same_v<T, XElement>) {
-    if (!isA<XRoot>(xNode) && !isA<XSelf>(xNode)  && !isA<XElement>(xNode)) { throw XNode::Error("Node not an element."); }
-  } else if constexpr (std::is_same_v<T, XSelf>) {
-    if (!isA<XSelf>(xNode)) { throw XNode::Error("Node not a (root) element."); }
-  } else if constexpr (std::is_same_v<T, XRoot>) {
-    if (!isA<XRoot>(xNode)) { throw XNode::Error("Node not a (self) element."); }
-  } else if constexpr (std::is_same_v<T, XContent>) {
+  } else if constexpr (std::is_same_v<T, Element>) {
+    if (!isA<Root>(xNode) && !isA<Self>(xNode)  && !isA<Element>(xNode)) { throw XNode::Error("Node not an element."); }
+  } else if constexpr (std::is_same_v<T, Self>) {
+    if (!isA<Self>(xNode)) { throw XNode::Error("Node not a (root) element."); }
+  } else if constexpr (std::is_same_v<T, Root>) {
+    if (!isA<Root>(xNode)) { throw XNode::Error("Node not a (self) element."); }
+  } else if constexpr (std::is_same_v<T, Content>) {
     if (!isA<T>(xNode)) { throw XNode::Error("Node not content."); }
-  } else if constexpr (std::is_same_v<T, XEntityReference>) {
+  } else if constexpr (std::is_same_v<T, EntityReference>) {
     if (!isA<T>(xNode)) { throw XNode::Error("Node not an entity."); }
-  } else if constexpr (std::is_same_v<T, XComment>) {
+  } else if constexpr (std::is_same_v<T, Comment>) {
     if (!isA<T>(xNode)) { throw XNode::Error("Node not a comment."); }
-  } else if constexpr (std::is_same_v<T, XCDATA>) {
+  } else if constexpr (std::is_same_v<T, CDATA>) {
     if (!isA<T>(xNode)) { throw XNode::Error("Node not CDATA."); }
-  } else if constexpr (std::is_same_v<T, XPI>) {
+  } else if constexpr (std::is_same_v<T, PI>) {
     if (!isA<T>(xNode)) { throw XNode::Error("Node not a PI."); }
-  } else if constexpr (std::is_same_v<T, XDTD>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not DTD."); }
+  } else if constexpr (std::is_same_v<T, DTD>) {
+    if (!isA<T>(xNode)) { throw XNode::Error("Node not DTD_Validator."); }
   }
 }
 template<typename T> T &XRef(XNode &xNode)

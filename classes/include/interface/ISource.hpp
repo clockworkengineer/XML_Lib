@@ -9,7 +9,7 @@ namespace XML_Lib {
 constexpr char kCarriageReturn{ 0x0D };
 constexpr char kLineFeed{ 0x0A };
 // ==========================================================
-// Interface for reading source stream during XML/DTD parsing
+// Interface for reading source stream during XML/DTD_Validator parsing
 // ==========================================================
 class ISource
 {

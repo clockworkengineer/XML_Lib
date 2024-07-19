@@ -1,17 +1,17 @@
 //
 // Unit Tests: XML_Lib_Tests_DTD_Parse_Misc
 //
-// Description: Unit tests for DTD parsing.
+// Description: Unit tests for DTD_Validator parsing.
 //
 
 #include "XML_Lib_Tests.hpp"
 
 using namespace XML_Lib;
 
-TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
+TEST_CASE("Parse XML with DTD_Validator both internal/external", "[XML][DTD_Validator][Parse]")
 {
   XML xml;
-  SECTION("XML with internal DTD", "[XML][DTD][Parse]")
+  SECTION("XML with internal DTD_Validator", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -28,10 +28,10 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "</note>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::internal);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::internal);
   }
-  SECTION("XML with external (SYSTEM) DTD", "[XML][DTD][Parse]")
+  SECTION("XML with external (SYSTEM) DTD_Validator", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -43,25 +43,25 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     };
 
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
   }
-  SECTION("XML with external (PUBLIC) DTD", "[XML][DTD][Parse]")
+  SECTION("XML with external (PUBLIC) DTD_Validator", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<!DOCTYPE note PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" "
-      "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+      "<!DOCTYPE note PUBLIC \"-//W3C//DTD_Validator XHTML 1.0 Transitional//EN\" "
+      "\"http://www.w3.org/TR/xhtml1/DTD_Validator/xhtml1-transitional.dtd\">\n"
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend!</body>\n"
       "</note>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
   }
-  SECTION("XML with external DTD with !NOTATION to parse and check values.", "[XML][DTD][Parse]")
+  SECTION("XML with external DTD_Validator with !NOTATION to parse and check values.", "[XML][DTD_Validator][Parse]")
   {
 
     BufferSource source{
@@ -69,9 +69,9 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "<REPORT></REPORT>\n"
     };
     xml.parse(source);
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[1]));
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[1]));
+    REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getNotation("GIF").getType() == "SYSTEM");
     REQUIRE(xDTD.getNotation("GIF").getSystemID() == "GIF");
     REQUIRE(xDTD.getNotation("JPG").getType() == "SYSTEM");
@@ -79,7 +79,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     REQUIRE(xDTD.getNotation("BMP").getType() == "SYSTEM");
     REQUIRE(xDTD.getNotation("BMP").getSystemID() == "BMP");
   }
-  SECTION("XML with internal DTD containing comments.", "[XML][DTD][Parse]")
+  SECTION("XML with internal DTD_Validator containing comments.", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -101,14 +101,14 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "</note>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::internal);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::internal);
   }
 }
-TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
+TEST_CASE("Parse XML DTD_Validator and check values.", "[XML][DTD_Validator][Parse]")
 {
   XML xml;
-  SECTION("XML with internal to parse DTD and check values", "[XML][DTD][Parse]")
+  SECTION("XML with internal to parse DTD_Validator and check values", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n"
@@ -125,10 +125,10 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
       "</address>\n"
     };
     xml.parse(source);
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[2]));
-    REQUIRE(xDTD.getType() == XDTD::Type::internal);
-    REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
+    REQUIRE(xDTD.getType() == DTD::Type::internal);
+    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
     REQUIRE(xDTD.getElement("address").name == "address");
     REQUIRE(xDTD.getElement("address").content.getUnparsed() == "(name,company,phone)");
     REQUIRE(xDTD.getElement("name").name == "name");
@@ -142,7 +142,7 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
     REQUIRE(xDTD.getElement("footer").name == "footer");
     REQUIRE(xDTD.getElement("footer").content.getUnparsed() == "ANY");
   }
-  SECTION("XML with external file DTD and check values", "[XML][DTD][Parse]")
+  SECTION("XML with external file DTD_Validator and check values", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -153,38 +153,38 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
       "</note>\n"
     };
     xml.parse(source);
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[2]));
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
+    REQUIRE(xDTD.getType() == DTD::Type::external);
+    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
     REQUIRE(xDTD.getExternalReference().getType() == "SYSTEM");
     REQUIRE(xDTD.getExternalReference().getSystemID() == "./files/note001.dtd");
     REQUIRE(xDTD.getElement("note").name == "note");
     REQUIRE(xDTD.getElement("note").content.getUnparsed() == "(to,from,heading,body)");
   }
-  SECTION("XML with external URL DTD to parse and check values", "[XML][DTD][Parse]")
+  SECTION("XML with external URL DTD_Validator to parse and check values", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""
-      " \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n"
+      "<!DOCTYPE html PUBLIC \"-//W3C//DTD_Validator XHTML 1.0 Transitional//EN\""
+      " \"http://www.w3.org/TR/xhtml1/DTD_Validator/xhtml1-transitional.dtd\">\n"
       "<html></html>\n"
     };
     xml.parse(source);
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE_FALSE(!isA<XDTD>(xml.prolog().getChildren()[2]));
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
-    REQUIRE(xDTD.getRootName() == XRef<XElement>(xml.root()).name());
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
+    REQUIRE(xDTD.getType() == DTD::Type::external);
+    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
     REQUIRE(xDTD.getExternalReference().getType() == XMLExternalReference::kPublicID);
-    REQUIRE(xDTD.getExternalReference().getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
-    REQUIRE(xDTD.getExternalReference().getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
+    REQUIRE(xDTD.getExternalReference().getSystemID() == "http://www.w3.org/TR/xhtml1/DTD_Validator/xhtml1-transitional.dtd");
+    REQUIRE(xDTD.getExternalReference().getPublicID() == "-//W3C//DTD_Validator XHTML 1.0 Transitional//EN");
   }
 }
-TEST_CASE("Parse XML DTD with various element content specification errors.", "[XML][DTD][Parse][Error]")
+TEST_CASE("Parse XML DTD_Validator with various element content specification errors.", "[XML][DTD_Validator][Parse][Error]")
 {
   XML xml;
-  SECTION("XML with a DTD that contains an illegal mixed content specification (#PCDATA doesn't come first).",
-    "[XML][DTD][Parse][Error]")
+  SECTION("XML with a DTD_Validator that contains an illegal mixed content specification (#PCDATA doesn't come first).",
+    "[XML][DTD_Validator][Parse][Error]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -205,8 +205,8 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
 
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <format>.");
   }
-  SECTION("XML with a DTD that contains an illegal mixed content specification (does not end with '*').",
-    "[XML][DTD][Parse][Error]")
+  SECTION("XML with a DTD_Validator that contains an illegal mixed content specification (does not end with '*').",
+    "[XML][DTD_Validator][Parse][Error]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -227,7 +227,7 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <format>.");
   }
   SECTION(
-    "Parse XML with DTD that contains a content specification in error (missing ',').", "[XML][DTD][Parse][Error]")
+    "Parse XML with DTD_Validator that contains a content specification in error (missing ',').", "[XML][DTD_Validator][Parse][Error]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -245,8 +245,8 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <note>.");
   }
-  SECTION("Parse XML with DTD that contains a content specification in error (missing element name).",
-    "[XML][DTD][Parse][Error]")
+  SECTION("Parse XML with DTD_Validator that contains a content specification in error (missing element name).",
+    "[XML][DTD_Validator][Parse][Error]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -264,7 +264,7 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <note>.");
   }
-  SECTION("XML with a DTD that contains an illegal mixed content specification (uses ',').", "[XML][DTD][Parse][Error]")
+  SECTION("XML with a DTD_Validator that contains an illegal mixed content specification (uses ',').", "[XML][DTD_Validator][Parse][Error]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -285,10 +285,10 @@ TEST_CASE("Parse XML DTD with various element content specification errors.", "[
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Invalid content specification for element <format>.");
   }
 }
-TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][Conditional]")
+TEST_CASE("XML with a DTD_Validator conditional INCLUDE/IGNORE tags", "[XML][DTD_Validator][Parse][Conditional]")
 {
   XML xml;
-  SECTION("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][Conditional]")
+  SECTION("XML with a DTD_Validator conditional INCLUDE/IGNORE tags", "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -297,10 +297,10 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
   }
-  SECTION("XML with a DTD with conditional INCLUDE containing an entity.", "[XML][DTD][Parse][Conditional]")
+  SECTION("XML with a DTD_Validator with conditional INCLUDE containing an entity.", "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -309,11 +309,11 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
-  SECTION("XML with a DTD with invalid conditional value.", "[XML][DTD][Parse][Conditional]")
+  SECTION("XML with a DTD_Validator with invalid conditional value.", "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -324,7 +324,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 1 Column: 19] Conditional value not INCLUDE or IGNORE.");
   }
-  SECTION("XML with a DTD with missing opening '[' from conditional.", "[XML][DTD][Parse][Conditional]")
+  SECTION("XML with a DTD_Validator with missing opening '[' from conditional.", "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -336,9 +336,9 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Missing opening '[' from conditional.");
   }
   SECTION(
-    "XML with a DTD with conditional controlled with a entity reference value (INCLUDE) containing an entity "
+    "XML with a DTD_Validator with conditional controlled with a entity reference value (INCLUDE) containing an entity "
     "definition.",
-    "[XML][DTD][Parse][Conditional]")
+    "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -347,12 +347,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
-  SECTION("XML with a DTD with conditional controlled entity reference value (IGNORE) containing an entity definition.",
-    "[XML][DTD][Parse][Conditional]")
+  SECTION("XML with a DTD_Validator with conditional controlled entity reference value (IGNORE) containing an entity definition.",
+    "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -361,12 +361,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
       "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
-  SECTION("XML with a DTD with nested conditionals that are both INCLUDE.", "[XML][DTD][Parse][Conditional]")
+  SECTION("XML with a DTD_Validator with nested conditionals that are both INCLUDE.", "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -375,12 +375,12 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
   SECTION(
-    "XML with a DTD with nested conditionals that are both INCLUDE and two entities.", "[XML][DTD][Parse][Conditional]")
+    "XML with a DTD_Validator with nested conditionals that are both INCLUDE and two entities.", "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -389,13 +389,13 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
   }
-  SECTION("XML with a DTD with nested conditionals that are  outter INCLUDE inner IGNORE plus two entities.",
-    "[XML][DTD][Parse][Conditional]")
+  SECTION("XML with a DTD_Validator with nested conditionals that are  outter INCLUDE inner IGNORE plus two entities.",
+    "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -404,14 +404,14 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
       "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
-  SECTION("XML with a DTD with nested conditionals that are  outter IGNORE inner INCLUDE plus two entities.",
-    "[XML][DTD][Parse][Conditional]")
+  SECTION("XML with a DTD_Validator with nested conditionals that are  outter IGNORE inner INCLUDE plus two entities.",
+    "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -420,16 +420,16 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == XDTD::Type::external);
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example1;"),
       "EntityMapper Error: Internal entity reference not found for '&example1;'.");
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
       "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION(
-    "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (switch on).",
-    "[XML][DTD][Parse][Conditional]")
+    "XML with a DTD_Validator with nested conditionals controlled from internally defined DTD_Validator that is parsed first (switch on).",
+    "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -438,14 +438,14 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == (XDTD::Type::internal | XDTD::Type::external));
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == (DTD::Type::internal | DTD::Type::external));
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
   }
   SECTION(
-    "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (switch off).",
-    "[XML][DTD][Parse][Conditional]")
+    "XML with a DTD_Validator with nested conditionals controlled from internally defined DTD_Validator that is parsed first (switch off).",
+    "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -454,17 +454,17 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    XDTD &xDTD = XRef<XDTD>(xml.dtd());
-    REQUIRE(xDTD.getType() == (XDTD::Type::internal | XDTD::Type::external));
+    DTD &xDTD = XRef<DTD>(xml.dtd());
+    REQUIRE(xDTD.getType() == (DTD::Type::internal | DTD::Type::external));
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example1;"),
       "EntityMapper Error: Internal entity reference not found for '&example1;'.");
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
       "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
   SECTION(
-    "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (invalid "
+    "XML with a DTD_Validator with nested conditionals controlled from internally defined DTD_Validator that is parsed first (invalid "
     "value).",
-    "[XML][DTD][Parse][Conditional]")
+    "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -476,8 +476,8 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Conditional value not INCLUDE or IGNORE.");
   }
   SECTION(
-    "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (novalue).",
-    "[XML][DTD][Parse][Conditional]")
+    "XML with a DTD_Validator with nested conditionals controlled from internally defined DTD_Validator that is parsed first (novalue).",
+    "[XML][DTD_Validator][Parse][Conditional]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -489,10 +489,10 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
   }
 }
 
-TEST_CASE("Parse XML with more than DTD declaration", "[XML][DTD][Parse]")
+TEST_CASE("Parse XML with more than DTD_Validator declaration", "[XML][DTD_Validator][Parse]")
 {
   XML xml;
-  SECTION("XML with more than one DTD declaration ", "[XML][DTD][Parse]")
+  SECTION("XML with more than one DTD_Validator declaration ", "[XML][DTD_Validator][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"

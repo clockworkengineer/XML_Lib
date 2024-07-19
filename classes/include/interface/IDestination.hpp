@@ -3,7 +3,7 @@
 namespace XML_Lib {
 
 // =======================================================================
-// Interface for writing destination stream during XML/DTD stringification
+// Interface for writing destination stream during XML/DTD_Validator stringification
 // =======================================================================
 class IDestination
 {
