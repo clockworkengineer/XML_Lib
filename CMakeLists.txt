@@ -28,7 +28,7 @@ set(XML_SOURCES
   ./classes/source/implementation/xml/file/XML_File.cpp
   ./classes/source/implementation/xml/parser/XML_Parser.cpp
   ./classes/source/implementation/variant/XML_Variant.cpp
-        classes/source/DTD_Validator.cpp
+  ./classes/source/implementation/DTD_Validator.cpp
   ./classes/source/implementation/dtd/DTD_Impl.cpp
   ./classes/source/implementation/dtd/DTD_Impl_Validator.cpp
   ./classes/source/implementation/dtd/DTD_Impl_Parse.cpp
