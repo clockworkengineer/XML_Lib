@@ -18,52 +18,52 @@ enable_testing()
 set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
 
 set(TEST_SOURCES
-        io/XML_Lib_Tests_ISource.cpp
-        io/XML_Lib_Tests_IDestination.cpp
-        io/XML_Lib_Tests_File.cpp
-        xml/XML_Lib_Tests_Parse_Misc.cpp
-        xml/XML_Lib_Tests_Parse_Declaration.cpp
-        xml/XML_Lib_Tests_Parse_Tags.cpp
-        xml/XML_Lib_Tests_Parse_Root.cpp
-        xml/XML_Lib_Tests_Parse_Attributes.cpp
-        xml/XML_Lib_Tests_Parse_Comments.cpp
-        xml/XML_Lib_Tests_Parse_Unicode.cpp
-        xml/XML_Lib_Tests_Parse_Entities.cpp
-        xml/XML_Lib_Tests_Parse_PI.cpp
-        xml/XML_Lib_Tests_Parse_CDATA.cpp
-        xml/XML_Lib_Tests_Parse_Namespace.cpp
-        xml/XML_Lib_Tests_Stringify.cpp
-        xml/XML_Lib_Tests_XML.cpp
-        xml/XML_Lib_Tests_Helper.cpp
-        dtd/XML_Lib_Tests_DTD_Parse_Misc.cpp
-        dtd/XML_Lib_Tests_DTD_Parse_Entity.cpp
-        dtd/XML_Lib_Tests_DTD_Parse_Attributes.cpp
-        dtd/XML_Lib_Tests_DTD_Parse_Tags.cpp
-        dtd/XML_Lib_Tests_DTD_Stringify.cpp
-        dtd/XML_Lib_Tests_DTD_Validate_Elements.cpp
-        dtd/XML_Lib_Tests_DTD_Validate_Attributes.cpp
-        dtd/XML_Lib_Tests_DTD_Validate_Misc.cpp
-    ./entitymapper/XML_Lib_Tests_Entity_Mapper.cpp
-    ./data/XML_Lib_Tests_External_Reference.cpp
-    ./data/XML_Lib_Tests_Value.cpp
-    ./data/XML_Lib_Tests_Attribute.cpp
-        xnode/XML_Lib_Tests_Variant.cpp
-        xnode/XML_Lib_Tests_XComment.cpp
-        xnode/XML_Lib_Tests_XContent.cpp
-        xnode/XML_Lib_Tests_XDeclaration.cpp
-        xnode/XML_Lib_Tests_XElement.cpp
-        xnode/XML_Lib_Tests_XCDATA.cpp
-        xnode/XML_Lib_Tests_XPI.cpp
-        xnode/XML_Lib_Tests_XProlog.cpp
-        xnode/XML_Lib_Tests_XRoot.cpp
-        xnode/XML_Lib_Tests_XSelf.cpp
-        xnode/XML_LIb_Tests_XEntityReference.cpp
-        xnode/XML_Lib_Tests_XDTD.cpp
-        traverse/XML_Lib_Tests_Traverse.cpp
+        source/io/XML_Lib_Tests_ISource.cpp
+        source/io/XML_Lib_Tests_IDestination.cpp
+        source/io/XML_Lib_Tests_File.cpp
+        source/xml/XML_Lib_Tests_Parse_Misc.cpp
+        source/xml/XML_Lib_Tests_Parse_Declaration.cpp
+        source/xml/XML_Lib_Tests_Parse_Tags.cpp
+        source/xml/XML_Lib_Tests_Parse_Root.cpp
+        source/xml/XML_Lib_Tests_Parse_Attributes.cpp
+        source/xml/XML_Lib_Tests_Parse_Comments.cpp
+        source/xml/XML_Lib_Tests_Parse_Unicode.cpp
+        source/xml/XML_Lib_Tests_Parse_Entities.cpp
+        source/xml/XML_Lib_Tests_Parse_PI.cpp
+        source/xml/XML_Lib_Tests_Parse_CDATA.cpp
+        source/xml/XML_Lib_Tests_Parse_Namespace.cpp
+        source/xml/XML_Lib_Tests_Stringify.cpp
+        source/xml/XML_Lib_Tests_XML.cpp
+        source/xml/XML_Lib_Tests_Helper.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Misc.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Entity.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Attributes.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Tags.cpp
+        source/dtd/XML_Lib_Tests_DTD_Stringify.cpp
+        source/dtd/XML_Lib_Tests_DTD_Validate_Elements.cpp
+        source/dtd/XML_Lib_Tests_DTD_Validate_Attributes.cpp
+        source/dtd/XML_Lib_Tests_DTD_Validate_Misc.cpp
+        source/entitymapper/XML_Lib_Tests_Entity_Mapper.cpp
+        source/data/XML_Lib_Tests_External_Reference.cpp
+        source/data/XML_Lib_Tests_Value.cpp
+        source/data/XML_Lib_Tests_Attribute.cpp
+        source/xnode/XML_Lib_Tests_Variant.cpp
+        source/xnode/XML_Lib_Tests_XComment.cpp
+        source/xnode/XML_Lib_Tests_XContent.cpp
+        source/xnode/XML_Lib_Tests_XDeclaration.cpp
+        source/xnode/XML_Lib_Tests_XElement.cpp
+        source/xnode/XML_Lib_Tests_XCDATA.cpp
+        source/xnode/XML_Lib_Tests_XPI.cpp
+        source/xnode/XML_Lib_Tests_XProlog.cpp
+        source/xnode/XML_Lib_Tests_XRoot.cpp
+        source/xnode/XML_Lib_Tests_XSelf.cpp
+        source/xnode/XML_LIb_Tests_XEntityReference.cpp
+        source/xnode/XML_Lib_Tests_XDTD.cpp
+        source/traverse/XML_Lib_Tests_Traverse.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})
-target_include_directories(${TEST_EXECUTABLE} PUBLIC ./include ../include)
+target_include_directories(${TEST_EXECUTABLE} PUBLIC source/include ../include)
 target_link_libraries(${TEST_EXECUTABLE} ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
 
 add_test(NAME ${TEST_EXECUTABLE} COMMAND ${TEST_EXECUTABLE})
