@@ -9,6 +9,9 @@
 #include "plog/Initializers/RollingFileInitializer.h"
 #include "plog/Log.h"
 
+#include "XML.hpp"
+#include "XML_Core.hpp"
+
 class Utility
 {
 public:

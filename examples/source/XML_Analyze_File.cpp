@@ -2,7 +2,7 @@
 // Program: XML_Analyze_File
 //
 // Description: For a each XML file in a directory parse it, then analyze its
-// XML tree and produce a output report of the analysis.
+// XML tree and produce an output report of the analysis.
 //
 // Dependencies: C++20, PLOG, XML_Lib.
 //

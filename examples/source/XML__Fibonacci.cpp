@@ -10,8 +10,6 @@
 //
 
 #include "XML_Utility.hpp"
-#include "XML.hpp"
-#include "XML_Core.hpp"
 
 namespace xl = XML_Lib;
 
