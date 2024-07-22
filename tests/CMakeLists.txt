@@ -48,17 +48,17 @@ set(TEST_SOURCES
         source/data/XML_Lib_Tests_Value.cpp
         source/data/XML_Lib_Tests_Attribute.cpp
         source/xnode/XML_Lib_Tests_Variant.cpp
-        source/xnode/XML_Lib_Tests_XComment.cpp
-        source/xnode/XML_Lib_Tests_XContent.cpp
-        source/xnode/XML_Lib_Tests_XDeclaration.cpp
-        source/xnode/XML_Lib_Tests_XElement.cpp
-        source/xnode/XML_Lib_Tests_XCDATA.cpp
+        source/xnode/XML_Lib_Tests_Comment.cpp
+        source/xnode/XML_Lib_Tests_Content.cpp
+        source/xnode/XML_Lib_Tests_Declaration.cpp
+        source/xnode/XML_Lib_Tests_Element.cpp
+        source/xnode/XML_Lib_Tests_CDATA.cpp
         source/xnode/XML_Lib_Tests_XPI.cpp
         source/xnode/XML_Lib_Tests_XProlog.cpp
         source/xnode/XML_Lib_Tests_XRoot.cpp
         source/xnode/XML_Lib_Tests_XSelf.cpp
-        source/xnode/XML_LIb_Tests_XEntityReference.cpp
-        source/xnode/XML_Lib_Tests_XDTD.cpp
+        source/xnode/XML_LIb_Tests_EntityReference.cpp
+        source/xnode/XML_Lib_Tests_DTD.cpp
         source/traverse/XML_Lib_Tests_Traverse.cpp
 )
 

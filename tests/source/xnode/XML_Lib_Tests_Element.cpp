@@ -1,8 +1,8 @@
 
 //
-// Unit Tests: XML_Lib_Tests_XElement.cpp
+// Unit Tests: XML_Lib_Tests_Element.cpp
 //
-// Description: Create and use XElement XNode
+// Description: Create and use Element XNode
 //
 
 #include "XML_Lib_Tests.hpp"
@@ -23,13 +23,13 @@ void addNameSpaces(const Element &xElement)
   xElement.addNameSpace("c", XMLValue {"value3", "value3"});
 
 }
-TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
+TEST_CASE("Create and use Element XNode.","[XNode][Element][API]")
 {
-  SECTION("Create default XElement XNode.", "[XML][XNode][XElement][API]")
+  SECTION("Create default Element XNode.", "[XML][XNode][Element][API]")
   {
     REQUIRE_NOTHROW(Element());
   }
-  SECTION("Create XElement with a given name.", "[XML][XNode][XElement][API]")
+  SECTION("Create Element with a given name.", "[XML][XNode][Element][API]")
   {
     auto xElement = Element("test", {}, {});
     REQUIRE( xElement.name() == "test");
@@ -37,7 +37,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE_FALSE(!xElement.getNameSpaces().empty());
     REQUIRE_FALSE(!xElement.getContents().empty());
   }
-  SECTION("Create XElement with a given name and add attributes to it.", "[XML][XNode][XElement][API]")
+  SECTION("Create Element with a given name and add attributes to it.", "[XML][XNode][Element][API]")
   {
     auto xElement = Element("test", {}, {});
     REQUIRE( xElement.name() == "test");
@@ -45,7 +45,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE(xElement.getAttributes().size()==3);
     REQUIRE_FALSE(!xElement.getNameSpaces().empty());
   }
-  SECTION("Create XElement with a given name and add namespaces to it.", "[XML][XNode][XElement][API]")
+  SECTION("Create Element with a given name and add namespaces to it.", "[XML][XNode][Element][API]")
   {
     auto xElement = Element("test", {}, {});
     REQUIRE( xElement.name() == "test");
@@ -53,7 +53,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE(xElement.getAttributes().size()==3);
     REQUIRE(xElement.getNameSpaces().size()==3);
   }
-  SECTION("Create XElement with a given name, add attributes to it, check that attr2 exists and get its values.", "[XML][XNode][XElement][API]")
+  SECTION("Create Element with a given name, add attributes to it, check that attr2 exists and get its values.", "[XML][XNode][Element][API]")
   {
     auto xElement = Element("test", {}, {});
     REQUIRE( xElement.name() == "test");
@@ -63,7 +63,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE(xElement["attr2"].getUnparsed() == "value2");
     REQUIRE(xElement["attr2"].getParsed() == "value2");
   }
-  SECTION("Create XElement with a given name, add namespaces to it, check that b exists and get its values.", "[XML][XNode][XElement][API]")
+  SECTION("Create Element with a given name, add namespaces to it, check that b exists and get its values.", "[XML][XNode][Element][API]")
   {
     auto xElement = Element("test", {}, {});
     REQUIRE( xElement.name() == "test");
@@ -73,7 +73,7 @@ TEST_CASE("Create and use XElement XNode.","[XNode][XElement][API]")
     REQUIRE(xElement.getNameSpace("b").getUnparsed()=="value2");
     REQUIRE(xElement.getNameSpace("b").getParsed()=="value2");
   }
-  SECTION("Create and use XElement using make/XRef API.", "[XML][XNode][XElement][Make][XRef][API]")
+  SECTION("Create and use Element using make/XRef API.", "[XML][XNode][Element][Make][XRef][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = XNode::make<Element>("test", namespaces, attributes);

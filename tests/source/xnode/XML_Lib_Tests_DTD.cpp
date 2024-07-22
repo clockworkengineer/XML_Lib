@@ -1,5 +1,5 @@
 //
-// Unit Tests: XML_Lib_Tests_XDTD.cpp
+// Unit Tests: XML_Lib_Tests_DTD.cpp
 //
 // Description: Create and use DTD XNode
 //
