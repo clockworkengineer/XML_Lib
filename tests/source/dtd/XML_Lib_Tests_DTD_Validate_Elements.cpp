@@ -1,9 +1,9 @@
 #include "XML_Lib_Tests.hpp"
 
-TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_Validator][Validate][Elements]")
+TEST_CASE("Parse XML with various DTD validation issues.", "[XML][DTD][Validate][Elements]")
 {
   XML xml;
-  SECTION("XML with a DTD_Validator that specifies elements that do not contain parsable data.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that specifies elements that do not contain parsable data.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -20,7 +20,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     REQUIRE_THROWS_WITH(
       xml.validate(), "XML Validation Error [Line: 8] Element <child1> does not contain just any parsable data.");
   }
-  SECTION("XML with an undefined element <date> which violates the DTD_Validator.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with an undefined element <date> which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -42,7 +42,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
       "XML Validation Error [Line: 9] Element <note> does not conform to the content specification "
       "(to,from,heading,body).");
   }
-  SECTION("XML with an missing <to> tag which violates the DTD_Validator.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with an missing <to> tag which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -63,7 +63,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
       "XML Validation Error [Line: 9] Element <note> does not conform to the content specification "
       "(to,from,heading,body).");
   }
-  SECTION("XML with an empty notes tag which violates the DTD_Validator.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with an empty notes tag which violates the DTD.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -82,7 +82,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     REQUIRE_THROWS_WITH(xml.validate(),
       "XML Validation Error [Line: 10] Element <notes> does not conform to the content specification (note)+.");
   }
-  SECTION("XML with an empty notes tag which is valid given DTD_Validator.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with an empty notes tag which is valid given DTD.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -100,8 +100,8 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with an empty notes tag which is valid given DTD_Validator (use (note*) instead of (note)* here).",
-    "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with an empty notes tag which is valid given DTD (use (note*) instead of (note)* here).",
+    "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -119,7 +119,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD_Validator that uses sequence operators and '+' (one or more times).", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that uses sequence operators and '+' (one or more times).", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -140,7 +140,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD_Validator that does not contain any songs.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that does not contain any songs.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -159,7 +159,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
       "XML Validation Error [Line: 8] Element <album> does not conform to the content specification ( title, ( "
       "songTitle, duration )+ ).");
   }
-  SECTION("XML with a DTD_Validator and XML that has out of sequence duration tag.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD and XML that has out of sequence duration tag.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -182,8 +182,8 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
       "XML Validation Error [Line: 8] Element <album> does not conform to the content specification ( title, ( "
       "songTitle, duration )+ ).");
   }
-  SECTION("XML with a DTD_Validator that uses '*' (zero or more times) operator and has XML that complies.",
-    "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that uses '*' (zero or more times) operator and has XML that complies.",
+    "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -200,8 +200,8 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD_Validator that uses '*' (zero or more times) operator and has XML that does not have a book element.",
-    "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that uses '*' (zero or more times) operator and has XML that does not have a book element.",
+    "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -215,8 +215,8 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD_Validator that uses '?' (zero or one time) operator and has XML contains occupied and empty seats.",
-    "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that uses '?' (zero or one time) operator and has XML contains occupied and empty seats.",
+    "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -238,7 +238,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD_Validator that uses '|' (or) operator and has valid XML for it.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that uses '|' (or) operator and has valid XML for it.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -268,8 +268,8 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD_Validator that uses '|' (or) operator and has a class without an assistant/instructor.",
-    "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that uses '|' (or) operator and has a class without an assistant/instructor.",
+    "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -305,8 +305,8 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
       "XML Validation Error [Line: 23] Element <class> does not conform to the content specification ( number, ( "
       "instructor | assistant+ ),( credit | noCredit ) ).");
   }
-  SECTION("XML with a DTD_Validator that uses all of the content specification operators and has valid XML for it.",
-    "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that uses all of the content specification operators and has valid XML for it.",
+    "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -337,8 +337,8 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD_Validator that uses all of the content specification operators and has XML with an empty box.",
-    "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that uses all of the content specification operators and has XML with an empty box.",
+    "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -372,7 +372,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
       "XML Validation Error [Line: 24] Element <donutBox> does not conform to the content specification ( jelly?, "
       "lemon*,( ( creme | sugar )+ | glazed ) ).");
   }
-  SECTION("XML with a DTD_Validator that specifies elements that are empty.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that specifies elements that are empty.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -390,7 +390,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_NOTHROW(xml.validate());
   }
-  SECTION("XML with a DTD_Validator that specifies elements that are empty but contain data.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that specifies elements that are empty but contain data.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -408,7 +408,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     xml.parse(source);
     REQUIRE_THROWS_WITH(xml.validate(), "XML Validation Error [Line: 9] Element <child2> is not empty.");
   }
-  SECTION("XML with a DTD_Validator that specifies elements that are marked as any.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML with a DTD that specifies elements that are marked as any.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -427,7 +427,7 @@ TEST_CASE("Parse XML with various DTD_Validator validation issues.", "[XML][DTD_
     REQUIRE_NOTHROW(xml.validate());
   }
   SECTION(
-    "XML with a DTD_Validator that specifies elements that are marked as having mixed content.", "[XML][DTD_Validator][Validate][Elements]")
+    "XML with a DTD that specifies elements that are marked as having mixed content.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"

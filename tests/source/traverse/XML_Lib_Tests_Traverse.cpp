@@ -30,7 +30,7 @@ public:
   int64_t totalContent{};
   // Declaration
   int64_t totalDeclaration{};
-  // DTD_Validator
+  // DTD
   int64_t totalDTD{};
   // Element
   int64_t totalElement{};

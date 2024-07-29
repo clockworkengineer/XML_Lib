@@ -350,11 +350,11 @@ void XML_Parser::parseEpilog(ISource &source, XNode &xProlog)
 }
 
 /// <summary>
-/// Parse XML DTD_Validator and return any XNode created for it.
+/// Parse XML DTD and return any XNode created for it.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-/// <returns>Pointer to DTD_Validator XNode.</returns>
+/// <returns>Pointer to DTD XNode.</returns>
 XNode XML_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 {
   if (validator != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
@@ -366,7 +366,7 @@ XNode XML_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 /// <summary>
 /// Parse XML prolog and create the necessary element XNodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
-/// processing instructions, comments, whitespace and a Document Type Declaration (DTD_Validator).
+/// processing instructions, comments, whitespace and a Document Type Declaration (DTD).
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
@@ -413,7 +413,7 @@ XNode XML_Parser::parse(ISource &source)
   return xmlRoot;
 }
 /// <summary>
-/// Validate XML against parsed DTD_Validator.
+/// Validate XML against parsed DTD.
 /// </summary>
 /// <param name="xProlog">Prolog XNode</param>
 void XML_Parser::validate(XNode &xProlog)
@@ -421,7 +421,7 @@ void XML_Parser::validate(XNode &xProlog)
   if (validator != nullptr) {
     validator->validate(xProlog);
   } else {
-    throw Error("No DTD_Validator specified for validation.");
+    throw Error("No DTD specified for validation.");
   }
 }
 /// <summary>

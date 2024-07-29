@@ -19,7 +19,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     XML xml1;
     REQUIRE_THROWS((void)xml1.root(), "XML Error: No XML has been parsed.");
   }
-  SECTION("Check DTD_Validator with no parsed XML.", "[XML][DTD_Validator][No XML]")
+  SECTION("Check DTD with no parsed XML.", "[XML][DTD][No XML]")
   {
     XML xml1;
     REQUIRE_THROWS((void)xml1.dtd(), "XML Error: No XML has been parsed.");

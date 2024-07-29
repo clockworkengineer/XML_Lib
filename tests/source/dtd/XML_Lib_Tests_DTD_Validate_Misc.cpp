@@ -1,9 +1,9 @@
 #include "XML_Lib_Tests.hpp"
 
-TEST_CASE("Parse XML with various DTD_Validator issues.", "[XML][DTD_Validator][Validate]")
+TEST_CASE("Parse XML with various DTD issues.", "[XML][DTD][Validate]")
 {
   XML xml;
-  SECTION("XML with no DTD_Validator and try to validate.", "[XML][DTD_Validator][Validate]")
+  SECTION("XML with no DTD and try to validate.", "[XML][DTD][Validate]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -13,9 +13,9 @@ TEST_CASE("Parse XML with various DTD_Validator issues.", "[XML][DTD_Validator][
       "</root>\n"
     };
     xml.parse(source);
-    REQUIRE_THROWS_WITH(xml.validate(), "IParser Error: No DTD_Validator specified for validation.");
+    REQUIRE_THROWS_WITH(xml.validate(), "IParser Error: No DTD specified for validation.");
   }
-  SECTION("XML parse 2 xml strings with DTD_Validator.", "[XML][DTD_Validator][Validate][Elements]")
+  SECTION("XML parse 2 xml strings with DTD.", "[XML][DTD][Validate][Elements]")
   {
     BufferSource source1{
       "<?xml version=\"1.0\"?>\n"

@@ -1,9 +1,9 @@
 #include "XML_Lib_Tests.hpp"
 
-TEST_CASE("Parse XML with internal DTD_Validator that contains entity definitions and uses", "[XML][DTD_Validator][Parse][Entity]")
+TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses", "[XML][DTD][Parse][Entity]")
 {
   XML xml;
-  SECTION("XML DTD_Validator with entity definitions and uses", "[XML][DTD_Validator][Parse]")
+  SECTION("XML DTD with entity definitions and uses", "[XML][DTD][Parse]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -18,8 +18,8 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     };
     REQUIRE_NOTHROW(xml.parse(source));
   }
-  SECTION("XML DTD_Validator with entity internal definitions and uses. Check translation of entity values",
-    "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity internal definitions and uses. Check translation of entity values",
+    "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -41,7 +41,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(XRef<Element>(xml.root())[4].getContents()
             == reinterpret_cast<const char *>(u8"Writer: Donald Duck.\u00A0Copyright: W3Schools."));
   }
-  SECTION("XML DTD_Validator with entity and how it deals with entity character expansion case 1)", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity and how it deals with entity character expansion case 1)", "[XML][DTD][Parse][Entity]")
   {
 
     BufferSource source{
@@ -62,7 +62,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(XRef<Element>(xml.root())[0].getContents()
             == "An ampersand (&) may be escaped numerically (&#38;) or with a general entity (&amp;).");
   }
-  SECTION("XML DTD_Validator with entity and how it deals with entity character expansion case 2)", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity and how it deals with entity character expansion case 2)", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<?xml version='1.0'?>\n"
@@ -83,7 +83,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(XRef<Element>(xml.root()).name() == "test");
     REQUIRE(XRef<Element>(xml.root()).getContents() == "This sample shows a error-prone method.");
   }
-  SECTION("XML DTD_Validator with entity and how it deals with entity character expansion case 3)", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity and how it deals with entity character expansion case 3)", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<?xml version='1.0'?>\n"
@@ -104,7 +104,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(attribute.getParsed() == "&lt;");
   }
   // This should throw an error as & ' " < >  not allowed to be assigned to attribute directly (NEED TO FIX)
-  SECTION("XML DTD_Validator with entity and how it deals with entity character expansion case 4)", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity and how it deals with entity character expansion case 4)", "[XML][DTD][Parse][Entity]")
   {
 
     BufferSource source{
@@ -118,7 +118,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE_THROWS_WITH(xml.parse(source),
       "XML Syntax Error [Line: 5 Column: 21] Attribute value contains invalid character '<', '\"', ''' or '&'.");
   }
-  SECTION("XML DTD_Validator with entity used within an entity.", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity used within an entity.", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<?xml version='1.0'?>\n"
@@ -142,7 +142,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
             == "Jo Smith josmith@theworldaccordingtojosmith.com");
     REQUIRE(XRef<Element>(xml.root()).getContents() == "Jo Smith josmith@theworldaccordingtojosmith.com");
   }
-  SECTION("XML DTD_Validator with entity used within an entity with recursion.", "[XML][DTD_Validator][Parse]")
+  SECTION("XML DTD with entity used within an entity with recursion.", "[XML][DTD][Parse]")
   {
     BufferSource source{
       "<?xml version='1.0'?>\n"
@@ -159,8 +159,8 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error: Entity '&email;' contains recursive definition which is not allowed.");
   }
-  SECTION("XML DTD_Validator with entity that contains a character reference that is parsed straight away.",
-    "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity that contains a character reference that is parsed straight away.",
+    "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<?xml version='1.0'?>\n"
@@ -177,7 +177,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(xDTD.getType() == DTD::Type::internal);
     REQUIRE(xDTD.getEntityMapper().getInternal("&email;") == "josmith@theworldaccordingtojosmith.com");
   }
-  SECTION("XML DTD_Validator with entity that is defined externally (file name.txt).", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity that is defined externally (file name.txt).", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<?xml version='1.0'?>\n"
@@ -195,7 +195,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(XRef<Element>(xml.root()).name() == "foo");
     REQUIRE(XRef<Element>(xml.root()).getContents() == "Hello John Joe Doe");
   }
-  SECTION("XML DTD_Validator with entity that is defined externally (file that does not exist).", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with entity that is defined externally (file that does not exist).", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<?xml version='1.0'?>\n"
@@ -208,8 +208,8 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error: Entity '&name;' source file './files/unknown.txt' does not exist.");
   }
-  SECTION("XML with internal DTD_Validator with parameter entities to parse  (internal cannot appear within tags).",
-    "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML with internal DTD with parameter entities to parse  (internal cannot appear within tags).",
+    "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<!DOCTYPE REPORT [\n"
@@ -221,8 +221,8 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION(
-    "XML with internal DTD_Validator with parameter entities to parse and check values (internal cannot appear within tags).",
-    "[XML][DTD_Validator][Parse][Entity]")
+    "XML with internal DTD with parameter entities to parse and check values (internal cannot appear within tags).",
+    "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<!DOCTYPE REPORT [\n"
@@ -241,7 +241,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(xDTD.getElement("REPORT").name == "REPORT");
     REQUIRE(xDTD.getElement("REPORT").content.getParsed() == "EMPTY");
   }
-  SECTION("XML with external DTD_Validator with parameter entities to parse.", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML with external DTD with parameter entities to parse.", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<!DOCTYPE REPORT SYSTEM \"./files/report01.dtd\">\n"
@@ -252,7 +252,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(xDTD.getType() == DTD::Type::external);
   }
 
-  SECTION("XML with external DTD_Validator with both types of entities to parse an check values", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML with external DTD with both types of entities to parse an check values", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<!DOCTYPE REPORT SYSTEM \"./files/report01.dtd\">"
@@ -277,7 +277,7 @@ TEST_CASE("Parse XML with internal DTD_Validator that contains entity definition
     REQUIRE(xDTD.getElement("shop").name == "shop");
     REQUIRE(xDTD.getElement("shop").content.getUnparsed() == "(name, street, pincode, city, phone)");
   }
-  SECTION("XML DTD_Validator with parameter entity within general entity.", "[XML][DTD_Validator][Parse][Entity]")
+  SECTION("XML DTD with parameter entity within general entity.", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

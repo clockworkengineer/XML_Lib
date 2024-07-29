@@ -1,9 +1,9 @@
 #include "XML_Lib_Tests.hpp"
 
-TEST_CASE("Parse XML DTD_Validator with attributes and check values.", "[XML][DTD_Validator][Parse][Attributes]")
+TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][Attributes]")
 {
   XML xml;
-  SECTION("XML with internal DTD_Validator with attributes to parse ", "[XML][DTD_Validator][Parse][Attributes]")
+  SECTION("XML with internal DTD with attributes to parse ", "[XML][DTD][Parse][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -27,7 +27,7 @@ TEST_CASE("Parse XML DTD_Validator with attributes and check values.", "[XML][DT
     };
     REQUIRE_NOTHROW(xml.parse(source));
   }
-  SECTION("XML with internal DTD_Validator with attributes to parse and check values", "[XML][DTD_Validator][Parse][Attributes]")
+  SECTION("XML with internal DTD with attributes to parse and check values", "[XML][DTD][Parse][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -83,8 +83,8 @@ TEST_CASE("Parse XML DTD_Validator with attributes and check values.", "[XML][DT
     REQUIRE(xDTD.getElement("TITLE").attributes[0].type == (DTD::AttributeType::cdata | DTD::AttributeType::implied));
     REQUIRE(xDTD.getElement("TITLE").attributes[1].type == (DTD::AttributeType::cdata | DTD::AttributeType::implied));
   }
-  SECTION("XML with internal DTD_Validator with elements with multiple attributes to parse and check values",
-    "[XML][DTD_Validator][Parse][Attributes]")
+  SECTION("XML with internal DTD with elements with multiple attributes to parse and check values",
+    "[XML][DTD][Parse][Attributes]")
   {
     BufferSource source{
       "<!DOCTYPE CATALOG [\n"
@@ -141,12 +141,12 @@ TEST_CASE("Parse XML DTD_Validator with attributes and check values.", "[XML][DT
     REQUIRE(xDTD.getElement("NOTES").content.getUnparsed() == "(#PCDATA)");
   }
 }
-TEST_CASE("Parse XML DTD_Validator that contains enumeration attributes with various errors.",
-  "[XML][DTD_Validator][Parse][Error][Attributes]")
+TEST_CASE("Parse XML DTD that contains enumeration attributes with various errors.",
+  "[XML][DTD][Parse][Error][Attributes]")
 {
   XML xml;
-  SECTION("Parse XML with DTD_Validator that contains a enumeration attribute gender with a default value if 'F'.",
-    "[XML][DTD_Validator][Parse][Error][Attributes]")
+  SECTION("Parse XML with DTD that contains a enumeration attribute gender with a default value if 'F'.",
+    "[XML][DTD][Parse][Error][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -186,8 +186,8 @@ TEST_CASE("Parse XML DTD_Validator that contains enumeration attributes with var
     REQUIRE(XRef<Element>(xml.root())[1].name() == "person");
     REQUIRE(XRef<Element>(xml.root())[1].getAttributes().size() == 0);
   }
-  SECTION("Parse XML with DTD_Validator that contains a enumeration with a syntax error (missing enumeration name).",
-    "[XML][DTD_Validator][Parse][Error][Attributes]")
+  SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing enumeration name).",
+    "[XML][DTD][Parse][Error][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -208,8 +208,8 @@ TEST_CASE("Parse XML DTD_Validator that contains enumeration attributes with var
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 7 Column: 36] Invalid name '' encountered.");
   }
-  SECTION("Parse XML with DTD_Validator that contains a enumeration with a syntax error (missing end bracket).",
-    "[XML][DTD_Validator][Parse][Error][Attributes]")
+  SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing end bracket).",
+    "[XML][DTD][Parse][Error][Attributes]")
   {
 
     BufferSource source{
@@ -232,8 +232,8 @@ TEST_CASE("Parse XML DTD_Validator that contains enumeration attributes with var
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 7 Column: 39] Missing closing ')' on enumeration attribute type.");
   }
-  SECTION("Parse XML with DTD_Validator that contains a enumeration with a default value not in enumeration.",
-    "[XML][DTD_Validator][Parse][Error][Attributes]")
+  SECTION("Parse XML with DTD that contains a enumeration with a default value not in enumeration.",
+    "[XML][DTD][Parse][Error][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -255,8 +255,8 @@ TEST_CASE("Parse XML DTD_Validator that contains enumeration attributes with var
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error: Default value 'D' for enumeration attribute 'gender' is invalid.");
   }
-  SECTION("Parse XML with DTD_Validator that contains a enumeration with not all values unique.",
-    "[XML][DTD_Validator][Parse][Error][Attributes]")
+  SECTION("Parse XML with DTD that contains a enumeration with not all values unique.",
+    "[XML][DTD][Parse][Error][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -278,8 +278,8 @@ TEST_CASE("Parse XML DTD_Validator that contains enumeration attributes with var
     REQUIRE_THROWS_WITH(xml.parse(source),
       "XML Syntax Error: Enumerator value 'F' for attribute 'gender' occurs more than once in its definition.");
   }
-  SECTION("Parse XML with DTD_Validator that specifies the use of an two different ID attributes for an element.",
-    "[XML][DTD_Validator][Parse][Error][Attributes]")
+  SECTION("Parse XML with DTD that specifies the use of an two different ID attributes for an element.",
+    "[XML][DTD][Parse][Error][Attributes]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -299,8 +299,8 @@ TEST_CASE("Parse XML DTD_Validator that contains enumeration attributes with var
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Element <item> has more than one ID attribute.");
   }
-  SECTION("Parse XML with DTD_Validator that has a valid NOTATION attribute (photo_type) and usage.",
-    "[XML][DTD_Validator][Parse][Attributes][NOTATION]")
+  SECTION("Parse XML with DTD that has a valid NOTATION attribute (photo_type) and usage.",
+    "[XML][DTD][Parse][Attributes][NOTATION]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
@@ -338,8 +338,8 @@ TEST_CASE("Parse XML DTD_Validator that contains enumeration attributes with var
       xDTD.getElement("mountain").attributes[1].type == (DTD::AttributeType::notation | DTD::AttributeType::implied));
     REQUIRE(xDTD.getElement("mountain").attributes[1].enumeration == "(GIF|JPG|PNG)");
   }
-  SECTION("Parse XML with DTD_Validator that has a missing NOTATION attribute (photo_type GIF) and usage.",
-    "[XML][DTD_Validator][Parse][Attributes][NOTATION]")
+  SECTION("Parse XML with DTD that has a missing NOTATION attribute (photo_type GIF) and usage.",
+    "[XML][DTD][Parse][Attributes][NOTATION]")
   {
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"

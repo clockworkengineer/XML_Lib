@@ -21,14 +21,14 @@ DTD_Impl::DTD_Impl(XNode &xNode) : xDTD(XRef<DTD>(xNode)) {}
 DTD_Impl::~DTD_Impl() = default;
 
 /// <summary>
-/// Parse DTD_Validator read from source stream.
+/// Parse DTD read from source stream.
 /// </summary>
-/// <param name="source">DTD_Validator source stream.</param>
+/// <param name="source">DTD source stream.</param>
 void DTD_Impl::parse(ISource &source) { parseDTD(source); }
 
 /// <summary>
-/// Create DTD_Validator text from an DTD_Validator object.
+/// Create DTD text from an DTD object.
 /// </summary>
-/// <param name="destination">DTD_Validator destination stream.</param>
+/// <param name="destination">DTD destination stream.</param>
 void DTD_Impl::stringify(IDestination &destination) const { destination.add(xDTD.unparsed()); }
 }// namespace XML_Lib

@@ -43,7 +43,7 @@ XNode &XML_Impl::dtd()
       if (isA<DTD>(child)) { return child; }
     }
   }
-  throw Error("No DTD_Validator found.");
+  throw Error("No DTD found.");
 }
 
 XNode &XML_Impl::prolog()

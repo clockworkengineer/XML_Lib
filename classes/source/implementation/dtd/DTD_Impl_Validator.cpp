@@ -1,7 +1,7 @@
 //
 // Class: DTD_Impl_Validator
 //
-// Description: DTD_Validator validator.
+// Description: DTD validator.
 //
 // Dependencies: C++20 - Language standard features used.
 //
@@ -115,8 +115,8 @@ void DTD_Impl::checkAttributeValue(const XNode &xNode, const DTD::Attribute &att
 /// ID	          The value is a unique id
 /// IDREF         The value is the id of another element
 /// IDREFS        The value is a list of other ids
-/// NMTOKEN       The value is a valid DTD_Validator name
-/// NMTOKENS	    The value is a list of valid DTD_Validator names
+/// NMTOKEN       The value is a valid DTD name
+/// NMTOKENS	    The value is a list of valid DTD names
 /// ENTITY        The value is an entity
 /// ENTITIES	    The value is a list of entities
 /// NOTATION	    The value is a name of a notation
@@ -264,7 +264,7 @@ void DTD_Impl::checkElements(const XNode &xNode)
   } else if (isA<Root>(xNode) || isA<Element>(xNode)) {
     if (isA<Root>(xNode) && XRef<Element>(xNode).name() != xDTD.getRootName()) {
       throw ValidationError(
-        lineNumber, "DOCTYPE name does not match that of root element " + XRef<Element>(xNode).name() + " of DTD_Validator.");
+        lineNumber, "DOCTYPE name does not match that of root element " + XRef<Element>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
     for (auto &element : xNode.getChildren()) { checkElements(element); }
@@ -297,7 +297,7 @@ void DTD_Impl::checkAgainstDTD(const XNode &xNode)
 }
 
 /// <summary>
-/// Validate XML against its DTD_Validator. Throwing an exception if there is a
+/// Validate XML against its DTD. Throwing an exception if there is a
 /// issue with the XML that is being validated.
 /// </summary>
 /// <param name="xNode">XNode element containing root of XML to validate.</param>
