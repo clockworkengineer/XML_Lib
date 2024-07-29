@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Attribute
-//
-// Description: XML Attribute  unit tests.
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("XML attribute usage tests cases.", "[XML][Value]")
 {

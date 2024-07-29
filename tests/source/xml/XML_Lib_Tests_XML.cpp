@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_XML
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
 {

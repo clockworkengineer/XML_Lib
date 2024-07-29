@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Parse_Tags
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Checks for tag names", "[XML][Parse][Tags]")
 {

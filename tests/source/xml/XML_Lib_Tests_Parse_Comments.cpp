@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Parse_Comments
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
 {

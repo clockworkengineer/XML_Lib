@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Value
-//
-// Description: XML Value  unit tests.
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("XML value usage tests cases.", "[XML][Value]")
 {

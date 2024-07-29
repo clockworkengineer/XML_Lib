@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Stringify
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Use XML to stringify previously parsed XML.", "[XML][Stringify]")
 {

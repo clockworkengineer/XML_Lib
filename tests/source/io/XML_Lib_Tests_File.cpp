@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_File
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Sample XML files to read and parse.", "[XML][Parse]")
 {

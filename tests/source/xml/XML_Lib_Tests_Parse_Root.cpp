@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Parse_Root
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Parse declaration, root element and check parsed information ", "[XML][Parse][Root]")
 {

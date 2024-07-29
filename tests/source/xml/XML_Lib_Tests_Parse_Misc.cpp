@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Parse_Misc
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
 {

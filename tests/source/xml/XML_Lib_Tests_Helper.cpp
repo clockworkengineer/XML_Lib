@@ -1,20 +1,5 @@
-//
-// Unit Tests: XML_Lib_Tests_Helper
-//
-// Description: Helper functions for XML unit tests.
-//
-
 #include "XML_Lib_Tests.hpp"
-// =======================
-// XML class namespace
-// =======================
-using namespace XML_Lib;
-// ==========================
-// Unit test helper functions
-// ==========================
-// ==========================
-// Unit test helper functions
-// ==========================
+
 /// <summary>
 /// Prefix path to test data file name.
 /// </summary>

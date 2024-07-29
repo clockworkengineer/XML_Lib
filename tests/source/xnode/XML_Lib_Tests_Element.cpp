@@ -1,13 +1,4 @@
-
-//
-// Unit Tests: XML_Lib_Tests_Element.cpp
-//
-// Description: Create and use Element XNode
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 void addAttributes(const Element &xElement)
 {

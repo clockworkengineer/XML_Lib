@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Parse_CDATA
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Parse CDATA section.", "[XML][Parse][CDATA]")
 {

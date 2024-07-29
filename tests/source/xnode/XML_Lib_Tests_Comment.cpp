@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Comment.cpp
-//
-// Description: Create and use Comment XNode
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Create and use Comment XNode.","[XNode][Comment][API]")
 {

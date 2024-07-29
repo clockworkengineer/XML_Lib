@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Entity_Mapper
-//
-// Description: XML Entity Mapper unit tests.
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("XML entity mapper usage tests cases.", "[XML][EntityMapper]")
 {

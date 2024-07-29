@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Variant.cpp
-//
-// Description: Create and use XNode variants.
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Create and use Variant", "[XML][XNode][Variant][API]")
 {

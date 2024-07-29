@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Content.cpp
-//
-// Description: Create and use Content XNode
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Create and use Content XNode.","[XNode][Content][API]")
 {

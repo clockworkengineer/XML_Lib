@@ -1,15 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_IDestination
-//
-// Description: Unit tests for BufferDestination and FileDestination classes
-// that implement the IDestination interfaces used in XML parsing.
-//
-
 #include "XML_Lib_Tests.hpp"
-// =======================
-// XML class namespace
-// =======================
-using namespace XML_Lib;
 
 TEST_CASE("Creation and use of IDestination (Buffer) interface.", "[XML][Parse][BufferDestination]")
 {

@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_DTD_Validate_Attributes
-//
-// Description: Unit tests for XML DTD_Validator attribute validation.
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Validate XML with various DTD_Validator attribute validation issues.", "[XML][DTD_Validator][Validate][Attributes]")
 {

@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_DTD_Parse_Misc
-//
-// Description: Unit tests for DTD_Validator parsing.
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Parse XML with DTD_Validator both internal/external", "[XML][DTD_Validator][Parse]")
 {

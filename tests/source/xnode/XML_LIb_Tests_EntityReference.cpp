@@ -1,14 +1,4 @@
-//
-// Created by robt on 29/05/24.
-//
-// Unit Tests: XML_Lib_Tests_EntityReference.cpp
-//
-// Description: Create and use EntityReference XNode
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 XMLValue createXMLValue()
 {

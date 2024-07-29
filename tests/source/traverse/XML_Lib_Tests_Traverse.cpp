@@ -1,14 +1,4 @@
-
-//
-// Unit Tests: XML_Lib_Tests_Traverse
-//
-// Description: Traversal unit tests for XML class
-// using the Catch2 test framework.
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 class XML_Analyzer final : public IAction
 {

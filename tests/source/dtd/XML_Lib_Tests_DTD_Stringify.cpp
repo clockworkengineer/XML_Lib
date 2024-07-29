@@ -1,16 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_DTD_Stringify
-//
-// Description: Unit tests for DTD_Validator stringification.
-//
-// ================
-// Test definitions
-// ================
 #include "XML_Lib_Tests.hpp"
-// ====================
-// JSON class namespace
-// ====================
-using namespace XML_Lib;
 
 TEST_CASE("Stringify XML with DTD_Validator both internal and external", "[XML][DTD_Validator][Stringify]")
 {

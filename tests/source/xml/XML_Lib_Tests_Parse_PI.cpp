@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Parse_PI
-//
-// Description:
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Parse][PI]")
 {

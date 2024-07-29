@@ -53,10 +53,10 @@ set(TEST_SOURCES
         source/xnode/XML_Lib_Tests_Declaration.cpp
         source/xnode/XML_Lib_Tests_Element.cpp
         source/xnode/XML_Lib_Tests_CDATA.cpp
-        source/xnode/XML_Lib_Tests_XPI.cpp
-        source/xnode/XML_Lib_Tests_XProlog.cpp
-        source/xnode/XML_Lib_Tests_XRoot.cpp
-        source/xnode/XML_Lib_Tests_XSelf.cpp
+        source/xnode/XML_Lib_Tests_PI.cpp
+        source/xnode/XML_Lib_Tests_Prolog.cpp
+        source/xnode/XML_Lib_Tests_Root.cpp
+        source/xnode/XML_Lib_Tests_Self.cpp
         source/xnode/XML_LIb_Tests_EntityReference.cpp
         source/xnode/XML_Lib_Tests_DTD.cpp
         source/traverse/XML_Lib_Tests_Traverse.cpp

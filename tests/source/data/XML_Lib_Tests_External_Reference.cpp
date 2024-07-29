@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_External_Reference
-//
-// Description: XML External Reference unit tests.
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("XML external reference usage tests cases.", "[XML][ExternalReference]")
 {

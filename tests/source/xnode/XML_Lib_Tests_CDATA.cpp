@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_CDATA.cpp
-//
-// Description: Create and use CDATA XNode
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Create and use CDATA XNode.","[XNode][CDATA][API]")
 {

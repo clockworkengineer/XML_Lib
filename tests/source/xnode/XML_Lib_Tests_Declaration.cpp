@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_Declaration.cpp
-//
-// Description: Create and use Declaration XNode
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Create and use Declaration XNode.","[XNode][Declaration][API]")
 {

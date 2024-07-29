@@ -1,12 +1,4 @@
-//
-// Unit Tests: XML_Lib_Tests_DTD.cpp
-//
-// Description: Create and use DTD XNode
-//
-
 #include "XML_Lib_Tests.hpp"
-
-using namespace XML_Lib;
 
 TEST_CASE("Create and use DTD XNode.","[XNode][DTD][API]")
 {
