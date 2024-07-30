@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.18.4)
+cmake_minimum_required(VERSION 3.18.1)
 
-project("XML_Lib" VERSION 1.1.1 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
+project("XML_Lib" VERSION 1.1.0 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
