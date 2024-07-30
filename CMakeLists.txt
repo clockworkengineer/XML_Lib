@@ -28,7 +28,7 @@ set(XML_SOURCES
   ./classes/source/implementation/xml/file/XML_File.cpp
   ./classes/source/implementation/xml/parser/XML_Parser.cpp
   ./classes/source/implementation/variant/XML_Variant.cpp
-  ./classes/source/implementation/DTD_Validator.cpp
+  ./classes/source/implementation/dtd/DTD_Validator.cpp
   ./classes/source/implementation/dtd/DTD_Impl.cpp
   ./classes/source/implementation/dtd/DTD_Impl_Validator.cpp
   ./classes/source/implementation/dtd/DTD_Impl_Parse.cpp
@@ -47,7 +47,7 @@ list(APPEND XML_SOURCES "./classes/source/implementation/common/converter/${PLAT
 set(XML_INCLUDES
   XML_Config.hpp
   ./classes/include/XML.hpp
-        classes/include/DTD_Validator.hpp
+  ./classes/include/DTD_Validator.hpp
   ./classes/include/interface/ISource.hpp
   ./classes/include/interface/IDestination.hpp
   ./classes/include/interface/IEntityMapper.hpp
@@ -79,21 +79,21 @@ set(XML_INCLUDES
   ./classes/include/implementation/xnode/XML_Reference.hpp
   ./classes/include/implementation/xnode/XML_Creation.hpp
   ./classes/include/implementation/xnode/XML_Index.hpp
-        classes/include/implementation/variants/XML_Prolog.hpp
-        classes/include/implementation/variants/XML_Declaration.hpp
-        classes/include/implementation/variants/XML_Content.hpp
-        classes/include/implementation/variants/XML_CDATA.hpp
-        classes/include/implementation/variants/XML_EntityReference.hpp
-        classes/include/implementation/variants/XML_Element.hpp
-        classes/include/implementation/variants/XML_Root.hpp
-        classes/include/implementation/variants/XML_Self.hpp
-        classes/include/implementation/variants/XML_Comment.hpp
-        classes/include/implementation/variants/XML_PI.hpp
-        classes/include/implementation/variants/XML_DTD.hpp
+  ./classes/include/implementation/variants/XML_Prolog.hpp
+  ./classes/include/implementation/variants/XML_Declaration.hpp
+  ./classes/include/implementation/variants/XML_Content.hpp
+  ./classes/include/implementation/variants/XML_CDATA.hpp
+  ./classes/include/implementation/variants/XML_EntityReference.hpp
+  ./classes/include/implementation/variants/XML_Element.hpp
+  ./classes/include/implementation/variants/XML_Root.hpp
+  ./classes/include/implementation/variants/XML_Self.hpp
+  ./classes/include/implementation/variants/XML_Comment.hpp
+  ./classes/include/implementation/variants/XML_PI.hpp
+  ./classes/include/implementation/variants/XML_DTD.hpp
   ./classes/include/implementation/variants/XML_Variant.hpp
-        ./classes/include/interface/IAction.hpp
-        classes/include/implementation/xnode/XML_Contents.hpp
-        classes/include/implementation/entity/XML_EntityMapping.hpp
+  ./classes/include/interface/IAction.hpp
+  ./classes/include/implementation/xnode/XML_Contents.hpp
+  ./classes/include/implementation/entity/XML_EntityMapping.hpp
 )
 
 # XML library
