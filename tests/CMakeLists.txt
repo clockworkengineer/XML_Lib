@@ -38,6 +38,8 @@ set(TEST_SOURCES
         source/dtd/XML_Lib_Tests_DTD_Parse_Misc.cpp
         source/dtd/XML_Lib_Tests_DTD_Parse_Entity.cpp
         source/dtd/XML_Lib_Tests_DTD_Parse_Attributes.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Attributes_Error.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Attributes_Misc.cpp
         source/dtd/XML_Lib_Tests_DTD_Parse_Tags.cpp
         source/dtd/XML_Lib_Tests_DTD_Stringify.cpp
         source/dtd/XML_Lib_Tests_DTD_Validate_Elements.cpp
