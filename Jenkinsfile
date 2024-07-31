@@ -6,7 +6,7 @@ pipeline {
                 sh 'echo "Building..."'
                 sh 'chmod +x ./scripts/Linux-Build.sh'
                 sh './scripts/Linux-Build.sh'
-                archiveArtifacts artifacts: 'build/tests/XML_Lib_Unit_Tests, build/libXML_Lib.a, build/examples/XML_*', fingerprint: true
+                archiveArtifacts artifacts: 'Release/tests/XML_Lib_Unit_Tests, Release/libXML_Lib.a, Release/examples/XML_*', fingerprint: true
             }
         }
         stage ('Test'){
