@@ -26,11 +26,11 @@ set(XML_SOURCES
   ./classes/source/implementation/xml/parser/XML_Parser.cpp
   ./classes/source/implementation/variant/XML_Variant.cpp
   ./classes/source/implementation/dtd/DTD_Validator.cpp
-  ./classes/source/implementation/dtd/DTD_Impl.cpp
-  ./classes/source/implementation/dtd/DTD_Impl_Validator.cpp
-  ./classes/source/implementation/dtd/DTD_Impl_Parse.cpp
-  ./classes/source/implementation/dtd/DTD_Impl_Parse_Content.cpp
-  ./classes/source/implementation/dtd/DTD_Impl_Parse_External.cpp
+  ./classes/source/implementation/dtd/DTD_Validator_Impl.cpp
+  ./classes/source/implementation/dtd/DTD_Validator_Impl_Validator.cpp
+  ./classes/source/implementation/dtd/DTD_Validator_Impl_Parse.cpp
+  ./classes/source/implementation/dtd/DTD_Validator_Impl_Parse_Content.cpp
+  ./classes/source/implementation/dtd/DTD_Validator_Impl_Parse_External.cpp
   ./classes/source/implementation/common/XML_Character.cpp
   ./classes/source/implementation/common/XML_Parse.cpp
   ./classes/source/implementation/common/XML_Utility.cpp
