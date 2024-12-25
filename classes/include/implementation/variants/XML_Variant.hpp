@@ -7,7 +7,6 @@ struct Variant
   // XNode Types
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
 
-public:
   // Constructors/Destructors
   explicit Variant(Type nodeType = Type::base);
   Variant(const Variant &other) = delete;
@@ -20,7 +19,7 @@ public:
   [[nodiscard]] bool isIndexable() const { return xmlNodeType > Type::base && xmlNodeType <= Type::element; }
   // Get XNode type
   [[nodiscard]] Type getNodeType() const {
-    return(xmlNodeType);
+    return xmlNodeType;
   }
   // Get XNode children reference
   [[nodiscard]] std::vector<XNode> &getChildren();

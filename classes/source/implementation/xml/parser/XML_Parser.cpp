@@ -1,7 +1,7 @@
 //
 // Class: XML_Parser
 //
-// Description: XML parser code. All parsing of characters takes place having
+// Description: XML parser code. All parsings of characters take place having
 // converted the characters to UTF-16 to make the process easier (any data once
 // parsed is stored in UTF-8 strings).
 //
@@ -14,7 +14,7 @@
 namespace XML_Lib {
 
 /// <summary>
-/// Add content XNode to elements child list.
+/// Add content XNode to element's child list.
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="content">Content to add to new content XNode (XMLNodeContent).</param>
@@ -56,7 +56,7 @@ void XML_Parser::parseEntityReferenceXML(XNode &xNode, const XMLValue &entityRef
 }
 
 /// <summary>
-/// Parse any comments, PI or whitespace in prolog/epilog of XML file.
+/// Parse any comments, PI or whitespace in prolog/epilog of the XML file.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xProlog">XML prolog XNode.</param>
@@ -109,7 +109,7 @@ std::string
 }
 
 /// <summary>
-/// Parse a XML comment, create a XComment for it and add to list
+/// Parse a XML comment, create a XComment for it and add to the list
 /// of elements for the current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
@@ -126,7 +126,7 @@ XNode XML_Parser::parseComment(ISource &source)
 }
 
 /// <summary>
-/// Parse a XML process instruction, create an XPI for it and add it to
+/// Parse an XML process instruction, create an XPI for it and add it to
 /// the list of elements under the current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
@@ -166,7 +166,7 @@ XNode XML_Parser::parseCDATA(ISource &source)
 }
 
 /// <summary>
-/// Parse list of attributes (name/value pairs) that exist in a tag and add them to
+/// Parse the list of attributes (name/value pairs) that exist in a tag and add them to
 /// the list of attributes associated with the current XElement.
 /// </summary>
 /// <param name="source">XML source stream.</param>
@@ -194,7 +194,7 @@ std::vector<XMLAttribute> XML_Parser::parseAttributes(ISource &source, IEntityMa
 }
 
 /// <summary>
-/// Parse white space add to current XNodes child list.
+/// Parse white spaces and add to the current XNodes child list.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current XNode.</param>
@@ -209,15 +209,14 @@ void XML_Parser::parseWhiteSpaceToContent(ISource &source, XNode &xNode)
 }
 
 /// <summary>
-/// Parse any content that is found inside an element.
+/// Parse any content found inside an element.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
 void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper)
 {
-  XMLValue content{ parseCharacter(source) };
-  if ( content.isReference()) {
+  if (XMLValue content{ parseCharacter(source) }; content.isReference()) {
     if (content.isEntityReference()) { content = entityMapper.map(content); }
     auto xEntityReference = XNode::make<EntityReference>(content);
     if (content.isEntityReference()) {
@@ -244,7 +243,7 @@ void XML_Parser::parseContent(ISource &source, XNode &xNode, IEntityMapper &enti
 /// to the child list of the current XElement. This can be anything from
 /// comments, program instructions, CDATA, nested elements or even content.
 /// </summary>
-/// <param name="source">XMl source stream.</param>
+/// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
 void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapper & entityMapper)
@@ -278,10 +277,10 @@ void XML_Parser::parseElementInternal(ISource &source, XNode &xNode, IEntityMapp
 }
 
 /// <summary>
-/// Parse current XML element found.
+/// Parse the current XML element found.
 /// </summary>
 /// <param name="source">XML source stream.</param>
-/// <param name="namespaces">Current list of outerNamespaces.</param>
+/// <param name="namespaces">Current list of outer namespaces.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to element XNode.</returns>
 XNode XML_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, IEntityMapper & entityMapper)
@@ -390,7 +389,7 @@ XNode XML_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 
 /// <summary>
 /// Parse XML read from source stream into internal object generating an exception
-/// if a syntax error in the XML is found (not well formed).
+/// if a syntax error in the XML is found (not well-formed).
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Prolog XNode.</returns>

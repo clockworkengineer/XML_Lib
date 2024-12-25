@@ -2,7 +2,7 @@
 
 namespace XML_Lib {
 
-struct XMLAttribute : XMLValue
+struct XMLAttribute final : XMLValue
 {
   // XMLAttribute Error
   struct Error final : std::runtime_error
@@ -16,12 +16,12 @@ struct XMLAttribute : XMLValue
   XMLAttribute &operator=(const XMLAttribute &other) = default;
   XMLAttribute(XMLAttribute &&other) = default;
   XMLAttribute &operator=(XMLAttribute &&other) = default;
-  XMLAttribute &operator=(const XMLValue &other) override
+  XMLAttribute &operator=(const XMLValue &other)
   {
     setValue(other.getUnparsed(), other.getParsed());
     return *this;
-  };
-  virtual ~XMLAttribute() = default;
+  }
+  ~XMLAttribute() override = default;
   // Get attribute name
   [[nodiscard]] const std::string &getName() const { return name; }
   // Search for an attribute in vector of unique attributes
@@ -43,8 +43,9 @@ private:
 
 [[nodiscard]] inline XMLAttribute &XMLAttribute::find(std::vector<XMLAttribute> &attributes, const std::string &name)
 {
-  auto attribute = std::find_if(
+  const auto attribute = std::find_if(
     attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return attr.getName() == name; });
+  // ReSharper disable once CppDFALocalValueEscapesFunction
   if (attribute != attributes.rend()) return *attribute;
   throw Error("Attribute '" + name + "' does not exist.");
 }

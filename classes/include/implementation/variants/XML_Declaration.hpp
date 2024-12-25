@@ -1,12 +1,14 @@
 #pragma once
 
+#include <utility>
+
 namespace XML_Lib {
 
 struct Declaration final : Variant
 {
   // Constructors/Destructors
-  Declaration(std::string version, const std::string &encoding, const std::string &standalone)
-    : Variant(Type::declaration), xmlVersion(std::move(version)), xmlEncoding(encoding), xmlStandalone(standalone)
+  Declaration(std::string version, std::string encoding, std::string standalone)
+    : Variant(Type::declaration), xmlVersion(std::move(version)), xmlEncoding(std::move(encoding)), xmlStandalone(std::move(standalone))
   {}
   Declaration(const Declaration &other) = delete;
   Declaration &operator=(const Declaration &other) = delete;

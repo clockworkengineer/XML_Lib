@@ -24,7 +24,7 @@ void DTD_Impl::elementError(const Element &xElement, const std::string &error) c
 /// Check whether a token value is valid.
 /// </summary>
 /// <param name="nmTokenValue">Token value.</param>
-/// <returns>true then token is valid otherwise false.</returns>
+/// <returns>True then token is valid otherwise false.</returns>
 bool DTD_Impl::checkIsNMTOKENOK(const std::string &nmTokenValue)
 {
   BufferSource nmTokenValueSource(trimString(nmTokenValue));
@@ -39,7 +39,7 @@ bool DTD_Impl::checkIsNMTOKENOK(const std::string &nmTokenValue)
 /// Check whether ID value is valid.
 /// </summary>
 /// <param name="idValue">ID string value.</param>
-/// <returns>true then ID is valid otherwise false.</returns>
+/// <returns>True then ID is valid otherwise false.</returns>
 bool DTD_Impl::checkIsIDOK(const std::string &idValue)
 {
   try {

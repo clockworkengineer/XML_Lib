@@ -26,7 +26,7 @@ XML::XML(const std::string &xmlString) : XML() { parse(BufferSource{ xmlString }
 /// <summary>
 /// XML assignment (parse in a default XML string).
 /// </summary>
-XML &XML::operator=(const std::string &xmlString) { parse(BufferSource{ xmlString }); return(*this);}
+XML &XML::operator=(const std::string &xmlString) { parse(BufferSource{ xmlString }); return *this;}
 
 /// <summary>
 /// XML destructor.
@@ -37,7 +37,7 @@ XML::~XML() = default;
 /// Get XML_Lib version.
 /// </summary>
 /// <returns>Library version string.</returns>
-std::string XML::version() const { return implementation->version(); }
+std::string XML::version() { return XML_Impl::version(); }
 
 /// <summary>
 /// Return reference to any internal DTD_Validator for parsed XML.
@@ -46,13 +46,13 @@ std::string XML::version() const { return implementation->version(); }
 XNode &XML::dtd() const { return implementation->dtd(); }
 
 /// <summary>
-/// Return prolog node of parsed XML tree.
+/// Return prolog node of the parsed XML tree.
 /// </summary>
 /// <returns>Reference to prolog XNode.</returns>
 XNode &XML::prolog() const { return implementation->prolog(); }
 
 /// <summary>
-/// Return declaration node of parsed XML tree.
+/// Return declaration node of the parsed XML tree.
 /// </summary>
 /// <returns>Reference to declaration XNode.</returns>
 XNode &XML::declaration() const { return implementation->declaration(); }
@@ -65,13 +65,13 @@ XNode &XML::root() const { return implementation->root(); }
 
 /// <summary>
 /// Validate XML against any DTD_Validator provided to see whether it is valid. If an
-/// exception is thrown then there is a validation issue and the XML is not valid.
+/// exception is thrown, then there is a validation issue and the XML is not valid.
 /// </summary>
 void XML::validate() const { implementation->validate(); }
 
 /// <summary>
 /// Parse XML read from source stream into internal object generating an exception
-/// if a syntax error in the XML is found (not well formed).
+/// if a syntax error in the XML is found (not well-formed).
 /// </summary>
 void XML::parse(ISource &source) const { implementation->parse(source); }
 void XML::parse(ISource &&source) const { implementation->parse(source); }
@@ -84,7 +84,7 @@ void XML::stringify(IDestination &destination) const { implementation->stringify
 void XML::stringify(IDestination &&destination) const { implementation->stringify(destination); }
 
 /// <summary>
-/// Recursively traverse XNode structure calling IAction methods (read only)
+/// Recursively traverse XNode structure calling IAction methods (read-only)
 ///  or to change the XML tree node directly.
 /// </summary>
 /// <param name="action">Action methods to call during traversal.</param>
@@ -94,7 +94,7 @@ void XML::traverse(IAction &action) { implementation->traverse(action); }
 void XML::traverse(IAction &action) const { std::as_const(*implementation).traverse(action); }
 
 /// <summary>
-/// Open a XML file, read its contents into a string buffer and return
+/// Open an XML file, read its contents into a string buffer and return
 /// the buffer.
 /// </summary>
 /// <param name="fileName">XML file name</param>
@@ -112,7 +112,7 @@ void XML::toFile(const std::string &fileName, const std::string &xmlString, cons
   XML_Impl::toFile(fileName, xmlString, format);
 }
 /// <summary>
-/// Return format of XML file.
+/// Return format of the XML file.
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML file format.</returns>

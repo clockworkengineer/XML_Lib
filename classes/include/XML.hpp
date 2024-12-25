@@ -52,20 +52,20 @@ public:
   // Validate XML
   void validate() const;
   // Return version string
-  [[nodiscard]] std::string version() const;
+  [[nodiscard]] static std::string version();
   // Parse XML source
   void parse(ISource &source) const;
   void parse(ISource &&source) const;
-  // Stringify XML object to destination text
+  // Stringify XML object to the destination text
   void stringify(IDestination &destination) const;
   void stringify(IDestination &&destination) const;
-  // Traverse XML tree
+  // Traverse the XML tree
   void traverse(IAction &action);
   void traverse(IAction &action) const;
-  // Read/Write XML to/from file
+  // Read/Write XML to/from the file
   [[nodiscard]] static std::string fromFile(const std::string &fileName);
   static void toFile(const std::string &fileName, const std::string &xmlString, Format format = Format::utf8);
-  // Get XML file format
+  // Get an XML file format
   [[nodiscard]] static Format getFileFormat(const std::string &fileName);
 
 private:

@@ -302,7 +302,8 @@ void DTD_Impl::parseInternal(ISource &source)
 }
 
 /// <summary>
-/// Parse XML DTD. If the DTD contains an external reference then the DTD
+/// Parse XML DTD.
+/// If the DTD contains an external reference, then the DTD
 /// that points to is parsed after any internal DTD that may be specified
 /// after it.
 /// </summary>

@@ -14,7 +14,7 @@ struct XMLValue
   XMLValue(XMLValue &&other) = default;
   XMLValue &operator=(XMLValue &&other) = default;
   virtual ~XMLValue() = default;
-  // Is a reference value ?
+  // Is a reference value?
   [[nodiscard]] bool isReference() const { return unparsed[0] == '&' && unparsed.back() == ';'; }
   [[nodiscard]] bool isEntityReference() const { return isReference() && unparsed[1] != '#'; }
   [[nodiscard]] bool isCharacterReference() const { return isReference() && unparsed[1] == '#'; }

@@ -19,7 +19,7 @@ struct XML_EntityMapper final : IEntityMapper
   XML_EntityMapper(XML_EntityMapper &&other) = delete;
   XML_EntityMapper &operator=(XML_EntityMapper &&other) = delete;
   ~XML_EntityMapper() override;
-  // Is entity reference mapping entry present ?
+  // Is entity reference mapping entry present?
   [[nodiscard]] bool isPresent(const std::string &entityName) const override;
   // Determine entity type
   [[nodiscard]] bool isInternal(const std::string &entityName) override;
@@ -45,7 +45,7 @@ private:
   //  Check for any recursion in an entity reference
   void
     recurseOverEntityReference(const std::string &entityName, Char type, std::set<std::string> &currentEntities);
-  // Get contents of file that is pointed to by an entity reference
+  // Get the contents of the file that is pointed to by an entity reference
   [[nodiscard]] static std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry
   [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string &entityName);

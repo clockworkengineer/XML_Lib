@@ -90,7 +90,7 @@ public:
   // ==================================
   // Get current source stream position
   // ==================================
-  std::pair<long, long> getPosition() const { return std::make_pair(lineNo, columnNo); }
+  [[nodiscard]] std::pair<long, long> getPosition() const { return std::make_pair(lineNo, columnNo); }
 
 protected:
   long lineNo = 1;

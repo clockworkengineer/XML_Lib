@@ -25,13 +25,13 @@ void  XML_EntityMapper::resetToDefault()
 
 /// <summary>
 /// Take an entity reference mapping and make sure it is not recursive by calling
-/// recurseOverEntityReference() repeatedly on any mapping found at the next level
-/// until no more more are found it or the entity reference repeats in which case
+/// recurseOverEntityReference() repeatedly on any mapping found at the next level.
+/// Until no more are found it or the entity reference repeats, in which case
 /// it will cause and infinite loop when decoding and is an error.
 /// </summary>
 /// <param name="entityName">Entity mapping name.</param>
 /// <param name="type">Entity mapping type.</param>
-/// <param name="currentEntities">Currently defined entities.</param>
+/// <param name="currentEntities">Currently, defined entities.</param>
 void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
   const Char type,
   std::set<std::string> &currentEntities)
@@ -62,8 +62,8 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
 /// <summary>
 /// Grab an entity reference mapping from an external file.
 /// </summary>
-/// <param name="fileName">.</param>
-/// <returns>String containing contents of entity reference mapping file.</returns>
+/// <param name="fileName"></param>
+/// <returns>String containing the contents of entity reference mapping file.</returns>
 std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName)
 {
   std::string content;
@@ -76,10 +76,10 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 }
 
 /// <summary>
-/// Get entity reference from map.
+/// Get entity reference from the map.
 /// </summary>
-/// <param name="entityName">.</param>
-/// <returns>Reference to entity mapping in internal map.</returns>
+/// <param name="entityName">Entity reference name.</param>
+/// <returns>Reference to entity mapping in the internal map.</returns>
 XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
 {
   if (!isPresent(entityName)) { entityMappings.emplace(entityName, XML_EntityMapping()); }
@@ -103,10 +103,10 @@ XML_EntityMapper::XML_EntityMapper() { resetToDefault(); }
 /// <summary>
 /// Entity mapper destructor.
 /// </summary>
-XML_EntityMapper::~XML_EntityMapper() {}
+XML_EntityMapper::~XML_EntityMapper() = default;
 
 /// <summary>
-/// Is an entry for an entity reference present in map.
+/// Is an entry for an entity reference present in the map?
 /// </summary>
 /// <param name="entityName">.</param>
 /// <returns></returns>
@@ -143,7 +143,7 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
   throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' does not exist.");
 }
 /// <summary>
-/// Translate any entity reference found in a string.
+/// Translate any entity reference to be found in a string.
 /// </summary>
 /// <param name="toTranslate">Source string containing references to be translated.</param>
 /// <param name="type">Entity reference type.</param>
@@ -219,7 +219,7 @@ void XML_EntityMapper::setExternal(const std::string &entityName, const XMLExter
 /// <summary>
 /// Take an entity reference string, check whether it contains any infinitely
 /// recursive definition and throw an exception if so. This is done by
-/// recursively parsing any entities found in a entity mapping and adding it to
+/// recursively parsing any entities found in an entity mapping and adding it to
 /// a current set of used entities; throwing an exception if it is already
 /// being used.
 /// </summary>

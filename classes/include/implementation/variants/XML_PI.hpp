@@ -1,12 +1,14 @@
 #pragma once
 
+#include <utility>
+
 namespace XML_Lib {
 
 struct PI final : Variant
 {
   // Constructors/Destructors
-  PI(std::string name, const std::string &parameters)
-    : Variant(Type::pi), piName(std::move(name)), piParameters(parameters)
+  PI(std::string name, std::string parameters)
+    : Variant(Type::pi), piName(std::move(name)), piParameters(std::move(parameters))
   {}
   PI(const PI &other) = delete;
   PI &operator=(const PI &other) = delete;

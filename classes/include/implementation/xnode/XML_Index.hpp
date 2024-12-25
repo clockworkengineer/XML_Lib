@@ -57,7 +57,7 @@ inline Element &Element::operator[](const int index)
 // =========================
 inline const XMLAttribute &Element::operator[](const std::string &name) const
 {
-  return (XMLAttribute::find(attributes, name));
+  return XMLAttribute::find(attributes, name);
 }
-inline XMLAttribute &Element::operator[](const std::string &name) { return (XMLAttribute::find(attributes, name)); }
+inline XMLAttribute &Element::operator[](const std::string &name) { return XMLAttribute::find(attributes, name); }
 }// namespace XML_Lib
