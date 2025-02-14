@@ -12,7 +12,7 @@ TEST_CASE("Create and use Comment XNode.","[XNode][Comment][API]")
   }
   SECTION("Create Comment XNode and fetch comment related to it.", "[XML][XNode][Comment][API]")
   {
-    Comment xComment = Comment("This is a test comment.");
+    auto xComment = Comment("This is a test comment.");
     REQUIRE(xComment.value() == "This is a test comment.");
   }
   SECTION("Create and use Comment using make/XRef API.", "[XML][XNode][Comment][Make][XRef][API]")

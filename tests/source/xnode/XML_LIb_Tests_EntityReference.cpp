@@ -2,7 +2,7 @@
 
 XMLValue createXMLValue()
 {
-  return(XMLValue("unparsed", "parsed"));
+  return XMLValue("unparsed", "parsed");
 }
 
 TEST_CASE("Create and use EntityReference XNode.","[XNode][EntityReference][API]")
@@ -13,7 +13,7 @@ TEST_CASE("Create and use EntityReference XNode.","[XNode][EntityReference][API]
   }
   SECTION("Create EntityReference XNode and fetch value related to it.", "[XML][XNode][EntityReference][API]")
   {
-    EntityReference xEntityReference = EntityReference(createXMLValue());
+    auto xEntityReference = EntityReference(createXMLValue());
     REQUIRE(xEntityReference.value().getParsed() == "parsed");
     REQUIRE(xEntityReference.value().getUnparsed() == "unparsed");
   }

@@ -8,7 +8,7 @@ TEST_CASE("Create and use PI XNode.","[XNode][PI][API]")
   }
   SECTION("Create PI XNode and fetch comment related to it.", "[XML][XNode][PI][API]")
   {
-    PI xPI = PI("xml-stylesheet", "type='text/xsl' href='style.xsl'");
+    auto xPI = PI("xml-stylesheet", "type='text/xsl' href='style.xsl'");
     REQUIRE(xPI.name() == "xml-stylesheet");
     REQUIRE(xPI.parameters() == "type='text/xsl' href='style.xsl'");
 

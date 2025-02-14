@@ -312,3 +312,4 @@
 /cmake-build-debug/CMakeFiles/XML_Lib.dir/classes/implementation/xml/stringify/XML_Stringify.cpp.o
 /cmake-build-debug/CMakeFiles/XML_Lib.dir/classes/implementation/common/XML_Utility.cpp.o
 /cmake-build-debug/CMakeFiles/XML_Lib.dir/classes/implementation/variant/XML_Variant.cpp.o
+!/build/

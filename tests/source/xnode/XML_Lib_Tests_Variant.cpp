@@ -21,9 +21,9 @@ TEST_CASE("Create and use Variant", "[XML][XNode][Variant][API]")
   SECTION("Create default variant and add children XNode.", "[XML][Variant][API]")
   {
     auto variant = Variant();
-    variant.addChild((XNode()));
-    variant.addChild((XNode()));
-    variant.addChild((XNode()));
+    variant.addChild(XNode());
+    variant.addChild(XNode());
+    variant.addChild(XNode());
     REQUIRE(variant.getChildren().size() == 3);
   }
   SECTION("Create default variant and check contents is none.", "[XML][Variant][API]")

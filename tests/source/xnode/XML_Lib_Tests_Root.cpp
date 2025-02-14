@@ -10,7 +10,7 @@ TEST_CASE("Create and use Root XNode.","[XNode][Root][API]")
   }
   SECTION("Create Root with a given name.", "[XML][XNode][Root][API]")
   {
-    Root xRoot = Root("test", {}, {});
+    auto xRoot = Root("test", {}, {});
     REQUIRE( xRoot.name() == "test");
     REQUIRE_FALSE(!xRoot.getAttributes().empty());
     REQUIRE_FALSE(!xRoot.getNameSpaces().empty());

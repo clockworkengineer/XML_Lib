@@ -2,7 +2,7 @@
 
 TEST_CASE("Parse XML with various DTD issues.", "[XML][DTD][Validate]")
 {
-  XML xml;
+  const XML xml;
   SECTION("XML with no DTD and try to validate.", "[XML][DTD][Validate]")
   {
     BufferSource source{

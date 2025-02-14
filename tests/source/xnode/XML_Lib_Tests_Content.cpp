@@ -12,7 +12,7 @@ TEST_CASE("Create and use Content XNode.","[XNode][Content][API]")
   }
   SECTION("Create Content XNode and fetch content related to it.", "[XML][XNode][Content][API]")
   {
-    Content xContent = Content("This is a test comment.");
+    auto xContent = Content("This is a test comment.");
     REQUIRE(xContent.value() == "This is a test comment.");
     xContent.addContent("More content.");
     REQUIRE(xContent.value() == "This is a test comment.More content.");

@@ -3,23 +3,22 @@
 /// <summary>
 /// Prefix path to test data file name.
 /// </summary>
-/// <param name="name">Test data file name.</param>
-/// <returns>Full path to test data file</returns>
+/// <param name="file">Test data file name.</param>
 std::string prefixPath(const std::string &file)
 {
-  std::filesystem::path currentPath = std::filesystem::current_path() / "files" / file;
-  return (currentPath.string());
+  const std::filesystem::path currentPath = std::filesystem::current_path() / "files" / file;
+  return currentPath.string();
 }
 
 /// <summary>
 /// Convert CRLF to LF for source and check number of CR/LF left after with
 /// REQUIRE.
 /// </summary>
-/// <param name="xmlFileName">XML source.</param>
+/// <param name="source">XML source.</param>
 /// <param name="crFinal">Final number of CR.</param>
 /// <param name="lfFinal">FInal number of LF.</param>
 /// <returns></returns>
-void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
+void verifyCRLFCount(ISource &source, const long lfFinal, const long crFinal)
 {
   long crCount = 0;
   long lfCount = 0;
@@ -31,6 +30,7 @@ void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
     case kCarriageReturn:
       crCount++;
       break;
+    default:;
     }
     source.next();
   }
@@ -47,7 +47,7 @@ void verifyCRLFCount(ISource &source, long lfFinal, long crFinal)
 void checkStringify(const std::string &xmlString)
 {
   BufferSource source{ xmlString };
-  XML xml;
+  const XML xml;
   xml.parse(source);
   BufferDestination destination;
   xml.stringify(destination);

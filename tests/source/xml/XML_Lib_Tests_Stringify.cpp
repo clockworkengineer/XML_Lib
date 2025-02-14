@@ -28,11 +28,11 @@ TEST_CASE("Use XML to stringify previously parsed XML.", "[XML][Stringify]")
   }
   SECTION("Stringify XML with minimal declaration and self closing root tag.", "[XML][Stringify]")
   {
-    std::string xmlString =
+    const std::string xmlString =
       "<?xml version=\"1.0\"?>"
       "<AddressBook/>";
     BufferSource source{ xmlString };
-    XML xml;
+    const XML xml;
     xml.parse(source);
     BufferDestination destination;
     xml.stringify(destination);
@@ -145,7 +145,7 @@ TEST_CASE("Stringify XML from a list of example files.", "[XML][Stringify]")
   TEST_FILE_LIST(file);
   SECTION("Load file into buffer and parse.", "[XML][Parse]")
   {
-    std::string expected{ XML::fromFile(file) };
+    const std::string expected{ XML::fromFile(file) };
     checkStringify(expected);
   }
 }
@@ -250,8 +250,8 @@ TEST_CASE("Stringify CDATA SECTION", "[XML][Stringify][CDATA]")
 
 TEST_CASE("Stringify ENTITY that contains XML parsable into new structure.", "[XML][Stringify]")
 {
-  // Stringify produces correct XML but it does not leave the ENTITY unexpanded (for now).
-  XML xml;
+  // Stringify produces correct XML, but it does not leave the ENTITY unexpanded (for now).
+  const XML xml;
   SECTION(
     "Stringify XML that contains an ENTITY that has be parsed adding elements to the XML.", "[XML][Stringify][ENTITY")
   {

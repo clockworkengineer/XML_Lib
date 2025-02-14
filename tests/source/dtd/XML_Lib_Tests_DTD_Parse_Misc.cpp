@@ -386,7 +386,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
   }
-  SECTION("XML with a DTD with nested conditionals that are  outter INCLUDE inner IGNORE plus two entities.",
+  SECTION("XML with a DTD with nested conditionals that are outer INCLUDE inner IGNORE plus two entities.",
     "[XML][DTD][Parse][Conditional]")
   {
     BufferSource source{
@@ -402,7 +402,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
       "EntityMapper Error: Internal entity reference not found for '&example;'.");
   }
-  SECTION("XML with a DTD with nested conditionals that are  outter IGNORE inner INCLUDE plus two entities.",
+  SECTION("XML with a DTD with nested conditionals that are  outer IGNORE inner INCLUDE plus two entities.",
     "[XML][DTD][Parse][Conditional]")
   {
     BufferSource source{
@@ -468,7 +468,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Conditional value not INCLUDE or IGNORE.");
   }
   SECTION(
-    "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (novalue).",
+    "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (value).",
     "[XML][DTD][Parse][Conditional]")
   {
     BufferSource source{
@@ -483,7 +483,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
 
 TEST_CASE("Parse XML with more than DTD declaration", "[XML][DTD][Parse]")
 {
-  XML xml;
+  const XML xml;
   SECTION("XML with more than one DTD declaration ", "[XML][DTD][Parse]")
   {
     BufferSource source{

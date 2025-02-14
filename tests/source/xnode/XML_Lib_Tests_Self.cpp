@@ -8,7 +8,7 @@ TEST_CASE("Create and use Self XNode.","[XNode][Self][API]")
   }
   SECTION("Create Self with a given name.", "[XML][XNode][Self][API]")
   {
-    Self xSelf = Self("test", {}, {});
+    auto xSelf = Self("test", {}, {});
     REQUIRE( xSelf.name() == "test");
     REQUIRE_FALSE(!xSelf.getAttributes().empty());
     REQUIRE_FALSE(!xSelf.getNameSpaces().empty());

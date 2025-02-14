@@ -15,7 +15,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   try {
     // Initialise logging.
-    plog::init(plog::debug, "XML_Create_At_Runtime.log");
+    init(plog::debug, "XML_Create_At_Runtime.log");
     PLOG_INFO << "XML_Create_At_Runtime started ...";
     // Log version
     PLOG_INFO << xl::XML().version();

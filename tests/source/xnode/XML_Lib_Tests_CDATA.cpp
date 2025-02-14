@@ -12,7 +12,7 @@ TEST_CASE("Create and use CDATA XNode.","[XNode][CDATA][API]")
   }
   SECTION("Create CDATA XNode and fetch comment related to it.", "[XML][XNode][CDATA][API]")
   {
-    CDATA xCDATA = CDATA("&apos;Test&apos;");
+    auto xCDATA = CDATA("&apos;Test&apos;");
     REQUIRE(xCDATA.value() == "&apos;Test&apos;");
   }
   SECTION("Create and use CDATA using make/XRef API.", "[XML][XNode][CDATA][Make][XRef][API]")

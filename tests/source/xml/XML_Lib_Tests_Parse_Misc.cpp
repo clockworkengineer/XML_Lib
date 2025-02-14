@@ -2,7 +2,7 @@
 
 TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
 {
-  XML xml;
+  const XML xml;
   SECTION("Parse UTF16 encoded file LE ", "[XML][Parse][UTF16]")
   {
     BufferSource source(XML::fromFile("./files/testfile008.xml"));
@@ -62,7 +62,7 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
 }
 TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XNode][R-Value Reference]")
 {
-  XML xml;
+  const XML xml;
   SECTION("Parse with R-Value reference (Buffer).", "[XML][XNode][R-Value Reference]")
   {
     xml.parse(
