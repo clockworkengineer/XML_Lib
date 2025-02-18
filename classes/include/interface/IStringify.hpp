@@ -5,6 +5,7 @@ namespace XML_Lib {
 // ====================
 // Forward declarations
 // ====================
+class IDestination;
 struct XNode;
 
 // ==================================
@@ -27,10 +28,15 @@ public:
   // ====================
   // Stringify XNode tree
   // ====================
-  virtual void stringify(const XNode &XNode, IDestination &destination) const = 0;
+  virtual void stringify(const XNode &jNode, IDestination &destination, unsigned long indent) const = 0;
+  // =========================
+  // Set/Get print indentation
+  // =========================
+  [[nodiscard]] virtual long getIndent() const { return 0; }
+  virtual void setIndent([[maybe_unused]] long indent)  {}
 };
-// Make custom stringify to pass to XML constructor: Note pointer is tidied up internally.
-template <typename T> [[maybe_unused]] IStringify *makeStringify() {
+// Make custom stringify to pass to XML constructor: The note pointer is tidied up internally.
+template <typename T> IStringify *makeStringify() {
   return std::make_unique<T>().release();
 }
 }// namespace XML_Lib

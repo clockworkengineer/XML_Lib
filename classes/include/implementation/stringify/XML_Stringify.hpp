@@ -22,11 +22,11 @@ public:
 /// </summary>
 /// <param name="xNode">XNode to convert into XML.</param>
 /// <param name="destination">XML destination stream.</param>
-void stringify(const XNode &xNode, IDestination &destination) const override
+void stringify(const XNode &xNode, IDestination &destination, unsigned long indent) const override
   {
   // XML prolog
   if (isA<Prolog>(xNode)) {
-    for (auto &child : xNode.getChildren()) { stringify(child, destination); }
+    for (auto &child : xNode.getChildren()) { stringify(child, destination, indent); }
   }
   // XML declaration
   else if (isA<Declaration>(xNode)) {
@@ -43,7 +43,7 @@ void stringify(const XNode &xNode, IDestination &destination) const override
     }
     if (!isA<Self>(xNode)) {
       destination.add(">");
-      for (auto &child : xNode.getChildren()) { stringify(child, destination); }
+      for (auto &child : xNode.getChildren()) { stringify(child, destination, indent); }
       destination.add("</" + xElement.name() + ">");
     } else {
       destination.add("/>");

@@ -68,7 +68,7 @@ void XML_Impl::validate() { xmlParser->validate(prolog()); }
 
 void XML_Impl::parse(ISource &source) { xmlRoot = xmlParser->parse(source); }
 
-void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(prolog(), destination); }
+void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(prolog(), destination, 0); }
 
 void XML_Impl::traverse(IAction &action)
 {
