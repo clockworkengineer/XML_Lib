@@ -22,7 +22,8 @@ public:
 /// </summary>
 /// <param name="xNode">XNode to convert into XML.</param>
 /// <param name="destination">XML destination stream.</param>
-void stringify(const XNode &xNode, IDestination &destination, unsigned long indent) const override
+/// <param name="indent">Current indentation.</param>
+void stringify(const XNode &xNode, IDestination &destination, const unsigned long indent) const override
   {
   // XML prolog
   if (isA<Prolog>(xNode)) {

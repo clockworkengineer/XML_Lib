@@ -10,7 +10,7 @@ struct XMLValue
   {}
   XMLValue() = delete;
   XMLValue(const XMLValue &other) = default;
-  XMLValue &operator=(const XMLValue &other) = default;
+  virtual XMLValue &operator=(const XMLValue &other) = default;
   XMLValue(XMLValue &&other) = default;
   XMLValue &operator=(XMLValue &&other) = default;
   virtual ~XMLValue() = default;

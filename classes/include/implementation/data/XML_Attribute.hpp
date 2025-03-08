@@ -16,7 +16,7 @@ struct XMLAttribute final : XMLValue
   XMLAttribute &operator=(const XMLAttribute &other) = default;
   XMLAttribute(XMLAttribute &&other) = default;
   XMLAttribute &operator=(XMLAttribute &&other) = default;
-  XMLAttribute &operator=(const XMLValue &other)
+  XMLAttribute &operator=(const XMLValue &other) override
   {
     setValue(other.getUnparsed(), other.getParsed());
     return *this;
