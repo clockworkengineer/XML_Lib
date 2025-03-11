@@ -1,3 +1,5 @@
+Current passing tests 453/453.
+
 Current sizes:
 
 XML_Lib::XMLAttribute size 112 in bytes.
