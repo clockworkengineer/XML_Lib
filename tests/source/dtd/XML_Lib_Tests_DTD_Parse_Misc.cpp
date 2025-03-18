@@ -483,9 +483,9 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
 
 TEST_CASE("Parse XML with more than DTD declaration", "[XML][DTD][Parse]")
 {
-  const XML xml;
   SECTION("XML with more than one DTD declaration ", "[XML][DTD][Parse]")
   {
+    const XML xml;
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<!DOCTYPE note ["

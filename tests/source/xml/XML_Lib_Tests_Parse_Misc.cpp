@@ -16,9 +16,9 @@ TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
 }
 TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
 {
-  XML xml;
   SECTION("Content node only whitespace if it contains ONLY whitespace.", "[XML][Parse][Whitespace]")
   {
+    XML xml;
     BufferSource source{
       "<?xml version=\"1.0\"?>\n"
       "<AddressBook>\n"

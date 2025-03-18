@@ -251,10 +251,10 @@ TEST_CASE("Stringify CDATA SECTION", "[XML][Stringify][CDATA]")
 TEST_CASE("Stringify ENTITY that contains XML parsable into new structure.", "[XML][Stringify]")
 {
   // Stringify produces correct XML, but it does not leave the ENTITY unexpanded (for now).
-  const XML xml;
   SECTION(
     "Stringify XML that contains an ENTITY that has be parsed adding elements to the XML.", "[XML][Stringify][ENTITY")
   {
+    const XML xml;
     std::string expanded =
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
       "<!DOCTYPE note [\n"
