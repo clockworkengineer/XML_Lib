@@ -7,8 +7,8 @@
 //
 
 #include "XML_Impl.hpp"
-#include "XML_Parser.hpp"
-#include "XML_Stringify.hpp"
+#include "Default_Parser.hpp"
+#include "Default_Stringify.hpp"
 
 namespace XML_Lib {
 
@@ -16,12 +16,12 @@ XML_Impl::XML_Impl(IStringify *stringify, IParser *parser)
 {
   entityMapper = std::make_unique<XML_EntityMapper>();
   if (parser==nullptr) {
-    xmlParser = std::make_unique<XML_Parser>(*entityMapper);
+    xmlParser = std::make_unique<Default_Parser>(*entityMapper);
   } else {
     xmlParser.reset(parser);
   }
   if (stringify==nullptr) {
-    xmlStringifier = std::make_unique<XML_Stringify>();
+    xmlStringifier = std::make_unique<Default_Stringify>();
   } else {
     xmlStringifier.reset(stringify);
   }

@@ -5,16 +5,16 @@
 
 namespace XML_Lib {
 
-class XML_Stringify final : public IStringify
+class Default_Stringify final : public IStringify
 {
 public:
   // Constructors/Destructors
-  XML_Stringify() = default;
-  XML_Stringify(const XML_Stringify &other) = delete;
-  XML_Stringify &operator=(const XML_Stringify &other) = delete;
-  XML_Stringify(XML_Stringify &&other) = delete;
-  XML_Stringify &operator=(XML_Stringify &&other) = delete;
-  ~XML_Stringify() override = default;
+  Default_Stringify() = default;
+  Default_Stringify(const Default_Stringify &other) = delete;
+  Default_Stringify &operator=(const Default_Stringify &other) = delete;
+  Default_Stringify(Default_Stringify &&other) = delete;
+  Default_Stringify &operator=(Default_Stringify &&other) = delete;
+  ~Default_Stringify() override = default;
 
 /// <summary>
 /// Recursively parse XNode passed in to produce XML output on a

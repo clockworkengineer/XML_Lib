@@ -1,136 +1,86 @@
 # XML_Lib
 
-Welcome to **XML_Lib**, a C++ library designed for working with XML documents. This library is developed using **C++20** and is meant to provide efficient, reliable, and easy-to-use tools for processing, reading, and writing XML data.
-
----
+## Overview
+**XML_Lib** is a C++20-based library designed to simplify the parsing, manipulation, and generation of XML documents. It is intended for developers who need an efficient, lightweight, and feature-rich solution for working with XML in their projects. The library provides a clean interface and conforms to modern C++ coding practices to ensure high performance and reliability.
 
 ## Features
+- **XML Parsing**: Support for reading and parsing XML documents of any complexity.
+- **XML Serialization**: Serialize data structures to XML format.
+- **XPath Support**: Navigate and query XML documents using XPath expressions.
+- **Memory Efficiency**: Optimized algorithms to minimize memory usage.
+- **Error Handling**: Robust error and exception handling mechanisms, making debugging easier.
+- **Cross-platform Compatibility**: Designed to run seamlessly on Linux, Windows, and macOS environments.
+- **C++20 Support**: Full compliance with the C++20 standard and features such as ranges and smart pointers.
 
-- **XML Parsing**: Parse XML strings or files effortlessly with error handling and validation.
-- **XML Generation**: Create well-structured XML documents with minimal effort.
-- **Object-Oriented APIs**: Intuitive and developer-friendly interfaces to handle XML elements, attributes, and nodes.
-- **Namespace Support**: Work with XML namespaces for better compatibility with XML standards.
-- **Performance-Oriented**: Built with a focus on speed and memory efficiency.
-- **Cross-Platform**: Fully compatible with Linux and other C++20-compliant environments.
-
----
-
-## Getting Started
+## Installation
 
 ### Prerequisites
-
-To build and use this library, ensure your system meets the following requirements:
-
-1. A C++20-compliant compiler (e.g., GCC 10+, Clang 10+, MSVC 19.29+).
-2. [CMake](https://cmake.org/) (version 3.20 or later).
+- A C++20-compatible compiler (such as GCC, Clang, or MSVC)
+- [CMake](https://cmake.org/) (minimum version 3.15)
+- Optional: Git for cloning the repository.
 
 ### Build Instructions
-
 1. Clone the repository:
 ```shell script
-git clone <repository_url>
+git clone https://github.com/your_user/XML_Lib.git
    cd XML_Lib
 ```
 
-2. Create a build directory and configure the project:
+2. Create a build directory and change into it:
 ```shell script
 mkdir build
    cd build
-   cmake ..
 ```
 
-3. Compile the source code:
+3. Generate the build files using CMake:
 ```shell script
-make
+cmake ..
 ```
 
-4. Optionally, you can run tests (if provided):
+4. Compile the library:
+```shell script
+cmake --build .
+```
+
+5. (Optional) Run unit tests:
 ```shell script
 ctest
 ```
 
----
+## Usage
+To use **XML_Lib** in your project:
+1. Include the appropriate header files in your source code.
+2. Link your project against the generated library.
 
-## Basic Usage
+### Example
+(An example usage of the library will be added here showcasing how to parse an XML file, extract data, and modify the contents.)
 
-Include `XML_Lib` in your C++ project to perform XML operations. Add the library as a dependency to your project by linking it in your `CMakeLists.txt`:
-
+### Integration with your Project
+If you're using CMake, you can integrate **XML_Lib** with your project by including the library in your `CMakeLists.txt`:
 ```cmake
-find_package(XML_Lib REQUIRED)
+add_subdirectory(XML_Lib)
 target_link_libraries(your_project_name PRIVATE XML_Lib)
 ```
 
-### Example Code
-
-Here's a simple example of how you might use `XML_Lib` to parse and manipulate XML:
-
-```c++
-#include <xml_lib/xml_helper.hpp> // Update with the actual header once available
-
-int main() {
-    // Example XML string or file
-    std::string xml = R"(<root><child name="value"/></root>)";
-    
-    // Parse XML
-    auto document = XML_Lib::parse(xml);
-
-    // Manipulate data
-    auto root = document.getRoot();
-    auto child = root.getChild("child");
-    std::cout << "Child name: " << child.getAttribute("name") << std::endl;
-
-    return 0;
-}
-```
-
----
-
-## Project Structure
-
-The project is organized as follows:
-
-```
-XML_Lib/
-├── include/          # Public headers for the library
-├── src/              # Source files for the implementation
-├── examples/         # Example applications demonstrating usage
-├── tests/            # Unit and integration tests
-├── CMakeLists.txt    # Build system configuration
-└── README.md         # Project documentation
-```
-
----
+## Documentation
+Detailed documentation and API references can be found in the `docs/` directory or on the [online documentation website](https://your_documentation_url.com).
 
 ## Contributing
-
-We welcome contributions from the community! If you would like to contribute, please follow these steps:
-
+Contributions are welcome! If you would like to contribute:
 1. Fork the repository.
-2. Create a branch (`feature-branch-name`).
-3. Commit your changes (`git commit -m "Add a new feature"`).
-4. Push to the branch (`git push origin feature-branch-name`).
-5. Open a pull request.
-
-Please ensure to follow the existing code style and include tests for any new functionality.
-
----
+2. Create a new branch for your feature or bugfix: `git checkout -b feature/your_feature_name`.
+3. Commit your changes.
+4. Push your branch and create a pull request with a detailed explanation of your changes.
 
 ## License
-
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](./LICENSE). Feel free to use, modify, and distribute the library as per the terms of the license.
 
 ---
 
 ## Support
+If you encounter issues or have questions, please feel free to:
+- Submit an issue on the GitHub repository.
+- Reach out to the maintainer via email: `support@your_email.com`.
 
-If you encounter any issues, feel free to open an issue in the GitHub repository or contact the maintainers via email at **[support@example.com](mailto:support@example.com)**.
-
----
-
-## Acknowledgments
-
-Special thanks to all contributors and the community for supporting the development of `XML_Lib`.
-
---- 
-
-Enjoy using XML_Lib!
+## Acknowledgements
+Special thanks to contributors and testers who helped refine and improve **XML_Lib**.

@@ -23,7 +23,7 @@ set(XML_SOURCES
   ./classes/source/XML.cpp
   ./classes/source/implementation/xml/XML_Impl.cpp
   ./classes/source/implementation/xml/file/XML_File.cpp
-  ./classes/source/implementation/xml/parser/XML_Parser.cpp
+  ./classes/source/implementation/xml/parser/Default_Parser.cpp
   ./classes/source/implementation/variant/XML_Variant.cpp
   ./classes/source/implementation/dtd/DTD_Validator.cpp
   ./classes/source/implementation/dtd/DTD_Validator_Impl.cpp
@@ -70,8 +70,8 @@ set(XML_INCLUDES
   ./classes/include/implementation/io/XML_BufferDestination.hpp
   ./classes/include/implementation/io/XML_FileDestination.hpp
   ./classes/include/implementation/XML_Impl.hpp
-  ./classes/include/implementation/parser/XML_Parser.hpp
-  ./classes/include/implementation/stringify/XML_Stringify.hpp
+  ./classes/include/implementation/parser/Default_Parser.hpp
+  ./classes/include/implementation/stringify/Default_Stringify.hpp
   ./classes/include/implementation/xnode/XML_XNode.hpp
   ./classes/include/implementation/xnode/XML_Reference.hpp
   ./classes/include/implementation/xnode/XML_Creation.hpp

@@ -5,16 +5,16 @@
 
 namespace XML_Lib {
 
-class XML_Parser final : public IParser
+class Default_Parser final : public IParser
 {
 public:
   // Constructors/Destructors
-  explicit XML_Parser(IEntityMapper &entityMapper) : entityMapper(entityMapper) {}
-  XML_Parser(const XML_Parser &other) = delete;
-  XML_Parser &operator=(const XML_Parser &other) = delete;
-  XML_Parser(XML_Parser &&other) = delete;
-  XML_Parser &operator=(XML_Parser &&other) = delete;
-  ~XML_Parser() override = default;
+  explicit Default_Parser(IEntityMapper &entityMapper) : entityMapper(entityMapper) {}
+  Default_Parser(const Default_Parser &other) = delete;
+  Default_Parser &operator=(const Default_Parser &other) = delete;
+  Default_Parser(Default_Parser &&other) = delete;
+  Default_Parser &operator=(Default_Parser &&other) = delete;
+  ~Default_Parser() override = default;
 
   [[nodiscard]] XNode parse(ISource &source) override;
   [[nodiscard]] bool canValidate() override;
