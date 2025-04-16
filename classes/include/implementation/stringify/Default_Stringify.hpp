@@ -25,9 +25,14 @@ public:
 /// <param name="indent">Current indentation.</param>
 void stringify(const XNode &xNode, IDestination &destination, const unsigned long indent) const override
   {
+ stringifyXNodes(xNode, destination, indent);
+}
+private:
+  static void stringifyXNodes(const XNode &xNode, IDestination &destination, const unsigned long indent)
+  {
   // XML prolog
   if (isA<Prolog>(xNode)) {
-    for (auto &child : xNode.getChildren()) { stringify(child, destination, indent); }
+    for (auto &child : xNode.getChildren()) { stringifyXNodes(child, destination, indent); }
   }
   // XML declaration
   else if (isA<Declaration>(xNode)) {
@@ -44,7 +49,7 @@ void stringify(const XNode &xNode, IDestination &destination, const unsigned lon
     }
     if (!isA<Self>(xNode)) {
       destination.add(">");
-      for (auto &child : xNode.getChildren()) { stringify(child, destination, indent); }
+      for (auto &child : xNode.getChildren()) { stringifyXNodes(child, destination, indent); }
       destination.add("</" + xElement.name() + ">");
     } else {
       destination.add("/>");
