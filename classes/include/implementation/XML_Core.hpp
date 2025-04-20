@@ -47,3 +47,7 @@
 #include "XML_Parse.hpp"
 #include "XML_Utility.hpp"
 #include "XML_Converter.hpp"
+
+// Defaults
+#include "Default_Parser.hpp"
+#include "Default_Stringify.hpp"

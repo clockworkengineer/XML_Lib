@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ISource.hpp"
-
 namespace XML_Lib {
 
 class BufferSource final : public ISource

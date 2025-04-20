@@ -1,5 +1,5 @@
 //
-// Class: XML_EntityMapper
+// Class: XML_Variant
 //
 // Description: XML entity reference mapper.
 //

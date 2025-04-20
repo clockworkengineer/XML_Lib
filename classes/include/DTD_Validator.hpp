@@ -1,9 +1,5 @@
 #pragma once
 
-#include <regex>
-
-#include "XML_Interfaces.hpp"
-
 namespace XML_Lib {
 
 // ====================

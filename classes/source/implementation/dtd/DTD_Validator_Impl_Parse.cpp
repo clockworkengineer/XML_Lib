@@ -1,5 +1,5 @@
 //
-// Class: DTD_impl
+// Class: DTD_impl_Parse
 //
 // Description: Parse XML DTD.
 //

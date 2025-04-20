@@ -7,8 +7,6 @@
 //
 
 #include "XML_Impl.hpp"
-#include "Default_Parser.hpp"
-#include "Default_Stringify.hpp"
 
 namespace XML_Lib {
 

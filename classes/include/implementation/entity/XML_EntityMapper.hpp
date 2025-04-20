@@ -1,8 +1,5 @@
 #pragma once
 
-#include "XML.hpp"
-#include "XML_Core.hpp"
-
 namespace XML_Lib {
 
 struct XML_EntityMapper final : IEntityMapper

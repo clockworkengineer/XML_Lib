@@ -14,6 +14,8 @@
 #include <unordered_map>
 #include <cwctype>
 #include <cstring>
+#include <regex>
+
 
 #include "XML_Config.hpp"
 #include "XML_Interfaces.hpp"

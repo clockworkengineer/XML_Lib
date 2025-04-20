@@ -1,5 +1,5 @@
 //
-// Class: DTD_Impl
+// Class: DTD_Impl_Parse_Content
 //
 // Description: Parse XML DTD element content specifications.
 //

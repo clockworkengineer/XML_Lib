@@ -1,7 +1,5 @@
 #pragma once
 
-#include "IDestination.hpp"
-
 namespace XML_Lib {
 
 class FileDestination final : public IDestination

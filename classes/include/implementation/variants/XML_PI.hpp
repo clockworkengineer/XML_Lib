@@ -1,7 +1,5 @@
 #pragma once
 
-#include <utility>
-
 namespace XML_Lib {
 
 struct PI final : Variant
