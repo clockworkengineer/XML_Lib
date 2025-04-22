@@ -1,11 +1,11 @@
 #pragma once
 
 namespace XML_Lib {
-// ====================
-// Internal String Type
-// ====================
-using String = std::u16string;
-using Char = String::value_type;
+// // ====================
+// // Internal String Type
+// // ====================
+// using String = std::u16string;
+// using Char = String::value_type;
 // ==================
 // Conversion methods
 // ==================

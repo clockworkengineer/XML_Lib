@@ -17,7 +17,7 @@ XMLValue parseCharacterReference(ISource &source);
 /// Check whether a character is valid for XML.
 /// </summary>
 /// <param name="c">Character to validate.</param>
-/// <returns>true then valid otherwise false.</returns>
+/// <returns>True then valid otherwise false.</returns>
 bool validChar(const Char c)
 {
   return c == 0x09 || c == kLineFeed || c == kCarriageReturn || (c >= 0x20 && c <= 0xD7FF)
@@ -81,25 +81,26 @@ bool validName(const String &name)
 }
 
 /// <summary>
-/// Make sure that XML attribute value does not contain any illegal characters.
+/// Make sure that the XML attribute value does not contain any illegal characters.
 /// </summary>
 /// <param name="value">XML value to check.</param>>
+/// <param name="quote">XML value quote type.</param>>
 /// <returns>true then contains all legal characters otherwise false.</returns>
-bool validAttributeValue(const XMLValue &value)
+bool validAttributeValue(const std::string &value, const char quote )
 {
   // Parsed value to validate
-  if (!value.getParsed().empty()) {
-    BufferSource source(value.getParsed());
+  if (!value.empty()) {
+    BufferSource source(value);
     while (source.more()) {
       if (source.match("&#")) {
         parseCharacterReference(source);
       } else if (source.current() == '&') {
-        auto entity = parseEntityReference(source);
+         auto _ = parseEntityReference(source);
       } else if (source.current() != '"' && source.current() != '\'') {
         if (source.current() == '<') { return false; }
         source.next();
       } else {
-        if (source.current() == value.getQuote()) { return false; }
+        if (source.current() == quote) { return false; }
         source.next();
       }
     }

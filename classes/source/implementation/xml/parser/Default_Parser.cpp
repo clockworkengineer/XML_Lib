@@ -182,7 +182,7 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
     }
     source.ignoreWS();
     XMLValue attributeValue = parseValue(source, entityMapper);
-    if (!validAttributeValue(attributeValue)) {
+    if (!validAttributeValue(attributeValue.getParsed(), attributeValue.getQuote())) {
       throw SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
     }
     if (XMLAttribute::contains(attributes, attributeName)) {

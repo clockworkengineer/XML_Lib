@@ -3,6 +3,11 @@
 // ==========
 // XML Core
 // ==========
+// Common
+#include "XML_Error.hpp"
+#include "XML_Character.hpp"
+#include "XML_Utility.hpp"
+#include "XML_Converter.hpp"
 
 // Data
 #include "XML_Value.hpp"
@@ -41,12 +46,8 @@
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
 
-// Common
-#include "XML_Error.hpp"
-#include "XML_Character.hpp"
+// Parser Common
 #include "XML_Parse.hpp"
-#include "XML_Utility.hpp"
-#include "XML_Converter.hpp"
 
 // Defaults
 #include "Default_Parser.hpp"

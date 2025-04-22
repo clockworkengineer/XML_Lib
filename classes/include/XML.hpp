@@ -16,7 +16,7 @@
 #include <cstring>
 #include <regex>
 
-
+#include "XML_Character.hpp"
 #include "XML_Config.hpp"
 #include "XML_Interfaces.hpp"
 

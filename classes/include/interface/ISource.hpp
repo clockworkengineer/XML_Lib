@@ -1,7 +1,5 @@
 #pragma once
 
-#include "XML_Converter.hpp"
-
 namespace XML_Lib {
 // ===================
 // Character constants
