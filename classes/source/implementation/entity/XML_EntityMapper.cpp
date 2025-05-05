@@ -81,10 +81,10 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName
 /// </summary>
 /// <param name="entityName">Entity reference name.</param>
 /// <returns>Reference to entity mapping in the internal map.</returns>
-XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string &entityName)
+XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string_view &entityName)
 {
   if (!isPresent(entityName)) { entityMappings.emplace(entityName, XML_EntityMapping()); }
-  if (const auto entity = entityMappings.find(entityName); entity != entityMappings.end()) { return entity->second; }
+  if (const auto entity = entityMappings.find(std::string(entityName)); entity != entityMappings.end()) { return entity->second; }
   throw Error("Could not find entity reference in map.");
 }
 
@@ -111,9 +111,9 @@ XML_EntityMapper::~XML_EntityMapper() = default;
 /// </summary>
 /// <param name="entityName">.</param>
 /// <returns></returns>
-bool XML_EntityMapper::isPresent(const std::string &entityName) const
+bool XML_EntityMapper::isPresent(const std::string_view &entityName) const
 {
-  return entityMappings.contains(entityName);
+  return entityMappings.contains(std::string(entityName));
 }
 
 /// <summary>
@@ -171,9 +171,9 @@ std::string XML_EntityMapper::translate(const std::string &toTranslate, const ch
 /// <summary>
 /// Determine entity type
 /// </summary>
-bool XML_EntityMapper::isInternal(const std::string &entityName) { return getEntityMapping(entityName).isInternal(); }
-bool XML_EntityMapper::isExternal(const std::string &entityName) { return getEntityMapping(entityName).isExternal(); }
-bool XML_EntityMapper::isNotation(const std::string &entityName) { return getEntityMapping(entityName).isNotation(); }
+bool XML_EntityMapper::isInternal(const std::string_view &entityName) { return getEntityMapping(entityName).isInternal(); }
+bool XML_EntityMapper::isExternal(const std::string_view &entityName) { return getEntityMapping(entityName).isExternal(); }
+bool XML_EntityMapper::isNotation(const std::string_view &entityName) { return getEntityMapping(entityName).isNotation(); }
 
 /// <summary>
 /// Get entity mapping values.

@@ -17,11 +17,11 @@ struct XML_EntityMapper final : IEntityMapper
   XML_EntityMapper &operator=(XML_EntityMapper &&other) = delete;
   ~XML_EntityMapper() override;
   // Is entity reference mapping entry present?
-  [[nodiscard]] bool isPresent(const std::string &entityName) const override;
+  [[nodiscard]] bool isPresent(const std::string_view &entityName) const override;
   // Determine entity type
-  [[nodiscard]] bool isInternal(const std::string &entityName) override;
-  [[nodiscard]] bool isExternal(const std::string &entityName) override;
-  [[nodiscard]] bool isNotation(const std::string &entityName) override;
+  [[nodiscard]] bool isInternal(const std::string_view &entityName) override;
+  [[nodiscard]] bool isExternal(const std::string_view &entityName) override;
+  [[nodiscard]] bool isNotation(const std::string_view &entityName) override;
   // Entity reference get/set details
   [[nodiscard]] const std::string &getInternal(const std::string &entityName) override;
   [[nodiscard]] const std::string &getNotation(const std::string &entityName) override;
@@ -45,7 +45,7 @@ private:
   // Get the contents of the file that is pointed to by an entity reference
   [[nodiscard]] static std::string getFileMappingContents(const std::string &fileName);
   // Get entity reference mapping entry
-  [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string &entityName);
+  [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string_view &entityName);
   // Reset entity map
   void resetToDefault();
 

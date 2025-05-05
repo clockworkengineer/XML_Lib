@@ -19,7 +19,7 @@ public:
   // ==================
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string &message) : std::runtime_error("IEntityMapper Error: " + message) {}
+    explicit Error(const std::string_view &message) : std::runtime_error(std::string("IEntityMapper Error: ").append(message)) {}
   };
   // ========================
   // Constructors/destructors
@@ -28,9 +28,9 @@ public:
   // ================================
   // Entity reference get/set details
   // ================================
-  virtual bool isInternal(const std::string &entityName) = 0;
-  virtual bool isExternal(const std::string &entityName) = 0;
-  virtual bool isNotation(const std::string &entityName) = 0;
+  virtual bool isInternal(const std::string_view &entityName) = 0;
+  virtual bool isExternal(const std::string_view &entityName) = 0;
+  virtual bool isNotation(const std::string_view &entityName) = 0;
   virtual const std::string &getInternal(const std::string &entityName) = 0;
   virtual const std::string &getNotation(const std::string &entityName) = 0;
   virtual const XMLExternalReference &getExternal(const std::string &entityName) = 0;
@@ -40,7 +40,7 @@ public:
   // ===========================================
   // Is entity reference mapping entry present ?
   // ===========================================
-  [[nodiscard]] virtual bool isPresent(const std::string &entityName) const = 0;
+  [[nodiscard]] virtual bool isPresent(const std::string_view &entityName) const = 0;
   // ===================================
   // Get mapping for an entity reference
   // ===================================
