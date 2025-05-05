@@ -31,12 +31,12 @@ public:
   virtual bool isInternal(const std::string_view &entityName) = 0;
   virtual bool isExternal(const std::string_view &entityName) = 0;
   virtual bool isNotation(const std::string_view &entityName) = 0;
-  virtual const std::string &getInternal(const std::string &entityName) = 0;
-  virtual const std::string &getNotation(const std::string &entityName) = 0;
-  virtual const XMLExternalReference &getExternal(const std::string &entityName) = 0;
-  virtual void setInternal(const std::string &entityName, const std::string &internal) = 0;
-  virtual void setNotation(const std::string &entityName, const std::string &notation) = 0;
-  virtual void setExternal(const std::string &entityName, const XMLExternalReference &external) = 0;
+  virtual const std::string &getInternal(const std::string_view &entityName) = 0;
+  virtual const std::string &getNotation(const std::string_view &entityName) = 0;
+  virtual const XMLExternalReference &getExternal(const std::string_view &entityName) = 0;
+  virtual void setInternal(const std::string_view &entityName, const std::string_view &internal) = 0;
+  virtual void setNotation(const std::string_view &entityName, const std::string_view &notation) = 0;
+  virtual void setExternal(const std::string_view &entityName, const XMLExternalReference &external) = 0;
   // ===========================================
   // Is entity reference mapping entry present ?
   // ===========================================

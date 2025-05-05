@@ -23,12 +23,12 @@ struct XML_EntityMapper final : IEntityMapper
   [[nodiscard]] bool isExternal(const std::string_view &entityName) override;
   [[nodiscard]] bool isNotation(const std::string_view &entityName) override;
   // Entity reference get/set details
-  [[nodiscard]] const std::string &getInternal(const std::string &entityName) override;
-  [[nodiscard]] const std::string &getNotation(const std::string &entityName) override;
-  [[nodiscard]] const XMLExternalReference &getExternal(const std::string &entityName) override;
-  void setInternal(const std::string &entityName, const std::string &internal) override;
-  void setNotation(const std::string &entityName, const std::string &notation) override;
-  void setExternal(const std::string &entityName, const XMLExternalReference &external) override;
+  [[nodiscard]] const std::string &getInternal(const std::string_view &entityName) override;
+  [[nodiscard]] const std::string &getNotation(const std::string_view &entityName) override;
+  [[nodiscard]] const XMLExternalReference &getExternal(const std::string_view &entityName) override;
+  void setInternal(const std::string_view &entityName, const std::string_view &internal) override;
+  void setNotation(const std::string_view &entityName, const std::string_view &notation) override;
+  void setExternal(const std::string_view &entityName, const XMLExternalReference &external) override;
   //  Get mapping for an entity reference
   [[nodiscard]] XMLValue map(const XMLValue &entityReference) override;
   // Translate any entity reference in a string
