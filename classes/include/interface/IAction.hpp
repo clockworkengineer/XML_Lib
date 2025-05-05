@@ -18,7 +18,7 @@ public:
   // =============
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string &message) : std::runtime_error("IAction Error: " + message) {}
+    explicit Error(const std::string_view &message) : std::runtime_error(std::string("IAction Error: ").append(message)) {}
   };
   // ========================
   // Constructors/destructors

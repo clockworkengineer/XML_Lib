@@ -30,6 +30,18 @@ public:
     destination.flush();
     fileSize += bytes.length();
   }
+  void add(const char *bytes) override
+  {
+    destination.write(bytes, static_cast<std::streamsize>(strlen(bytes)));
+    destination.flush();
+    fileSize += strlen(bytes);
+  }
+  void add(const std::string_view &bytes) override
+  {
+    destination.write(bytes.data(), static_cast<std::streamsize>(bytes.length()));
+    destination.flush();
+    fileSize += bytes.length();
+  }
   void clear() override
   {
     if (destination.is_open()) { destination.close(); }
