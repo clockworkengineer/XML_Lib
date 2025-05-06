@@ -48,7 +48,7 @@ public:
   // ==========================================
   // Translate any entity reference in a string
   // ==========================================
-  [[nodiscard]] virtual std::string translate(const std::string &toTranslate, char type = '%') const = 0;
+  [[nodiscard]] virtual std::string translate(const std::string_view &toTranslate, char type = '%') const = 0;
   // ==============================================
   // Check for a recursive entity reference mapping
   // ==============================================

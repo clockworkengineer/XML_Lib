@@ -32,7 +32,7 @@ struct XML_EntityMapper final : IEntityMapper
   //  Get mapping for an entity reference
   [[nodiscard]] XMLValue map(const XMLValue &entityReference) override;
   // Translate any entity reference in a string
-  [[nodiscard]] std::string translate(const std::string &toTranslate, char type = '%') const override;
+  [[nodiscard]] std::string translate(const std::string_view &toTranslate, char type = '%') const override;
   // Check for a recursive entity reference mapping
   void checkForRecursion() override;
   // Reset entity mapper to default state

@@ -149,9 +149,9 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 /// <param name="toTranslate">Source string containing references to be translated.</param>
 /// <param name="type">Entity reference type.</param>
 /// <returns>Translated string.</returns>
-std::string XML_EntityMapper::translate(const std::string &toTranslate, const char type) const
+std::string XML_EntityMapper::translate(const std::string_view &toTranslate, const char type) const
 {
-  std::string translated = toTranslate;
+  std::string translated { toTranslate} ;
   bool matchFound;
   do {
     matchFound = false;
