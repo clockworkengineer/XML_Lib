@@ -216,7 +216,6 @@ void XML_EntityMapper::setExternal(const std::string_view &entityName, const XML
   getEntityMapping(entityName).setExternal(external);
 }
 
-
 /// <summary>
 /// Take an entity reference string, check whether it contains any infinitely
 /// recursive definition and throw an exception if so. This is done by
