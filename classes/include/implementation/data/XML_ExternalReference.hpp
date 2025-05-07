@@ -15,10 +15,10 @@ public:
   // ExternalReference Error
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string &message) : std::runtime_error("ExternalReference Error: " + message) {}
+    explicit Error(const std::string_view &message) : std::runtime_error(std::string("ExternalReference Error: ").append(message)) {}
   };
   // Constructors/Destructors
-  explicit XMLExternalReference(const std::string &referenceType,
+  explicit XMLExternalReference(const std::string_view &referenceType,
     std::string systemID = "",
     std::string publicID = "")
     : systemID(std::move(systemID)), publicID(std::move(publicID))
@@ -58,8 +58,8 @@ private:
   Type type{};
   std::string systemID{};
   std::string publicID{};
-  // Set internal reference type from string
-  void setReferenceType(const std::string &referenceType) {
+  // Set an internal reference type from string
+  void setReferenceType(const std::string_view &referenceType) {
     if (referenceType == kSystemID) {
       type = Type::systemID;
     } else if (referenceType == kPublicID) {

@@ -8,12 +8,12 @@ public:
   // FileDestination Error
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string &message) : std::runtime_error("FileDestination Error: " + message) {}
+    explicit Error(const std::string_view &message) : std::runtime_error(std::string("FileSestination Error: ").append(message)) {}
   };
   // Constructors/Destructors
-  explicit FileDestination(const std::string &filename) : filename(filename)
+  explicit FileDestination(const std::string_view &filename) : filename(filename)
   {
-    destination.open(filename.c_str(), std::ios_base::binary);
+    destination.open(filename.data(), std::ios_base::binary);
     if (!destination.is_open()) { throw Error("File output stream failed to open or could not be created."); }
   }
   FileDestination() = default;

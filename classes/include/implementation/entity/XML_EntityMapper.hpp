@@ -41,9 +41,9 @@ struct XML_EntityMapper final : IEntityMapper
 private:
   //  Check for any recursion in an entity reference
   void
-    recurseOverEntityReference(const std::string &entityName, Char type, std::set<std::string> &currentEntities);
+    recurseOverEntityReference(const std::string_view &entityName, Char type, std::set<std::string> &currentEntities);
   // Get the contents of the file that is pointed to by an entity reference
-  [[nodiscard]] static std::string getFileMappingContents(const std::string &fileName);
+  [[nodiscard]] static std::string getFileMappingContents(const std::string_view &fileName);
   // Get entity reference mapping entry
   [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string_view &entityName);
   // Reset entity map

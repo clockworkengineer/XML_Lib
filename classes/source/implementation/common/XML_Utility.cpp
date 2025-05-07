@@ -17,9 +17,9 @@ namespace XML_Lib {
 /// <param name="target">String to split up.</param>
 /// <param name="delimiter">Character delimiter to split on.</param>
 /// <returns>Vector of split strings.</returns>
-std::vector<std::string> splitString(const std::string &target, const char delimiter)
+std::vector<std::string> splitString(const std::string_view &target, const char delimiter)
 {
-  std::stringstream sourceStream(target);
+  std::stringstream sourceStream{std::string(target)};
   std::string splitOffItem;
   std::vector<std::string> splitStrings;
   while (std::getline(sourceStream, splitOffItem, delimiter)) { splitStrings.push_back(splitOffItem); }
@@ -30,7 +30,7 @@ std::vector<std::string> splitString(const std::string &target, const char delim
 /// Trim whitespace from the beginning and end of a string.
 /// </summary>
 /// <param name="target">String to trim.</param>
-std::string trimString(const std::string &target)
+std::string trimString(const std::string_view &target)
 {
   std::string trimmedString{ target };
   trimmedString.erase(trimmedString.begin(),
@@ -46,7 +46,7 @@ std::string trimString(const std::string &target)
 /// Convert a string to all uppercase.
 /// </summary>
 /// <param name="target">String to convert.</param>
-std::string toUpperString(const std::string &target)
+std::string toUpperString(const std::string_view &target)
 {
   std::string upperCaseString{ target };
   std::ranges::transform(
@@ -60,7 +60,7 @@ std::string toUpperString(const std::string &target)
 /// Convert a string to all lowercase.
 /// </summary>
 /// <param name="target">String to convert.</param>
-std::string toLowerString(const std::string &target)
+std::string toLowerString(const std::string_view &target)
 {
   std::string lowerCaseString{ target };
   std::ranges::transform(

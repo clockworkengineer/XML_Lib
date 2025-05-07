@@ -33,11 +33,11 @@ void  XML_EntityMapper::resetToDefault()
 /// <param name="entityName">Entity mapping name.</param>
 /// <param name="type">Entity mapping type.</param>
 /// <param name="currentEntities">Currently, defined entities.</param>
-void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
+void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entityName,
   const Char type,
   std::set<std::string> &currentEntities)
 {
-  BufferSource entitySource(entityName);
+  BufferSource entitySource { std::string(entityName) };
   while (entitySource.more()) {
     if (entitySource.current() == type) {
       std::string mappedEntityName = toUtf8(entitySource.current());
@@ -65,7 +65,7 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string &entityName,
 /// </summary>
 /// <param name="fileName"></param>
 /// <returns>String containing the contents of entity reference mapping file.</returns>
-std::string XML_EntityMapper::getFileMappingContents(const std::string &fileName)
+std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fileName)
 {
   std::string content;
   FileSource entitySource{ fileName };

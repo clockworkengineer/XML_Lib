@@ -86,11 +86,11 @@ bool validName(const String &name)
 /// <param name="value">XML value to check.</param>>
 /// <param name="quote">XML value quote type.</param>>
 /// <returns>true then contains all legal characters otherwise false.</returns>
-bool validAttributeValue(const std::string &value, const char quote )
+bool validAttributeValue(const std::string_view &value, const char quote )
 {
   // Parsed value to validate
   if (!value.empty()) {
-    BufferSource source(value);
+    BufferSource source {std::string(value)};
     while (source.more()) {
       if (source.match("&#")) {
         parseCharacterReference(source);

@@ -8,12 +8,12 @@ public:
   // FileSource Error
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string &message) : std::runtime_error("FileSource Error: " + message) {}
+    explicit Error(const std::string_view &message) : std::runtime_error(std::string("FileSource Error: ").append(message)) {}
   };
   // Constructors/Destructors
-  explicit FileSource(const std::string &sourceFileName)
+  explicit FileSource(const std::string_view &sourceFileName)
   {
-    source.open(sourceFileName.c_str(), std::ios_base::binary);
+    source.open(sourceFileName.data(), std::ios_base::binary);
     if (!source.is_open()) { throw Error("File input stream failed to open or does not exist."); }
     if (current_character() == kCarriageReturn) {
       source.get();

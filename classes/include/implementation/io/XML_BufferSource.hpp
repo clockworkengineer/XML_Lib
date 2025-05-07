@@ -10,10 +10,10 @@ public:
   // BufferSource Error
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string &message) : std::runtime_error("BufferSource Error: " + message) {}
+    explicit Error(const std::string_view &message) : std::runtime_error(std::string("BufferSource Error: ").append(message)) {}
   };
   // Constructors/Destructors
-  explicit BufferSource(const std::u16string &sourceBuffer)// UTF16 source BE/LE
+  explicit BufferSource(const std::u16string_view &sourceBuffer)// UTF16 source BE/LE
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     std::u16string utf16xml{ sourceBuffer };
@@ -25,7 +25,7 @@ public:
     buffer = utf16xml;
     convertCRLFToLF(buffer);
   }
-  explicit BufferSource(const std::string &sourceBuffer) : buffer{ toUtf16(sourceBuffer) }
+  explicit BufferSource(const std::string_view &sourceBuffer) : buffer{ toUtf16(std::string(sourceBuffer)) }
   {
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     convertCRLFToLF(buffer);
