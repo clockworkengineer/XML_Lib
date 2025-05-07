@@ -15,9 +15,9 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xElement">Element X Node.</param>
 /// <param name="error">Error text string.</param>
-void DTD_Impl::elementError(const Element &xElement, const std::string &error) const
+void DTD_Impl::elementError(const Element &xElement, const std::string_view &error) const
 {
-  throw ValidationError(lineNumber, "Element <" + xElement.name() + "> " + error);
+  throw ValidationError(lineNumber, "Element <" + xElement.name() + "> " + std::string(error));
 }
 
 /// <summary>
@@ -25,7 +25,7 @@ void DTD_Impl::elementError(const Element &xElement, const std::string &error) c
 /// </summary>
 /// <param name="nmTokenValue">Token value.</param>
 /// <returns>True then token is valid otherwise false.</returns>
-bool DTD_Impl::checkIsNMTOKENOK(const std::string &nmTokenValue)
+bool DTD_Impl::checkIsNMTOKENOK(const std::string_view &nmTokenValue)
 {
   BufferSource nmTokenValueSource(trimString(nmTokenValue));
   while (nmTokenValueSource.more()) {
@@ -40,7 +40,7 @@ bool DTD_Impl::checkIsNMTOKENOK(const std::string &nmTokenValue)
 /// </summary>
 /// <param name="idValue">ID string value.</param>
 /// <returns>True then ID is valid otherwise false.</returns>
-bool DTD_Impl::checkIsIDOK(const std::string &idValue)
+bool DTD_Impl::checkIsIDOK(const std::string_view &idValue)
 {
   try {
     BufferSource idSource(idValue);

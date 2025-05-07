@@ -5,7 +5,7 @@ namespace XML_Lib {
 struct Content final : Variant
 {
   // Constructors/Destructors
-  explicit Content(std::string content, const bool whiteSpaceDefault = true) : Variant(Type::content), xmlContent(std::move(content)), whiteSpace(whiteSpaceDefault) {}
+  explicit Content(const std::string_view &content, const bool whiteSpaceDefault = true) : Variant(Type::content), xmlContent(content), whiteSpace(whiteSpaceDefault) {}
   Content(const Content &other) = delete;
   Content &operator=(const Content &other) = delete;
   Content(Content &&other) = default;

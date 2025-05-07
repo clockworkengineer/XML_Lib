@@ -86,14 +86,14 @@ bool Default_Parser::parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlo
 std::string Default_Parser::parseTagName(ISource &source) { return parseName(source); }
 
 /// <summary>
-/// Parse declaration attribute and validate its value.
+/// Parse the declaration attribute and validate its value.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="name">Attribute name string.</param>
 /// <param name="values">Set of valid attribute values.</param>
 /// <returns>Valid attribute value.</returns>
 std::string
-  Default_Parser::parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values)
+  Default_Parser::parseDeclarationAttribute(ISource &source, const std::string_view &name, const std::set<std::string> &values)
 {
   std::string value;
   source.ignoreWS();
@@ -101,9 +101,9 @@ std::string
     source.ignoreWS();
     value = parseValue(source).getParsed();
     if (name == "encoding") { value = toUpperString(value); }
-    if (!values.contains(value)) { throw SyntaxError("Unsupported XML " + name + " value '" + value + "' specified."); }
+    if (!values.contains(value)) { throw SyntaxError("Unsupported XML " + std::string(name) + " value '" + value + "' specified."); }
   } else {
-    throw SyntaxError(source.getPosition(), "Missing '=' after " + name + ".");
+    throw SyntaxError(source.getPosition(), "Missing '=' after " + std::string(name) + ".");
   }
   return value;
 }

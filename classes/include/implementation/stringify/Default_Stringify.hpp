@@ -78,7 +78,7 @@ private:
   // XML CDATA section
   else if (isA<CDATA>(xNode)) {
     const auto &xNodeCDATA = XRef<CDATA>(xNode);
-    destination.add("<![CDATA[" + xNodeCDATA.value() + "]]>");
+    destination.add("<![CDATA[" + std::string(xNodeCDATA.value()) + "]]>");
   }
   // XML DTD_Validator
   else if (isA<DTD>(xNode)) {

@@ -5,7 +5,7 @@ namespace XML_Lib {
 struct Root final : Element
 {
   // Constructors/Destructors
-  explicit Root(const std::string &name="") : Element(name ,Type::root) {}
+  explicit Root(const std::string_view &name="") : Element(name ,Type::root) {}
   Root(const std::string &name,
     const std::vector<XMLAttribute> &attributes,
     const std::vector<XMLAttribute> &namespaces)

@@ -26,8 +26,8 @@ public:
   void validate(const XNode &xNode);
 
 private:
-  void parseValidNotations(const std::string &notations) const;
-  void parseValidateAttribute(const std::string &elementName, const DTD::Attribute &dtdAttribute) const;
+  void parseValidNotations(const std::string_view &notations) const;
+  void parseValidateAttribute(const std::string_view &elementName, const DTD::Attribute &dtdAttribute) const;
   void parseConditional(ISource &source, bool includeOn = true);
   void parseExternalContent(ISource &source);
   [[nodiscard]] static std::string parseAttributeEnumerationType(ISource &source);
@@ -38,7 +38,7 @@ private:
   void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpecDestination);
   static void parseElementName(ISource &contentSpecSource, IDestination &contentSpecDestination);
   static void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpecDestination);
-  [[nodiscard]] XMLValue parseElementInternalSpecification(const std::string &elementName, const XMLValue &contentSpec);
+  [[nodiscard]] XMLValue parseElementInternalSpecification(const std::string_view &elementName, const XMLValue &contentSpec);
   void parseExternalReferenceContent();
   void parseAttributeList(ISource &source) const;
   void parseNotation(ISource &source) const;
@@ -53,13 +53,13 @@ private:
   void parseInternal(ISource &source);
   void parseDTD(ISource &source);
 
-  void elementError(const Element &xElement, const std::string &error) const;
+  void elementError(const Element &xElement, const std::string_view &error) const;
   void checkAttributes(const XNode &xNode);
   void checkContentSpecification(const XNode &xNode) const;
   void checkElement(const XNode &xNode);
   void checkElements(const XNode &xNode);
-  [[nodiscard]] static bool checkIsNMTOKENOK(const std::string &nmTokenValue);
-  [[nodiscard]] static bool checkIsIDOK(const std::string &idValue);
+  [[nodiscard]] static bool checkIsNMTOKENOK(const std::string_view &nmTokenValue);
+  [[nodiscard]] static bool checkIsIDOK(const std::string_view &idValue);
   void checkAttributeValue(const XNode &xNode, const DTD::Attribute &attribute) const;
   void checkAttributeType(const XNode &xNode, const DTD::Attribute &attribute);
   [[nodiscard]] static bool checkIsPCDATA(const XNode &xNode);

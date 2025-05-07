@@ -5,8 +5,8 @@ namespace XML_Lib {
 struct PI final : Variant
 {
   // Constructors/Destructors
-  PI(std::string name, std::string parameters)
-    : Variant(Type::pi), piName(std::move(name)), piParameters(std::move(parameters))
+  PI(const std::string_view &name, const std::string_view &parameters)
+    : Variant(Type::pi), piName(name), piParameters(parameters)
   {}
   PI(const PI &other) = delete;
   PI &operator=(const PI &other) = delete;

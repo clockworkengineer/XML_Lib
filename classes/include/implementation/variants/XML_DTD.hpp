@@ -9,7 +9,7 @@ struct DTD final : Variant
   //
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string &message) : std::runtime_error("DTD Error: " + message) {}
+    explicit Error(const std::string_view &message) : std::runtime_error(std::string("DTD Error: ").append(message)) {}
   };
   //
   // DTD Type
@@ -22,7 +22,7 @@ struct DTD final : Variant
   // are reported as so by the parser.
   //
   enum AttributeType : uint16_t {
-    // Types bits 0 - 9
+    // Types bits 0-9
     cdata = 0x1 << 0,
     enumeration = 0x1 << 1,
     id = 0x1 << 2,
@@ -55,7 +55,7 @@ struct DTD final : Variant
   struct Element
   {
     Element() = default;
-    Element(std::string name, XMLValue content) : name(std::move(name)), content(std::move(content)) {}
+    Element(const std::string_view name, XMLValue content) : name(std::move(name)), content(std::move(content)) {}
     std::string name;
     bool idAttributePresent = false;
     XMLValue content{ "", "" };
@@ -69,39 +69,39 @@ struct DTD final : Variant
   DTD &operator=(DTD &&other) = delete;
   ~DTD() override = default;
   [[nodiscard]] std::string unparsed() const { return unparsedDTD; }
-  void setUnparsed(const std::string &unparsed) { unparsedDTD = unparsed; }
+  void setUnparsed(const  std::string_view &unparsed) { unparsedDTD = unparsed; }
   [[nodiscard]] uint16_t getType() const { return dtdNodeType; }
   void setType(const uint16_t type) { dtdNodeType = type; }
   [[nodiscard]] std::string getRootName() const { return dtdNodeName; }
-  void setRootName(const std::string &name) { dtdNodeName = name; }
+  void setRootName( const std::string_view &name) { dtdNodeName = name; }
   [[nodiscard]] XMLExternalReference getExternalReference() const { return externalReference; }
   void setExternalReference(const XMLExternalReference &reference) { externalReference = reference; }
-  [[nodiscard]] bool isElementPresent(const std::string &elementName) const
+  [[nodiscard]] bool isElementPresent( const std::string_view &elementName) const
   {
-    return elements.contains(elementName);
+    return elements.contains(std::string((elementName)));
   }
-  [[nodiscard]] Element &getElement(const std::string &elementName)
+  [[nodiscard]] Element &getElement( const std::string_view &elementName)
   {
-    if (const auto element = elements.find(elementName); element != elements.end()) { return element->second; }
+    if (const auto element = elements.find(std::string(elementName)); element != elements.end()) { return element->second; }
     throw Error("Could not find notation name.");
   }
-  void addElement(const std::string &elementName, const Element &element)
+  void addElement( const std::string_view &elementName, const Element &element)
   {
     elements.emplace(elementName, element);
   }
   [[nodiscard]] long getElementCount() const { return static_cast<long>(elements.size()); }
-  [[nodiscard]] XMLExternalReference &getNotation(const std::string &notationName)
+  [[nodiscard]] XMLExternalReference &getNotation(const  std::string_view &notationName)
   {
-    if (const auto notation = notations.find(notationName); notation != notations.end()) { return notation->second; }
+    if (const auto notation = notations.find(std::string(notationName)); notation != notations.end()) { return notation->second; }
     throw Error("Could not find notation name.");
   }
-  void addNotation(const std::string &notationName, const XMLExternalReference &notation)
+  void addNotation(const  std::string_view &notationName, const XMLExternalReference &notation)
   {
     notations.emplace(notationName, notation);
   }
-  [[nodiscard]] long getNotationCount(const std::string &notationName) const
+  [[nodiscard]] long getNotationCount(const  std::string_view &notationName) const
   {
-    return static_cast<long>(notations.count(notationName));
+    return static_cast<long>(notations.count(std::string(notationName)));
   }
   [[nodiscard]] long getLineCount() const { return lineCount; }
   void setLineCount(const long newLineCount) { lineCount = newLineCount; }

@@ -15,7 +15,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="notations">Notations string values (separated by '|').</param>
 /// <returns></returns>
-void DTD_Impl::parseValidNotations(const std::string &notations) const
+void DTD_Impl::parseValidNotations(const std::string_view &notations) const
 {
   for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|')) {
     if (xDTD.getNotationCount(notation) == 0) { throw SyntaxError("NOTATION " + notation + " is not defined."); }
@@ -27,7 +27,7 @@ void DTD_Impl::parseValidNotations(const std::string &notations) const
 /// </summary>
 /// <param name="elementName">Element associated with attribute.</param>
 /// <param name="dtdAttribute">Attribute description to validate.</param>
-void DTD_Impl::parseValidateAttribute(const std::string &elementName, const DTD::Attribute &dtdAttribute) const
+void DTD_Impl::parseValidateAttribute(const std::string_view &elementName, const DTD::Attribute &dtdAttribute) const
 {
   // Attribute cannot be ID and fixed
   if (dtdAttribute.type == (DTD::AttributeType::id | DTD::AttributeType::fixed)) {
@@ -36,7 +36,7 @@ void DTD_Impl::parseValidateAttribute(const std::string &elementName, const DTD:
   // Only one ID attribute allowed per element
   if ((dtdAttribute.type & DTD::AttributeType::id) != 0) {
     if (xDTD.getElement(elementName).idAttributePresent) {
-      throw SyntaxError("Element <" + elementName + "> has more than one ID attribute.");
+      throw SyntaxError("Element <" + std::string(elementName) + "> has more than one ID attribute.");
     }
     xDTD.getElement(elementName).idAttributePresent = true;
   }

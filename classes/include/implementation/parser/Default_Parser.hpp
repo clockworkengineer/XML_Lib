@@ -24,7 +24,7 @@ private:
   // XML Parser
   static void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper);
   [[nodiscard]] static std::string
-    parseDeclarationAttribute(ISource &source, const std::string &name, const std::set<std::string> &values);
+    parseDeclarationAttribute(ISource &source, const std::string_view &name, const std::set<std::string> &values);
   [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
   static void  parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper);
   [[nodiscard]] static std::string parseTagName(ISource &source);

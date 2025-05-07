@@ -27,9 +27,9 @@ public:
   void validate();
   [[nodiscard]] static std::string version();
 
-  [[nodiscard]] static std::string fromFile(const std::string &fileName);
-  static void toFile(const std::string &fileName, const std::string &xmlString, XML::Format format);
-  [[nodiscard]] static XML::Format getFileFormat(const std::string &fileName);
+  [[nodiscard]] static std::string fromFile(const std::string_view &fileName);
+  static void toFile(const std::string_view &fileName, const std::string_view &xmlString, XML::Format format);
+  [[nodiscard]] static XML::Format getFileFormat(const std::string_view &fileName);
 
 private:
   // Root XNode

@@ -82,14 +82,14 @@ std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
 }
 
 /// <summary>
-/// Return format of XML file after checking for any byte order marks at
+/// Return format of an XML file after checking for any byte order marks at
 /// the beginning of the XML file.
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML file format.</returns>
-XML::Format XML_Impl::getFileFormat(const std::string &fileName)
+XML::Format XML_Impl::getFileFormat(const std::string_view &fileName)
 {
-  std::ifstream xmlFile{ fileName, std::ios_base::binary };
+  std::ifstream xmlFile{ fileName.data(), std::ios_base::binary };
   uint32_t byteOrderMark = static_cast<unsigned char>(xmlFile.get()) << 24;
   byteOrderMark |= static_cast<unsigned char>(xmlFile.get()) << 16;
   byteOrderMark |= static_cast<unsigned char>(xmlFile.get()) << 8;
@@ -110,17 +110,17 @@ XML::Format XML_Impl::getFileFormat(const std::string &fileName)
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML string.</returns>
-std::string XML_Impl::fromFile(const std::string &fileName)
+std::string XML_Impl::fromFile(const std::string_view &fileName)
 {
   const auto kCRLF = "\x0D\x0A";
-  // Get file format
+  // Get a file format
   const XML::Format format = getFileFormat(fileName);
   // Read in XML
-  std::ifstream xmlFile{ fileName, std::ios_base::binary };
+  std::ifstream xmlFile{ fileName.data(), std::ios_base::binary };
   std::string translated;
   switch (format) {
   case XML::Format::utf8BOM:
-    xmlFile.seekg(3);// Move past byte order mark
+    xmlFile.seekg(3);// Move past the byte order mark
   case XML::Format::utf8:
     translated = readXMLString(xmlFile);
     break;
@@ -148,18 +148,18 @@ std::string XML_Impl::fromFile(const std::string &fileName)
 /// <param name="fileName">XML file name</param>
 /// <param name="xmlString">XML string</param>
 /// <param name="format">XML file format</param>
-void XML_Impl::toFile(const std::string &fileName, const std::string &xmlString, const XML::Format format)
+void XML_Impl::toFile(const std::string_view &fileName, const std::string_view &xmlString, const XML::Format format)
 {
-  std::ofstream xmlFile{ fileName, std::ios::binary };
+  std::ofstream xmlFile{ fileName.data(), std::ios::binary };
   switch (format) {
   case XML::Format::utf8BOM:
     xmlFile << static_cast<unsigned char>(0xEF) << static_cast<unsigned char>(0xBB) << static_cast<unsigned char>(0xBF);
   case XML::Format::utf8:
-    writeXMLString(xmlFile, xmlString);
+    writeXMLString(xmlFile, xmlString.data());
     break;
   case XML::Format::utf16BE:
   case XML::Format::utf16LE:
-    writeXMLString(xmlFile, toUtf16(xmlString), format);
+    writeXMLString(xmlFile, toUtf16(xmlString.data()), format);
     break;
   default:
     throw Error("Unsupported XML file format (Byte Order Mark) specified.");

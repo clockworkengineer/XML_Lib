@@ -5,7 +5,7 @@ namespace XML_Lib {
 struct Comment final : Variant
 {
   // Constructors/Destructors
-  explicit Comment(std::string comment = "") : Variant(Type::comment), xmlComment(std::move(comment)) {}
+  explicit Comment(const std::string_view &comment = "") : Variant(Type::comment), xmlComment(comment) {}
   Comment(const Comment &other) = delete;
   Comment &operator=(const Comment &other) = delete;
   Comment(Comment &&other) = default;

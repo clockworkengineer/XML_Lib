@@ -5,8 +5,8 @@ namespace XML_Lib {
 struct Declaration final : Variant
 {
   // Constructors/Destructors
-  Declaration(std::string version, std::string encoding, std::string standalone)
-    : Variant(Type::declaration), xmlVersion(std::move(version)), xmlEncoding(std::move(encoding)), xmlStandalone(std::move(standalone))
+  Declaration(const std::string_view & version, const std::string_view & encoding, const std::string_view & standalone)
+    : Variant(Type::declaration), xmlVersion(version), xmlEncoding(encoding), xmlStandalone(standalone)
   {}
   Declaration(const Declaration &other) = delete;
   Declaration &operator=(const Declaration &other) = delete;
@@ -18,9 +18,9 @@ struct Declaration final : Variant
   [[nodiscard]] const std::string &encoding() const { return xmlEncoding; }
   [[nodiscard]] const std::string &standalone() const { return xmlStandalone; }
   // Set declaration attributes
-  void setVersion(const std::string &version) { xmlVersion = version; }
-  void setEncoding(const std::string &encoding) { xmlEncoding = encoding; }
-  void setStandalone(const std::string &standalone) { xmlStandalone = standalone; }
+  void setVersion(const std::string_view &version) { xmlVersion = version; }
+  void setEncoding(const std::string_view &encoding) { xmlEncoding = encoding; }
+  void setStandalone(const std::string_view &standalone) { xmlStandalone = standalone; }
 
 private:
   std::string xmlVersion;
