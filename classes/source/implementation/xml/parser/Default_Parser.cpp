@@ -18,7 +18,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xNode">Current element XNode.</param>
 /// <param name="content">Content to add to new content XNode (XMLNodeContent).</param>
-void addContentToElementChildList(XNode &xNode, const std::string &content)
+void addContentToElementChildList(XNode &xNode, const std::string_view &content)
 {
   // Make sure there is a content XNode to receive characters
   if (xNode.getChildren().empty() || !isA<Content>(xNode.getChildren().back())) {

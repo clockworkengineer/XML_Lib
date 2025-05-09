@@ -65,10 +65,10 @@ public:
   void traverse(IAction &action);
   void traverse(IAction &action) const;
   // Read/Write XML to/from the file
-  [[nodiscard]] static std::string fromFile(const std::string &fileName);
-  static void toFile(const std::string &fileName, const std::string &xmlString, Format format = Format::utf8);
+  [[nodiscard]] static std::string fromFile(const std::string_view &fileName);
+  static void toFile(const std::string_view &fileName, const std::string_view &xmlString, Format format = Format::utf8);
   // Get an XML file format
-  [[nodiscard]] static Format getFileFormat(const std::string &fileName);
+  [[nodiscard]] static Format getFileFormat(const std::string_view &fileName);
 
 private:
   const std::unique_ptr<XML_Impl> implementation;

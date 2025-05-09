@@ -102,7 +102,7 @@ XMLValue parseCharacter(ISource &source)
 }
 
 /// <summary>
-/// Parse literal string value and return it.
+/// Parse a literal string value and return it.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <param name="entityMapper">Entity mapper.</param>
@@ -131,7 +131,7 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 }
 
 /// <summary>
-/// Parse literal string value and return it.
+/// Parse a literal string value and return it.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Literal string value.</returns>

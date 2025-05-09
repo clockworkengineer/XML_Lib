@@ -19,7 +19,7 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xmlFile">XML file stream</param>
 /// <param name="xmlString">XML string</param>
-void writeXMLString(std::ofstream &xmlFile, const std::string &xmlString) { xmlFile << xmlString; }
+void writeXMLString(std::ofstream &xmlFile, const std::string_view &xmlString) { xmlFile << xmlString; }
 /// <summary>
 /// Write XML string to a file stream.
 /// </summary>

@@ -14,7 +14,7 @@ struct Content final : Variant
   // Get reference to content string
   [[nodiscard]] std::string value() const { return xmlContent; }
   // Add to content
-  void addContent(const std::string &content) { xmlContent += content; }
+  void addContent(const std::string_view &content) { xmlContent += content; }
   // Is content all whitespace
   [[nodiscard]] bool isWhiteSpace() const { return whiteSpace; }
   // Set whitespace boolean

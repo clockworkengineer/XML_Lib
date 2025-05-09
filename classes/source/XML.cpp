@@ -99,7 +99,7 @@ void XML::traverse(IAction &action) const { std::as_const(*implementation).trave
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML string.</returns>
-std::string XML::fromFile(const std::string &fileName) { return XML_Impl::fromFile(fileName); }
+std::string XML::fromFile(const std::string_view &fileName) { return XML_Impl::fromFile(fileName); }
 
 /// <summary>
 /// Create an XML file and write XML string to it.
@@ -107,7 +107,7 @@ std::string XML::fromFile(const std::string &fileName) { return XML_Impl::fromFi
 /// <param name="fileName">XML file name</param>
 /// <param name="xmlString">XML string</param>
 /// <param name="format">XML file format</param>
-void XML::toFile(const std::string &fileName, const std::string &xmlString, const Format format)
+void XML::toFile(const std::string_view &fileName, const std::string_view &xmlString, const Format format)
 {
   XML_Impl::toFile(fileName, xmlString, format);
 }
@@ -116,5 +116,5 @@ void XML::toFile(const std::string &fileName, const std::string &xmlString, cons
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML file format.</returns>
-XML::Format XML::getFileFormat(const std::string &fileName) { return XML_Impl::getFileFormat(fileName); }
+XML::Format XML::getFileFormat(const std::string_view &fileName) { return XML_Impl::getFileFormat(fileName); }
 }// namespace XML_Lib

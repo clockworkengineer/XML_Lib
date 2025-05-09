@@ -23,13 +23,13 @@ DTD_Validator::DTD_Validator(XNode &xNode) : implementation(std::make_unique<DTD
 DTD_Validator::~DTD_Validator() = default;
 
 /// <summary>
-/// Parse DTD read from source stream.
+/// Parse DTD read from the source stream.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 void DTD_Validator::parse(ISource &source) { implementation->parse(source); }
 
 /// <summary>
-/// Create DTD text from an DTD_Validator object.
+/// Create DTD text from a DTD_Validator object.
 /// </summary>
 /// <param name="destination">DTD destination stream.</param>
 void DTD_Validator::stringify(IDestination &destination) { implementation->stringify(destination); }
