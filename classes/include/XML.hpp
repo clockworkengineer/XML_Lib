@@ -36,10 +36,10 @@ public:
   // Constructors/Destructors
   explicit XML(IStringify *stringify=nullptr, IParser *parser= nullptr);
   // Pass in default XML to parse
-  explicit XML(const std::string &xmlString);
+  explicit XML(const std::string_view &xmlString);
   XML(const XML &other) = delete;
   XML &operator=(const XML &other) = delete;
-  XML &operator=(const std::string &xmlString);
+  XML &operator=(const std::string_view &xmlString);
   XML(XML &&other) = delete;
   XML &operator=(XML &&other) = delete;
   ~XML();

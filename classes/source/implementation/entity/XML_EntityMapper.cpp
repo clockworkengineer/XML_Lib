@@ -205,11 +205,11 @@ const XMLExternalReference &XML_EntityMapper::getExternal(const std::string_view
 /// </summary>
 void XML_EntityMapper::setInternal(const std::string_view &entityName, const std::string_view &internal)
 {
-  getEntityMapping(entityName).setInternal(std::string(internal));
+  getEntityMapping(entityName).setInternal(internal);
 }
 void XML_EntityMapper::setNotation(const std::string_view &entityName, const std::string_view &notation)
 {
-  getEntityMapping(entityName).setNotation(std::string(notation));
+  getEntityMapping(entityName).setNotation(notation);
 }
 void XML_EntityMapper::setExternal(const std::string_view &entityName, const XMLExternalReference &external)
 {

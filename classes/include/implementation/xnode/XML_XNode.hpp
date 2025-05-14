@@ -25,7 +25,7 @@ struct XNode
   [[nodiscard]] std::string getContents() const { return xmlVariant->getContents(); }
   // XNode Index overloads
   [[nodiscard]] const XNode &operator[](int index) const;
-  [[nodiscard]] const XNode &operator[](const std::string &name) const;
+  [[nodiscard]] const XNode &operator[](const std::string_view &name) const;
   // Add child
   void addChild(XNode &child) const { xmlVariant->addChild(child); }
   void addChild(XNode &&child) const { xmlVariant->addChild(child); }

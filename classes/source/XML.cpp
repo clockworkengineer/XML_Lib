@@ -21,12 +21,12 @@ XML::XML(IStringify *stringify, IParser *parser) : implementation(std::make_uniq
 /// <summary>
 /// XML constructor (parse in a default XML string).
 /// </summary>
-XML::XML(const std::string &xmlString) : XML() { parse(BufferSource{ xmlString }); }
+XML::XML(const std::string_view &xmlString) : XML() { parse(BufferSource{ xmlString }); }
 
 /// <summary>
 /// XML assignment (parse in a default XML string).
 /// </summary>
-XML &XML::operator=(const std::string &xmlString) { parse(BufferSource{ xmlString }); return *this;}
+XML &XML::operator=(const std::string_view &xmlString) { parse(BufferSource{ xmlString }); return *this;}
 
 /// <summary>
 /// XML destructor.

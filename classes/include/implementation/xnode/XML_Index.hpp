@@ -12,7 +12,7 @@ inline const XNode &XNode::operator[](const int index) const
 // =================
 // XNode name access
 // =================
-inline const XNode &XNode::operator[](const std::string &name) const
+inline const XNode &XNode::operator[](const std::string_view &name) const
 {
   if (isIndexable()) {
     if (const auto xNode = std::ranges::find_if(getChildren(),
@@ -21,7 +21,7 @@ inline const XNode &XNode::operator[](const std::string &name) const
       return *xNode;
     }
   }
-  throw Error("Element '" + name + "' does not exist.");
+  throw Error("Element '" + std::string(name) + "' does not exist.");
 }
 // =====================
 // XElement index access

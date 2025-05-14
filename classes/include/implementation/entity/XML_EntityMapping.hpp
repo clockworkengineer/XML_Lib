@@ -10,17 +10,17 @@ namespace XML_Lib {
 
   public:
     XML_EntityMapping() = default;
-    explicit XML_EntityMapping(const std::string &value) { setInternal(value); }
+    explicit XML_EntityMapping(const std::string_view &value) { setInternal(value); }
     // Entity reference get/set details
     [[nodiscard]] const std::string &getInternal() const { return internal; }
     [[nodiscard]] const std::string &getNotation() const { return notation; }
     [[nodiscard]] const XMLExternalReference &getExternal() const { return external; }
-    void setInternal(const std::string &value)
+    void setInternal(const std::string_view &value)
     {
       mappingType = Type::internal;
       internal = value;
     }
-    void setNotation(const std::string &value)
+    void setNotation(const std::string_view &value)
     {
       mappingType = Type::notation;
       notation = value;

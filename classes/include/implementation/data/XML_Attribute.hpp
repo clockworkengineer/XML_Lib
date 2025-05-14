@@ -7,7 +7,7 @@ struct XMLAttribute final : XMLValue
   // XMLAttribute Error
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string &message) : std::runtime_error("Attribute Error: " + message) {}
+    explicit Error(const std::string_view &message) : std::runtime_error(std::string("Attribute Error: ").append(message)) {}
   };
   // Constructors/Destructors
   XMLAttribute(const std::string_view &name, const XMLValue &value) : XMLValue(value), name(name) {}
