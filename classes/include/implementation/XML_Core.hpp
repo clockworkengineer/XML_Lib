@@ -19,6 +19,7 @@
 
 // Variants
 #include "XML_Variant.hpp"
+#include "XML_XNode.hpp"
 #include "XML_Prolog.hpp"
 #include "XML_Declaration.hpp"
 #include "XML_Content.hpp"
@@ -32,7 +33,6 @@
 #include "XML_DTD.hpp"
 
 // XNode
-#include "XML_XNode.hpp"
 #include "XML_Contents.hpp"
 #include "XML_Reference.hpp"
 #include "XML_Index.hpp"
