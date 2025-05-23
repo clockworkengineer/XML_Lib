@@ -3,21 +3,14 @@
 // ==========
 // XML Core
 // ==========
-// Common
 #include "XML_Error.hpp"
 #include "XML_Character.hpp"
 #include "XML_Utility.hpp"
 #include "XML_Converter.hpp"
-
-// Data
 #include "XML_Value.hpp"
 #include "XML_Attribute.hpp"
 #include "XML_ExternalReference.hpp"
-
-// Interfaces
 #include "XML_Interfaces.hpp"
-
-// Variants
 #include "XML_Variant.hpp"
 #include "XML_XNode.hpp"
 #include "XML_Prolog.hpp"
@@ -31,24 +24,14 @@
 #include "XML_Comment.hpp"
 #include "XML_PI.hpp"
 #include "XML_DTD.hpp"
-
-// XNode
 #include "XML_Contents.hpp"
 #include "XML_Reference.hpp"
 #include "XML_Index.hpp"
 #include "XML_Creation.hpp"
-
-// Entity Mapper
 #include "XML_EntityMapping.hpp"
 #include "XML_EntityMapper.hpp"
-
-// IO
 #include "XML_Sources.hpp"
 #include "XML_Destinations.hpp"
-
-// Parser Common
 #include "XML_Parse.hpp"
-
-// Defaults
 #include "Default_Parser.hpp"
 #include "Default_Stringify.hpp"
