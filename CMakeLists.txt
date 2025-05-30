@@ -54,7 +54,7 @@ set(XML_INCLUDES
   ./classes/include/interface/XML_Interfaces.hpp
   ./classes/include/implementation/XML_Core.hpp
   ./classes/include/implementation/common/XML_Character.hpp
-  ./classes/include/implementation/common/XML_Converter.hpp
+  ./classes/include/implementation/converter/XML_Converter.hpp
   ./classes/include/implementation/common/XML_Error.hpp
   ./classes/include/implementation/common/XML_Parse.hpp
   ./classes/include/implementation/common/XML_Utility.hpp
@@ -100,6 +100,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/classes/include/interface
   ${PROJECT_SOURCE_DIR}/classes/include/implementation
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/common
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/converter
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/data
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/entity
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/io
