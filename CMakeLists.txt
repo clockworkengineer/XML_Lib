@@ -38,7 +38,7 @@ set(XML_SOURCES
 )
 
 # Platform specific sources
-list(APPEND XML_SOURCES "./classes/source/implementation/common/converter/${PLATFORM}/XML_Converter.cpp")
+list(APPEND XML_SOURCES "classes/source/implementation/converter/${PLATFORM}/XML_Converter.cpp")
 
 # XML  includes
 set(XML_INCLUDES
@@ -53,7 +53,6 @@ set(XML_INCLUDES
   ./classes/include/interface/IStringify.hpp
   ./classes/include/interface/XML_Interfaces.hpp
   ./classes/include/implementation/XML_Core.hpp
-  ./classes/include/implementation/common/XML_Character.hpp
   ./classes/include/implementation/converter/XML_Converter.hpp
   ./classes/include/implementation/common/XML_Error.hpp
   ./classes/include/implementation/common/XML_Parse.hpp
