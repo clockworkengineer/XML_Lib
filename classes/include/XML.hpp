@@ -16,15 +16,18 @@
 #include <cstring>
 #include <regex>
 
-#include "XML_Character.hpp"
-#include "XML_Config.hpp"
-#include "XML_Interfaces.hpp"
+// #include "XML_Character.hpp"
 
 namespace XML_Lib {
 
-// ====================
-// Forward declarations
-// ====================
+// ========================
+// XML forward declarations
+// ========================
+class IStringify;
+class IParser;
+class ISource;
+class IDestination;
+class IAction;
 class XML_Impl;
 struct XNode;
 

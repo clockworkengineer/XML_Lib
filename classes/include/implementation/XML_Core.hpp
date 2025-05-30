@@ -3,8 +3,10 @@
 // ==========
 // XML Core
 // ==========
-#include "XML_Error.hpp"
+#include "XML_Config.hpp"
 #include "XML_Character.hpp"
+#include "XML_Interfaces.hpp"
+#include "XML_Error.hpp"
 #include "XML_Utility.hpp"
 #include "XML_Converter.hpp"
 #include "XML_Value.hpp"
