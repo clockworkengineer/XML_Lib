@@ -19,7 +19,7 @@ public:
     std::u16string utf16xml{ sourceBuffer };
     if (utf16xml.starts_with(u"<?xml")) {
       std::ranges::transform(utf16xml, utf16xml.begin(), [](const char16_t &ch) {
-        return static_cast<uint16_t>(ch) >> kBitsPerByte | static_cast<uint16_t>(ch) << kBitsPerByte;
+        return static_cast<char16_t>(static_cast<uint16_t>(ch) >> kBitsPerByte | static_cast<uint16_t>(ch) << kBitsPerByte);
       });
     }
     buffer = utf16xml;

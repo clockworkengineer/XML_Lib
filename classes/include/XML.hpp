@@ -15,6 +15,7 @@
 #include <cwctype>
 #include <cstring>
 #include <regex>
+#include <ranges>
 
 // #include "XML_Character.hpp"
 
@@ -37,7 +38,7 @@ public:
   // XML file formats
   enum class Format : uint8_t { utf8 = 0, utf8BOM, utf16BE, utf16LE, utf32BE, utf32LE };
   // Constructors/Destructors
-  explicit XML(IStringify *stringify=nullptr, IParser *parser= nullptr);
+  explicit XML(IStringify *stringify = nullptr, IParser *parser = nullptr);
   // Pass in default XML to parse
   explicit XML(const std::string_view &xmlString);
   XML(const XML &other) = delete;

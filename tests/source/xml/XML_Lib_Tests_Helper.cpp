@@ -6,8 +6,7 @@
 /// <param name="file">Test data file name.</param>
 std::string prefixPath(const std::string &file)
 {
-  const std::filesystem::path currentPath = std::filesystem::current_path() / "files" / file;
-  return currentPath.string();
+  return (std::filesystem::current_path() / "../files" / file).string();
 }
 
 /// <summary>

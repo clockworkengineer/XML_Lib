@@ -7,6 +7,8 @@
 //
 
 #include "Windows.h"
+
+#include "XML.hpp"
 #include "XML_Converter.hpp"
 
 namespace XML_Lib {

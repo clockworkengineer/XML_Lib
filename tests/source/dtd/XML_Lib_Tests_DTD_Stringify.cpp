@@ -22,7 +22,7 @@ TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Strin
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
-      "<!DOCTYPE note SYSTEM \"./files/note001.dtd\">\n"
+      "<!DOCTYPE note SYSTEM \"../files/note001.dtd\">\n"
       "<note>\n"
       "<to>Tove</to><from>Jani</from><heading>Reminder</heading>\n"
       "<body>Don't forget me this weekend!</body>\n"
@@ -56,7 +56,7 @@ TEST_CASE("Stringify XML with DTD both internal and external", "[XML][DTD][Strin
   {
     checkStringify(
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
-      "<!DOCTYPE note SYSTEM \"./files/note001.dtd\">\n"
+      "<!DOCTYPE note SYSTEM \"../files/note001.dtd\">\n"
       "<note>\n"
       "<to>Tove"
       "</to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body>\n"

@@ -183,7 +183,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
       "<?xml version='1.0'?>\n"
       "<!DOCTYPE foo [\n"
       "<!ELEMENT foo ANY>\n"
-      "<!ENTITY name SYSTEM \"./files/name.txt\">\n"
+      "<!ENTITY name SYSTEM \"../files/name.txt\">\n"
       "]>\n"
       "<foo>Hello &name;</foo>\n"
     };
@@ -201,12 +201,12 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
       "<?xml version='1.0'?>\n"
       "<!DOCTYPE foo [\n"
       "<!ELEMENT foo ANY>\n"
-      "<!ENTITY name SYSTEM \"./files/unknown.txt\">\n"
+      "<!ENTITY name SYSTEM \"../files/unknown.txt\">\n"
       "]>\n"
       "<foo>Hello &name;</foo>\n"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error: Entity '&name;' source file './files/unknown.txt' does not exist.");
+      xml.parse(source), "XML Syntax Error: Entity '&name;' source file '../files/unknown.txt' does not exist.");
   }
   SECTION("XML with internal DTD with parameter entities to parse  (internal cannot appear within tags).",
     "[XML][DTD][Parse][Entity]")
@@ -244,7 +244,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
   SECTION("XML with external DTD with parameter entities to parse.", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
-      "<!DOCTYPE REPORT SYSTEM \"./files/report01.dtd\">\n"
+      "<!DOCTYPE REPORT SYSTEM \"../files/report01.dtd\">\n"
       "<REPORT></REPORT>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
@@ -255,7 +255,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
   SECTION("XML with external DTD with both types of entities to parse an check values", "[XML][DTD][Parse][Entity]")
   {
     BufferSource source{
-      "<!DOCTYPE REPORT SYSTEM \"./files/report01.dtd\">"
+      "<!DOCTYPE REPORT SYSTEM \"../files/report01.dtd\">"
       "<REPORT></REPORT>\n"
     };
     xml.parse(source);
@@ -281,7 +281,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
   {
     BufferSource source{
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-      "<!DOCTYPE note SYSTEM \"./files/note002.dtd\">\n"
+      "<!DOCTYPE note SYSTEM \"../files/note002.dtd\">\n"
       "<note>"
       "&signature;"
       "</note>\n"

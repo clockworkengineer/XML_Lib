@@ -5,12 +5,12 @@ TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
   const XML xml;
   SECTION("Parse UTF16 encoded file LE ", "[XML][Parse][UTF16]")
   {
-    BufferSource source(XML::fromFile("./files/testfile008.xml"));
+    BufferSource source(XML::fromFile(prefixPath("testfile008.xml")));
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Parse UTF16 encoded file BE ", "[XML][Parse][UTF16]")
   {
-    BufferSource source(XML::fromFile("./files/testfile009.xml"));
+    BufferSource source(XML::fromFile(prefixPath("testfile009.xml")));
     REQUIRE_NOTHROW(xml.parse(source));
   }
 }
