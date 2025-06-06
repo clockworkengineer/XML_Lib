@@ -29,7 +29,7 @@
     "../files/testfile015.xml",               \
   }));
 
-std::string prefixPath(const std::string &file);
+std::string prefixTestDataPath(const std::string &xmlFileName);
 void checkStringify(const std::string &xmlString);
 void verifyCRLFCount(XML_Lib::ISource &source, long lfFinal, long crFinal);
 

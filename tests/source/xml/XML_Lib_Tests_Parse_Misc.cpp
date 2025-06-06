@@ -5,12 +5,12 @@ TEST_CASE("Parse UTF-16 encoded files.", "[XML][Parse][UTF16]")
   const XML xml;
   SECTION("Parse UTF16 encoded file LE ", "[XML][Parse][UTF16]")
   {
-    BufferSource source(XML::fromFile(prefixPath("testfile008.xml")));
+    BufferSource source(XML::fromFile(prefixTestDataPath("testfile008.xml")));
     REQUIRE_NOTHROW(xml.parse(source));
   }
   SECTION("Parse UTF16 encoded file BE ", "[XML][Parse][UTF16]")
   {
-    BufferSource source(XML::fromFile(prefixPath("testfile009.xml")));
+    BufferSource source(XML::fromFile(prefixTestDataPath("testfile009.xml")));
     REQUIRE_NOTHROW(xml.parse(source));
   }
 }
@@ -78,9 +78,9 @@ TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XNode][R-Value Refe
   }
   SECTION("Parse/Stringify both with R-Value reference (File).", "[XML][MLNode][R-Value Reference]")
   {
-    std::filesystem::remove(prefixPath(kGeneratedXMLFile));
-    xml.parse(FileSource{ prefixPath(kSingleXMLFile) });
-    xml.stringify(FileDestination{ prefixPath(kGeneratedXMLFile) });
-    REQUIRE(XML::fromFile(prefixPath(kGeneratedXMLFile)) == XML::fromFile(prefixPath(kSingleXMLFile)));
+    std::filesystem::remove(prefixTestDataPath(kGeneratedXMLFile));
+    xml.parse(FileSource{ prefixTestDataPath(kSingleXMLFile) });
+    xml.stringify(FileDestination{ prefixTestDataPath(kGeneratedXMLFile) });
+    REQUIRE(XML::fromFile(prefixTestDataPath(kGeneratedXMLFile)) == XML::fromFile(prefixTestDataPath(kSingleXMLFile)));
   }
 }

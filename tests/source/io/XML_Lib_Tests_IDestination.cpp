@@ -27,38 +27,38 @@ TEST_CASE("Creation and use of IDestination (File) interface.", "[XML][Parse][Fi
 {
   SECTION("Create FileDestination.", "[XML][Stringify][FileDestination]")
   {
-    std::filesystem::remove(prefixPath(kGeneratedXMLFile));
-    REQUIRE_NOTHROW(FileDestination(prefixPath(kGeneratedXMLFile)));
+    std::filesystem::remove(prefixTestDataPath(kGeneratedXMLFile));
+    REQUIRE_NOTHROW(FileDestination(prefixTestDataPath(kGeneratedXMLFile)));
   }
   SECTION("Create FileDestination when file already exists.", "[XML][Stringify][FileDestination]")
   {
-    FileDestination file(prefixPath(kGeneratedXMLFile));
-    REQUIRE_NOTHROW(FileDestination(prefixPath(kGeneratedXMLFile)));
+    FileDestination file(prefixTestDataPath(kGeneratedXMLFile));
+    REQUIRE_NOTHROW(FileDestination(prefixTestDataPath(kGeneratedXMLFile)));
   }
   SECTION("Create FileDestination and test file exists and should be empty.", "[XML][Stringify][FileDestination]")
   {
-    std::filesystem::remove(prefixPath(kGeneratedXMLFile));
-    FileDestination file(prefixPath(kGeneratedXMLFile));
-    REQUIRE_FALSE(!std::filesystem::exists(prefixPath(kGeneratedXMLFile)));
-    std::filesystem::path filePath(prefixPath(kGeneratedXMLFile));
+    std::filesystem::remove(prefixTestDataPath(kGeneratedXMLFile));
+    FileDestination file(prefixTestDataPath(kGeneratedXMLFile));
+    REQUIRE_FALSE(!std::filesystem::exists(prefixTestDataPath(kGeneratedXMLFile)));
+    std::filesystem::path filePath(prefixTestDataPath(kGeneratedXMLFile));
     REQUIRE(std::filesystem::file_size(filePath) == 0);
   }
   SECTION("Create FileDestination and add one character.", "[XML][Stringify][FileDestination]")
   {
-    std::filesystem::remove(prefixPath(kGeneratedXMLFile));
-    FileDestination file(prefixPath(kGeneratedXMLFile));
+    std::filesystem::remove(prefixTestDataPath(kGeneratedXMLFile));
+    FileDestination file(prefixTestDataPath(kGeneratedXMLFile));
     file.add("t");
-    std::filesystem::path filePath(prefixPath(kGeneratedXMLFile));
+    std::filesystem::path filePath(prefixTestDataPath(kGeneratedXMLFile));
     REQUIRE(std::filesystem::file_size(filePath) == 1);
   }
   SECTION("Create FileDestination, add an stringified integer and check result.", "[XML][Stringify][FileDestination]")
   {
-    std::filesystem::remove(prefixPath(kGeneratedXMLFile));
-    FileDestination file(prefixPath(kGeneratedXMLFile));
+    std::filesystem::remove(prefixTestDataPath(kGeneratedXMLFile));
+    FileDestination file(prefixTestDataPath(kGeneratedXMLFile));
     file.add("65767");
-    std::filesystem::path filePath(prefixPath(kGeneratedXMLFile));
+    std::filesystem::path filePath(prefixTestDataPath(kGeneratedXMLFile));
     REQUIRE(std::filesystem::file_size(filePath) == 5);
-    std::string expected = XML::fromFile(prefixPath(kGeneratedXMLFile));
+    std::string expected = XML::fromFile(prefixTestDataPath(kGeneratedXMLFile));
     REQUIRE(expected == "65767");
   }
 }

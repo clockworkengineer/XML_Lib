@@ -3,10 +3,14 @@
 /// <summary>
 /// Prefix path to test data file name.
 /// </summary>
-/// <param name="file">Test data file name.</param>
-std::string prefixPath(const std::string &file)
+/// <param name="xmlFileName">Test data file name.</param>
+std::string prefixTestDataPath(const std::string &xmlFileName)
 {
+#ifdef _WIN32
+  return (std::filesystem::current_path() / "./files" / xmlFileName).string();
+#else
   return (std::filesystem::current_path() / "../files" / file).string();
+#endif
 }
 
 /// <summary>
