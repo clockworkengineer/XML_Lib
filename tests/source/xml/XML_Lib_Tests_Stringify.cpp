@@ -145,7 +145,7 @@ TEST_CASE("Stringify XML from a list of example files.", "[XML][Stringify]")
   TEST_FILE_LIST(file);
   SECTION("Load file into buffer and parse.", "[XML][Parse]")
   {
-    const std::string expected{ XML::fromFile(file) };
+    const std::string expected{ XML::fromFile(prefixTestDataPath(file)) };
     checkStringify(expected);
   }
 }

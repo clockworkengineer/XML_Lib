@@ -16,17 +16,17 @@
 
 #define TEST_FILE_LIST(file)                 \
   auto file = GENERATE(values<std::string>({ \
-    "../files/testfile001.xml",               \
-    "../files/testfile002.xml",               \
-    "../files/testfile003.xml",               \
-    "../files/testfile005.xml",               \
-    "../files/testfile007.xml",               \
-    "../files/testfile010.xml",               \
-    "../files/testfile011.xml",               \
-    "../files/testfile012.xml",               \
-    "../files/testfile013.xml",               \
-    "../files/testfile014.xml",               \
-    "../files/testfile015.xml",               \
+    "testfile001.xml",               \
+    "testfile002.xml",               \
+    "testfile003.xml",               \
+    "testfile005.xml",               \
+    "testfile007.xml",               \
+    "testfile010.xml",               \
+    "testfile011.xml",               \
+    "testfile012.xml",               \
+    "testfile013.xml",               \
+    "testfile014.xml",               \
+    "testfile015.xml",               \
   }));
 
 std::string prefixTestDataPath(const std::string &xmlFileName);

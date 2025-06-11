@@ -179,7 +179,7 @@ TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
   }
   SECTION("Parse testfile001.xml and traverse", "[XML][Traverse][File]")
   {
-    FileSource source("../files/testfile001.xml");
+    FileSource source(prefixTestDataPath("testfile001.xml"));
     xml.parse(source);
     XML_Analyzer analyzer;
     xml.traverse(analyzer);

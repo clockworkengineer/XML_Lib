@@ -50,6 +50,7 @@ public:
     fileSize = 0;
   }
   std::size_t size() const { return fileSize; }
+  void close() { destination.close(); }
 
 private:
   std::ofstream destination;

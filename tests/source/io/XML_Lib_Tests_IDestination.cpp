@@ -49,6 +49,7 @@ TEST_CASE("Creation and use of IDestination (File) interface.", "[XML][Parse][Fi
     FileDestination file(prefixTestDataPath(kGeneratedXMLFile));
     file.add("t");
     std::filesystem::path filePath(prefixTestDataPath(kGeneratedXMLFile));
+    file.close();
     REQUIRE(std::filesystem::file_size(filePath) == 1);
   }
   SECTION("Create FileDestination, add an stringified integer and check result.", "[XML][Stringify][FileDestination]")
@@ -57,6 +58,7 @@ TEST_CASE("Creation and use of IDestination (File) interface.", "[XML][Parse][Fi
     FileDestination file(prefixTestDataPath(kGeneratedXMLFile));
     file.add("65767");
     std::filesystem::path filePath(prefixTestDataPath(kGeneratedXMLFile));
+    file.close();
     REQUIRE(std::filesystem::file_size(filePath) == 5);
     std::string expected = XML::fromFile(prefixTestDataPath(kGeneratedXMLFile));
     REQUIRE(expected == "65767");
