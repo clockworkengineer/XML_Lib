@@ -6,11 +6,13 @@
 /// <param name="xmlFileName">Test data file name.</param>
 std::string prefixTestDataPath(const std::string &xmlFileName)
 {
-#ifdef _WIN32
-  return (std::filesystem::current_path() / "./files" / xmlFileName).string();
-#else
-  return (std::filesystem::current_path() / "../files" / file).string();
-#endif
+  if (std::filesystem::is_directory("./files")) {
+    return (std::filesystem::current_path() / "./files" / xmlFileName)
+        .string();
+  } else {
+    return (std::filesystem::current_path() / "../files" / xmlFileName)
+        .string();
+  }
 }
 
 /// <summary>
