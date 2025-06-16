@@ -25,7 +25,7 @@ public:
   void add(const Char ch) override { add(toUtf8(ch)); }
   void add(const char * bytes) override {
     for (std::size_t index=0; index<strlen(bytes); index++) {
-      buffer.push_back(static_cast<char>(bytes[index]));
+      buffer.push_back(bytes[index]);
     }
   }
   void add(const std::string_view &bytes) override {

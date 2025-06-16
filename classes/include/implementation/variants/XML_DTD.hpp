@@ -78,7 +78,7 @@ struct DTD final : Variant
   void setExternalReference(const XMLExternalReference &reference) { externalReference = reference; }
   [[nodiscard]] bool isElementPresent( const std::string_view &elementName) const
   {
-    return elements.contains(std::string((elementName)));
+    return elements.contains(std::string(elementName));
   }
   [[nodiscard]] Element &getElement( const std::string_view &elementName)
   {
@@ -89,7 +89,7 @@ struct DTD final : Variant
   {
     elements.emplace(elementName, element);
   }
-  [[nodiscard]] long getElementCount() const { return static_cast<long>(elements.size()); }
+  [[nodiscard]] long getElementCount() const { return elements.size(); }
   [[nodiscard]] XMLExternalReference &getNotation(const  std::string_view &notationName)
   {
     if (const auto notation = notations.find(std::string(notationName)); notation != notations.end()) { return notation->second; }
@@ -101,7 +101,7 @@ struct DTD final : Variant
   }
   [[nodiscard]] long getNotationCount(const  std::string_view &notationName) const
   {
-    return static_cast<long>(notations.count(std::string(notationName)));
+    return notations.count(std::string(notationName));
   }
   [[nodiscard]] long getLineCount() const { return lineCount; }
   void setLineCount(const long newLineCount) { lineCount = newLineCount; }
