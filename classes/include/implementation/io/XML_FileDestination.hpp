@@ -8,7 +8,9 @@ public:
   // FileDestination Error
   struct Error final : std::runtime_error
   {
-    explicit Error(const std::string_view &message) : std::runtime_error(std::string("FileSestination Error: ").append(message)) {}
+    explicit Error(const std::string_view &message)
+      : std::runtime_error(std::string("FileSestination Error: ").append(message))
+    {}
   };
   // Constructors/Destructors
   explicit FileDestination(const std::string_view &filename) : filename(filename)
@@ -50,12 +52,12 @@ public:
     fileSize = 0;
   }
   std::size_t size() const { return fileSize; }
+  std::string getFileName() { return filename; }
   void close() { destination.close(); }
 
 private:
   std::ofstream destination;
   std::string filename;
   std::size_t fileSize{};
-
 };
 }// namespace XML_Lib

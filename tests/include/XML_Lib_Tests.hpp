@@ -32,5 +32,6 @@
 std::string prefixTestDataPath(const std::string &xmlFileName);
 void checkStringify(const std::string &xmlString);
 void verifyCRLFCount(XML_Lib::ISource &source, long lfFinal, long crFinal);
+std::string generateRandomFileName(void );
 
 using namespace XML_Lib;

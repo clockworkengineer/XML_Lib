@@ -11,7 +11,7 @@ TEST_CASE("Sample XML files to read and parse.", "[XML][Parse]")
   }
   SECTION("Parse XML from file.", "[XML][Parse][File]")
   {
-    FileSource source{  prefixTestDataPath(file) };
+    FileSource source{ prefixTestDataPath(file) };
     REQUIRE_NOTHROW(xml.parse(source));
   }
 }
@@ -81,10 +81,12 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     XRef<Declaration>(xml.declaration()).setEncoding("UTF-16");
     BufferDestination utf8xml;
     xml.stringify(utf8xml);
-    XML::toFile(kGeneratedXMLFile, utf8xml.toString(), XML::Format::utf16BE);
-    REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf16BE);
-    xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, utf8xml.toString(), XML::Format::utf16BE);
+    REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf16BE);
+    xml.parse(BufferSource(XML::fromFile(generatedFileName)));
     REQUIRE(XRef<Declaration>(xml.declaration()).encoding() == "UTF-16");
+    std::filesystem::remove(generatedFileName);
   }
   SECTION(
     "Check UTF-8 file with byte order mark load into buffer, parse then save it as UTF-16LE.", "[XML][File][Format]")
@@ -94,10 +96,12 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     XRef<Declaration>(xml.declaration()).setEncoding("UTF-16");
     BufferDestination utf8xml;
     xml.stringify(utf8xml);
-    XML::toFile(kGeneratedXMLFile, utf8xml.toString(), XML::Format::utf16LE);
-    REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf16LE);
-    xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, utf8xml.toString(), XML::Format::utf16LE);
+    REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf16LE);
+    xml.parse(BufferSource(XML::fromFile(generatedFileName)));
     REQUIRE(XRef<Declaration>(xml.declaration()).encoding() == "UTF-16");
+    std::filesystem::remove(generatedFileName);
   }
   SECTION(
     "Check UTF-16BE file with byte order mark load into buffer, parse then save it as UTF-8.", "[XML][File][Format]")
@@ -107,10 +111,12 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     XRef<Declaration>(xml.declaration()).setEncoding("UTF-8");
     BufferDestination utf16xml;
     xml.stringify(utf16xml);
-    XML::toFile(kGeneratedXMLFile, utf16xml.toString(), XML::Format::utf8BOM);
-    REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf8BOM);
-    xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, utf16xml.toString(), XML::Format::utf8BOM);
+    REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf8BOM);
+    xml.parse(BufferSource(XML::fromFile(generatedFileName)));
     REQUIRE(XRef<Declaration>(xml.declaration()).encoding() == "UTF-8");
+    std::filesystem::remove(generatedFileName);
   }
   SECTION(
     "Check UTF-16LE file with byte order mark load into buffer, parse then save it as UTF-8.", "[XML][File][Format]")
@@ -120,9 +126,11 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     XRef<Declaration>(xml.declaration()).setEncoding("UTF-8");
     BufferDestination utf16xml;
     xml.stringify(utf16xml);
-    XML::toFile(kGeneratedXMLFile, utf16xml.toString(), XML::Format::utf8BOM);
-    REQUIRE(XML::getFileFormat(kGeneratedXMLFile) == XML::Format::utf8BOM);
-    xml.parse(BufferSource(XML::fromFile(kGeneratedXMLFile)));
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, utf16xml.toString(), XML::Format::utf8BOM);
+    REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf8BOM);
+    xml.parse(BufferSource(XML::fromFile(generatedFileName)));
     REQUIRE(XRef<Declaration>(xml.declaration()).encoding() == "UTF-8");
+    std::filesystem::remove(generatedFileName);
   }
 }

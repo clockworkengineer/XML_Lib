@@ -7,11 +7,9 @@
 std::string prefixTestDataPath(const std::string &xmlFileName)
 {
   if (std::filesystem::is_directory("./files")) {
-    return (std::filesystem::current_path() / "./files" / xmlFileName)
-        .string();
+    return (std::filesystem::current_path() / "./files" / xmlFileName).string();
   } else {
-    return (std::filesystem::current_path() / "../files" / xmlFileName)
-        .string();
+    return (std::filesystem::current_path() / "../files" / xmlFileName).string();
   }
 }
 
@@ -57,4 +55,14 @@ void checkStringify(const std::string &xmlString)
   BufferDestination destination;
   xml.stringify(destination);
   REQUIRE(destination.toString() == xmlString);
+}
+
+/// <summary>
+/// Generate unique file name.
+/// </summary>
+/// <returns>Unique torrent file name</returns>
+std::string generateRandomFileName(void)
+{
+  std::string name1 = std::tmpnam(nullptr);
+  return name1;
 }
