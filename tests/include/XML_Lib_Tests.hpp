@@ -6,10 +6,6 @@
 #include "XML_Core.hpp"
 #include "DTD_Validator.hpp"
 
-#include <fstream>
-#include <filesystem>
-
-#define kGeneratedXMLFile "generated.xml"
 #define kSingleXMLFile "testfile001.xml"
 #define kNonExistantXMLFile "doesntexist.xml"
 #define KEmptyXMLFile "empty.xml"

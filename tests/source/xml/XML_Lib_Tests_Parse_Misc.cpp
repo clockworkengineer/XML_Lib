@@ -78,9 +78,10 @@ TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XNode][R-Value Refe
   }
   SECTION("Parse/Stringify both with R-Value reference (File).", "[XML][MLNode][R-Value Reference]")
   {
-    std::filesystem::remove(prefixTestDataPath(kGeneratedXMLFile));
+    std::string generatedFileName{ generateRandomFileName() };
     xml.parse(FileSource{ prefixTestDataPath(kSingleXMLFile) });
-    xml.stringify(FileDestination{ prefixTestDataPath(kGeneratedXMLFile) });
-    REQUIRE(XML::fromFile(prefixTestDataPath(kGeneratedXMLFile)) == XML::fromFile(prefixTestDataPath(kSingleXMLFile)));
+    xml.stringify(FileDestination{ generatedFileName });
+    REQUIRE(XML::fromFile(generatedFileName) == XML::fromFile(prefixTestDataPath(kSingleXMLFile)));
+    std::filesystem::remove(generatedFileName);
   }
 }

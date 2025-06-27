@@ -74,9 +74,12 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
       "<!NOTATION BMP SYSTEM \"\">\r\n"
       "]>\r\n"
       "<REPORT>\r\r </REPORT>\r\n";
-    XML::toFile(prefixTestDataPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
-    FileSource source{ prefixTestDataPath(kGeneratedXMLFile) };
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    FileSource source{ generatedFileName };
     verifyCRLFCount(source, 28, 3);
+    source.close();
+    std::filesystem::remove(generatedFileName);
   }
   SECTION(
     "Check that FileSource is  performing CRLF to LF conversion on linux format data correctly.", "[XML][FileSource]")
@@ -109,15 +112,19 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
       "<!NOTATION BMP SYSTEM \"\">\n"
       "]>\n"
       "<REPORT>\r\r </REPORT>\n";
-    XML::toFile(prefixTestDataPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
-    FileSource source{ prefixTestDataPath(kGeneratedXMLFile) };
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    FileSource source{ generatedFileName };
     verifyCRLFCount(source, 28, 3);
+    source.close();
+    std::filesystem::remove(generatedFileName);
   }
   SECTION("Check that FileSource is ignoring whitespace correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
-    XML::toFile(prefixTestDataPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
-    FileSource source{ prefixTestDataPath(kGeneratedXMLFile) };
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    FileSource source{ generatedFileName };
     String xmlResult;
     while (source.more()) {
       source.ignoreWS();
@@ -126,22 +133,28 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     }
     REQUIRE(xmlResult == u"<root>TestTestTest</root>");
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
+    source.close();
+    std::filesystem::remove(generatedFileName);
   }
   SECTION("Check that FileSource ignoreWS() at end of file does not throw but next() does.", "[XML][FileSource]")
   {
     xmlString = "<root>Test Test Test Test</root>";
-    XML::toFile(prefixTestDataPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
-    FileSource source{ prefixTestDataPath(kGeneratedXMLFile) };
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    FileSource source{ generatedFileName };
     while (source.more()) { source.next(); }
     REQUIRE_NOTHROW(source.ignoreWS());
     REQUIRE_THROWS_AS(source.next(), FileSource::Error);
     REQUIRE_THROWS_WITH(source.next(), "FileSource Error: Parse buffer empty before parse complete.");
+    source.close();
+    std::filesystem::remove(generatedFileName);
   }
   SECTION("Check that FileSource match works correctly when match found or not.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
-    XML::toFile(prefixTestDataPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
-    FileSource source{ prefixTestDataPath(kGeneratedXMLFile) };
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    FileSource source{ generatedFileName };
     REQUIRE_FALSE(source.match("<root> "));
     REQUIRE_FALSE(!source.match("<root>"));
     REQUIRE(source.current() == 'M');
@@ -164,12 +177,15 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     REQUIRE_FALSE(!source.match("</root>"));
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "FileSource Error: Parse buffer empty before parse complete.");
+    source.close();
+    std::filesystem::remove(generatedFileName);
   }
   SECTION("Check that FileSource backup works and doesn't go negative.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
-    XML::toFile(prefixTestDataPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
-    FileSource source{ prefixTestDataPath(kGeneratedXMLFile) };
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    FileSource source{ generatedFileName };
     source.match("<root>Match1");
     REQUIRE(source.current() == ' ');
     source.backup(12);
@@ -182,6 +198,8 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     source.backup(1);
     REQUIRE(source.current() == '>');
+    source.close();
+    std::filesystem::remove(generatedFileName);
   }
 }
 TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", "[XML][BufferSource]")
@@ -390,8 +408,9 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   SECTION("Check that FileSource position() and getRange works correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
-    XML::toFile(prefixTestDataPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
-    FileSource source{ prefixTestDataPath(kGeneratedXMLFile) };
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    FileSource source{ generatedFileName };
     while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     long start = source.position();
@@ -399,6 +418,8 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     REQUIRE(source.position() == 22);
     REQUIRE(source.getRange(start, source.position()) == "1    Match2");
     REQUIRE(source.position() == 22);
+    source.close();
+    std::filesystem::remove(generatedFileName);
   }
 
   SECTION("Check that BufferSource reset() works correctly.", "[XML][BufferSource]")
@@ -415,13 +436,16 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   SECTION("Check that FileSource reset() works correctly.", "[XML][FileSource]")
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
-    XML::toFile(prefixTestDataPath(kGeneratedXMLFile), xmlString, XML::Format::utf8);
-    FileSource source{ prefixTestDataPath(kGeneratedXMLFile) };
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    FileSource source{ generatedFileName };
     while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     source.reset();
     REQUIRE(source.position() == 0);
     while (source.more() && !source.match("Match")) { source.next(); }
     REQUIRE(source.position() == 11);
+    source.close();
+    std::filesystem::remove(generatedFileName);
   }
 }
