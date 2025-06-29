@@ -63,6 +63,8 @@ void checkStringify(const std::string &xmlString)
 /// <returns>Unique torrent file name</returns>
 std::string generateRandomFileName(void)
 {
-  std::string name1 = std::tmpnam(nullptr);
-  return name1;
+  std::filesystem::path namepath = std::tmpnam(nullptr);
+  std::string result { std::filesystem::temp_directory_path().string() };
+  result.push_back(std::filesystem::path::preferred_separator);
+  return result+namepath.filename().string();
 }
