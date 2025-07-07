@@ -2,9 +2,9 @@
 
 namespace XML_Lib {
 // ===============================
-// Construct XNode from raw values
+// Construct Node from raw values
 // ===============================
-template<typename T> XNode::XNode(T value)
+template<typename T> Node::Node(T value)
 {
   if constexpr (std::is_convertible_v<T, std::unique_ptr<Variant>>) { xmlVariant = std::move(value); }
 }

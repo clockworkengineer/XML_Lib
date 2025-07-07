@@ -3,7 +3,7 @@
 namespace XML_Lib {
 
 // ==========================
-// Get XML content from XNode
+// Get XML content from Node
 // ==========================
 [[nodiscard]] inline std::string EntityReference::getContents() const
 {

@@ -54,11 +54,11 @@ bool DTD_Impl::checkIsIDOK(const std::string_view &idValue)
 /// <summary>
 /// Check whether element contains characters.
 /// </summary>
-/// <param name="xNode">Current element XNode.</param>
+/// <param name="xNode">Current element Node.</param>
 /// <returns>true if element contains characters otherwise false.</returns>
-bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
+bool DTD_Impl::checkIsPCDATA(const Node &xNode)
 {
-  if (auto &child = xNode.getChildren(); std::ranges::all_of(child, [](const XNode &element) {
+  if (auto &child = xNode.getChildren(); std::ranges::all_of(child, [](const Node &element) {
         return !isA<Element>(element) || isA<Self>(element);
       })) {
     return !xNode.getContents().empty();
@@ -69,9 +69,9 @@ bool DTD_Impl::checkIsPCDATA(const XNode &xNode)
 /// <summary>
 /// Check whether an element does not contain any content (is empty).
 /// </summary>
-/// <param name="xNode">Current element XNode.</param>
+/// <param name="xNode">Current element Node.</param>
 /// <returns>true if element empty otherwise false.</returns>
-bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().empty() || isA<Self>(xNode); }
+bool DTD_Impl::checkIsEMPTY(const Node &xNode) { return xNode.getChildren().empty() || isA<Self>(xNode); }
 
 /// <summary>
 ///
@@ -83,9 +83,9 @@ bool DTD_Impl::checkIsEMPTY(const XNode &xNode) { return xNode.getChildren().emp
 /// #FIXED value    The attribute value is fixed
 ///
 /// </summary>
-/// <param name="xNode">Current element XNode.</param>
+/// <param name="xNode">Current element Node.</param>
 /// <param name="attribute">Attribute to check against.</param>
-void DTD_Impl::checkAttributeValue(const XNode &xNode, const DTD::Attribute &attribute) const
+void DTD_Impl::checkAttributeValue(const Node &xNode, const DTD::Attribute &attribute) const
 {
   const auto &xElement = XRef<Element>(xNode);
   const bool attributePresent = xElement.hasAttribute(attribute.name);
@@ -123,9 +123,9 @@ void DTD_Impl::checkAttributeValue(const XNode &xNode, const DTD::Attribute &att
 /// xml:          The value is a predefined xml value
 ///
 /// </summary>
-/// <param name="xNode">Current element XNode.</param>
+/// <param name="xNode">Current element Node.</param>
 /// <param name="attribute">Attribute to check against.</param>
-void DTD_Impl::checkAttributeType(const XNode &xNode, const DTD::Attribute &attribute)
+void DTD_Impl::checkAttributeType(const Node &xNode, const DTD::Attribute &attribute)
 {
   const auto &xElement = XRef<Element>(xNode);
   auto &elementAttribute = xElement[attribute.name];
@@ -201,8 +201,8 @@ void DTD_Impl::checkAttributeType(const XNode &xNode, const DTD::Attribute &attr
 /// Check element has the correct attribute type(s) and value(s) associated with
 /// it.
 /// </summary>
-/// <param name="xNode">Current element XNode.</param>
-void DTD_Impl::checkAttributes(const XNode &xNode)
+/// <param name="xNode">Current element Node.</param>
+void DTD_Impl::checkAttributes(const Node &xNode)
 {
   for (const auto &xElement = XRef<Element>(xNode); auto &attribute : xDTD.getElement(xElement.name()).attributes) {
     if (xElement.hasAttribute(attribute.name)) { checkAttributeType(xNode, attribute); }
@@ -213,8 +213,8 @@ void DTD_Impl::checkAttributes(const XNode &xNode)
 /// <summary>
 /// Check elements structure.
 /// </summary>
-/// <param name="xNode">Current element XNode.</param>
-void DTD_Impl::checkContentSpecification(const XNode &xNode) const
+/// <param name="xNode">Current element Node.</param>
+void DTD_Impl::checkContentSpecification(const Node &xNode) const
 {
   const auto &xElement = XRef<Element>(xNode);
   if (xDTD.getElementCount() == 0) { return; }
@@ -245,8 +245,8 @@ void DTD_Impl::checkContentSpecification(const XNode &xNode) const
 /// <summary>
 /// Check elements content and associated attributes.
 /// </summary>
-/// <param name="xNode">Current element XNode.</param>
-void DTD_Impl::checkElement(const XNode &xNode)
+/// <param name="xNode">Current element Node.</param>
+void DTD_Impl::checkElement(const Node &xNode)
 {
   checkContentSpecification(xNode);
   checkAttributes(xNode);
@@ -255,8 +255,8 @@ void DTD_Impl::checkElement(const XNode &xNode)
 /// <summary>
 /// Recursively check elements of XML document.
 /// </summary>
-/// <param name="xNode">Current element XNode.</param>
-void DTD_Impl::checkElements(const XNode &xNode)
+/// <param name="xNode">Current element Node.</param>
+void DTD_Impl::checkElements(const Node &xNode)
 {
   if (isA<Prolog>(xNode)) {
     for (auto &element : xNode.getChildren()) { checkElements(element); }
@@ -284,8 +284,8 @@ void DTD_Impl::checkElements(const XNode &xNode)
 /// Check XML element by element and then check all ID values reference an
 /// element.
 /// </summary>
-/// <param name="xNode">XNode element containing root of XML to validate.</param>
-void DTD_Impl::checkAgainstDTD(const XNode &xNode)
+/// <param name="xNode">Node element containing root of XML to validate.</param>
+void DTD_Impl::checkAgainstDTD(const Node &xNode)
 {
   lineNumber = xDTD.getLineCount();
   checkElements(xNode);
@@ -300,6 +300,6 @@ void DTD_Impl::checkAgainstDTD(const XNode &xNode)
 /// Validate XML against its DTD. Throwing an exception if there is a
 /// issue with the XML that is being validated.
 /// </summary>
-/// <param name="xNode">XNode element containing root of XML to validate.</param>
-void DTD_Impl::validate(const XNode &xNode) { checkAgainstDTD(xNode); }
+/// <param name="xNode">Node element containing root of XML to validate.</param>
+void DTD_Impl::validate(const Node &xNode) { checkAgainstDTD(xNode); }
 }// namespace XML_Lib

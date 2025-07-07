@@ -5,7 +5,7 @@ namespace XML_Lib {
 // ===================================================
 // Forward declarations for interfaces/classes/structs
 // ===================================================
-struct XNode;
+struct Node;
 
 // =========================================
 // Interface for DTD_Validator XML validator
@@ -35,7 +35,7 @@ public:
   // =========================
   // Validate XML against DTD_Validator
   // =========================
-  virtual void validate(const XNode &xNode) = 0;
+  virtual void validate(const Node &xNode) = 0;
 };
 
 }// namespace XML_Lib

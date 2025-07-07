@@ -16,10 +16,10 @@ public:
   XML_Impl &operator=(XML_Impl &&other) = delete;
   ~XML_Impl();
 
-  [[nodiscard]] XNode &dtd();
-  [[nodiscard]] XNode &prolog();
-  [[nodiscard]] XNode &root();
-  [[nodiscard]] XNode &declaration();
+  [[nodiscard]] Node &dtd();
+  [[nodiscard]] Node &prolog();
+  [[nodiscard]] Node &root();
+  [[nodiscard]] Node &declaration();
   void parse(ISource &source);
   void stringify(IDestination &destination);
   void traverse(IAction &action);
@@ -32,10 +32,10 @@ public:
   [[nodiscard]] static XML::Format getFileFormat(const std::string_view &fileName);
 
 private:
-  // Root XNode
-  XNode xmlRoot;
+  // Root Node
+  Node xmlRoot;
   // Traverse JSON tree
-  template<typename T> static void traverseXNodes(T &xNode, IAction &action);
+  template<typename T> static void traverseNodes(T &xNode, IAction &action);
   // Entity mapper
   std::unique_ptr<IEntityMapper> entityMapper;
   // XML parser
@@ -44,14 +44,14 @@ private:
   std::unique_ptr<IStringify> xmlStringifier;
 };
 /// <summary>
-/// Recursively traverse XNode tree calling IAction methods and possibly
+/// Recursively traverse Node tree calling IAction methods and possibly
 /// modifying the tree contents or even structure.
 /// </summary>
-/// <param name="xNode">XNode tree to be traversed.</param>
+/// <param name="xNode">Node tree to be traversed.</param>
 /// <param name="action">Action methods to call during traversal.</param>
-template<typename T> void XML_Impl::traverseXNodes(T &xNode, IAction &action)
+template<typename T> void XML_Impl::traverseNodes(T &xNode, IAction &action)
 {
-  action.onXNode(xNode);
+  action.onNode(xNode);
   if (isA<Prolog>(xNode)) {
     action.onProlog(xNode);
   } else if (isA<Declaration>(xNode)) {
@@ -75,10 +75,10 @@ template<typename T> void XML_Impl::traverseXNodes(T &xNode, IAction &action)
   } else if (isA<DTD>(xNode)) {
     action.onDTD(xNode);
   } else {
-    throw Error("Unknown XNode type encountered during tree traversal.");
+    throw Error("Unknown Node type encountered during tree traversal.");
   }
   if (!xNode.getChildren().empty()) {
-    for (auto &child : xNode.getChildren()) { traverseXNodes(child, action); }
+    for (auto &child : xNode.getChildren()) { traverseNodes(child, action); }
   }
 }
 }// namespace XML_Lib

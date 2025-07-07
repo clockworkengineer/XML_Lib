@@ -10,7 +10,7 @@ class DTD_Impl
 {
 public:
   // Constructors/Destructors
-  explicit DTD_Impl(XNode &xNode);
+  explicit DTD_Impl(Node &xNode);
   DTD_Impl() = delete;
   DTD_Impl(const DTD_Impl &other) = delete;
   DTD_Impl &operator=(const DTD_Impl &other) = delete;
@@ -23,7 +23,7 @@ public:
   // Stringify XML DTD_Validator to text destination
   void stringify(IDestination &destination) const;
   // Validate XML against DTD_Validator
-  void validate(const XNode &xNode);
+  void validate(const Node &xNode);
 
 private:
   void parseValidNotations(const std::string_view &notations) const;
@@ -54,17 +54,17 @@ private:
   void parseDTD(ISource &source);
 
   void elementError(const Element &xElement, const std::string_view &error) const;
-  void checkAttributes(const XNode &xNode);
-  void checkContentSpecification(const XNode &xNode) const;
-  void checkElement(const XNode &xNode);
-  void checkElements(const XNode &xNode);
+  void checkAttributes(const Node &xNode);
+  void checkContentSpecification(const Node &xNode) const;
+  void checkElement(const Node &xNode);
+  void checkElements(const Node &xNode);
   [[nodiscard]] static bool checkIsNMTOKENOK(const std::string_view &nmTokenValue);
   [[nodiscard]] static bool checkIsIDOK(const std::string_view &idValue);
-  void checkAttributeValue(const XNode &xNode, const DTD::Attribute &attribute) const;
-  void checkAttributeType(const XNode &xNode, const DTD::Attribute &attribute);
-  [[nodiscard]] static bool checkIsPCDATA(const XNode &xNode);
-  [[nodiscard]] static bool checkIsEMPTY(const XNode &xNode);
-  void checkAgainstDTD(const XNode &xNode);
+  void checkAttributeValue(const Node &xNode, const DTD::Attribute &attribute) const;
+  void checkAttributeType(const Node &xNode, const DTD::Attribute &attribute);
+  [[nodiscard]] static bool checkIsPCDATA(const Node &xNode);
+  [[nodiscard]] static bool checkIsEMPTY(const Node &xNode);
+  void checkAgainstDTD(const Node &xNode);
 
   std::set<std::string> assignedIDValues;
   std::set<std::string> assignedIDREFValues;

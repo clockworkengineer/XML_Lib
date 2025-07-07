@@ -71,10 +71,10 @@ set(XML_INCLUDES
   ./classes/include/implementation/XML_Impl.hpp
   ./classes/include/implementation/parser/Default_Parser.hpp
   ./classes/include/implementation/stringify/Default_Stringify.hpp
-  ./classes/include/implementation/xnode/XML_XNode.hpp
-  ./classes/include/implementation/xnode/XML_Reference.hpp
-  ./classes/include/implementation/xnode/XML_Creation.hpp
-  ./classes/include/implementation/xnode/XML_Index.hpp
+        classes/include/implementation/node/XML_Node.hpp
+        classes/include/implementation/node/XML_Node_Reference.hpp
+        classes/include/implementation/node/XML_Node_Creation.hpp
+        classes/include/implementation/node/XML_Node_Index.hpp
   ./classes/include/implementation/variants/XML_Prolog.hpp
   ./classes/include/implementation/variants/XML_Declaration.hpp
   ./classes/include/implementation/variants/XML_Content.hpp
@@ -88,7 +88,7 @@ set(XML_INCLUDES
   ./classes/include/implementation/variants/XML_DTD.hpp
   ./classes/include/implementation/variants/XML_Variant.hpp
   ./classes/include/interface/IAction.hpp
-  ./classes/include/implementation/xnode/XML_Contents.hpp
+        classes/include/implementation/node/XML_Node_Contents.hpp
   ./classes/include/implementation/entity/XML_EntityMapping.hpp
 )
 
@@ -105,7 +105,7 @@ target_include_directories(${XML_LIBRARY_NAME} PUBLIC
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/io
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/parser
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/validator
-  ${PROJECT_SOURCE_DIR}/classes/include/implementation/xnode
+        ${PROJECT_SOURCE_DIR}/classes/include/implementation/node
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify
   ${PROJECT_SOURCE_DIR}/classes/include/implementation/variants
   ${PROJECT_BINARY_DIR})

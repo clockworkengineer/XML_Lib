@@ -30,7 +30,7 @@ class ISource;
 class IDestination;
 class IAction;
 class XML_Impl;
-struct XNode;
+struct Node;
 
 class XML
 {
@@ -47,14 +47,14 @@ public:
   XML(XML &&other) = delete;
   XML &operator=(XML &&other) = delete;
   ~XML();
-  // Get reference to DTD_Validator XNode
-  [[nodiscard]] XNode &dtd() const;
-  // Get reference to prolog XNode
-  [[nodiscard]] XNode &prolog() const;
-  // Get reference to declaration XNode
-  [[nodiscard]] XNode &declaration() const;
-  // Get reference to root element XNode
-  [[nodiscard]] XNode &root() const;
+  // Get reference to DTD_Validator Node
+  [[nodiscard]] Node &dtd() const;
+  // Get reference to prolog Node
+  [[nodiscard]] Node &prolog() const;
+  // Get reference to declaration Node
+  [[nodiscard]] Node &declaration() const;
+  // Get reference to root element Node
+  [[nodiscard]] Node &root() const;
   // Validate XML
   void validate() const;
   // Return version string

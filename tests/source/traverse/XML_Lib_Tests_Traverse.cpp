@@ -5,19 +5,19 @@ class XML_Analyzer final : public IAction
 public:
   XML_Analyzer() = default;
   ~XML_Analyzer() override = default;
-  // Add XNode details to analysis
-  void onXNode([[maybe_unused]] const XNode &xNode) override { totalNodes++; }
-  void onCDATA([[maybe_unused]] const XNode &xNode) override { totalCDATA++; }
-  void onComment([[maybe_unused]] const XNode &xNode) override { totalComment++; }
-  void onContent([[maybe_unused]] const XNode &xNode) override { totalContent++; }
-  void onDeclaration([[maybe_unused]] const XNode &xNode) override { totalDeclaration++; }
-  void onDTD([[maybe_unused]] const XNode &xNode) override { totalDTD++; }
-  void onElement([[maybe_unused]] const XNode &xNode) override { totalElement++; }
-  void onEntityReference([[maybe_unused]] const XNode &xNode) override { totalEntityReference++; }
-  void onPI([[maybe_unused]] const XNode &xNode) override { totalPI++; }
-  void onProlog([[maybe_unused]] const XNode &xNode) override { totalProlog++; }
-  void onRoot([[maybe_unused]] const XNode &xNode) override { totalRoot++; }
-  void onSelf([[maybe_unused]] const XNode &xNode) override { totalSelf++; }
+  // Add Node details to analysis
+  void onNode([[maybe_unused]] const Node &xNode) override { totalNodes++; }
+  void onCDATA([[maybe_unused]] const Node &xNode) override { totalCDATA++; }
+  void onComment([[maybe_unused]] const Node &xNode) override { totalComment++; }
+  void onContent([[maybe_unused]] const Node &xNode) override { totalContent++; }
+  void onDeclaration([[maybe_unused]] const Node &xNode) override { totalDeclaration++; }
+  void onDTD([[maybe_unused]] const Node &xNode) override { totalDTD++; }
+  void onElement([[maybe_unused]] const Node &xNode) override { totalElement++; }
+  void onEntityReference([[maybe_unused]] const Node &xNode) override { totalEntityReference++; }
+  void onPI([[maybe_unused]] const Node &xNode) override { totalPI++; }
+  void onProlog([[maybe_unused]] const Node &xNode) override { totalProlog++; }
+  void onRoot([[maybe_unused]] const Node &xNode) override { totalRoot++; }
+  void onSelf([[maybe_unused]] const Node &xNode) override { totalSelf++; }
 
   // XML analysis data
   // Node
@@ -46,7 +46,7 @@ public:
   int64_t totalSelf{};
 };
 
-TEST_CASE("XML XNode tree traverse tests ", "[XML][Traverse]")
+TEST_CASE("XML Node tree traverse tests ", "[XML][Traverse]")
 {
   const XML xml;
   SECTION("Parse minimum XML (root and no prolog) and traverse", "[XML][Traverse][Minimum]")

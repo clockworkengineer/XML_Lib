@@ -5,7 +5,7 @@ Current sizes:
 XML_Lib::XMLAttribute size 112 in bytes.
 XML_Lib::XMLExternalReference size 72 in bytes.
 XML_Lib::XMLValue size 80 in bytes.
-XML_Lib::XNode size 8 in bytes.
+XML_Lib::Node size 8 in bytes.
 XML_Lib::XCDATA size 56 in bytes.
 XML_Lib::XComment Entry size 56 in bytes.
 XML_Lib::XContent size 64 in bytes.

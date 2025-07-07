@@ -35,7 +35,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
   // Output XML Lib version and data structure metrics
   PLOG_INFO << xl::XML().version();
   PLOG_INFO << XML_Analyzer::dumpNumericSizes();
-  PLOG_INFO << XML_Analyzer::dumpXNodeSizes();
+  PLOG_INFO << XML_Analyzer::dumpNodeSizes();
   // Analyze XML files.
   for (auto &fileName : Utility::createXMLFileList()) {
     try {

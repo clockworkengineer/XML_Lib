@@ -15,7 +15,7 @@ namespace XML_Lib {
 /// <summary>
 /// DTD_Validator constructor.
 /// </summary>
-DTD_Validator::DTD_Validator(XNode &xNode) : implementation(std::make_unique<DTD_Impl>(xNode)) {}
+DTD_Validator::DTD_Validator(Node &xNode) : implementation(std::make_unique<DTD_Impl>(xNode)) {}
 
 /// <summary>
 /// DTD_Validator destructor.
@@ -37,7 +37,7 @@ void DTD_Validator::stringify(IDestination &destination) { implementation->strin
 /// <summary>
 /// Validate XML against DTD.
 /// </summary>
-/// <param name="xNode">XML prolog XNode.</param>
-void DTD_Validator::validate(const XNode &xNode) { implementation->validate(xNode); }
+/// <param name="xNode">XML prolog Node.</param>
+void DTD_Validator::validate(const Node &xNode) { implementation->validate(xNode); }
 
 }// namespace XML_Lib

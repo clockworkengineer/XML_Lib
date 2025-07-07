@@ -9,25 +9,25 @@
 #include "XML_Impl.hpp"
 
 namespace XML_Lib {
-void Variant::addChild(XNode &child) const
+void Variant::addChild(Node &child) const
 {
-  if (children == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
+  if (children == nullptr) { children = std::make_unique<std::vector<Node>>(); }
   children->push_back(std::move(child));
 }
-void Variant::addChild(XNode &&child) const
+void Variant::addChild(Node &&child) const
 {
-  if (children == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
+  if (children == nullptr) { children = std::make_unique<std::vector<Node>>(); }
   children->push_back(std::move(child));
 }
-// Get XNode children reference
-std::vector<XNode> &Variant::getChildren()
+// Get Node children reference
+std::vector<Node> &Variant::getChildren()
 {
-  if (children == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
+  if (children == nullptr) { children = std::make_unique<std::vector<Node>>(); }
   return *children;
 }
-const std::vector<XNode> &Variant::getChildren() const
+const std::vector<Node> &Variant::getChildren() const
 {
-  if (children == nullptr) { children = std::make_unique<std::vector<XNode>>(); }
+  if (children == nullptr) { children = std::make_unique<std::vector<Node>>(); }
   return *children;
 }
 Variant::Variant(const Type nodeType) : xmlNodeType(nodeType) {}

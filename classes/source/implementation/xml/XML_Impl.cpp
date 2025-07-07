@@ -34,7 +34,7 @@ std::string XML_Impl::version()
   return versionString.str();
 }
 
-XNode &XML_Impl::dtd()
+Node &XML_Impl::dtd()
 {
   if (xmlParser->canValidate()) {
     for (auto &child : prolog().getChildren()) {
@@ -44,7 +44,7 @@ XNode &XML_Impl::dtd()
   throw Error("No DTD found.");
 }
 
-XNode &XML_Impl::prolog()
+Node &XML_Impl::prolog()
 {
   if (!xmlRoot.isEmpty()) {
     return xmlRoot;
@@ -52,9 +52,9 @@ XNode &XML_Impl::prolog()
   throw Error("No XML has been parsed.");
 }
 
-XNode &XML_Impl::declaration() { return prolog().getChildren()[0]; }
+Node &XML_Impl::declaration() { return prolog().getChildren()[0]; }
 
-XNode &XML_Impl::root()
+Node &XML_Impl::root()
 {
   for (auto &child : prolog().getChildren()) {
     if (isA<Root>(child) || isA<Self>(child)) { return child; }
@@ -71,11 +71,11 @@ void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(
 void XML_Impl::traverse(IAction &action)
 {
   if (xmlRoot.isEmpty()) { throw Error("No XML to traverse."); }
-  traverseXNodes(xmlRoot, action);
+  traverseNodes(xmlRoot, action);
 }
 void XML_Impl::traverse(IAction &action) const
 {
   if (xmlRoot.isEmpty()) { throw Error("No XML to traverse."); }
-  traverseXNodes(xmlRoot, action);
+  traverseNodes(xmlRoot, action);
 }
 }// namespace XML_Lib

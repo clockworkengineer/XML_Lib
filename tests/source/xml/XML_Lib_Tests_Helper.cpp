@@ -42,7 +42,7 @@ void verifyCRLFCount(ISource &source, const long lfFinal, const long crFinal)
 }
 
 /// <summary>
-/// Convert XML to an XML XNode tree, stringify the XML XNode tree and
+/// Convert XML to an XML Node tree, stringify the XML Node tree and
 /// compare the result with the passed in XML with REQUIRE.
 /// </summary>
 /// <param name="xmlString">XML to parse and stringify.</param>

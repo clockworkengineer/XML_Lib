@@ -2,9 +2,9 @@
 
 namespace XML_Lib {
 // =======================
-// What is XNode variant ?
+// What is Node variant ?
 // =======================
-template<typename T> bool isA(const XNode &xNode)
+template<typename T> bool isA(const Node &xNode)
 {
   if constexpr (std::is_same_v<T, Prolog>) {
     return xNode.getVariant().getNodeType() == Variant::Type::prolog;
@@ -33,42 +33,42 @@ template<typename T> bool isA(const XNode &xNode)
   }
 }
 // =========================
-// XNode reference converter
+// Node reference converter
 // =========================
-template<typename T> void checkXNodeType(const XNode &xNode)
+template<typename T> void checkNodeType(const Node &xNode)
 {
   if constexpr (std::is_same_v<T, Prolog>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not a prolog."); }
+    if (!isA<T>(xNode)) { throw Node::Error("Node not a prolog."); }
   } else if constexpr (std::is_same_v<T, Declaration>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not a declaration."); }
+    if (!isA<T>(xNode)) { throw Node::Error("Node not a declaration."); }
   } else if constexpr (std::is_same_v<T, Element>) {
-    if (!isA<Root>(xNode) && !isA<Self>(xNode)  && !isA<Element>(xNode)) { throw XNode::Error("Node not an element."); }
+    if (!isA<Root>(xNode) && !isA<Self>(xNode)  && !isA<Element>(xNode)) { throw Node::Error("Node not an element."); }
   } else if constexpr (std::is_same_v<T, Self>) {
-    if (!isA<Self>(xNode)) { throw XNode::Error("Node not a (root) element."); }
+    if (!isA<Self>(xNode)) { throw Node::Error("Node not a (root) element."); }
   } else if constexpr (std::is_same_v<T, Root>) {
-    if (!isA<Root>(xNode)) { throw XNode::Error("Node not a (self) element."); }
+    if (!isA<Root>(xNode)) { throw Node::Error("Node not a (self) element."); }
   } else if constexpr (std::is_same_v<T, Content>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not content."); }
+    if (!isA<T>(xNode)) { throw Node::Error("Node not content."); }
   } else if constexpr (std::is_same_v<T, EntityReference>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not an entity."); }
+    if (!isA<T>(xNode)) { throw Node::Error("Node not an entity."); }
   } else if constexpr (std::is_same_v<T, Comment>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not a comment."); }
+    if (!isA<T>(xNode)) { throw Node::Error("Node not a comment."); }
   } else if constexpr (std::is_same_v<T, CDATA>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not CDATA."); }
+    if (!isA<T>(xNode)) { throw Node::Error("Node not CDATA."); }
   } else if constexpr (std::is_same_v<T, PI>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not a PI."); }
+    if (!isA<T>(xNode)) { throw Node::Error("Node not a PI."); }
   } else if constexpr (std::is_same_v<T, DTD>) {
-    if (!isA<T>(xNode)) { throw XNode::Error("Node not DTD_Validator."); }
+    if (!isA<T>(xNode)) { throw Node::Error("Node not DTD_Validator."); }
   }
 }
-template<typename T> T &XRef(XNode &xNode)
+template<typename T> T &XRef(Node &xNode)
 {
-  checkXNodeType<T>(xNode);
+  checkNodeType<T>(xNode);
   return static_cast<T &>(xNode.getVariant());
 }
-template<typename T> const T &XRef(const XNode &xNode)
+template<typename T> const T &XRef(const Node &xNode)
 {
-  checkXNodeType<T>(xNode);
+  checkNodeType<T>(xNode);
   return static_cast<const T &>(xNode.getVariant());
 }
 }// namespace XML_Lib

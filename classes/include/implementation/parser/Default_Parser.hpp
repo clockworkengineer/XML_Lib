@@ -16,29 +16,29 @@ public:
   Default_Parser &operator=(Default_Parser &&other) = delete;
   ~Default_Parser() override = default;
 
-  [[nodiscard]] XNode parse(ISource &source) override;
+  [[nodiscard]] Node parse(ISource &source) override;
   [[nodiscard]] bool canValidate() override;
-  void validate(XNode &xProlog) override;
+  void validate(Node &xProlog) override;
 
 private:
   // XML Parser
-  static void parseEntityReferenceXML(XNode &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper);
+  static void parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper);
   [[nodiscard]] static std::string
     parseDeclarationAttribute(ISource &source, const std::string_view &name, const std::set<std::string> &values);
-  [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, XNode &xProlog);
-  static void  parseContent(ISource &source, XNode &xNode, IEntityMapper &entityMapper);
+  [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog);
+  static void  parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper);
   [[nodiscard]] static std::string parseTagName(ISource &source);
   [[nodiscard]] static std::vector<XMLAttribute> parseAttributes(ISource &source, IEntityMapper &entityMapper);
-  [[nodiscard]] static XNode parseComment(ISource &source);
-  [[nodiscard]] static XNode parseCDATA(ISource &source);
-  [[nodiscard]] static XNode parsePI(ISource &source);
-  static void parseWhiteSpaceToContent(ISource &source, XNode &xNode);
-  static void parseElementInternal(ISource &source, XNode &xNode, IEntityMapper &entityMapper);
-  [[nodiscard]] static XNode parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, IEntityMapper & entityMapper);
-  [[nodiscard]] static XNode parseDeclaration(ISource &source);
-  [[nodiscard]] static XNode parseDTD(ISource &source, IEntityMapper &entityMapper);
-  [[nodiscard]] static XNode parseProlog(ISource &source, IEntityMapper &entityMapper);
-  static void parseEpilog(ISource &source, XNode &xProlog);
+  [[nodiscard]] static Node parseComment(ISource &source);
+  [[nodiscard]] static Node parseCDATA(ISource &source);
+  [[nodiscard]] static Node parsePI(ISource &source);
+  static void parseWhiteSpaceToContent(ISource &source, Node &xNode);
+  static void parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper);
+  [[nodiscard]] static Node parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, IEntityMapper & entityMapper);
+  [[nodiscard]] static Node parseDeclaration(ISource &source);
+  [[nodiscard]] static Node parseDTD(ISource &source, IEntityMapper &entityMapper);
+  [[nodiscard]] static Node parseProlog(ISource &source, IEntityMapper &entityMapper);
+  static void parseEpilog(ISource &source, Node &xProlog);
   // XML tree has root
   inline static bool hasRoot{ false };
   // Parser validator

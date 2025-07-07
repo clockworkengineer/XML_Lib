@@ -17,22 +17,22 @@ public:
   ~Default_Stringify() override = default;
 
 /// <summary>
-/// Recursively parse XNode passed in to produce XML output on a
+/// Recursively parse Node passed in to produce XML output on a
 /// destination stream in UTF-8 encoding.
 /// </summary>
-/// <param name="xNode">XNode to convert into XML.</param>
+/// <param name="xNode">Node to convert into XML.</param>
 /// <param name="destination">XML destination stream.</param>
 /// <param name="indent">Current indentation.</param>
-void stringify(const XNode &xNode, IDestination &destination, const unsigned long indent) const override
+void stringify(const Node &xNode, IDestination &destination, const unsigned long indent) const override
   {
- stringifyXNodes(xNode, destination, indent);
+ stringifyNodes(xNode, destination, indent);
 }
 private:
-  static void stringifyXNodes(const XNode &xNode, IDestination &destination, const unsigned long indent)
+  static void stringifyNodes(const Node &xNode, IDestination &destination, const unsigned long indent)
   {
   // XML prolog
   if (isA<Prolog>(xNode)) {
-    for (auto &child : xNode.getChildren()) { stringifyXNodes(child, destination, indent); }
+    for (auto &child : xNode.getChildren()) { stringifyNodes(child, destination, indent); }
   }
   // XML declaration
   else if (isA<Declaration>(xNode)) {
@@ -49,7 +49,7 @@ private:
     }
     if (!isA<Self>(xNode)) {
       destination.add(">");
-      for (auto &child : xNode.getChildren()) { stringifyXNodes(child, destination, indent); }
+      for (auto &child : xNode.getChildren()) { stringifyNodes(child, destination, indent); }
       destination.add("</" + xElement.name() + ">");
     } else {
       destination.add("/>");
@@ -84,7 +84,7 @@ private:
   else if (isA<DTD>(xNode)) {
     destination.add(XRef<DTD>(xNode).unparsed());
   } else {
-    throw Error("Invalid XNode encountered during stringify.");
+    throw Error("Invalid Node encountered during stringify.");
   }
 }
 

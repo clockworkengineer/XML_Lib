@@ -60,10 +60,10 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     REQUIRE(XRef<Content>((xRootChildren[4])[2]).isWhiteSpace() == false);
   }
 }
-TEST_CASE("Check R-Value reference parse/stringify.", "[XML][XNode][R-Value Reference]")
+TEST_CASE("Check R-Value reference parse/stringify.", "[XML][Node][R-Value Reference]")
 {
   const XML xml;
-  SECTION("Parse with R-Value reference (Buffer).", "[XML][XNode][R-Value Reference]")
+  SECTION("Parse with R-Value reference (Buffer).", "[XML][Node][R-Value Reference]")
   {
     xml.parse(
       BufferSource{ "<?xml version=\"1.0\"?>"

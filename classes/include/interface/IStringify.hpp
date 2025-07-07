@@ -6,7 +6,7 @@ namespace XML_Lib {
 // Forward declarations
 // ====================
 class IDestination;
-struct XNode;
+struct Node;
 
 // ==================================
 // Interface for XML stringification
@@ -26,9 +26,9 @@ public:
   // ========================
   virtual ~IStringify() = default;
   // ====================
-  // Stringify XNode tree
+  // Stringify Node tree
   // ====================
-  virtual void stringify(const XNode &xNode, IDestination &destination, unsigned long indent) const = 0;
+  virtual void stringify(const Node &xNode, IDestination &destination, unsigned long indent) const = 0;
   // =========================
   // Set/Get print indentation
   // =========================

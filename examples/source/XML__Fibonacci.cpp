@@ -37,8 +37,8 @@ void nextFibonacci()
     const  unsigned long first = std::stol(xl::XRef<xl::Element>(xml.root()[last - 1]).getContents());
     const  unsigned long second = std::stol(xl::XRef<xl::Element>(xml.root()[last]).getContents());
     // Create new element for next in sequence
-    auto  xNode = xl::XNode::make<xl::Element>("row");
-    xNode.addChild(xl::XNode::make<xl::Content>(std::to_string(first+second)));
+    auto  xNode = xl::Node::make<xl::Element>("row");
+    xNode.addChild(xl::Node::make<xl::Content>(std::to_string(first+second)));
     xml.root().addChild(xNode);
   }
   // Write updated sequence back to file

@@ -42,26 +42,26 @@ std::string XML::version() { return XML_Impl::version(); }
 /// <summary>
 /// Return reference to any internal DTD_Validator for parsed XML.
 /// </summary>
-/// <returns>Reference to DTD_Validator XNode.</returns>
-XNode &XML::dtd() const { return implementation->dtd(); }
+/// <returns>Reference to DTD_Validator Node.</returns>
+Node &XML::dtd() const { return implementation->dtd(); }
 
 /// <summary>
 /// Return prolog node of the parsed XML tree.
 /// </summary>
-/// <returns>Reference to prolog XNode.</returns>
-XNode &XML::prolog() const { return implementation->prolog(); }
+/// <returns>Reference to prolog Node.</returns>
+Node &XML::prolog() const { return implementation->prolog(); }
 
 /// <summary>
 /// Return declaration node of the parsed XML tree.
 /// </summary>
-/// <returns>Reference to declaration XNode.</returns>
-XNode &XML::declaration() const { return implementation->declaration(); }
+/// <returns>Reference to declaration Node.</returns>
+Node &XML::declaration() const { return implementation->declaration(); }
 
 /// <summary>
 /// Return root node of parsed XML tree.
 /// </summary>
-/// <returns>Reference to root element XNode.</returns>
-XNode &XML::root() const { return implementation->root(); }
+/// <returns>Reference to root element Node.</returns>
+Node &XML::root() const { return implementation->root(); }
 
 /// <summary>
 /// Validate XML against any DTD_Validator provided to see whether it is valid. If an
@@ -84,7 +84,7 @@ void XML::stringify(IDestination &destination) const { implementation->stringify
 void XML::stringify(IDestination &&destination) const { implementation->stringify(destination); }
 
 /// <summary>
-/// Recursively traverse XNode structure calling IAction methods (read-only)
+/// Recursively traverse Node structure calling IAction methods (read-only)
 ///  or to change the XML tree node directly.
 /// </summary>
 /// <param name="action">Action methods to call during traversal.</param>

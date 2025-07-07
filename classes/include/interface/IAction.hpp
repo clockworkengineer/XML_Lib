@@ -5,7 +5,7 @@ namespace XML_Lib {
 // ====================
 // Forward declarations
 // ====================
-struct XNode;
+struct Node;
 
 // ==========================================================
 // Interface for the action events during XML tree traversal
@@ -25,65 +25,65 @@ public:
   // ========================
   virtual ~IAction() = default;
   // ============================
-  // XNode encountered so process
+  // Node encountered so process
   // ============================
-  virtual void onXNode([[maybe_unused]] XNode &XNode){ }
-  virtual void onXNode([[maybe_unused]] const XNode &XNode){ }
+  virtual void onNode([[maybe_unused]] Node &Node){ }
+  virtual void onNode([[maybe_unused]] const Node &Node){ }
   // ==================================
-  // CDATA XNode encountered so process
+  // CDATA Node encountered so process
   // ==================================
-  virtual void onCDATA([[maybe_unused]] XNode &XNode){ }
-  virtual void onCDATA([[maybe_unused]] const XNode &XNode){ }
+  virtual void onCDATA([[maybe_unused]] Node &Node){ }
+  virtual void onCDATA([[maybe_unused]] const Node &Node){ }
   // ====================================
-  // Comment XNode encountered so process
+  // Comment Node encountered so process
   // ====================================
-  virtual void onComment([[maybe_unused]] XNode &XNode){ }
-  virtual void onComment([[maybe_unused]] const XNode &XNode){ }
+  virtual void onComment([[maybe_unused]] Node &Node){ }
+  virtual void onComment([[maybe_unused]] const Node &Node){ }
   // ====================================
-  // Content XNode encountered so process
+  // Content Node encountered so process
   // ====================================
-  virtual void onContent([[maybe_unused]] XNode &XNode){ }
-  virtual void onContent([[maybe_unused]] const XNode &XNode){ }
+  virtual void onContent([[maybe_unused]] Node &Node){ }
+  virtual void onContent([[maybe_unused]] const Node &Node){ }
   // ========================================
-  // Declaration XNode encountered so process
+  // Declaration Node encountered so process
   // ========================================
-  virtual void onDeclaration([[maybe_unused]] XNode &XNode){ }
-  virtual void onDeclaration([[maybe_unused]] const XNode &XNode){ }
+  virtual void onDeclaration([[maybe_unused]] Node &Node){ }
+  virtual void onDeclaration([[maybe_unused]] const Node &Node){ }
   // ================================
-  // DTD_Validator XNode encountered so process
+  // DTD_Validator Node encountered so process
   // ================================
-  virtual void onDTD([[maybe_unused]] XNode &XNode){ }
-  virtual void onDTD([[maybe_unused]] const XNode &XNode){ }
+  virtual void onDTD([[maybe_unused]] Node &Node){ }
+  virtual void onDTD([[maybe_unused]] const Node &Node){ }
   // ====================================
-  // Element XNode encountered so process
+  // Element Node encountered so process
   // ====================================
-  virtual void onElement([[maybe_unused]] XNode &XNode){ }
-  virtual void onElement([[maybe_unused]] const XNode &XNode){ }
+  virtual void onElement([[maybe_unused]] Node &Node){ }
+  virtual void onElement([[maybe_unused]] const Node &Node){ }
   // =============================================
-  // Entity reference XNode encountered so process
+  // Entity reference Node encountered so process
   // =============================================
-  virtual void onEntityReference([[maybe_unused]] XNode &XNode){ }
-  virtual void onEntityReference([[maybe_unused]] const XNode &XNode){ }
+  virtual void onEntityReference([[maybe_unused]] Node &Node){ }
+  virtual void onEntityReference([[maybe_unused]] const Node &Node){ }
   // ===============================
-  // PI XNode encountered so process
+  // PI Node encountered so process
   // ===============================
-  virtual void onPI([[maybe_unused]] XNode &XNode){ }
-  virtual void onPI([[maybe_unused]] const XNode &XNode){ }
+  virtual void onPI([[maybe_unused]] Node &Node){ }
+  virtual void onPI([[maybe_unused]] const Node &Node){ }
   // ===================================
-  // Prolog XNode encountered so process
+  // Prolog Node encountered so process
   // ===================================
-  virtual void onProlog([[maybe_unused]] XNode &XNode){ }
-  virtual void onProlog([[maybe_unused]] const XNode &XNode){ }
+  virtual void onProlog([[maybe_unused]] Node &Node){ }
+  virtual void onProlog([[maybe_unused]] const Node &Node){ }
   // =================================
-  // Root XNode encountered so process
+  // Root Node encountered so process
   // =================================
-  virtual void onRoot([[maybe_unused]] XNode &XNode){ }
-  virtual void onRoot([[maybe_unused]] const XNode &XNode){ }
+  virtual void onRoot([[maybe_unused]] Node &Node){ }
+  virtual void onRoot([[maybe_unused]] const Node &Node){ }
   // =================================
-  // Self XNode encountered so process
+  // Self Node encountered so process
   // =================================
-  virtual void onSelf([[maybe_unused]] XNode &XNode){ }
-  virtual void onSelf([[maybe_unused]] const XNode &XNode){ }
+  virtual void onSelf([[maybe_unused]] Node &Node){ }
+  virtual void onSelf([[maybe_unused]] const Node &Node){ }
 
 };
 }// namespace XML_Lib

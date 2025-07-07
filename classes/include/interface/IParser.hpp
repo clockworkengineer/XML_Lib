@@ -7,7 +7,7 @@ namespace XML_Lib {
 // Forward declarations
 // ====================
 
-struct XNode;
+struct Node;
 
 // =========================
 // Interface for XML parser
@@ -29,11 +29,11 @@ public:
   // =================
   // Parse XML source
   // =================
-  virtual XNode parse(ISource &source) = 0;
+  virtual Node parse(ISource &source) = 0;
   // ==============
   // XML Validation
   // ==============
   virtual bool canValidate() = 0;
-  virtual void validate(XNode &prolog) = 0;
+  virtual void validate(Node &prolog) = 0;
 };
 }// namespace XML_Lib

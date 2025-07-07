@@ -2,21 +2,21 @@
 
 namespace XML_Lib {
 // ====================
-// XNode index access
+// Node index access
 // ====================
-inline const XNode &XNode::operator[](const int index) const
+inline const Node &Node::operator[](const int index) const
 {
   if (index >= 0 && index < static_cast<int>(getChildren().size())) { return getChildren()[index]; }
-  throw Error("Invalid index used to access XNode array.");
+  throw Error("Invalid index used to access Node array.");
 }
 // =================
-// XNode name access
+// Node name access
 // =================
-inline const XNode &XNode::operator[](const std::string_view &name) const
+inline const Node &Node::operator[](const std::string_view &name) const
 {
   if (isIndexable()) {
     if (const auto xNode = std::ranges::find_if(getChildren(),
-          [&name](const XNode &child) { return child.isNameable() && XRef<Element>(child).name() == name; });
+          [&name](const Node &child) { return child.isNameable() && XRef<Element>(child).name() == name; });
         xNode != getChildren().end()) {
       return *xNode;
     }
@@ -37,7 +37,7 @@ inline const Element &Element::operator[](const int index) const
       }
     }
   }
-  throw XNode::Error("Invalid index used to access XNode array.");
+  throw Node::Error("Invalid index used to access Node array.");
 }
 inline Element &Element::operator[](const int index)
 {
@@ -50,7 +50,7 @@ inline Element &Element::operator[](const int index)
       }
     }
   }
-  throw XNode::Error("Invalid index used to access XNode array.");
+  throw Node::Error("Invalid index used to access Node array.");
 }
 // =========================
 // XElement attribute access
