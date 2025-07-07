@@ -226,7 +226,7 @@ void XML_EntityMapper::setExternal(const std::string_view &entityName, const XML
 void XML_EntityMapper::checkForRecursion()
 {
   std::set<std::string> currentEntities{};
-  for (const auto &fst : entityMappings | std::views::keys) {
+  for (const auto &[fst, snd] : entityMappings) {
     recurseOverEntityReference(fst, fst[0], currentEntities);
   }
 }
