@@ -78,14 +78,14 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
   {
     REQUIRE(XML::getFileFormat(prefixTestDataPath("testfile017.xml")) == XML::Format::utf8BOM);
     REQUIRE_NOTHROW(xml.parse(BufferSource(xml.fromFile(prefixTestDataPath("testfile017.xml")))));
-    XRef<Declaration>(xml.declaration()).setEncoding("UTF-16");
+    NRef<Declaration>(xml.declaration()).setEncoding("UTF-16");
     BufferDestination utf8xml;
     xml.stringify(utf8xml);
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, utf8xml.toString(), XML::Format::utf16BE);
     REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf16BE);
     xml.parse(BufferSource(XML::fromFile(generatedFileName)));
-    REQUIRE(XRef<Declaration>(xml.declaration()).encoding() == "UTF-16");
+    REQUIRE(NRef<Declaration>(xml.declaration()).encoding() == "UTF-16");
     std::filesystem::remove(generatedFileName);
   }
   SECTION(
@@ -93,14 +93,14 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
   {
     REQUIRE(XML::getFileFormat(prefixTestDataPath("testfile017.xml")) == XML::Format::utf8BOM);
     REQUIRE_NOTHROW(xml.parse(BufferSource(xml.fromFile(prefixTestDataPath("testfile017.xml")))));
-    XRef<Declaration>(xml.declaration()).setEncoding("UTF-16");
+    NRef<Declaration>(xml.declaration()).setEncoding("UTF-16");
     BufferDestination utf8xml;
     xml.stringify(utf8xml);
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, utf8xml.toString(), XML::Format::utf16LE);
     REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf16LE);
     xml.parse(BufferSource(XML::fromFile(generatedFileName)));
-    REQUIRE(XRef<Declaration>(xml.declaration()).encoding() == "UTF-16");
+    REQUIRE(NRef<Declaration>(xml.declaration()).encoding() == "UTF-16");
     std::filesystem::remove(generatedFileName);
   }
   SECTION(
@@ -108,14 +108,14 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
   {
     REQUIRE(XML::getFileFormat(prefixTestDataPath("testfile018.xml")) == XML::Format::utf16BE);
     REQUIRE_NOTHROW(xml.parse(BufferSource(xml.fromFile(prefixTestDataPath("testfile018.xml")))));
-    XRef<Declaration>(xml.declaration()).setEncoding("UTF-8");
+    NRef<Declaration>(xml.declaration()).setEncoding("UTF-8");
     BufferDestination utf16xml;
     xml.stringify(utf16xml);
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, utf16xml.toString(), XML::Format::utf8BOM);
     REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf8BOM);
     xml.parse(BufferSource(XML::fromFile(generatedFileName)));
-    REQUIRE(XRef<Declaration>(xml.declaration()).encoding() == "UTF-8");
+    REQUIRE(NRef<Declaration>(xml.declaration()).encoding() == "UTF-8");
     std::filesystem::remove(generatedFileName);
   }
   SECTION(
@@ -123,14 +123,14 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
   {
     REQUIRE(XML::getFileFormat(prefixTestDataPath("testfile019.xml")) == XML::Format::utf16LE);
     REQUIRE_NOTHROW(xml.parse(BufferSource(xml.fromFile(prefixTestDataPath("testfile019.xml")))));
-    XRef<Declaration>(xml.declaration()).setEncoding("UTF-8");
+    NRef<Declaration>(xml.declaration()).setEncoding("UTF-8");
     BufferDestination utf16xml;
     xml.stringify(utf16xml);
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, utf16xml.toString(), XML::Format::utf8BOM);
     REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf8BOM);
     xml.parse(BufferSource(XML::fromFile(generatedFileName)));
-    REQUIRE(XRef<Declaration>(xml.declaration()).encoding() == "UTF-8");
+    REQUIRE(NRef<Declaration>(xml.declaration()).encoding() == "UTF-8");
     std::filesystem::remove(generatedFileName);
   }
 }

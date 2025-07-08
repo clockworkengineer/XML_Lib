@@ -14,13 +14,13 @@ TEST_CASE("Create and use DTD Node.","[Node][DTD][API]")
     REQUIRE(xDTD.getRootName()=="");
     REQUIRE(xDTD.getElementCount()==0);
   }
-  SECTION("Create and use DTD using make/XRef API.", "[XML][Node][DTD][Make][XRef][API]")
+  SECTION("Create and use DTD using make/NRef API.", "[XML][Node][DTD][Make][NRef][API]")
   {
     XML_EntityMapper mapper;
     Node xNode = Node::make<DTD>(mapper);
     REQUIRE_FALSE(!isA<DTD>(xNode));
-    REQUIRE(XRef<DTD>(xNode).getRootName()=="");
-    REQUIRE(XRef<DTD>(xNode).getElementCount()==0);
+    REQUIRE(NRef<DTD>(xNode).getRootName()=="");
+    REQUIRE(NRef<DTD>(xNode).getElementCount()==0);
   }
 }
 

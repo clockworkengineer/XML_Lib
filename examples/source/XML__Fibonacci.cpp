@@ -34,8 +34,8 @@ void nextFibonacci()
     // Get index of last element
     const unsigned long last = static_cast<unsigned long>(xml.root().getChildren().size()) - 1;
     // Get last two in sequence
-    const  unsigned long first = std::stol(xl::XRef<xl::Element>(xml.root()[last - 1]).getContents());
-    const  unsigned long second = std::stol(xl::XRef<xl::Element>(xml.root()[last]).getContents());
+    const  unsigned long first = std::stol(xl::NRef<xl::Element>(xml.root()[last - 1]).getContents());
+    const  unsigned long second = std::stol(xl::NRef<xl::Element>(xml.root()[last]).getContents());
     // Create new element for next in sequence
     auto  xNode = xl::Node::make<xl::Element>("row");
     xNode.addChild(xl::Node::make<xl::Content>(std::to_string(first+second)));

@@ -18,17 +18,17 @@ public:
   void onCDATA([[maybe_unused]] const XML_Lib::Node &xNode) override
   {
     totalCDATA++;
-    sizeInBytes += sizeof(XML_Lib::CDATA) + XML_Lib::XRef<XML_Lib::CDATA>(xNode).value().size();
+    sizeInBytes += sizeof(XML_Lib::CDATA) + XML_Lib::NRef<XML_Lib::CDATA>(xNode).value().size();
   }
   void onComment([[maybe_unused]] const XML_Lib::Node &xNode) override
   {
     totalComment++;
-    sizeInBytes += sizeof(XML_Lib::Comment)+ XML_Lib::XRef<XML_Lib::Comment>(xNode).value().size();
+    sizeInBytes += sizeof(XML_Lib::Comment)+ XML_Lib::NRef<XML_Lib::Comment>(xNode).value().size();
   }
   void onContent([[maybe_unused]] const XML_Lib::Node &xNode) override
   {
     totalContent++;
-    sizeInBytes += sizeof(XML_Lib::Content)+ XML_Lib::XRef<XML_Lib::Content>(xNode).value().size();
+    sizeInBytes += sizeof(XML_Lib::Content)+ XML_Lib::NRef<XML_Lib::Content>(xNode).value().size();
   }
   void onDeclaration([[maybe_unused]] const XML_Lib::Node &xNode) override
   {

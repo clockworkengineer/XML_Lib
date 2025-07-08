@@ -87,7 +87,7 @@ bool DTD_Impl::checkIsEMPTY(const Node &xNode) { return xNode.getChildren().empt
 /// <param name="attribute">Attribute to check against.</param>
 void DTD_Impl::checkAttributeValue(const Node &xNode, const DTD::Attribute &attribute) const
 {
-  const auto &xElement = XRef<Element>(xNode);
+  const auto &xElement = NRef<Element>(xNode);
   const bool attributePresent = xElement.hasAttribute(attribute.name);
   if ((attribute.type & DTD::AttributeType::required) != 0) {
     if (!attributePresent) { elementError(xElement, "is missing required attribute '" + attribute.name + "'."); }
@@ -127,7 +127,7 @@ void DTD_Impl::checkAttributeValue(const Node &xNode, const DTD::Attribute &attr
 /// <param name="attribute">Attribute to check against.</param>
 void DTD_Impl::checkAttributeType(const Node &xNode, const DTD::Attribute &attribute)
 {
-  const auto &xElement = XRef<Element>(xNode);
+  const auto &xElement = NRef<Element>(xNode);
   auto &elementAttribute = xElement[attribute.name];
   if ((attribute.type & DTD::AttributeType::cdata) != 0) {
     if (elementAttribute.getParsed().empty())// No character data present.
@@ -204,7 +204,7 @@ void DTD_Impl::checkAttributeType(const Node &xNode, const DTD::Attribute &attri
 /// <param name="xNode">Current element Node.</param>
 void DTD_Impl::checkAttributes(const Node &xNode)
 {
-  for (const auto &xElement = XRef<Element>(xNode); auto &attribute : xDTD.getElement(xElement.name()).attributes) {
+  for (const auto &xElement = NRef<Element>(xNode); auto &attribute : xDTD.getElement(xElement.name()).attributes) {
     if (xElement.hasAttribute(attribute.name)) { checkAttributeType(xNode, attribute); }
     checkAttributeValue(xNode, attribute);
   }
@@ -216,7 +216,7 @@ void DTD_Impl::checkAttributes(const Node &xNode)
 /// <param name="xNode">Current element Node.</param>
 void DTD_Impl::checkContentSpecification(const Node &xNode) const
 {
-  const auto &xElement = XRef<Element>(xNode);
+  const auto &xElement = NRef<Element>(xNode);
   if (xDTD.getElementCount() == 0) { return; }
   if (xDTD.getElement(xElement.name()).content.getParsed() == "((<#PCDATA>))") {
     if (!checkIsPCDATA(xNode)) { elementError(xElement, "does not contain just any parsable data."); }
@@ -231,9 +231,9 @@ void DTD_Impl::checkContentSpecification(const Node &xNode) const
   std::string elements;
   for (auto &child : xElement.getChildren()) {
     if (isA<Element>(child) || isA<Self>(child)) {
-      elements += "<" + XRef<Element>(child).name() + ">";
+      elements += "<" + NRef<Element>(child).name() + ">";
     } else if (isA<Content>(child)) {
-      if (!XRef<Content>(child).isWhiteSpace()) { elements += "<#PCDATA>"; }
+      if (!NRef<Content>(child).isWhiteSpace()) { elements += "<#PCDATA>"; }
     }
   }
   if (!std::regex_match(elements, match)) {
@@ -262,9 +262,9 @@ void DTD_Impl::checkElements(const Node &xNode)
     for (auto &element : xNode.getChildren()) { checkElements(element); }
   } else if (isA<Declaration>(xNode)) {
   } else if (isA<Root>(xNode) || isA<Element>(xNode)) {
-    if (isA<Root>(xNode) && XRef<Element>(xNode).name() != xDTD.getRootName()) {
+    if (isA<Root>(xNode) && NRef<Element>(xNode).name() != xDTD.getRootName()) {
       throw ValidationError(
-        lineNumber, "DOCTYPE name does not match that of root element " + XRef<Element>(xNode).name() + " of DTD.");
+        lineNumber, "DOCTYPE name does not match that of root element " + NRef<Element>(xNode).name() + " of DTD.");
     }
     checkElement(xNode);
     for (auto &element : xNode.getChildren()) { checkElements(element); }
@@ -272,7 +272,7 @@ void DTD_Impl::checkElements(const Node &xNode)
     checkElement(xNode);
   } else if (isA<Comment>(xNode) || isA<EntityReference>(xNode) || isA<PI>(xNode) || isA<CDATA>(xNode) || isA<DTD>(xNode)) {
   } else if (isA<Content>(xNode)) {
-    for (const auto &ch : XRef<Content>(xNode).value()) {
+    for (const auto &ch : NRef<Content>(xNode).value()) {
       if (ch == kLineFeed) { lineNumber++; }
     }
   } else {

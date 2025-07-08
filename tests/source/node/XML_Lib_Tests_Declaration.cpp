@@ -23,13 +23,13 @@ TEST_CASE("Create and use Declaration Node.","[Node][Declaration][API]")
     REQUIRE(xDeclaration.encoding() == "UTF-16");
     REQUIRE(xDeclaration.standalone() == "off");
   }
-  SECTION("Create and use Declaration using make/XRef API.", "[XML][Node][Declaration][Make][XRef][API]")
+  SECTION("Create and use Declaration using make/NRef API.", "[XML][Node][Declaration][Make][NRef][API]")
   {
     Node xNode = Node::make<Declaration>("1.0", "UTF-8", "on");
     REQUIRE_FALSE(!isA<Declaration>(xNode));
-    REQUIRE(XRef<Declaration>(xNode).version() == "1.0");
-    REQUIRE(XRef<Declaration>(xNode).encoding() == "UTF-8");
-    REQUIRE(XRef<Declaration>(xNode).standalone() == "on");
+    REQUIRE(NRef<Declaration>(xNode).version() == "1.0");
+    REQUIRE(NRef<Declaration>(xNode).encoding() == "UTF-8");
+    REQUIRE(NRef<Declaration>(xNode).standalone() == "on");
   }
 }
 

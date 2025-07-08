@@ -36,13 +36,13 @@ private:
   }
   // XML declaration
   else if (isA<Declaration>(xNode)) {
-    auto &xNodeDeclaration = XRef<Declaration>(xNode);
+    auto &xNodeDeclaration = NRef<Declaration>(xNode);
     destination.add("<?xml version=\"" + xNodeDeclaration.version() + "\"" + " encoding=\""
                     + xNodeDeclaration.encoding() + "\"" + " standalone=\"" + xNodeDeclaration.standalone() + "\"?>");
   }
   // XML root or child elements
   else if (isA<Root>(xNode) || isA<Element>(xNode) || isA<Self>(xNode)) {
-    const auto &xElement = XRef<Element>(xNode);
+    const auto &xElement = NRef<Element>(xNode);
     destination.add("<" + xElement.name());
     for (auto &attribute : xElement.getAttributes()) {
       destination.add(" " + attribute.getName() + "=" + attribute.getQuote() + attribute.getUnparsed() + attribute.getQuote());
@@ -57,32 +57,32 @@ private:
   }
   // XML comments
   else if (isA<Comment>(xNode)) {
-    const auto &xNodeComment = XRef<Comment>(xNode);
+    const auto &xNodeComment = NRef<Comment>(xNode);
     destination.add("<!--" + xNodeComment.value() + "-->");
   }
   // XML element content
   else if (isA<Content>(xNode)) {
-    const auto &xNodeContent = XRef<Content>(xNode);
+    const auto &xNodeContent = NRef<Content>(xNode);
     destination.add(xNodeContent.value());
   }
   // XML character entity
   else if (isA<EntityReference>(xNode)) {
-    const auto &xNodeEntity = XRef<EntityReference>(xNode);
+    const auto &xNodeEntity = NRef<EntityReference>(xNode);
     destination.add(xNodeEntity.value().getUnparsed());
   }
   // XML processing instruction
   else if (isA<PI>(xNode)) {
-    const PI &xNodePI = XRef<PI>(xNode);
+    const PI &xNodePI = NRef<PI>(xNode);
     destination.add("<?" + xNodePI.name() + " " + xNodePI.parameters() + "?>");
   }
   // XML CDATA section
   else if (isA<CDATA>(xNode)) {
-    const auto &xNodeCDATA = XRef<CDATA>(xNode);
+    const auto &xNodeCDATA = NRef<CDATA>(xNode);
     destination.add("<![CDATA[" + std::string(xNodeCDATA.value()) + "]]>");
   }
   // XML DTD_Validator
   else if (isA<DTD>(xNode)) {
-    destination.add(XRef<DTD>(xNode).unparsed());
+    destination.add(NRef<DTD>(xNode).unparsed());
   } else {
     throw Error("Invalid Node encountered during stringify.");
   }

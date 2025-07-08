@@ -24,7 +24,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes.", "[XML][DTD][Par
       "</queue>\n"
     };
     xml.parse(source);
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == DTD::Type::internal);
     REQUIRE(xDTD.isElementPresent("person") == true);
@@ -35,14 +35,14 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes.", "[XML][DTD][Par
     REQUIRE(xDTD.getElement("person").attributes[0].enumeration == "(M|F)");
     REQUIRE(xDTD.getElement("person").attributes[0].value.getParsed() == "F");
     REQUIRE(xDTD.getRootName() == "queue");
-    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
-    REQUIRE(XRef<Element>(xml.root())[0].name() == "person");
-    REQUIRE(XRef<Element>(xml.root())[0].getAttributes().size() == 1);
-    XMLAttribute attribute = XRef<Element>(xml.root())[0]["gender"];
+    REQUIRE(xDTD.getRootName() == NRef<Element>(xml.root()).name());
+    REQUIRE(NRef<Element>(xml.root())[0].name() == "person");
+    REQUIRE(NRef<Element>(xml.root())[0].getAttributes().size() == 1);
+    XMLAttribute attribute = NRef<Element>(xml.root())[0]["gender"];
     REQUIRE(attribute.getName() == "gender");
     REQUIRE(attribute.getParsed() == "M");
-    REQUIRE(XRef<Element>(xml.root())[1].name() == "person");
-    REQUIRE(XRef<Element>(xml.root())[1].getAttributes().size() == 0);
+    REQUIRE(NRef<Element>(xml.root())[1].name() == "person");
+    REQUIRE(NRef<Element>(xml.root())[1].getAttributes().size() == 0);
   }
   SECTION("Parse XML with DTD that has a valid NOTATION attribute (photo_type) and usage.",
     "[XML][DTD][Parse][Attributes][NOTATION]")
@@ -70,7 +70,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes.", "[XML][DTD][Par
       "</mountains>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == DTD::Type::internal);
     REQUIRE(xDTD.isElementPresent("mountain") == true);

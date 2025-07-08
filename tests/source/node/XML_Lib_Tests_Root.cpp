@@ -16,12 +16,12 @@ TEST_CASE("Create and use Root Node.","[Node][Root][API]")
     REQUIRE_FALSE(!xRoot.getNameSpaces().empty());
     REQUIRE(xRoot.getContents()=="");
   }
-  SECTION("Create and use Root using make/XRef API.", "[XML][Node][Root][Make][XRef][API]")
+  SECTION("Create and use Root using make/NRef API.", "[XML][Node][Root][Make][NRef][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = Node::make<Root>("test", namespaces, attributes);
     REQUIRE_FALSE(!isA<Root>(xNode));
-    REQUIRE(XRef<Root>(xNode).name()=="test");
+    REQUIRE(NRef<Root>(xNode).name()=="test");
   }
 }
 

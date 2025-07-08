@@ -36,7 +36,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
       "<root attr1='1'></root>\n"
     };
     xml.parse(source);
-    auto &xRoot = XRef<Element>(xml.root());
+    auto &xRoot = NRef<Element>(xml.root());
     REQUIRE(xRoot.getAttributes().size() == 1);
     REQUIRE(xRoot["attr1"].getName() == "attr1");
     REQUIRE(xRoot["attr1"].getParsed() == "1");
@@ -48,7 +48,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
       "<root attr2='2'></root>\n"
     };
     xml.parse(source);
-    auto &xRoot = XRef<Element>(xml.root());
+    auto &xRoot = NRef<Element>(xml.root());
     REQUIRE(xRoot.getAttributes().size() == 1);
     REQUIRE_THROWS_WITH(xRoot["attr1"].getName(), "Attribute Error: Attribute 'attr1' does not exist.");
   }
@@ -59,7 +59,7 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
       "<root attr1='1' attr2='2' attr3='3'></root>\n"
     };
     xml.parse(source);
-    auto &xRoot = XRef<Element>(xml.root());
+    auto &xRoot = NRef<Element>(xml.root());
     REQUIRE(xRoot.getAttributes().size() == 3);
     REQUIRE(xRoot["attr1"].getName() == "attr1");
     REQUIRE(xRoot["attr1"].getParsed() == "1");
@@ -79,10 +79,10 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
       "</AddressBook>"
     };
     xml.parse(source);
-    auto &xRoot = XRef<Element>(xml.root());
+    auto &xRoot = NRef<Element>(xml.root());
     REQUIRE(xRoot.name() == "AddressBook");
-    REQUIRE(XRef<Element>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(XRef<Element>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(NRef<Element>(xml.root()["Address"]).name() == "Address");
+    REQUIRE(NRef<Element>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
   SECTION("Use name for accessing elements with other node types in play", "[XML][API][ByName]")
   {
@@ -101,9 +101,9 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
       "</AddressBook>"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).name() == "AddressBook");
-    REQUIRE(XRef<Element>(xml.root()["Address"]).name() == "Address");
-    REQUIRE(XRef<Element>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(NRef<Element>(xml.root()).name() == "AddressBook");
+    REQUIRE(NRef<Element>(xml.root()["Address"]).name() == "Address");
+    REQUIRE(NRef<Element>(xml.root()["Address"]).getContents() == "Flat A, West Road, Wolverhampton, W1SSX9");
   }
   SECTION("Use name for accessing nested elements", "[XML][API][ByName]")
   {
@@ -117,11 +117,11 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
       "</AddressBook>"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).name() == "AddressBook");
-    REQUIRE(XRef<Element>(xml.root()["Name"]["First"]).getContents() == "John");
-    REQUIRE(XRef<Element>(xml.root()["Name"]["Surname"]).getContents() == "Doe");
-    REQUIRE(XRef<Element>(xml.root()["Name"]).getContents() == "John Doe");
-    REQUIRE(XRef<Element>(xml.root()).getContents() == "John Doe Flat A, West Road, Wolverhampton, W1SSX9");
+    REQUIRE(NRef<Element>(xml.root()).name() == "AddressBook");
+    REQUIRE(NRef<Element>(xml.root()["Name"]["First"]).getContents() == "John");
+    REQUIRE(NRef<Element>(xml.root()["Name"]["Surname"]).getContents() == "Doe");
+    REQUIRE(NRef<Element>(xml.root()["Name"]).getContents() == "John Doe");
+    REQUIRE(NRef<Element>(xml.root()).getContents() == "John Doe Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }
 TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
@@ -148,24 +148,24 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     XML xml;
     xml = "<root first='1' second='2'>test content</root>";
     BufferDestination destination;
-    REQUIRE(XRef<Element>(xml.root())["first"].getUnparsed() == "1");
-    REQUIRE(XRef<Element>(xml.root())["second"].getUnparsed() == "2");
+    REQUIRE(NRef<Element>(xml.root())["first"].getUnparsed() == "1");
+    REQUIRE(NRef<Element>(xml.root())["second"].getUnparsed() == "2");
   }
   SECTION("Create XML and read attributes with wrong name", "[XML][Attribute][Read]")
   {
     XML xml;
     xml = "<root first='1' second='2'>test content</root>";
     BufferDestination destination;
-    REQUIRE_THROWS_WITH(XRef<Element>(xml.root())["frst"], "Attribute Error: Attribute 'frst' does not exist.");
+    REQUIRE_THROWS_WITH(NRef<Element>(xml.root())["frst"], "Attribute Error: Attribute 'frst' does not exist.");
   }
   SECTION("Create XML and read attributes and namespaces", "[XML][Attribute][Read]")
   {
     XML xml;
     xml = "<root first='1' second='2' xmlns:f='http://www.w3.org/TR/html4/'>test content</root>";
     BufferDestination destination;
-    REQUIRE(XRef<Element>(xml.root())["first"].getUnparsed() == "1");
-    REQUIRE(XRef<Element>(xml.root())["second"].getUnparsed() == "2");
-    REQUIRE(XRef<Element>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(NRef<Element>(xml.root())["first"].getUnparsed() == "1");
+    REQUIRE(NRef<Element>(xml.root())["second"].getUnparsed() == "2");
+    REQUIRE(NRef<Element>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
   }
   SECTION("A root document defining one namespace that is inherited by a child", "[XML][Parse][Namespace]")
   {
@@ -174,7 +174,7 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
       "<h:table><h:tr><h:td>Apples</h:td><h:td>Bananas</h:td></h:tr></h:table>\n"
       "</root>\n"
     };
-    auto &xRoot = XRef<Element>(xml.root());
+    auto &xRoot = NRef<Element>(xml.root());
     REQUIRE(xRoot[0].name() == "h:table");
     REQUIRE(xRoot[0].getNameSpaces().size() == 1);
     REQUIRE(xRoot[0].getNameSpace("h").getUnparsed() == "http://www.w3.org/TR/html4/");
@@ -193,13 +193,13 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
   {
     XML xml{ "<root>test content</root>" };
     BufferDestination destination;
-    XRef<Element>(xml.root()).addAttribute("attribute1", XMLValue("value1"));
+    NRef<Element>(xml.root()).addAttribute("attribute1", XMLValue("value1"));
     xml.stringify(destination);
     REQUIRE(
       destination.toString()
       == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root attribute1=\"value1\">test content</root>");
-    XRef<Element>(xml.root()).addAttribute("attribute2", XMLValue("value2"));
-    XRef<Element>(xml.root()).addAttribute("attribute3", XMLValue("value3"));
+    NRef<Element>(xml.root()).addAttribute("attribute2", XMLValue("value2"));
+    NRef<Element>(xml.root()).addAttribute("attribute3", XMLValue("value3"));
     destination.clear();
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root attribute1="
@@ -210,11 +210,11 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     XML xml;
     xml = "<root first='1' second='2'>test content</root>";
     BufferDestination destination;
-    REQUIRE(XRef<Element>(xml.root())["first"].getUnparsed() == "1");
-    REQUIRE(XRef<Element>(xml.root())["second"].getUnparsed() == "2");
-    XRef<Element>(xml.root())["first"] = XMLAttribute("newfirst", XMLValue{ "new", "", '\''});
-    REQUIRE(XRef<Element>(xml.root())["newfirst"].getUnparsed() == "new");
-    REQUIRE(XRef<Element>(xml.root())["second"].getUnparsed() == "2");
+    REQUIRE(NRef<Element>(xml.root())["first"].getUnparsed() == "1");
+    REQUIRE(NRef<Element>(xml.root())["second"].getUnparsed() == "2");
+    NRef<Element>(xml.root())["first"] = XMLAttribute("newfirst", XMLValue{ "new", "", '\''});
+    REQUIRE(NRef<Element>(xml.root())["newfirst"].getUnparsed() == "new");
+    REQUIRE(NRef<Element>(xml.root())["second"].getUnparsed() == "2");
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root newfirst=\'new\' second=\'2\'>test content</root>");
   }
@@ -223,11 +223,11 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     XML xml;
     xml = "<root first='1' second='2'>test content</root>";
     BufferDestination destination;
-    REQUIRE(XRef<Element>(xml.root())["first"].getUnparsed() == "1");
-    REQUIRE(XRef<Element>(xml.root())["second"].getUnparsed() == "2");
-    XRef<Element>(xml.root())["first"] = XMLValue{ "new" };
-    REQUIRE(XRef<Element>(xml.root())["first"].getUnparsed() == "new");
-    REQUIRE(XRef<Element>(xml.root())["second"].getUnparsed() == "2");
+    REQUIRE(NRef<Element>(xml.root())["first"].getUnparsed() == "1");
+    REQUIRE(NRef<Element>(xml.root())["second"].getUnparsed() == "2");
+    NRef<Element>(xml.root())["first"] = XMLValue{ "new" };
+    REQUIRE(NRef<Element>(xml.root())["first"].getUnparsed() == "new");
+    REQUIRE(NRef<Element>(xml.root())["second"].getUnparsed() == "2");
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root first=\'new\' second=\'2\'>test content</root>");
   }
@@ -235,24 +235,24 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
   {
     const XML xml{ "<root>test content</root>" };
     BufferDestination destination;
-    XRef<Element>(xml.root())
+    NRef<Element>(xml.root())
       .addNameSpace("xmlns:f", XMLValue("http://www.w3.org/TR/html4/"));
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root xmlns:f=\"http://www.w3.org/TR/html4/\">test content</root>");
-    REQUIRE_FALSE(!XRef<Element>(xml.root()).hasNameSpace("xmlns:f"));
-    REQUIRE(XRef<Element>(xml.root()).getNameSpace("xmlns:f").getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE_FALSE(!NRef<Element>(xml.root()).hasNameSpace("xmlns:f"));
+    REQUIRE(NRef<Element>(xml.root()).getNameSpace("xmlns:f").getUnparsed() == "http://www.w3.org/TR/html4/");
   }
   SECTION("Create XML with read namespaces and write away new first.", "[XML][Namespace][Write]")
   {
     XML xml;
     xml = "<root xmlns:f='http://www.w3.org/TR/html4/' xmlns:s='http://www.w3.org/TR/html5/'>test content</root>";
     BufferDestination destination;
-    REQUIRE(XRef<Element>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
-    REQUIRE(XRef<Element>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
-    XRef<Element>(xml.root())["xmlns:f"] =
+    REQUIRE(NRef<Element>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(NRef<Element>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
+    NRef<Element>(xml.root())["xmlns:f"] =
       XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/" });
-    REQUIRE(XRef<Element>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html6/");
-    REQUIRE(XRef<Element>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
+    REQUIRE(NRef<Element>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html6/");
+    REQUIRE(NRef<Element>(xml.root())["xmlns:s"].getUnparsed() == "http://www.w3.org/TR/html5/");
     xml.stringify(destination);
     REQUIRE(destination.toString() == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><root xmlns:f=\"http://www.w3.org/TR/html6/\" xmlns:s='http://www.w3.org/TR/html5/'>test content</root>");
   }
@@ -260,10 +260,10 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
   {
     XML xml;
     xml = "<root xmlns:f='http://www.w3.org/TR/html4/' xmlns:s='http://www.w3.org/TR/html5/'>test content</root>";
-    XRef<Element>(xml.root())["xmlns:f"] =
+    NRef<Element>(xml.root())["xmlns:f"] =
       XMLAttribute("xmlns:f", XMLValue{ "http://www.w3.org/TR/html6/" });
-    REQUIRE(XRef<Element>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html6/");
+    REQUIRE(NRef<Element>(xml.root())["xmlns:f"].getUnparsed() == "http://www.w3.org/TR/html6/");
     // Change does not get passed through to cache at present
-    REQUIRE(XRef<Element>(xml.root()).getNameSpace("f").getUnparsed() == "http://www.w3.org/TR/html4/");
+    REQUIRE(NRef<Element>(xml.root()).getNameSpace("f").getUnparsed() == "http://www.w3.org/TR/html4/");
   }
 }

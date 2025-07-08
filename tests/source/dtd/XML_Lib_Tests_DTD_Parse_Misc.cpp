@@ -20,7 +20,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "</note>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::internal);
   }
   SECTION("XML with external (SYSTEM) DTD", "[XML][DTD][Parse]")
@@ -35,7 +35,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
     };
 
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
   }
   SECTION("XML with external (PUBLIC) DTD", "[XML][DTD][Parse]")
@@ -50,7 +50,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "</note>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
   }
   SECTION("XML with external DTD with !NOTATION to parse and check values.", "[XML][DTD][Parse]")
@@ -61,7 +61,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "<REPORT></REPORT>\n"
     };
     xml.parse(source);
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[1]));
     REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getNotation("GIF").getType() == "SYSTEM");
@@ -93,7 +93,7 @@ TEST_CASE("Parse XML with DTD both internal/external", "[XML][DTD][Parse]")
       "</note>\n"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::internal);
   }
 }
@@ -117,10 +117,10 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
       "</address>\n"
     };
     xml.parse(source);
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == DTD::Type::internal);
-    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
+    REQUIRE(xDTD.getRootName() == NRef<Element>(xml.root()).name());
     REQUIRE(xDTD.getElement("address").name == "address");
     REQUIRE(xDTD.getElement("address").content.getUnparsed() == "(name,company,phone)");
     REQUIRE(xDTD.getElement("name").name == "name");
@@ -145,10 +145,10 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
       "</note>\n"
     };
     xml.parse(source);
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == DTD::Type::external);
-    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
+    REQUIRE(xDTD.getRootName() == NRef<Element>(xml.root()).name());
     REQUIRE(xDTD.getExternalReference().getType() == "SYSTEM");
     REQUIRE(xDTD.getExternalReference().getSystemID() == prefixTestDataPath("note001.dtd"));
     REQUIRE(xDTD.getElement("note").name == "note");
@@ -163,10 +163,10 @@ TEST_CASE("Parse XML DTD and check values.", "[XML][DTD][Parse]")
       "<html></html>\n"
     };
     xml.parse(source);
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == DTD::Type::external);
-    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
+    REQUIRE(xDTD.getRootName() == NRef<Element>(xml.root()).name());
     REQUIRE(xDTD.getExternalReference().getType() == XMLExternalReference::kPublicID);
     REQUIRE(xDTD.getExternalReference().getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
     REQUIRE(xDTD.getExternalReference().getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
@@ -289,7 +289,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
   }
   SECTION("XML with a DTD with conditional INCLUDE containing an entity.", "[XML][DTD][Parse][Conditional]")
@@ -301,7 +301,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
@@ -339,7 +339,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
@@ -353,7 +353,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
       "EntityMapper Error: Internal entity reference not found for '&example;'.");
@@ -367,7 +367,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
   }
@@ -381,7 +381,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
@@ -396,7 +396,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example;"),
@@ -412,7 +412,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == DTD::Type::external);
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example1;"),
       "EntityMapper Error: Internal entity reference not found for '&example1;'.");
@@ -430,7 +430,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == (DTD::Type::internal | DTD::Type::external));
     REQUIRE(xDTD.getEntityMapper().getInternal("&example;") == "Joe Smith");
     REQUIRE(xDTD.getEntityMapper().getInternal("&example1;") == "Joe Smith 1");
@@ -446,7 +446,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "</root>"
     };
     REQUIRE_NOTHROW(xml.parse(source));
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE(xDTD.getType() == (DTD::Type::internal | DTD::Type::external));
     REQUIRE_THROWS_WITH(xDTD.getEntityMapper().getInternal("&example1;"),
       "EntityMapper Error: Internal entity reference not found for '&example1;'.");

@@ -50,10 +50,10 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
       "<TVSCHEDULE></TVSCHEDULE>\n"
     };
     xml.parse(source);
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == DTD::Type::internal);
-    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
+    REQUIRE(xDTD.getRootName() == NRef<Element>(xml.root()).name());
     REQUIRE(xDTD.getRootName() == "TVSCHEDULE");
     REQUIRE(xDTD.getElement("TVSCHEDULE").name == "TVSCHEDULE");
     REQUIRE(xDTD.getElement("CHANNEL").name == "CHANNEL");
@@ -109,10 +109,10 @@ TEST_CASE("Parse XML DTD with attributes and check values.", "[XML][DTD][Parse][
       "<CATALOG> </CATALOG>\n"
     };
     xml.parse(source);
-    DTD &xDTD = XRef<DTD>(xml.dtd());
+    DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[1]));
     REQUIRE(xDTD.getType() == DTD::Type::internal);
-    REQUIRE(xDTD.getRootName() == XRef<Element>(xml.root()).name());
+    REQUIRE(xDTD.getRootName() == NRef<Element>(xml.root()).name());
     REQUIRE(xDTD.getRootName() == "CATALOG");
     REQUIRE(xDTD.getElement("PRODUCT").name == "PRODUCT");
     REQUIRE(xDTD.getElement("PRODUCT").attributes.size() == 5);

@@ -61,12 +61,12 @@ template<typename T> void checkNodeType(const Node &xNode)
     if (!isA<T>(xNode)) { throw Node::Error("Node not DTD_Validator."); }
   }
 }
-template<typename T> T &XRef(Node &xNode)
+template<typename T> T &NRef(Node &xNode)
 {
   checkNodeType<T>(xNode);
   return static_cast<T &>(xNode.getVariant());
 }
-template<typename T> const T &XRef(const Node &xNode)
+template<typename T> const T &NRef(const Node &xNode)
 {
   checkNodeType<T>(xNode);
   return static_cast<const T &>(xNode.getVariant());

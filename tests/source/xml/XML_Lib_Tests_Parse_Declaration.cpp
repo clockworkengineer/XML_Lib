@@ -10,7 +10,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");
@@ -55,7 +55,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-16");
     REQUIRE(xDeclaration.standalone() == "yes");
@@ -67,7 +67,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "yes");
@@ -143,10 +143,10 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
   {
     BufferSource source{ "<root></root>\n" };
     REQUIRE_NOTHROW(xml.parse(source));
-    auto &xDeclaration = XRef<Declaration>(xml.declaration());
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");
-    REQUIRE(XRef<Root>(xml.root()).name() == "root");
+    REQUIRE(NRef<Root>(xml.root()).name() == "root");
   }
 }

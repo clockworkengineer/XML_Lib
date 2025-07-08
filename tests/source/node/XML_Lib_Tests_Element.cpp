@@ -64,12 +64,12 @@ TEST_CASE("Create and use Element Node.","[Node][Element][API]")
     REQUIRE(xElement.getNameSpace("b").getUnparsed()=="value2");
     REQUIRE(xElement.getNameSpace("b").getParsed()=="value2");
   }
-  SECTION("Create and use Element using make/XRef API.", "[XML][Node][Element][Make][XRef][API]")
+  SECTION("Create and use Element using make/NRef API.", "[XML][Node][Element][Make][NRef][API]")
   {
     std::vector<XMLAttribute> namespaces, attributes;
     auto xNode = Node::make<Element>("test", namespaces, attributes);
     REQUIRE_FALSE(!isA<Element>(xNode));
-    REQUIRE(XRef<Element>(xNode).name()=="test");
+    REQUIRE(NRef<Element>(xNode).name()=="test");
   }
 }
 

@@ -16,7 +16,7 @@ inline const Node &Node::operator[](const std::string_view &name) const
 {
   if (isIndexable()) {
     if (const auto xNode = std::ranges::find_if(getChildren(),
-          [&name](const Node &child) { return child.isNameable() && XRef<Element>(child).name() == name; });
+          [&name](const Node &child) { return child.isNameable() && NRef<Element>(child).name() == name; });
         xNode != getChildren().end()) {
       return *xNode;
     }
@@ -32,7 +32,7 @@ inline const Element &Element::operator[](const int index) const
     int number = 0;
     for (const auto &child : getChildren()) {
       if (child.isIndexable()) {
-        if (number == index) { return XRef<Element>(child); }
+        if (number == index) { return NRef<Element>(child); }
         number++;
       }
     }
@@ -45,7 +45,7 @@ inline Element &Element::operator[](const int index)
     int number = 0;
     for (auto &child : getChildren()) {
       if (child.isIndexable()) {
-        if (number == index) { return XRef<Element>(child); }
+        if (number == index) { return NRef<Element>(child); }
         number++;
       }
     }

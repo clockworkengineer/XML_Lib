@@ -17,12 +17,12 @@ TEST_CASE("Create and use EntityReference Node.","[Node][EntityReference][API]")
     REQUIRE(xEntityReference.value().getParsed() == "parsed");
     REQUIRE(xEntityReference.value().getUnparsed() == "unparsed");
   }
-  SECTION("Create and use EntityReference using make/XRef API.", "[XML][Node][EntityReference][Make][XRef][API]")
+  SECTION("Create and use EntityReference using make/NRef API.", "[XML][Node][EntityReference][Make][NRef][API]")
   {
     Node xNode = Node::make<EntityReference>(createXMLValue());
     REQUIRE_FALSE(!isA<EntityReference>(xNode));
-    REQUIRE(XRef<EntityReference>(xNode).value().getParsed() == "parsed");
-    REQUIRE(XRef<EntityReference>(xNode).value().getUnparsed() == "unparsed");
+    REQUIRE(NRef<EntityReference>(xNode).value().getParsed() == "parsed");
+    REQUIRE(NRef<EntityReference>(xNode).value().getUnparsed() == "unparsed");
   }
 }
 

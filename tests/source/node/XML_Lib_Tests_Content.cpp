@@ -17,13 +17,13 @@ TEST_CASE("Create and use Content Node.","[Node][Content][API]")
     xContent.addContent("More content.");
     REQUIRE(xContent.value() == "This is a test comment.More content.");
   }
-  SECTION("Create and use Content using make/XRef API.", "[XML][Node][Content][Make][XRef][API]")
+  SECTION("Create and use Content using make/NRef API.", "[XML][Node][Content][Make][NRef][API]")
   {
     Node xNode = Node::make<Content>("This is a test comment.");
     REQUIRE_FALSE(!isA<Content>(xNode));
-    REQUIRE(XRef<Content>(xNode).value()=="This is a test comment.");
-    XRef<Content>(xNode).addContent("More content.");
-    REQUIRE(XRef<Content>(xNode).value()=="This is a test comment.More content.");
+    REQUIRE(NRef<Content>(xNode).value()=="This is a test comment.");
+    NRef<Content>(xNode).addContent("More content.");
+    REQUIRE(NRef<Content>(xNode).value()=="This is a test comment.More content.");
   }
 }
 

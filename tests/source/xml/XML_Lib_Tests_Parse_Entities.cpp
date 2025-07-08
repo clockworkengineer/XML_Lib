@@ -10,7 +10,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<root> &amp; </root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getContents() == " & ");
+    REQUIRE(NRef<Element>(xml.root()).getContents() == " & ");
   }
   SECTION("Parse entity &quot; in contents area", "[XML][Parse][Entities]")
   {
@@ -19,7 +19,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       " <root> &quot; </root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getContents() == " \" ");
+    REQUIRE(NRef<Element>(xml.root()).getContents() == " \" ");
   }
   SECTION("Parse entities &apos; &lt; &gt; in contents area", "[XML][Parse][Entities]")
   {
@@ -28,7 +28,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       " <root> &apos; &lt; &gt; </root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getContents() == " ' < > ");
+    REQUIRE(NRef<Element>(xml.root()).getContents() == " ' < > ");
   }
   SECTION("Parse reference &#x00A5; in contents area", "[XML][Parse][Entities]")
   {
@@ -37,7 +37,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       " <root> &#x00A5; </root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getContents() == " ¥ ");
+    REQUIRE(NRef<Element>(xml.root()).getContents() == " ¥ ");
   }
   SECTION("Parse reference &#163; in contents area", "[XML][Parse][Entities]")
   {
@@ -46,7 +46,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<root> &#163; </root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getContents() == " £ ");
+    REQUIRE(NRef<Element>(xml.root()).getContents() == " £ ");
   }
   SECTION("Parse reference &#x00As; (invalid hex value) in contents area", "[XML][Parse][Entities]")
   {
@@ -72,8 +72,8 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "</root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getAttributes().size() == 1);
-    REQUIRE(XRef<Element>(xml.root())["attr1"].getParsed() == " &#x26;&#x22;&#x27;&#x3E;&#x3C; ");
+    REQUIRE(NRef<Element>(xml.root()).getAttributes().size() == 1);
+    REQUIRE(NRef<Element>(xml.root())["attr1"].getParsed() == " &#x26;&#x22;&#x27;&#x3E;&#x3C; ");
   }
   SECTION("Parse references &#x00A5;&#163 in attribute value", "[XML][Parse][Entities]")
   {
@@ -82,8 +82,8 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<root attr1=\" &#x00A5;&#163; \"></root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getAttributes().size() == 1);
-    REQUIRE(XRef<Element>(xml.root())["attr1"].getParsed() == " ¥£ ");
+    REQUIRE(NRef<Element>(xml.root()).getAttributes().size() == 1);
+    REQUIRE(NRef<Element>(xml.root())["attr1"].getParsed() == " ¥£ ");
   }
   SECTION("Parse entity &lamp; (non-existent named) in contents area", "[XML][Parse][Entities]")
   {

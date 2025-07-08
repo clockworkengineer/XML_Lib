@@ -28,7 +28,7 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
     }
     xNode.addChild(Node::make<Content>("", isWhiteSpace));
   }
-  auto &xmlContent = XRef<Content>(xNode.getChildren().back());
+  auto &xmlContent = NRef<Content>(xNode.getChildren().back());
   if (xmlContent.isWhiteSpace()) {
     if (std::ranges::all_of(content, [](const char ch) { return std::iswspace(ch); })) {
       xmlContent.setIsWhiteSpace(true);
@@ -229,7 +229,7 @@ void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &e
       // NO XML into entity elements list.
       parseEntityReferenceXML(xEntityReference, content, entityMapper);
       if (!xNode.getChildren().empty()) {
-        if (isA<Content>(xNode.getChildren().back())) { XRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+        if (isA<Content>(xNode.getChildren().back())) { NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
       }
     }
     xNode.addChild(std::move(xEntityReference));
@@ -254,12 +254,12 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
     xNode.addChild(parsePI(source));
   } else if (source.match("<![CDATA[")) {
     if (!xNode.getChildren().empty()) {
-      if (isA<Content>(xNode.getChildren().back())) { XRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+      if (isA<Content>(xNode.getChildren().back())) { NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
     }
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
-    xNode.addChild(parseElement(source, XRef<Element>(xNode).getNameSpaces(), entityMapper));
-    const Element &xNodeChildElement = XRef<Element>(xNode.getChildren().back());
+    xNode.addChild(parseElement(source, NRef<Element>(xNode).getNameSpaces(), entityMapper));
+    const Element &xNodeChildElement = NRef<Element>(xNode.getChildren().back());
     if (const auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.hasNameSpace(xNodeChildElement.name().substr(0, pos))) {
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
@@ -298,7 +298,7 @@ Node Default_Parser::parseElement(ISource &source, const std::vector<XMLAttribut
       xNode = Node::make<Element>(name, attributes, namespaces);
     }
     while (source.more() && !source.match("</")) { parseElementInternal(source, xNode, entityMapper); }
-    if (source.match(toUtf16(XRef<Element>(xNode).name()) + u">")) { return xNode; }
+    if (source.match(toUtf16(NRef<Element>(xNode).name()) + u">")) { return xNode; }
   } else if (source.match("/>")) {
     // Self-closing element tag
     return Node::make<Self>(name, attributes, namespaces);

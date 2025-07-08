@@ -23,8 +23,8 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     xl::XML xml { "<root attrib1='value1' attrib2='value2' > contents </root>"};
     xl::BufferDestination destination;
     xml.stringify(destination);
-    PLOG_INFO << "attrib1 = " <<xl::XRef<xl::Element>(xml.root())["attrib1"].getUnparsed();
-    PLOG_INFO << "attrib2 = " << xl::XRef<xl::Element>(xml.root())["attrib2"].getUnparsed();
+    PLOG_INFO << "attrib1 = " <<xl::NRef<xl::Element>(xml.root())["attrib1"].getUnparsed();
+    PLOG_INFO << "attrib2 = " << xl::NRef<xl::Element>(xml.root())["attrib2"].getUnparsed();
     PLOG_INFO << destination.toString();
     // Create XML using assignment
     xml = "<root attrib1='value1' attrib2='value2' attrib3='value3' attrib4='value4'> contents </root>";
@@ -33,23 +33,23 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
     PLOG_INFO << destination.toString();
     // Add attributes to base XML
     xml = "<root>test content</root>" ;
-    XRef<xl::Element>(xml.root()).addAttribute("attribute1", xl::XMLValue("value1", "value1"));
+    NRef<xl::Element>(xml.root()).addAttribute("attribute1", xl::XMLValue("value1", "value1"));
     destination.clear();
     xml.stringify(destination);
     PLOG_INFO << destination.toString();
-    XRef<xl::Element>(xml.root()).addAttribute("attribute2", xl::XMLValue("value2", "value2"));
-    XRef<xl::Element>(xml.root()).addAttribute("attribute3", xl::XMLValue("value3", "value3"));
+    NRef<xl::Element>(xml.root()).addAttribute("attribute2", xl::XMLValue("value2", "value2"));
+    NRef<xl::Element>(xml.root()).addAttribute("attribute3", xl::XMLValue("value3", "value3"));
     destination.clear();
     xml.stringify(destination);
     PLOG_INFO << destination.toString();
     // Add namespaces to base XML
     xml = "<root>test content</root>" ;
-    XRef<xl::Element>(xml.root()).addNameSpace("xmlns:f", xl::XMLValue("http://www.w3.org/TR/html4/", "http://www.w3.org/TR/html4/"));
+    NRef<xl::Element>(xml.root()).addNameSpace("xmlns:f", xl::XMLValue("http://www.w3.org/TR/html4/", "http://www.w3.org/TR/html4/"));
     destination.clear();
     xml.stringify(destination);
     PLOG_INFO << destination.toString();
-    XRef<xl::Element>(xml.root()).addNameSpace("xmlns:h", xl::XMLValue("http://www.w3.org/TR/html5/", "http://www.w3.org/TR/html5/"));
-    XRef<xl::Element>(xml.root()).addNameSpace("xmlns:i", xl::XMLValue("http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/"));
+    NRef<xl::Element>(xml.root()).addNameSpace("xmlns:h", xl::XMLValue("http://www.w3.org/TR/html5/", "http://www.w3.org/TR/html5/"));
+    NRef<xl::Element>(xml.root()).addNameSpace("xmlns:i", xl::XMLValue("http://www.w3.org/TR/html6/", "http://www.w3.org/TR/html6/"));
     destination.clear();
     xml.stringify(destination);
     PLOG_INFO << destination.toString();

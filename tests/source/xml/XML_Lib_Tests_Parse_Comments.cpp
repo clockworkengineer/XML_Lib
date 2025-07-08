@@ -37,20 +37,20 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "</AddressBook>\n"
     };
     xml.parse(source);
-    auto &xDeclaration = XRef<Declaration>(xml.declaration());
-    auto &xRoot = XRef<Root>(xml.root());
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
+    auto &xRoot = NRef<Root>(xml.root());
     REQUIRE(xDeclaration.version() == "1.0");
     REQUIRE(xDeclaration.encoding() == "UTF-8");
     REQUIRE(xDeclaration.standalone() == "no");
     REQUIRE(xRoot.name() == "AddressBook");
     REQUIRE(xRoot.getChildren().size() == 13);
-    REQUIRE(XRef<Comment>(xRoot.getChildren()[1]).value() == "Address one ");
+    REQUIRE(NRef<Comment>(xRoot.getChildren()[1]).value() == "Address one ");
     REQUIRE(xRoot[0].name() == "Address");
     REQUIRE(xRoot[0].getContents() == "    This is some contents 1   ");
-    REQUIRE(XRef<Comment>(xRoot.getChildren()[5]).value() == "Address two ");
+    REQUIRE(NRef<Comment>(xRoot.getChildren()[5]).value() == "Address two ");
     REQUIRE(xRoot[1].name() == "Address");
     REQUIRE(xRoot[1].getContents() == "    This is some contents 2   ");
-    REQUIRE(XRef<Comment>(xRoot.getChildren()[9]).value() == "Address three ");
+    REQUIRE(NRef<Comment>(xRoot.getChildren()[9]).value() == "Address three ");
     REQUIRE(xRoot[2].name() == "Address");
     REQUIRE(xRoot[2].getContents() == "    This is some contents 3   ");
   }
@@ -83,7 +83,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "</root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getContents() == "TestTest");
+    REQUIRE(NRef<Element>(xml.root()).getContents() == "TestTest");
   }
   SECTION("A simple comment within element contents and content remains intact", "[XML][Parse][Comments]")
   {
@@ -93,7 +93,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "</root>\n"
     };
     xml.parse(source);
-    REQUIRE(XRef<Element>(xml.root()).getContents() == "Test    Test");
+    REQUIRE(NRef<Element>(xml.root()).getContents() == "Test    Test");
   }
   SECTION("A simple single line comment containing -- is illegal", "[XML][Parse][Comments]")
   {

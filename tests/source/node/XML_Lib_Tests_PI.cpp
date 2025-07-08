@@ -13,12 +13,12 @@ TEST_CASE("Create and use PI Node.","[Node][PI][API]")
     REQUIRE(xPI.parameters() == "type='text/xsl' href='style.xsl'");
 
   }
-  SECTION("Create and use PI using make/XRef API.", "[XML][Node][PI][Make][XRef][API]")
+  SECTION("Create and use PI using make/NRef API.", "[XML][Node][PI][Make][NRef][API]")
   {
     Node xNode = Node::make<PI>("xml-stylesheet", "type='text/xsl' href='style.xsl'");
     REQUIRE_FALSE(!isA<PI>(xNode));
-    REQUIRE(XRef<PI>(xNode).name()=="xml-stylesheet");
-    REQUIRE(XRef<PI>(xNode).parameters()=="type='text/xsl' href='style.xsl'");
+    REQUIRE(NRef<PI>(xNode).name()=="xml-stylesheet");
+    REQUIRE(NRef<PI>(xNode).parameters()=="type='text/xsl' href='style.xsl'");
   }
 }
 
