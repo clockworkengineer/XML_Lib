@@ -13,6 +13,7 @@ foreach(EXAMPLE_PROGRAM ${EXAMPLE_SOURCES})
     add_executable(${EXAMPLE_TARGET} ${CMAKE_CURRENT_SOURCE_DIR}/source/${EXAMPLE_PROGRAM})
     target_link_libraries(${EXAMPLE_TARGET} XML_Lib)
     target_include_directories(${EXAMPLE_TARGET} PUBLIC ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/include/external)
+    target_precompile_headers(${EXAMPLE_TARGET} REUSE_FROM XML_Lib)
     install(TARGETS ${EXAMPLE_TARGET} DESTINATION bin)
 endforeach(EXAMPLE_PROGRAM ${EXAMPLE_SOURCES})
 
