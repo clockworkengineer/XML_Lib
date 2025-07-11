@@ -6,9 +6,6 @@
 // Dependencies: C++20 - Language standard features used.
 //
 
-#include <codecvt>
-#include <locale>
-
 #include "XML_Converter.hpp"
 
 namespace XML_Lib {
