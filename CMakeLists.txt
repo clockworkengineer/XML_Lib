@@ -44,6 +44,7 @@ list(APPEND XML_SOURCES "classes/source/implementation/converter/${PLATFORM}/XML
 set(XML_INCLUDES
   XML_Config.hpp
   ./classes/include/XML.hpp
+  ./classes/include/XML_Core.hpp
   ./classes/include/DTD_Validator.hpp
   ./classes/include/interface/ISource.hpp
   ./classes/include/interface/IDestination.hpp
@@ -52,7 +53,6 @@ set(XML_INCLUDES
   ./classes/include/interface/IParser.hpp
   ./classes/include/interface/IStringify.hpp
   ./classes/include/interface/XML_Interfaces.hpp
-  ./classes/include/implementation/XML_Core.hpp
   ./classes/include/implementation/converter/XML_Converter.hpp
   ./classes/include/implementation/common/XML_Error.hpp
   ./classes/include/implementation/common/XML_Parse.hpp
