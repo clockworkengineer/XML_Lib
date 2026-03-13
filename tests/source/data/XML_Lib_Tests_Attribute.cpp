@@ -54,4 +54,60 @@ TEST_CASE("XML attribute usage tests cases.", "[XML][Value]")
     attributes.emplace_back("test3", XMLValue("&test3;", "parsed"));
     REQUIRE_FALSE(XMLAttribute::contains(attributes, "test4"));
   }
+  SECTION("Copy and move constructors/assignment.", "[XML][Attribute][CopyMove]")
+  {
+    XMLAttribute original("copy", XMLValue("unparsed", "parsed"));
+    XMLAttribute copyConstructed(original);
+    REQUIRE(copyConstructed.getName() == "copy");
+    REQUIRE(copyConstructed.getUnparsed() == "unparsed");
+    REQUIRE(copyConstructed.getParsed() == "parsed");
+
+    XMLAttribute moveConstructed(std::move(original));
+    REQUIRE(moveConstructed.getName() == "copy");
+    REQUIRE(moveConstructed.getUnparsed() == "unparsed");
+    REQUIRE(moveConstructed.getParsed() == "parsed");
+
+    XMLAttribute assigned("a", XMLValue("b", "c"));
+    assigned = copyConstructed;
+    REQUIRE(assigned.getName() == "copy");
+    REQUIRE(assigned.getUnparsed() == "unparsed");
+    REQUIRE(assigned.getParsed() == "parsed");
+
+    XMLAttribute moveAssigned("x", XMLValue("y", "z"));
+    moveAssigned = std::move(copyConstructed);
+    REQUIRE(moveAssigned.getName() == "copy");
+    REQUIRE(moveAssigned.getUnparsed() == "unparsed");
+    REQUIRE(moveAssigned.getParsed() == "parsed");
+  }
+
+  SECTION("Assignment from XMLValue.", "[XML][Attribute][AssignValue]")
+  {
+    XMLAttribute attr("assign", XMLValue("a", "b"));
+    XMLValue val("newUnparsed", "newParsed");
+    attr = val;
+    REQUIRE(attr.getUnparsed() == "newUnparsed");
+    REQUIRE(attr.getParsed() == "newParsed");
+    REQUIRE(attr.getName() == "assign");
+  }
+
+  SECTION("Error handling: find non-existent attribute throws.", "[XML][Attribute][Error]")
+  {
+    std::vector<XMLAttribute> attributes;
+    attributes.emplace_back("a", XMLValue("1", "2"));
+    bool threw = false;
+    try {
+      XMLAttribute::find(attributes, "notfound");
+    } catch (const XMLAttribute::Error &e) {
+      threw = true;
+    }
+    REQUIRE(threw);
+  }
+
+  SECTION("Edge case: attribute with empty name and value.", "[XML][Attribute][Edge]")
+  {
+    XMLAttribute attr("", XMLValue("", ""));
+    REQUIRE(attr.getName().empty());
+    REQUIRE(attr.getUnparsed().empty());
+    REQUIRE(attr.getParsed().empty());
+  }
 }

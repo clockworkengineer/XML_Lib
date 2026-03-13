@@ -13,7 +13,8 @@ TEST_CASE("XML external reference usage tests cases.", "[XML][ExternalReference]
     REQUIRE_FALSE(externalReference.isSystem());
     REQUIRE_FALSE(externalReference.isPublic());
     REQUIRE_THROWS_WITH(externalReference.getPublicID(), "ExternalReference Error: External reference is not public.");
-    REQUIRE_THROWS_WITH(externalReference.getSystemID(), "ExternalReference Error: External reference has no system value set." );
+    REQUIRE_THROWS_WITH(
+      externalReference.getSystemID(), "ExternalReference Error: External reference has no system value set.");
   }
   SECTION("Create a system external reference", "[XML][ExternalReference][Create]")
   {
@@ -40,5 +41,51 @@ TEST_CASE("XML external reference usage tests cases.", "[XML][ExternalReference]
     REQUIRE_FALSE(!externalReference.isSystem());
     REQUIRE_FALSE(externalReference.isPublic());
     REQUIRE_THROWS_WITH(externalReference.getPublicID(), "ExternalReference Error: External reference is not public.");
+  }
+  SECTION("Copy and move constructors/assignment.", "[XML][ExternalReference][CopyMove]")
+  {
+    XMLExternalReference original(XMLExternalReference::kPublicID, "sys", "pub");
+    XMLExternalReference copyConstructed(original);
+    REQUIRE(copyConstructed.isPublic());
+    REQUIRE(copyConstructed.getSystemID() == "sys");
+    REQUIRE(copyConstructed.getPublicID() == "pub");
+
+    XMLExternalReference moveConstructed(std::move(original));
+    REQUIRE(moveConstructed.isPublic());
+    REQUIRE(moveConstructed.getSystemID() == "sys");
+    REQUIRE(moveConstructed.getPublicID() == "pub");
+
+    XMLExternalReference assigned(XMLExternalReference::kSystemID, "a");
+    assigned = copyConstructed;
+    REQUIRE(assigned.isPublic());
+    REQUIRE(assigned.getSystemID() == "sys");
+    REQUIRE(assigned.getPublicID() == "pub");
+
+    XMLExternalReference moveAssigned(XMLExternalReference::kSystemID, "b");
+    moveAssigned = std::move(copyConstructed);
+    REQUIRE(moveAssigned.isPublic());
+    REQUIRE(moveAssigned.getSystemID() == "sys");
+    REQUIRE(moveAssigned.getPublicID() == "pub");
+  }
+
+  SECTION("Error handling: getType() on default constructed throws.", "[XML][ExternalReference][Error]")
+  {
+    bool threw = false;
+    try {
+      XMLExternalReference ref(XMLExternalReference::kSystemID, "");
+      ref = XMLExternalReference("", "");
+      ref.getType();
+    } catch (const XMLExternalReference::Error &e) {
+      threw = true;
+    }
+    REQUIRE(threw);
+  }
+
+  SECTION("Edge case: publicID with empty system/public.", "[XML][ExternalReference][Edge]")
+  {
+    XMLExternalReference ref(XMLExternalReference::kPublicID, "", "");
+    REQUIRE(ref.isPublic());
+    REQUIRE(ref.getSystemID().empty());
+    REQUIRE(ref.getPublicID().empty());
   }
 }
