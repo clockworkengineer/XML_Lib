@@ -201,6 +201,50 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     source.close();
     std::filesystem::remove(generatedFileName);
   }
+  SECTION("FileSource getFileName returns correct name.", "[XML][FileSource][API]")
+  {
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, "<root>abc</root>", XML::Format::utf8);
+    FileSource source{ generatedFileName };
+    REQUIRE(source.getFileName() == generatedFileName);
+    source.close();
+    std::filesystem::remove(generatedFileName);
+  }
+  SECTION("BufferSource handles large buffer.", "[XML][BufferSource][Large]")
+  {
+    std::string large(10000, 'x');
+    BufferSource source{ large };
+    long count = 0;
+    while (source.more()) {
+      source.next();
+      count++;
+    }
+    REQUIRE(count == 10000);
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
+  }
+  SECTION("BufferSource reset() after EOF works.", "[XML][BufferSource][Reset]")
+  {
+    std::string data = "abc";
+    BufferSource source{ data };
+    while (source.more()) { source.next(); }
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
+    source.reset();
+    REQUIRE(source.position() == 0);
+    REQUIRE(source.current() == 'a');
+  }
+  SECTION("FileSource reset() after EOF works.", "[XML][FileSource][Reset]")
+  {
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, "abc", XML::Format::utf8);
+    FileSource source{ generatedFileName };
+    while (source.more()) { source.next(); }
+    REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
+    source.reset();
+    REQUIRE(source.position() == 0);
+    REQUIRE(source.current() == 'a');
+    source.close();
+    std::filesystem::remove(generatedFileName);
+  }
 }
 TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", "[XML][BufferSource]")
 {

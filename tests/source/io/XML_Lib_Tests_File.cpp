@@ -133,4 +133,35 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     REQUIRE(NRef<Declaration>(xml.declaration()).encoding() == "UTF-8");
     std::filesystem::remove(generatedFileName);
   }
+  SECTION("Parse non-existent file throws FileSource::Error", "[XML][File][Error]")
+  {
+    REQUIRE_THROWS_AS(xml.parse(FileSource(prefixTestDataPath("doesntexist.xml"))), FileSource::Error);
+  }
+  SECTION("Parse empty file throws SyntaxError", "[XML][File][Error]")
+  {
+    // If empty.xml exists and is empty, this should throw a SyntaxError
+    if (std::filesystem::exists(prefixTestDataPath("empty.xml"))
+        && std::filesystem::file_size(prefixTestDataPath("empty.xml")) == 0) {
+      REQUIRE_THROWS_AS(xml.parse(FileSource(prefixTestDataPath("empty.xml"))), SyntaxError);
+    }
+  }
+  SECTION("Write to file and read back (roundtrip)", "[XML][File][Output]")
+  {
+    std::string xmlString = "<root><child>value</child></root>";
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    REQUIRE(XML::getFileFormat(generatedFileName) == XML::Format::utf8);
+    auto readBack = XML::fromFile(generatedFileName);
+    REQUIRE(readBack.find("<child>value</child>") != std::string::npos);
+    std::filesystem::remove(generatedFileName);
+  }
+  SECTION("FileDestination throws on unwritable location", "[XML][File][Output][Error]")
+  {
+    // Try to write to a location that should not be writable (root on Unix, or invalid path on Windows)
+    std::string badFile = "/this/path/should/not/exist/test.xml";
+#ifdef _WIN32
+    badFile = "Z:/this/path/should/not/exist/test.xml";
+#endif
+    REQUIRE_THROWS_AS(FileDestination(badFile), FileDestination::Error);
+  }
 }

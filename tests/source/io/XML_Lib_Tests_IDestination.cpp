@@ -67,4 +67,49 @@ TEST_CASE("Creation and use of IDestination (File) interface.", "[XML][Parse][Fi
     REQUIRE(expected == "65767");
     std::filesystem::remove(generatedFileName);
   }
+  SECTION("BufferDestination clear empties buffer.", "[XML][Stringify][BufferDestination][Clear]")
+  {
+    BufferDestination buffer;
+    buffer.add("abc");
+    buffer.clear();
+    REQUIRE(buffer.size() == 0);
+    REQUIRE(buffer.toString().empty());
+  }
+  SECTION("BufferDestination handles large writes.", "[XML][Stringify][BufferDestination][Large]")
+  {
+    BufferDestination buffer;
+    std::string large(10000, 'x');
+    buffer.add(large);
+    REQUIRE(buffer.size() == 10000);
+    REQUIRE(buffer.toString() == large);
+  }
+  SECTION("FileDestination clear truncates file.", "[XML][Stringify][FileDestination][Clear]")
+  {
+    std::string generatedFileName{ generateRandomFileName() };
+    FileDestination file(generatedFileName);
+    file.add("abc");
+    file.clear();
+    file.add("z");
+    file.close();
+    REQUIRE(std::filesystem::file_size(generatedFileName) == 1);
+    std::string content = XML::fromFile(generatedFileName);
+    REQUIRE(content == "z");
+    std::filesystem::remove(generatedFileName);
+  }
+  SECTION("FileDestination getFileName returns correct name.", "[XML][Stringify][FileDestination][API]")
+  {
+    std::string generatedFileName{ generateRandomFileName() };
+    FileDestination file(generatedFileName);
+    REQUIRE(file.getFileName() == generatedFileName);
+    file.close();
+    std::filesystem::remove(generatedFileName);
+  }
+  SECTION("FileDestination throws on unwritable location (again)", "[XML][Stringify][FileDestination][Error]")
+  {
+    std::string badFile = "/this/path/should/not/exist/test2.xml";
+#ifdef _WIN32
+    badFile = "Z:/this/path/should/not/exist/test2.xml";
+#endif
+    REQUIRE_THROWS_AS(FileDestination(badFile), FileDestination::Error);
+  }
 }
