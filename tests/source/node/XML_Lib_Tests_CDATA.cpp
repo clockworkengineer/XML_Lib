@@ -41,4 +41,47 @@ TEST_CASE("Create and use CDATA Node.", "[Node][CDATA][API]")
     // No mutation API, so value should remain the same
     REQUIRE(cdata.value() == "original");
   }
+    SECTION("CDATA Node with embedded CDATA end marker (should not split)", "[XML][Node][CDATA][Edge][EndMarker]")
+    {
+      std::string tricky = "]]> inside CDATA";
+      CDATA cdata(tricky);
+      REQUIRE(cdata.value() == tricky);
+      REQUIRE(cdata.getContents() == tricky);
+    }
+  
+    SECTION("CDATA Node with Unicode characters", "[XML][Node][CDATA][Unicode]")
+    {
+      std::string unicode = "\xF0\x9D\x84\x9E\xF0\x9D\x84\xA2\xF0\x9D\x84\xAB"; // UTF-8 for 𝄞𝄢𝄫
+      CDATA cdata(unicode);
+      REQUIRE(cdata.value() == unicode);
+      REQUIRE(cdata.getContents() == unicode);
+    }
+  
+    SECTION("CDATA Node integration with Node API", "[XML][Node][CDATA][Integration]")
+    {
+      Node xNode = Node::make<CDATA>("integration test");
+      REQUIRE(isA<CDATA>(xNode));
+      REQUIRE(NRef<CDATA>(xNode).value() == "integration test");
+    }
+  
+    SECTION("CDATA Node stringify output", "[XML][Node][CDATA][Stringify]")
+    {
+      Node xNode = Node::make<CDATA>("stringify test");
+      Default_Stringify stringify;
+      std::string result;
+      class StringDestination : public IDestination {
+        std::string data;
+      public:
+        void add(const std::string &s) override { data += s; }
+        void add(Char c) override { data += static_cast<char>(c); }
+        void add(const char *bytes) override { data += bytes; }
+        void add(const std::string_view &bytes) override { data += std::string(bytes); }
+        void clear() override { data.clear(); }
+        std::string str() const { return data; }
+      };
+      StringDestination dest;
+      stringify.stringify(xNode, dest, 0);
+      result = dest.str();
+      REQUIRE(result == "<![CDATA[stringify test]]>");
+    }
 }

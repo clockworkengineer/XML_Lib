@@ -54,4 +54,40 @@ TEST_CASE("Create and use Content Node.", "[Node][Content][API]")
     content.addContent("123");
     REQUIRE(content.value() == "abc123");
   }
+    SECTION("Content Node with Unicode characters", "[XML][Node][Content][Unicode]")
+    {
+      std::string unicode = "\xF0\x9D\x84\x9E\xF0\x9D\x84\xA2\xF0\x9D\x84\xAB"; // UTF-8 for 𝄞𝄢𝄫
+      Content content(unicode);
+      REQUIRE(content.value() == unicode);
+      content.addContent(unicode);
+      REQUIRE(content.value() == unicode + unicode);
+    }
+    SECTION("Content Node integration with Node API", "[XML][Node][Content][Integration]")
+    {
+      Node xNode = Node::make<Content>("integration test");
+      REQUIRE(isA<Content>(xNode));
+      REQUIRE(NRef<Content>(xNode).value() == "integration test");
+      NRef<Content>(xNode).addContent("123");
+      REQUIRE(NRef<Content>(xNode).value() == "integration test123");
+    }
+    SECTION("Content Node stringify output", "[XML][Node][Content][Stringify]")
+    {
+      Node xNode = Node::make<Content>("stringify test");
+      Default_Stringify stringify;
+      std::string result;
+      class StringDestination : public IDestination {
+        std::string data;
+      public:
+        void add(const std::string &s) override { data += s; }
+        void add(Char c) override { data += static_cast<char>(c); }
+        void add(const char *bytes) override { data += bytes; }
+        void add(const std::string_view &bytes) override { data += std::string(bytes); }
+        void clear() override { data.clear(); }
+        std::string str() const { return data; }
+      };
+      StringDestination dest;
+      stringify.stringify(xNode, dest, 0);
+      result = dest.str();
+      REQUIRE(result == "stringify test");
+    }
 }
