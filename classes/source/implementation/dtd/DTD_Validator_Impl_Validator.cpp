@@ -58,9 +58,8 @@ bool DTD_Impl::checkIsIDOK(const std::string_view &idValue)
 /// <returns>true if element contains characters otherwise false.</returns>
 bool DTD_Impl::checkIsPCDATA(const Node &xNode)
 {
-  if (auto &child = xNode.getChildren(); std::ranges::all_of(child, [](const Node &element) {
-        return !isA<Element>(element) || isA<Self>(element);
-      })) {
+  if (auto &child = xNode.getChildren();
+      std::ranges::all_of(child, [](const Node &element) { return !isA<Element>(element) || isA<Self>(element); })) {
     return !xNode.getContents().empty();
   }
   return false;
@@ -102,7 +101,7 @@ void DTD_Impl::checkAttributeValue(const Node &xNode, const DTD::Attribute &attr
     }
   }
   if (!attributePresent) {
-    xElement.addAttribute(attribute.name, XMLValue(attribute.value.getParsed(), attribute.value.getParsed() ));
+    xElement.addAttribute(attribute.name, XMLValue(attribute.value.getParsed(), attribute.value.getParsed()));
   }
 }
 
@@ -270,7 +269,8 @@ void DTD_Impl::checkElements(const Node &xNode)
     for (auto &element : xNode.getChildren()) { checkElements(element); }
   } else if (isA<Self>(xNode)) {
     checkElement(xNode);
-  } else if (isA<Comment>(xNode) || isA<EntityReference>(xNode) || isA<PI>(xNode) || isA<CDATA>(xNode) || isA<DTD>(xNode)) {
+  } else if (isA<Comment>(xNode) || isA<EntityReference>(xNode) || isA<PI>(xNode) || isA<CDATA>(xNode)
+             || isA<DTD>(xNode)) {
   } else if (isA<Content>(xNode)) {
     for (const auto &ch : NRef<Content>(xNode).value()) {
       if (ch == kLineFeed) { lineNumber++; }
@@ -287,7 +287,7 @@ void DTD_Impl::checkElements(const Node &xNode)
 /// <param name="xNode">Node element containing root of XML to validate.</param>
 void DTD_Impl::checkAgainstDTD(const Node &xNode)
 {
-  lineNumber = xDTD.getLineCount();
+  lineNumber = static_cast<long>(xDTD.getLineCount());
   checkElements(xNode);
   for (const auto &idref : assignedIDREFValues) {
     if (!assignedIDValues.contains(idref)) {

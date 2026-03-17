@@ -49,23 +49,23 @@ set(TEST_SOURCES
     source/data/XML_Lib_Tests_External_Reference.cpp
     source/data/XML_Lib_Tests_Value.cpp
     source/data/XML_Lib_Tests_Attribute.cpp
-        source/node/XML_Lib_Tests_Variant.cpp
-        source/node/XML_Lib_Tests_Comment.cpp
-        source/node/XML_Lib_Tests_Content.cpp
-        source/node/XML_Lib_Tests_Declaration.cpp
-        source/node/XML_Lib_Tests_Element.cpp
-        source/node/XML_Lib_Tests_CDATA.cpp
-        source/node/XML_Lib_Tests_PI.cpp
-        source/node/XML_Lib_Tests_Prolog.cpp
-        source/node/XML_Lib_Tests_Root.cpp
-        source/node/XML_Lib_Tests_Self.cpp
-        source/node/XML_LIb_Tests_EntityReference.cpp
-        source/node/XML_Lib_Tests_DTD.cpp
+    source/node/XML_Lib_Tests_Variant.cpp
+    source/node/XML_Lib_Tests_Comment.cpp
+    source/node/XML_Lib_Tests_Content.cpp
+    source/node/XML_Lib_Tests_Declaration.cpp
+    source/node/XML_Lib_Tests_Element.cpp
+    source/node/XML_Lib_Tests_CDATA.cpp
+    source/node/XML_Lib_Tests_PI.cpp
+    source/node/XML_Lib_Tests_Prolog.cpp
+    source/node/XML_Lib_Tests_Root.cpp
+    source/node/XML_Lib_Tests_Self.cpp
+    source/node/XML_LIb_Tests_EntityReference.cpp
+    source/node/XML_Lib_Tests_DTD.cpp
     source/traverse/XML_Lib_Tests_Traverse.cpp
 )
 
 add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})
-target_include_directories(${TEST_EXECUTABLE} PUBLIC ./include ../include)
+target_include_directories(${TEST_EXECUTABLE} PUBLIC ./include ../include ${Catch2_SOURCE_DIR}/src)
 target_link_libraries(${TEST_EXECUTABLE} ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
 target_precompile_headers(${TEST_EXECUTABLE} REUSE_FROM XML_Lib)
 

@@ -75,7 +75,7 @@ TEST_CASE("XML external reference usage tests cases.", "[XML][ExternalReference]
       XMLExternalReference ref(XMLExternalReference::kSystemID, "");
       ref = XMLExternalReference("", "");
       auto type = ref.getType();
-    } catch (const XMLExternalReference::Error &e) {
+    } catch (const XMLExternalReference::Error &) {
       threw = true;
     }
     REQUIRE(threw);

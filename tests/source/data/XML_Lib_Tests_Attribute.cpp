@@ -96,8 +96,8 @@ TEST_CASE("XML attribute usage tests cases.", "[XML][Value]")
     attributes.emplace_back("a", XMLValue("1", "2"));
     bool threw = false;
     try {
-      auto find= XMLAttribute::find(attributes, "notfound");
-    } catch (const XMLAttribute::Error &e) {
+      auto find = XMLAttribute::find(attributes, "notfound");
+    } catch (const XMLAttribute::Error &) {
       threw = true;
     }
     REQUIRE(threw);
