@@ -1,4 +1,5 @@
 #include "XML_Lib_Tests.hpp"
+#include <cstdio>
 
 /// <summary>
 /// Prefix path to test data file name.
@@ -64,8 +65,9 @@ void checkStringify(const std::string &xmlString)
 std::string generateRandomFileName(void)
 {
   char tmpNameBuffer[L_tmpnam];
-  errno_t err = tmpnam_s(tmpNameBuffer, L_tmpnam);
-  if (err != 0) { throw std::runtime_error("Failed to generate temporary file name"); }
+  if (std::tmpnam(tmpNameBuffer) == nullptr) {
+    throw std::runtime_error("Failed to generate temporary file name");
+  }
   std::filesystem::path namepath = tmpNameBuffer;
   std::string result{ std::filesystem::temp_directory_path().string() };
   result.push_back(std::filesystem::path::preferred_separator);
