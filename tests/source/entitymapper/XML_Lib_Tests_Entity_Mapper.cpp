@@ -86,14 +86,82 @@ TEST_CASE("XML entity mapper usage tests cases.", "[XML][EntityMapper]")
   SECTION("Create public external reference entity mapping.", "[XML][EntityMapper][API]")
   {
     XML_EntityMapper entityMapper;
-    XMLExternalReference externalReference{
-      XMLExternalReference::kPublicID, "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd", "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    };
+    XMLExternalReference externalReference{ XMLExternalReference::kPublicID,
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd",
+      "-//W3C//DTD XHTML 1.0 Transitional//EN" };
     entityMapper.setExternal("&test;", externalReference);
     REQUIRE_FALSE(!entityMapper.isPresent("&test;"));
     REQUIRE_FALSE(!entityMapper.isExternal("&test;"));
     REQUIRE(entityMapper.getExternal("&test;").getPublicID() == "-//W3C//DTD XHTML 1.0 Transitional//EN");
     REQUIRE(
       entityMapper.getExternal("&test;").getSystemID() == "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd");
+  }
+  SECTION("Map internal entity reference.", "[XML][EntityMapper][Map]")
+  {
+    XML_EntityMapper entityMapper;
+    entityMapper.setInternal("&foo;", "bar");
+    XMLValue val{ "&foo;" };
+    auto mapped = entityMapper.map(val);
+    REQUIRE(mapped.getParsed() == "bar");
+  }
+
+  SECTION("Translate string with multiple entities.", "[XML][EntityMapper][Translate]")
+  {
+    XML_EntityMapper entityMapper;
+    std::string input = "&amp; &lt; &gt;";
+    std::string expected = "&#x26; &#x3C; &#x3E;";
+    REQUIRE(entityMapper.translate(input, '&') == expected);
+  }
+
+  SECTION("Check for recursion throws on recursive entity.", "[XML][EntityMapper][Recursion]")
+  {
+    XML_EntityMapper entityMapper;
+    entityMapper.setInternal("&foo;", "&bar;");
+    entityMapper.setInternal("&bar;", "&foo;");
+    REQUIRE_THROWS_AS(entityMapper.checkForRecursion(), std::exception);
+  }
+
+  SECTION("Reset clears custom entities.", "[XML][EntityMapper][Reset]")
+  {
+    XML_EntityMapper entityMapper;
+    entityMapper.setInternal("&foo;", "bar");
+    REQUIRE(entityMapper.isPresent("&foo;"));
+    entityMapper.reset();
+    REQUIRE_FALSE(entityMapper.isPresent("&foo;"));
+  }
+
+  SECTION("XMLExternalReference API usage.", "[XML][ExternalReference][API]")
+  {
+    XMLExternalReference extRef(XMLExternalReference::kSystemID, "sysid");
+    REQUIRE(extRef.isSystem());
+    REQUIRE(extRef.getSystemID() == "sysid");
+    REQUIRE_THROWS_AS(extRef.getPublicID(), std::exception);
+
+    XMLExternalReference pubRef(XMLExternalReference::kPublicID, "sysid", "pubid");
+    REQUIRE(pubRef.isPublic());
+    REQUIRE(pubRef.getSystemID() == "sysid");
+    REQUIRE(pubRef.getPublicID() == "pubid");
+    // getType() does not throw for a properly constructed object, so no REQUIRE_THROWS_AS here
+  }
+
+  SECTION("XML_EntityMapper getInternal throws for wrong type.", "[XML][EntityMapper][Error]")
+  {
+    XML_EntityMapper entityMapper;
+    entityMapper.setNotation("&foo;", "bar");
+    REQUIRE_THROWS_AS(entityMapper.getInternal("&foo;"), std::exception);
+  }
+
+  SECTION("XML_EntityMapper getNotation throws for wrong type.", "[XML][EntityMapper][Error]")
+  {
+    XML_EntityMapper entityMapper;
+    entityMapper.setInternal("&foo;", "bar");
+    REQUIRE_THROWS_AS(entityMapper.getNotation("&foo;"), std::exception);
+  }
+
+  SECTION("XML_EntityMapper getExternal throws for wrong type.", "[XML][EntityMapper][Error]")
+  {
+    XML_EntityMapper entityMapper;
+    entityMapper.setInternal("&foo;", "bar");
+    REQUIRE_THROWS_AS(entityMapper.getExternal("&foo;"), std::exception);
   }
 }
