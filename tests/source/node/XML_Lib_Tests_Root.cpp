@@ -24,5 +24,44 @@ TEST_CASE("Create and use Root Node.","[Node][Root][API]")
     REQUIRE(NRef<Root>(xNode).name()=="test");
   }
 }
+// Additional tests for Root
+TEST_CASE("Root edge cases and integration", "[Node][Root][Edge][Integration]")
+{
+  SECTION("Root copy/move semantics", "[XML][Node][Root][CopyMove]")
+  {
+    Root original("root");
+    Root moved(std::move(original));
+    REQUIRE(moved.name() == "root");
+    REQUIRE(moved.getNodeType() == Variant::Type::root);
+  }
+
+  SECTION("Root with child nodes", "[XML][Node][Root][Children]")
+  {
+    Root rootNode("root");
+    Node child = Node::make<Element>("child");
+    std::vector<XMLAttribute> emptyAttrs;
+    std::vector<XMLAttribute> emptyNamespaces;
+    Node root = Node::make<Root>("root", emptyAttrs, emptyNamespaces);
+    root.addChild(child);
+    REQUIRE(root.getChildren().size() == 1);
+    REQUIRE(isA<Element>(root.getChildren()[0]));
+    REQUIRE(NRef<Element>(root.getChildren()[0]).name() == "child");
+  }
+
+  SECTION("Root integration with XML parsing", "[XML][Node][Root][XML]")
+  {
+    XML xml;
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n<root attr1='1'><child>data</child></root>\n"
+    };
+    xml.parse(source);
+    REQUIRE_FALSE(!isA<Root>(xml.root()));
+    REQUIRE(NRef<Root>(xml.root()).name() == "root");
+    REQUIRE(NRef<Root>(xml.root()).getAttributes().size() == 1);
+    REQUIRE(NRef<Root>(xml.root()).getChildren().size() == 1);
+    REQUIRE(NRef<Element>(xml.root()[0]).name() == "child");
+    REQUIRE(NRef<Element>(xml.root()[0]).getContents() == "data");
+  }
+}
 
 
