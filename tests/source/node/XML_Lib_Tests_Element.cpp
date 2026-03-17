@@ -7,6 +7,54 @@ void addAttributes(const Element &xElement)
   xElement.addAttribute("attr3", XMLValue {"value3", "value3"});
 
 }
+// Additional tests for Element
+TEST_CASE("Element edge cases and integration", "[Node][Element][Edge][Integration]")
+{
+  SECTION("Element copy/move semantics", "[XML][Node][Element][CopyMove]")
+  {
+    Element original("element");
+    Element moved(std::move(original));
+    REQUIRE(moved.name() == "element");
+    REQUIRE(moved.getNodeType() == Variant::Type::element);
+  }
+
+  SECTION("Element with child nodes", "[XML][Node][Element][Children]")
+  {
+    Element elementNode("element");
+    Node child = Node::make<Content>("child content");
+    std::vector<XMLAttribute> emptyAttrs;
+    std::vector<XMLAttribute> emptyNamespaces;
+    Node element = Node::make<Element>("element", emptyAttrs, emptyNamespaces);
+    element.addChild(child);
+    REQUIRE(element.getChildren().size() == 1);
+    REQUIRE(isA<Content>(element.getChildren()[0]));
+    REQUIRE(NRef<Content>(element.getChildren()[0]).value() == "child content");
+  }
+
+  SECTION("Element integration with XML parsing", "[XML][Node][Element][XML]")
+  {
+    XML xml;
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n<root><element attr='1'>data</element></root>\n"
+    };
+    xml.parse(source);
+    auto &rootChildren = NRef<Element>(xml.root()).getChildren();
+    bool foundElement = false;
+    for (const auto &child : rootChildren) {
+      if (isA<Element>(child)) {
+        foundElement = true;
+        REQUIRE(NRef<Element>(child).name() == "element");
+        REQUIRE(NRef<Element>(child).getAttributes().size() == 1);
+        REQUIRE(NRef<Element>(child).getAttributes()[0].getName() == "attr");
+        REQUIRE(NRef<Element>(child).getAttributes()[0].getParsed() == "1");
+        REQUIRE(NRef<Element>(child).getChildren().size() == 1);
+        REQUIRE(isA<Content>(NRef<Element>(child).getChildren()[0]));
+        REQUIRE(NRef<Content>(NRef<Element>(child).getChildren()[0]).value() == "data");
+      }
+    }
+    REQUIRE(foundElement);
+  }
+}
 void addNameSpaces(const Element &xElement)
 {
   xElement.addNameSpace("a", XMLValue {"value1", "value1"});
