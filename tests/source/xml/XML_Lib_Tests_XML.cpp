@@ -124,6 +124,65 @@ TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
     REQUIRE(NRef<Element>(xml.root()).getContents() == "John Doe Flat A, West Road, Wolverhampton, W1SSX9");
   }
 }
+
+TEST_CASE("Malformed XML handling", "[XML][Error][Malformed]")
+{
+  XML xml;
+  SECTION("Missing closing tag", "[XML][Error][Malformed]") {
+    BufferSource source{"<root><child></root>"};
+    REQUIRE_THROWS(xml.parse(source));
+  }
+  SECTION("Unclosed attribute quote", "[XML][Error][Malformed]") {
+    BufferSource source{"<root attr='value></root>"};
+    REQUIRE_THROWS(xml.parse(source));
+  }
+  SECTION("No root element", "[XML][Error][Malformed]") {
+    BufferSource source{"<?xml version=\"1.0\"?>"};
+    REQUIRE_THROWS(xml.parse(source));
+  }
+}
+
+TEST_CASE("Deeply nested XML elements", "[XML][Edge][DeepNesting]")
+{
+  XML xml;
+  std::string deep_xml = "<a>";
+  for (int i = 0; i < 50; ++i) deep_xml += "<b>";
+  for (int i = 0; i < 50; ++i) deep_xml += "</b>";
+  deep_xml += "</a>";
+  BufferSource source{deep_xml};
+  REQUIRE_NOTHROW(xml.parse(source));
+  auto &xRoot = NRef<Element>(xml.root());
+  REQUIRE(xRoot.name() == "a");
+}
+
+TEST_CASE("Large number of attributes", "[XML][Edge][Attributes]")
+{
+  XML xml;
+  std::string xml_str = "<root";
+  for (int i = 0; i < 100; ++i) xml_str += " attr" + std::to_string(i) + "='val'";
+  xml_str += "></root>";
+  BufferSource source{xml_str};
+  REQUIRE_NOTHROW(xml.parse(source));
+  auto &xRoot = NRef<Element>(xml.root());
+  REQUIRE(xRoot.getAttributes().size() == 100);
+}
+
+TEST_CASE("Whitespace edge cases", "[XML][Edge][Whitespace]")
+{
+  XML xml;
+  SECTION("Only whitespace between tags") {
+    BufferSource source{"<root>   <child>   </child>   </root>"};
+    REQUIRE_NOTHROW(xml.parse(source));
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].name() == "child");
+  }
+  SECTION("Whitespace in attribute values") {
+    BufferSource source{"<root attr='  spaced  '></root>"};
+    REQUIRE_NOTHROW(xml.parse(source));
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot["attr"].getUnparsed() == "  spaced  ");
+  }
+}
 TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
 {
   SECTION("Create XML from passed string to constructor.", "[XML][Creation][Constructor]")
