@@ -149,4 +149,45 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     REQUIRE(xDeclaration.standalone() == "no");
     REQUIRE(NRef<Root>(xml.root()).name() == "root");
   }
+  SECTION("Parse XML declaration with extra whitespace", "[XML][Parse][Declaration]")
+  {
+    BufferSource source{
+      "<?xml    version =   \"1.0\"    encoding =   \"UTF-8\"   standalone =   \"no\"   ?>\n"
+      "<root></root>\n"
+    };
+    xml.parse(source);
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "no");
+  }
+  SECTION("Parse XML declaration with missing encoding attribute", "[XML][Parse][Declaration]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\" standalone=\"no\"?>\n"
+      "<root></root>\n"
+    };
+    xml.parse(source);
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
+    REQUIRE(xDeclaration.version() == "1.0");
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(xDeclaration.standalone() == "no");
+  }
+  SECTION("Parse XML declaration with extra attribute", "[XML][Parse][Declaration]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" extra=\"value\"?>\n"
+      "<root></root>\n"
+    };
+    REQUIRE_THROWS(xml.parse(source));
+  }
+  SECTION("Parse XML with multiple declarations", "[XML][Parse][Declaration]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+      "<root></root>\n"
+    };
+    REQUIRE_THROWS(xml.parse(source));
+  }
 }

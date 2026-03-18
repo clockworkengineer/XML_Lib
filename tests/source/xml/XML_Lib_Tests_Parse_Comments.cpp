@@ -142,4 +142,49 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
     REQUIRE_THROWS_WITH(xml.parse(source),
       "XML Syntax Error [Line: 2 Column: 51] Attribute value contains invalid character '<', '\"', ''' or '&'.");
   }
+  SECTION("Empty comment is allowed", "[XML][Parse][Comments]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<!-- -->\n"
+      "<root></root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("Comment with only whitespace", "[XML][Parse][Comments]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<!--    -->\n"
+      "<root></root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("Comment with special characters", "[XML][Parse][Comments]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<!-- <>&'\" !@#$%^&*()_+ -->\n"
+      "<root></root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("Malformed comment: nested comment start", "[XML][Parse][Comments]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<!-- Outer <!-- Inner --> -->\n"
+      "<root></root>\n"
+    };
+    REQUIRE_THROWS(xml.parse(source));
+  }
+  SECTION("Malformed comment: missing closing dash", "[XML][Parse][Comments]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<!-- Missing closing dash>\n"
+      "<root></root>\n"
+    };
+    REQUIRE_THROWS(xml.parse(source));
+  }
 }
