@@ -1,4 +1,40 @@
+
 #include "XML_Lib_Tests.hpp"
+
+TEST_CASE("Stringify XML with mixed content (text + elements)", "[XML][Stringify][MixedContent]")
+{
+  checkStringify(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+    "<root>Text before<child>child text</child>Text after</root>\n");
+}
+
+TEST_CASE("Stringify XML with nested elements and attributes", "[XML][Stringify][Nested][Attributes]")
+{
+  checkStringify(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+    "<root attr=\"A\">\n"
+    "  <parent id=\"1\">\n"
+    "    <child name=\"x\">Value</child>\n"
+    "    <child name=\"y\"/>\n"
+    "  </parent>\n"
+    "</root>\n");
+}
+
+TEST_CASE("Stringify XML with empty elements and whitespace", "[XML][Stringify][Empty][Whitespace]")
+{
+  checkStringify(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+    "<root>   <empty/>   <empty2>   </empty2>   </root>\n");
+}
+
+TEST_CASE("Stringify XML with Unicode in attributes and text", "[XML][Stringify][Unicode][Attributes]")
+{
+  checkStringify(
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+    "<root accented=\"éüñ\" cjk=\"汉字\" cyrillic=\"Привет\">\n"
+    "  <text>é ü ñ 汉字 Привет</text>\n"
+    "</root>\n");
+}
 
 TEST_CASE("Use XML to stringify previously parsed XML.", "[XML][Stringify]")
 {
