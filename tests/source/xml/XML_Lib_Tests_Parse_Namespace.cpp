@@ -113,4 +113,51 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     REQUIRE(xRoot[1].name() == "f:table");
     REQUIRE(xRoot[1].getNameSpace("f").getParsed() == "https://www.w3schools.com/furniture/child");
   }
+  SECTION("Default namespace overridden by child element", "[XML][Parse][Namespace]")
+  {
+    BufferSource source{
+      "<root xmlns=\"http://www.w3.org/TR/html4/\">\n"
+      "<table xmlns=\"https://www.w3schools.com/furniture\">\n"
+      "<tr><td>Apples</td><td>Bananas</td></tr>\n"
+      "</table>\n"
+      "</root>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getNameSpace(":").getParsed() == "https://www.w3schools.com/furniture");
+  }
+  SECTION("Element with undeclared prefix should throw", "[XML][Parse][Namespace]")
+  {
+    BufferSource source{
+      "<root>\n"
+      "<x:table>\n"
+      "<x:tr><x:td>Apples</x:td><x:td>Bananas</x:td></x:tr>\n"
+      "</x:table>\n"
+      "</root>\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 35] Namespace used but not defined.");
+  }
+  SECTION("Element with empty namespace URI", "[XML][Parse][Namespace]")
+  {
+    BufferSource source{
+      "<root xmlns:h=\"\">\n"
+      "<h:table><h:tr><h:td>Apples</h:td></h:tr></h:table>\n"
+      "</root>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getNameSpace("h").getParsed() == "");
+  }
+  SECTION("Element with boundary namespace name", "[XML][Parse][Namespace]")
+  {
+    BufferSource source{
+      "<root xmlns:a=\"http://example.com/a\" xmlns:b=\"http://example.com/b\">\n"
+      "<a:table><b:tr><a:td>Apples</a:td><b:td>Bananas</b:td></b:tr></a:table>\n"
+      "</root>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getNameSpace("a").getParsed() == "http://example.com/a");
+    REQUIRE(xRoot[0].getNameSpace("b").getParsed() == "http://example.com/b");
+  }
 }

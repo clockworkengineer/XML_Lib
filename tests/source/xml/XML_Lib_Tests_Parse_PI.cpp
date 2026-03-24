@@ -67,4 +67,51 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
     REQUIRE(NRef<PI>(xRootChildren[0]).name() == "xml-stylesheet");
     REQUIRE(NRef<PI>(xRootChildren[0]).parameters() == "href=\"tutorialspointstyle.css\" type=\"text/css\"");
   }
+  SECTION("Parse PI with empty name and parameters", "[XML][Parse][PI]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<? ?>\n"
+      "<root></root>\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 7] Invalid name '' encountered.");
+  }
+  SECTION("Parse PI with special characters in name and parameters", "[XML][Parse][PI]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<?xml-stylesheet-π type='text/xsl' href='style.xsl' & π?>\n"
+      "<root></root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("Parse malformed PI missing closing", "[XML][Parse][PI]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<?xml-stylesheet type='text/xsl' href='style.xsl'\n"
+      "<root></root>\n"
+    };
+    REQUIRE_THROWS(xml.parse(source));
+  }
+  SECTION("Parse PI at document start and end", "[XML][Parse][PI]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<?display start?>\n"
+      "<root></root>\n"
+      "<?display end?>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("Parse PI with long parameters", "[XML][Parse][PI]")
+  {
+    std::string longParams(1000, 'a');
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<?xml-stylesheet " + longParams + "?>\n"
+      "<root></root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
 }

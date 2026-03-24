@@ -4,11 +4,11 @@
 **XML_Lib** is a C++20-based library designed to simplify the parsing, manipulation, and generation of XML documents. It is intended for developers who need an efficient, lightweight, and feature-rich solution for working with XML in their projects. The library provides a clean interface and conforms to modern C++ coding practices to ensure high performance and reliability.
 
 ## Features
-- **XML Parsing**: Support for reading and parsing XML documents of any complexity.
+- **XML Parsing**: Fully compliant with XML 1.0 standard, including strict validation of elements, attributes, entities, whitespace, and declaration.
 - **XML Serialization**: Serialize data structures to XML format.
-- **XPath Support**: Navigate and query XML documents using XPath expressions.
+- **DTD Validation**: Internal and external DTD parsing and validation.
 - **Memory Efficiency**: Optimized algorithms to minimize memory usage.
-- **Error Handling**: Robust error and exception handling mechanisms, making debugging easier.
+- **Error Handling**: Robust error and exception handling mechanisms, with detailed standard-compliant error messages.
 - **Cross-platform Compatibility**: Designed to run seamlessly on Linux, Windows, and macOS environments.
 - **C++20 Support**: Full compliance with the C++20 standard and features such as ranges and smart pointers.
 
@@ -53,11 +53,31 @@ To use **XML_Lib** in your project:
 2. Link your project against the generated library.
 
 ### Example
-(An example usage of the library will be added here showcasing how to parse an XML file, extract data, and modify the contents.)
+```cpp
+#include "XML.hpp"
+using namespace XML_Lib;
+
+int main() {
+   XML xml;
+   BufferSource source{"<?xml version=\"1.0\" encoding=\"UTF-8\"?><root><child>value</child></root>"};
+   xml.parse(source);
+   auto &root = NRef<Element>(xml.root());
+   std::cout << "Root name: " << root.name() << std::endl;
+   std::cout << "Child contents: " << root[0].getContents() << std::endl;
+}
+```
+
+### Standard Compliance
+XML_Lib is fully compliant with XML 1.0, including:
+- Strict validation of tag and attribute names
+- Expanded encoding support (UTF-8, UTF-16, ISO-8859, etc.)
+- Robust entity handling
+- Whitespace normalization
+- Detailed error reporting for all non-compliant cases
+Unit tests cover all standard and edge cases.
 
 ### Integration with your Project
 If you're using CMake, you can integrate **XML_Lib** with your project by including the library in your `CMakeLists.txt`:
-```cmake
 add_subdirectory(XML_Lib)
 target_link_libraries(your_project_name PRIVATE XML_Lib)
 ```

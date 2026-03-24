@@ -132,4 +132,57 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
     REQUIRE_NOTHROW(xml.parse(source));
     REQUIRE(NRef<Element>(xml.root())["name"].getParsed() == "George &#x22;Shotgun&#x22; Ziegler");
   }
+  SECTION("Attribute with leading/trailing whitespace in name and value", "[XML][Parse][Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook   number   =   '  15  '   >\n"
+      "</AddressBook>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot["number"].getParsed() == "  15  ");
+  }
+  SECTION("Attribute value with special XML characters", "[XML][Parse][Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook note='&lt;tag&gt;&amp;&apos;&quot;'>\n"
+      "</AddressBook>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot["note"].getParsed() == "&#x3C;tag&#x3E;&#x26;&#x27;&#x22;");
+  }
+  SECTION("Attribute with only whitespace value", "[XML][Parse][Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook number='   '>\n"
+      "</AddressBook>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot["number"].getParsed() == "   ");
+  }
+  SECTION("Malformed attribute: missing quotes", "[XML][Parse][Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook number=15>\n"
+      "</AddressBook>\n"
+    };
+    REQUIRE_THROWS(xml.parse(source));
+  }
+  SECTION("Attribute with unicode value", "[XML][Parse][Attributes]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<AddressBook name='测试'>\n"
+      "</AddressBook>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot["name"].getParsed() == "测试");
+  }
 }

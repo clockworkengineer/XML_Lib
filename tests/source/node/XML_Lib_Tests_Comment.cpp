@@ -38,4 +38,42 @@ TEST_CASE("Create and use Comment Node.", "[Node][Comment][API]")
     // No mutation API, so value should remain the same
     REQUIRE(comment.value() == "original");
   }
+    SECTION("Comment Node with embedded dashes (should not split)", "[XML][Node][Comment][Edge][Dash]")
+    {
+      std::string tricky = "-- inside comment";
+      Comment comment(tricky);
+      REQUIRE(comment.value() == tricky);
+    }
+    SECTION("Comment Node with Unicode characters", "[XML][Node][Comment][Unicode]")
+    {
+      std::string unicode = "\xF0\x9D\x84\x9E\xF0\x9D\x84\xA2\xF0\x9D\x84\xAB"; // UTF-8 for 𝄞𝄢𝄫
+      Comment comment(unicode);
+      REQUIRE(comment.value() == unicode);
+    }
+    SECTION("Comment Node integration with Node API", "[XML][Node][Comment][Integration]")
+    {
+      Node xNode = Node::make<Comment>("integration test");
+      REQUIRE(isA<Comment>(xNode));
+      REQUIRE(NRef<Comment>(xNode).value() == "integration test");
+    }
+    SECTION("Comment Node stringify output", "[XML][Node][Comment][Stringify]")
+    {
+      Node xNode = Node::make<Comment>("stringify test");
+      Default_Stringify stringify;
+      std::string result;
+      class StringDestination : public IDestination {
+        std::string data;
+      public:
+        void add(const std::string &s) override { data += s; }
+        void add(Char c) override { data += static_cast<char>(c); }
+        void add(const char *bytes) override { data += bytes; }
+        void add(const std::string_view &bytes) override { data += std::string(bytes); }
+        void clear() override { data.clear(); }
+        std::string str() const { return data; }
+      };
+      StringDestination dest;
+      stringify.stringify(xNode, dest, 0);
+      result = dest.str();
+      REQUIRE(result == "<!--stringify test-->");
+    }
 }

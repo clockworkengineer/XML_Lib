@@ -135,4 +135,49 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
     REQUIRE_THROWS_WITH(
       xml.parse(source), "XML Syntax Error [Line: 2 Column: 22] Character reference invalid character.");
   }
+  SECTION("Parse entity &amp; with extra whitespace", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root>   &amp;   </root>\n"
+    };
+    xml.parse(source);
+    REQUIRE(NRef<Element>(xml.root()).getContents() == "   &   ");
+  }
+  SECTION("Parse entity at start of document", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root>&amp; test</root>\n"
+    };
+    xml.parse(source);
+    REQUIRE(NRef<Element>(xml.root()).getContents() == "& test");
+  }
+  SECTION("Parse nested entities in contents area", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root> &amp;&amp; </root>\n"
+    };
+    xml.parse(source);
+    REQUIRE(NRef<Element>(xml.root()).getContents() == " && ");
+  }
+  SECTION("Parse malformed entity reference missing semicolon", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root> &amp </root>\n"
+    };
+    REQUIRE_THROWS(xml.parse(source));
+  }
+  SECTION("Parse recursive entity reference", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<!DOCTYPE root [\n"
+      "<!ENTITY foo \"&foo;\">]>\n"
+      "<root>&foo;</root>\n"
+    };
+    REQUIRE_THROWS(xml.parse(source));
+  }
 }

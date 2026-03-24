@@ -59,6 +59,57 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     REQUIRE_FALSE(!isA<Content>(xRootChildren[4].getChildren()[2]));
     REQUIRE(NRef<Content>((xRootChildren[4])[2]).isWhiteSpace() == false);
   }
+  SECTION("Parse whitespace-only content node.", "[XML][Parse][Whitespace]")
+  {
+    XML xml;
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root>   </root>\n"
+    };
+    xml.parse(source);
+    REQUIRE(NRef<Content>(xml.root().getChildren()[0]).isWhiteSpace() == true);
+  }
+  SECTION("Parse CDATA section with boundary characters.", "[XML][Parse][CDATA]")
+  {
+    XML xml;
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<root><![CDATA[abc]]>def</root>\n"
+    };
+    xml.parse(source);
+    REQUIRE(NRef<Content>(xml.root().getChildren()[1]).getContents() == "def");
+  }
+  SECTION("Parse processing instruction at start and end.", "[XML][Parse][PI]")
+  {
+    XML xml;
+    BufferSource source{
+      "<?xml version=\"1.0\"?>\n"
+      "<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n"
+      "<root></root>\n"
+      "<?xml-stylesheet type=\"text/xsl\" href=\"style.xsl\"?>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("Parse comment at document boundaries.", "[XML][Parse][Comments]")
+  {
+    XML xml;
+    BufferSource source{
+      "<!-- Start comment -->\n"
+      "<?xml version=\"1.0\"?>\n"
+      "<root></root>\n"
+      "<!-- End comment -->\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 10] Declaration allowed only at the start of the document.");
+  }
+  SECTION("Parse unusual encoding scenario.", "[XML][Parse][Encoding]")
+  {
+    XML xml;
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+      "<root>\u00A9</root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
 }
 TEST_CASE("Check R-Value reference parse/stringify.", "[XML][Node][R-Value Reference]")
 {

@@ -67,4 +67,52 @@ TEST_CASE("Create and use Declaration Node.", "[Node][Declaration][API]")
     REQUIRE(decl.encoding() == "UTF-32");
     REQUIRE(decl.standalone() == "maybe");
   }
+    SECTION("Declaration Node with Unicode characters", "[XML][Node][Declaration][Unicode]")
+    {
+      std::string unicode = "\xF0\x9D\x84\x9E\xF0\x9D\x84\xA2\xF0\x9D\x84\xAB"; // UTF-8 for 𝄞𝄢𝄫
+      Declaration decl{ unicode, unicode, unicode };
+      REQUIRE(decl.version() == unicode);
+      REQUIRE(decl.encoding() == unicode);
+      REQUIRE(decl.standalone() == unicode);
+      decl.setVersion("new");
+      decl.setEncoding("new");
+      decl.setStandalone("new");
+      REQUIRE(decl.version() == "new");
+      REQUIRE(decl.encoding() == "new");
+      REQUIRE(decl.standalone() == "new");
+    }
+    SECTION("Declaration Node integration with Node API", "[XML][Node][Declaration][Integration]")
+    {
+      Node xNode = Node::make<Declaration>("integration test", "UTF-8", "yes");
+      REQUIRE(isA<Declaration>(xNode));
+      REQUIRE(NRef<Declaration>(xNode).version() == "integration test");
+      REQUIRE(NRef<Declaration>(xNode).encoding() == "UTF-8");
+      REQUIRE(NRef<Declaration>(xNode).standalone() == "yes");
+      NRef<Declaration>(xNode).setVersion("1.3");
+      NRef<Declaration>(xNode).setEncoding("UTF-16");
+      NRef<Declaration>(xNode).setStandalone("no");
+      REQUIRE(NRef<Declaration>(xNode).version() == "1.3");
+      REQUIRE(NRef<Declaration>(xNode).encoding() == "UTF-16");
+      REQUIRE(NRef<Declaration>(xNode).standalone() == "no");
+    }
+    SECTION("Declaration Node stringify output", "[XML][Node][Declaration][Stringify]")
+    {
+      Node xNode = Node::make<Declaration>("1.0", "UTF-8", "yes");
+      Default_Stringify stringify;
+      std::string result;
+      class StringDestination : public IDestination {
+        std::string data;
+      public:
+        void add(const std::string &s) override { data += s; }
+        void add(Char c) override { data += static_cast<char>(c); }
+        void add(const char *bytes) override { data += bytes; }
+        void add(const std::string_view &bytes) override { data += std::string(bytes); }
+        void clear() override { data.clear(); }
+        std::string str() const { return data; }
+      };
+      StringDestination dest;
+      stringify.stringify(xNode, dest, 0);
+      result = dest.str();
+      REQUIRE(result == "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+    }
 }
