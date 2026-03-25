@@ -1,6 +1,7 @@
-cmake_minimum_required(VERSION 3.18.1)
 
-project("XML_Lib Unit Tests" VERSION 1.0.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.20)
+
+project(XML_Lib_Unit_Tests VERSION 1.0.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 
 include(FetchContent)
 
@@ -9,15 +10,15 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
     GIT_TAG v3.6.0
 )
-
 FetchContent_MakeAvailable(Catch2)
 
-# Enable unit tests
 enable_testing()
 
 set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
 
-set(TEST_SOURCES
+add_executable(${TEST_EXECUTABLE})
+target_sources(${TEST_EXECUTABLE}
+    PRIVATE
     source/io/XML_Lib_Tests_ISource.cpp
     source/io/XML_Lib_Tests_IDestination.cpp
     source/io/XML_Lib_Tests_File.cpp
@@ -63,10 +64,13 @@ set(TEST_SOURCES
     source/node/XML_Lib_Tests_DTD.cpp
     source/traverse/XML_Lib_Tests_Traverse.cpp
 )
-
-add_executable(${TEST_EXECUTABLE} ${TEST_SOURCES})
-target_include_directories(${TEST_EXECUTABLE} PUBLIC ./include ../include ${Catch2_SOURCE_DIR}/src)
-target_link_libraries(${TEST_EXECUTABLE} ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
+target_include_directories(${TEST_EXECUTABLE}
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+    ${Catch2_SOURCE_DIR}/src
+)
+target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
 target_precompile_headers(${TEST_EXECUTABLE} REUSE_FROM XML_Lib)
 
 add_test(NAME ${TEST_EXECUTABLE} COMMAND ${TEST_EXECUTABLE})
