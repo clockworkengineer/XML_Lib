@@ -38,10 +38,30 @@ XML Schema Definition (XSD) validation is supported via `XML::validate(xsdSource
 - `xs:key`, `xs:keyref`, `xs:unique` identity constraints
 - `xs:notation`
 
+### XPath 1.0
+XPath 1.0 query evaluation is supported via the `XPath` class and the `xml.xpath()` convenience method.
+
+**Supported Features:**
+- All 13 XPath 1.0 axes: `child`, `parent`, `self`, `ancestor`, `ancestor-or-self`, `descendant`, `descendant-or-self`, `attribute`, `following-sibling`, `preceding-sibling`, `following`, `preceding`, `namespace`
+- Abbreviated syntax: `/` (absolute path), `//` (descendant-or-self shorthand), `.` (self), `..` (parent), `@` (attribute)
+- Predicates: positional (`[1]`, `[last()]`), numeric comparison, boolean, and attribute/element value equality (`[@attr='value']`)
+- Node tests: `name`, `*` (wildcard), `node()`, `text()`, `comment()`, `processing-instruction()`
+- All four result types: node-set, string, number, boolean
+- 28+ built-in functions: `count`, `string`, `number`, `boolean`, `not`, `true`, `false`, `concat`, `contains`, `starts-with`, `substring`, `substring-before`, `substring-after`, `string-length`, `normalize-space`, `translate`, `name`, `local-name`, `namespace-uri`, `position`, `last`, `sum`, `floor`, `ceiling`, `round`, `id`, `lang`
+- Union expressions (`expr1 | expr2`)
+- All comparison operators: `=`, `!=`, `<`, `<=`, `>`, `>=`
+- Arithmetic operators: `+`, `-`, `*`, `div`, `mod`
+- Qualified names (namespace-prefixed) in node tests
+
+**Not Yet Implemented:**
+- XPath 2.0/3.x features (sequences, types, `for` expressions, etc.)
+- `document()` function
+- Full namespace axis enumeration
+
 ### Other Limitations & Deviations
 - **Namespaces**: Supported — W3C XML Namespace declarations, prefix scoping, QName parsing, URI resolution, and well-formedness enforcement are all implemented.
 - **Encoding**: Only a subset of encodings are supported; others are rejected.
-- **XPath**: Mentioned in README, but not found in codebase. Likely not implemented.
+- **XPath**: XPath 1.0 fully implemented — all 13 axes, 28+ built-in functions, predicates, all result types, abbreviated syntax. See `XPath` class.
 - **Mixed Content**: Strict validation for mixed content; errors for illegal specifications (e.g., #PCDATA not first).
 - **Error Messages**: Detailed and standard-compliant error messages for most cases.
 
@@ -53,7 +73,7 @@ XML Schema Definition (XSD) validation is supported via `XML::validate(xsdSource
 | Encoding               | Partial   | UTF-8/16/32 only |
 | Namespaces             | Yes       | W3C XML Namespaces — prefix, URI, QName, scoping |
 | Schema (XSD)           | Partial   | Phase 1: elements, attributes, simple types, all restriction facets |
-| XPath                  | No        | Not implemented |
+| XPath                  | Yes       | XPath 1.0: all 13 axes, 28+ functions, all result types |
 | Error Handling         | Yes       | Detailed errors |
 
 ## References
@@ -61,4 +81,4 @@ XML Schema Definition (XSD) validation is supported via `XML::validate(xsdSource
 - [W3C DTD Specification](https://www.w3.org/TR/REC-xml/#dt-doctype)
 
 ## Conclusion
-XML_Lib is largely compliant with XML 1.0 and DTD standards, with robust error handling and strict validation. Phase 1 XSD schema validation has been implemented, covering element content models, attributes, all builtin types, and all restriction facets. XPath, advanced XSD type inheritance, and schema composition (include/import) are not yet implemented. For projects requiring DTD or XSD validation and strict XML syntax, XML_Lib is a suitable choice.
+XML_Lib is largely compliant with XML 1.0 and DTD standards, with robust error handling and strict validation. Phase 1 XSD schema validation has been implemented, covering element content models, attributes, all builtin types, and all restriction facets. XPath 1.0 has been fully implemented, covering all 13 axes, 28+ built-in functions, all result types (node-set, string, number, boolean), predicates, abbreviated syntax, and union expressions. Advanced XSD type inheritance and schema composition (include/import) are not yet implemented. For projects requiring DTD or XSD validation, XPath queries, and strict XML syntax, XML_Lib is a suitable choice.
