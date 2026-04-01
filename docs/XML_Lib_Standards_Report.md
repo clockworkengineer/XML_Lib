@@ -10,7 +10,7 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - **DTD Support**: Internal and external DTDs are parsed and validated. DTD element, attribute, and notation types are supported, including error handling for illegal combinations (e.g., multiple ID attributes).
 - **Encoding**: Supports UTF-8, UTF-8 BOM, UTF-16BE, UTF-16LE, UTF-32BE, UTF-32LE. Throws errors for unsupported encodings (e.g., UTF-32 in declaration).
 - **Error Handling**: Robust error reporting for syntax errors, unsupported values, extra content, and DTD validation issues.
-- **Namespaces**: No explicit namespace support found; XML namespaces are not parsed or validated.
+- **Namespaces**: Full support for W3C XML Namespaces (xmlns, prefix handling, QNames, scoping, per-element URI resolution, and attribute prefix validation).
 - **XML Declaration**: Parses version, encoding, and standalone attributes, with strict validation.
 
 ### DTD Validation
@@ -20,7 +20,7 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - **Error Cases**: Detects and reports illegal DTD constructs, missing NOTATION attributes, and invalid content specifications.
 
 ### Limitations & Deviations
-- **Namespaces**: No support for XML namespaces (xmlns, prefix handling).
+- **Namespaces**: Supported — W3C XML Namespace declarations, prefix scoping, QName parsing, URI resolution, and well-formedness enforcement are all implemented.
 - **Schema Support**: No XML Schema (XSD) support; only DTD validation is implemented.
 - **Encoding**: Only a subset of encodings are supported; others are rejected.
 - **XPath**: Mentioned in README, but not found in codebase. Likely not implemented.
@@ -33,7 +33,7 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 | XML 1.0 Syntax         | Yes       | Strict validation |
 | DTD Parsing/Validation | Yes       | Internal & external |
 | Encoding               | Partial   | UTF-8/16/32 only |
-| Namespaces             | No        | Not implemented |
+| Namespaces             | Yes       | W3C XML Namespaces — prefix, URI, QName, scoping |
 | Schema (XSD)           | No        | Not implemented |
 | XPath                  | No        | Not implemented |
 | Error Handling         | Yes       | Detailed errors |

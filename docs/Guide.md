@@ -50,8 +50,58 @@ doc.SaveFile("output.xml");
 
 ## Advanced Topics
 - **Error Handling**: Check return values or catch exceptions for robust error management.
-- **Parsing from String**: Use `XMLParser` to parse XML from strings.
-- **Custom Attributes**: Add and manipulate attributes using `XMLAttribute` methods.
+- **Parsing from String**: Use `BufferSource` to parse XML from strings.
+- **Custom Attributes**: Add and manipulate attributes using `addAttribute` / `getAttributes`.
+- **XML Namespaces**: See the Namespace section below.
+
+## XML Namespaces
+
+XML_Lib fully supports the [W3C XML Namespaces](https://www.w3.org/TR/xml-names/) recommendation.
+
+### Default Namespace
+```cpp
+XML xml;
+BufferSource source{
+  "<table xmlns=\"http://www.w3.org/TR/html4/\">"
+  "<tr><td>Data</td></tr>"
+  "</table>"
+};
+xml.parse(source);
+auto &root = NRef<Element>(xml.root());
+// Default namespace stored under key ":"
+std::cout << root[0].getNameSpace(":").getParsed();  // "http://www.w3.org/TR/html4/"
+std::cout << root[0].getNamespaceURI();              // "http://www.w3.org/TR/html4/"
+```
+
+### Prefixed Namespaces
+```cpp
+XML xml;
+BufferSource source{
+  "<root xmlns:h=\"http://www.w3.org/TR/html4/\">"
+  "<h:table><h:tr><h:td>Data</h:td></h:tr></h:table>"
+  "</root>"
+};
+xml.parse(source);
+auto &root = NRef<Element>(xml.root());
+auto &table = root[0];
+std::cout << table.name();             // "h:table"
+std::cout << table.getPrefix();        // "h"
+std::cout << table.getLocalName();     // "table"
+std::cout << table.getNamespaceURI();  // "http://www.w3.org/TR/html4/"
+```
+
+### Namespace Scoping
+Namespaces declared on a parent element are inherited by all children. `getNameSpaces()` returns all in-scope declarations accumulated from the root down to that element:
+```cpp
+// root declares xmlns:h and xmlns:f; both are visible on child elements
+auto &child = root[0];
+child.getNameSpaces();  // contains both "h" and "f" mappings
+```
+
+### Error Cases
+- Using an undeclared prefix throws `SyntaxError`: _"Namespace used but not defined."_
+- Declaring the same prefix twice on one element throws `SyntaxError`: _"Attribute 'xmlns:f' defined more than once within start tag."_
+- Using a prefixed attribute where the prefix is undeclared throws `SyntaxError`: _"Namespace used but not defined in attribute 'x:border'."_
 
 ## Examples
 See the [examples](../examples/) directory for more sample code.

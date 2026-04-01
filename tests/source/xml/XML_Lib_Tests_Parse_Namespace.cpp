@@ -161,3 +161,128 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
     REQUIRE(xRoot[0].getNameSpace("b").getParsed() == "http://example.com/b");
   }
 }
+
+TEST_CASE("QName API for namespace-aware elements.", "[XML][Namespace][QName]")
+{
+  XML xml;
+  SECTION("getPrefix returns correct prefix for prefixed element", "[XML][Namespace][QName]")
+  {
+    BufferSource source{
+      "<root xmlns:h=\"http://www.w3.org/TR/html4/\">\n"
+      "<h:table></h:table>\n"
+      "</root>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getPrefix() == "h");
+  }
+  SECTION("getLocalName returns name without prefix for prefixed element", "[XML][Namespace][QName]")
+  {
+    BufferSource source{
+      "<root xmlns:h=\"http://www.w3.org/TR/html4/\">\n"
+      "<h:table></h:table>\n"
+      "</root>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getLocalName() == "table");
+  }
+  SECTION("getPrefix returns empty string for unprefixed element", "[XML][Namespace][QName]")
+  {
+    BufferSource source{ "<root><table></table></root>" };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getPrefix() == "");
+  }
+  SECTION("getLocalName returns full name for unprefixed element", "[XML][Namespace][QName]")
+  {
+    BufferSource source{ "<root><table></table></root>" };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getLocalName() == "table");
+  }
+  SECTION("getNamespaceURI resolves URI from in-scope namespace", "[XML][Namespace][QName]")
+  {
+    BufferSource source{
+      "<root xmlns:h=\"http://www.w3.org/TR/html4/\">\n"
+      "<h:table></h:table>\n"
+      "</root>\n"
+    };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getNamespaceURI() == "http://www.w3.org/TR/html4/");
+  }
+  SECTION("getNamespaceURI resolves default namespace URI", "[XML][Namespace][QName]")
+  {
+    BufferSource source{ "<table xmlns=\"http://www.w3.org/TR/html4/\"><tr></tr></table>\n" };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getPrefix() == "");
+    REQUIRE(xRoot[0].getLocalName() == "tr");
+    REQUIRE(xRoot[0].getNamespaceURI() == "http://www.w3.org/TR/html4/");
+  }
+  SECTION(
+    "getNamespaceURI returns empty string for unprefixed element with no default namespace", "[XML][Namespace][QName]")
+  {
+    BufferSource source{ "<root><table></table></root>" };
+    xml.parse(source);
+    auto &xRoot = NRef<Element>(xml.root());
+    REQUIRE(xRoot[0].getNamespaceURI() == "");
+  }
+}
+
+TEST_CASE("Namespace-aware serialization round-trip.", "[XML][Namespace][Stringify]")
+{
+  SECTION("Round-trip with prefixed namespace on child element", "[XML][Namespace][Stringify]")
+  {
+    const std::string xmlString =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
+      "<root>"
+      "<h:table xmlns:h=\"http://www.w3.org/TR/html4/\"></h:table>"
+      "</root>";
+    checkStringify(xmlString);
+  }
+  SECTION("Round-trip with namespace declared on root element", "[XML][Namespace][Stringify]")
+  {
+    const std::string xmlString =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
+      "<root xmlns:h=\"http://www.w3.org/TR/html4/\" xmlns:f=\"https://www.w3schools.com/furniture\">"
+      "<h:table></h:table>"
+      "<f:table></f:table>"
+      "</root>";
+    checkStringify(xmlString);
+  }
+  SECTION("Round-trip with default namespace", "[XML][Namespace][Stringify]")
+  {
+    const std::string xmlString =
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>"
+      "<table xmlns=\"http://www.w3.org/TR/html4/\">"
+      "<tr><td>Apples</td></tr>"
+      "</table>";
+    checkStringify(xmlString);
+  }
+}
+
+TEST_CASE("Attribute namespace validation.", "[XML][Namespace][Attribute]")
+{
+  XML xml;
+  SECTION("Attribute with declared namespace prefix is allowed", "[XML][Namespace][Attribute]")
+  {
+    BufferSource source{
+      "<root xmlns:h=\"http://www.w3.org/TR/html4/\">\n"
+      "<h:table h:border=\"1\"></h:table>\n"
+      "</root>\n"
+    };
+    REQUIRE_NOTHROW(xml.parse(source));
+  }
+  SECTION("Attribute with undeclared namespace prefix should throw", "[XML][Namespace][Attribute]")
+  {
+    BufferSource source{
+      "<root>\n"
+      "<table x:border=\"1\"></table>\n"
+      "</root>\n"
+    };
+    REQUIRE_THROWS_WITH(xml.parse(source),
+      "XML Syntax Error [Line: 3 Column: 1] Namespace used but not defined in attribute 'x:border'.");
+  }
+}

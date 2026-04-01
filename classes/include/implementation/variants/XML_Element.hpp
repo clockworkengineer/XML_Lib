@@ -36,7 +36,10 @@ struct Element : Variant
   // Return reference to an attribute list
   [[nodiscard]] const std::vector<XMLAttribute> &getAttributes() const { return attributes; }
   // Is namespace present?
-  [[nodiscard]] bool hasNameSpace(const std::string_view &name) const { return XMLAttribute::contains(namespaces, name); }
+  [[nodiscard]] bool hasNameSpace(const std::string_view &name) const
+  {
+    return XMLAttribute::contains(namespaces, name);
+  }
   // Add a namespace
   void addNameSpace(const std::string_view &name, const XMLValue &value) const
   {
@@ -51,6 +54,26 @@ struct Element : Variant
   [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaces() const { return namespaces; }
   // Return reference to the element tag name
   [[nodiscard]] const std::string &name() const { return elementName; }
+  // QName support: get namespace prefix (empty string if no prefix)
+  [[nodiscard]] std::string getPrefix() const
+  {
+    const auto pos = elementName.find(':');
+    return pos != std::string::npos ? elementName.substr(0, pos) : "";
+  }
+  // QName support: get local name (without prefix)
+  [[nodiscard]] std::string getLocalName() const
+  {
+    const auto pos = elementName.find(':');
+    return pos != std::string::npos ? elementName.substr(pos + 1) : elementName;
+  }
+  // QName support: get namespace URI for this element (based on prefix and in-scope namespaces)
+  [[nodiscard]] std::string getNamespaceURI() const
+  {
+    const auto prefix = getPrefix();
+    const auto nsKey = prefix.empty() ? ":" : prefix;
+    if (hasNameSpace(nsKey)) { return getNameSpace(nsKey).getParsed(); }
+    return "";
+  }
   // XElement Index overloads
   [[nodiscard]] const Element &operator[](int index) const;
   [[nodiscard]] Element &operator[](int index);

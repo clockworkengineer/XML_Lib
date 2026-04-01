@@ -24,7 +24,9 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
   if (xNode.getChildren().empty() || !isA<Content>(xNode.getChildren().back())) {
     bool isWhiteSpace = true;
     if (!xNode.getChildren().empty()) {
-      if (isA<CDATA>(xNode.getChildren().back()) || isA<EntityReference>(xNode.getChildren().back())) { isWhiteSpace = false; }
+      if (isA<CDATA>(xNode.getChildren().back()) || isA<EntityReference>(xNode.getChildren().back())) {
+        isWhiteSpace = false;
+      }
     }
     xNode.addChild(Node::make<Content>("", isWhiteSpace));
   }
@@ -45,7 +47,7 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
 /// <param name="xNode">Current element Node.</param>
 /// <param name="entityReference">Entity reference to be parsed for XML.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper)
+void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper &entityMapper)
 {
   auto xElement = Node::make<Element>();
   BufferSource entitySource(entityReference.getParsed());
@@ -92,8 +94,9 @@ std::string Default_Parser::parseTagName(ISource &source) { return parseName(sou
 /// <param name="name">Attribute name string.</param>
 /// <param name="values">Set of valid attribute values.</param>
 /// <returns>Valid attribute value.</returns>
-std::string
-  Default_Parser::parseDeclarationAttribute(ISource &source, const std::string_view &name, const std::set<std::string> &values)
+std::string Default_Parser::parseDeclarationAttribute(ISource &source,
+  const std::string_view &name,
+  const std::set<std::string> &values)
 {
   std::string value;
   source.ignoreWS();
@@ -101,7 +104,9 @@ std::string
     source.ignoreWS();
     value = parseValue(source).getParsed();
     if (name == "encoding") { value = toUpperString(value); }
-    if (!values.contains(value)) { throw SyntaxError("Unsupported XML " + std::string(name) + " value '" + value + "' specified."); }
+    if (!values.contains(value)) {
+      throw SyntaxError("Unsupported XML " + std::string(name) + " value '" + value + "' specified.");
+    }
   } else {
     throw SyntaxError(source.getPosition(), "Missing '=' after " + std::string(name) + ".");
   }
@@ -174,7 +179,7 @@ Node Default_Parser::parseCDATA(ISource &source)
 /// <returns>XML element attribute list.</returns>
 std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEntityMapper &entityMapper)
 {
-  std::vector<XMLAttribute> attributes {};
+  std::vector<XMLAttribute> attributes{};
   while (source.more() && source.current() != '/' && source.current() != '>') {
     std::string attributeName{ parseName(source) };
     if (!source.match("=")) {
@@ -223,13 +228,15 @@ void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &e
       // Does entity contain start tag ?
       // YES then XML into current element list
       if (content.getParsed().starts_with("<")) {
-        parseEntityReferenceXML(xNode, content,entityMapper);
+        parseEntityReferenceXML(xNode, content, entityMapper);
         return;
       }
       // NO XML into entity elements list.
       parseEntityReferenceXML(xEntityReference, content, entityMapper);
       if (!xNode.getChildren().empty()) {
-        if (isA<Content>(xNode.getChildren().back())) { NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+        if (isA<Content>(xNode.getChildren().back())) {
+          NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false);
+        }
       }
     }
     xNode.addChild(std::move(xEntityReference));
@@ -246,7 +253,7 @@ void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &e
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element Node.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityMapper & entityMapper)
+void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper)
 {
   if (source.match("<!--")) {
     xNode.addChild(parseComment(source));
@@ -254,7 +261,9 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
     xNode.addChild(parsePI(source));
   } else if (source.match("<![CDATA[")) {
     if (!xNode.getChildren().empty()) {
-      if (isA<Content>(xNode.getChildren().back())) { NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
+      if (isA<Content>(xNode.getChildren().back())) {
+        NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false);
+      }
     }
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
@@ -265,13 +274,19 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
         throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
       }
     }
+    for (const auto &attr : xNodeChildElement.getAttributes()) {
+      if (!attr.getName().starts_with("xmlns")) {
+        if (const auto attrPos = attr.getName().find(':'); attrPos != std::string::npos) {
+          if (!xNodeChildElement.hasNameSpace(attr.getName().substr(0, attrPos))) {
+            throw SyntaxError(
+              source.getPosition(), "Namespace used but not defined in attribute '" + attr.getName() + "'.");
+          }
+        }
+      }
+    }
   } else {
-    if (source.match("</")) {
-      throw SyntaxError(source.getPosition(), "Missing closing tag.");
-    }
-    if (source.match("]]>")) {
-      throw SyntaxError(source.getPosition(), "']]>' invalid in element content area.");
-    }
+    if (source.match("</")) { throw SyntaxError(source.getPosition(), "Missing closing tag."); }
+    if (source.match("]]>")) { throw SyntaxError(source.getPosition(), "']]>' invalid in element content area."); }
     parseContent(source, xNode, entityMapper);
   }
 }
@@ -283,7 +298,9 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
 /// <param name="namespaces">Current list of outer namespaces.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to element Node.</returns>
-Node Default_Parser::parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, IEntityMapper & entityMapper)
+Node Default_Parser::parseElement(ISource &source,
+  const std::vector<XMLAttribute> &namespaces,
+  IEntityMapper &entityMapper)
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
@@ -324,13 +341,33 @@ Node Default_Parser::parseDeclaration(ISource &source)
     } else {
       throw SyntaxError(source.getPosition(), "Version missing from declaration.");
     }
-     if (source.match("encoding")) {
+    if (source.match("encoding")) {
       // XML 1.0 allows a wide range of encodings, not just UTF-8 and UTF-16
-      static const std::set<std::string> allowedEncodings = {
-        "UTF-8", "UTF-16", "ISO-10646-UCS-2", "ISO-10646-UCS-4", "ISO-8859-1", "ISO-8859-2", "ISO-8859-3", "ISO-8859-4", "ISO-8859-5", "ISO-8859-6", "ISO-8859-7", "ISO-8859-8", "ISO-8859-9", "ISO-2022-JP", "ISO-2022-JP-2", "ISO-2022-KR", "ISO-2022-CN", "EUC-JP", "EUC-KR", "EUC-CN", "SHIFT_JIS", "US-ASCII"
-      };
+      static const std::set<std::string> allowedEncodings = { "UTF-8",
+        "UTF-16",
+        "ISO-10646-UCS-2",
+        "ISO-10646-UCS-4",
+        "ISO-8859-1",
+        "ISO-8859-2",
+        "ISO-8859-3",
+        "ISO-8859-4",
+        "ISO-8859-5",
+        "ISO-8859-6",
+        "ISO-8859-7",
+        "ISO-8859-8",
+        "ISO-8859-9",
+        "ISO-2022-JP",
+        "ISO-2022-JP-2",
+        "ISO-2022-KR",
+        "ISO-2022-CN",
+        "EUC-JP",
+        "EUC-KR",
+        "EUC-CN",
+        "SHIFT_JIS",
+        "US-ASCII" };
       encoding = parseDeclarationAttribute(source, "encoding", allowedEncodings);
-    }   if (source.match("standalone")) { standalone = parseDeclarationAttribute(source, "standalone", { "yes", "no" }); }
+    }
+    if (source.match("standalone")) { standalone = parseDeclarationAttribute(source, "standalone", { "yes", "no" }); }
     if (source.match("encoding")) {
       throw SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes.");
     }

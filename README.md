@@ -6,6 +6,7 @@
 ## Features
 - **XML Parsing**: Fully compliant with XML 1.0 standard, including strict validation of elements, attributes, entities, whitespace, and declaration.
 - **XML Serialization**: Serialize data structures to XML format.
+- **XML Namespaces**: Full W3C XML Namespace support — `xmlns` declarations, prefix scoping, QName parsing (`getPrefix()`, `getLocalName()`, `getNamespaceURI()`), and well-formedness enforcement.
 - **DTD Validation**: Internal and external DTD parsing and validation.
 - **Memory Efficiency**: Optimized algorithms to minimize memory usage.
 - **Error Handling**: Robust error and exception handling mechanisms, with detailed standard-compliant error messages.
@@ -74,6 +75,7 @@ XML_Lib is fully compliant with XML 1.0, including:
 - Robust entity handling
 - Whitespace normalization
 - Detailed error reporting for all non-compliant cases
+- **W3C XML Namespaces** — `xmlns`/`xmlns:prefix` declarations, prefix scoping, QName decomposition (`getPrefix()`, `getLocalName()`, `getNamespaceURI()`), and attribute prefix validation
 Unit tests cover all standard and edge cases.
 
 ### Integration with your Project
