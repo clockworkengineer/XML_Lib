@@ -6,6 +6,7 @@
 #include "XML_Core.hpp"
 #include "DTD_Validator.hpp"
 #include "XSD_Validator.hpp"
+#include "XPath.hpp"
 
 #define kSingleXMLFile "testfile001.xml"
 #define kNonExistantXMLFile "doesntexist.xml"

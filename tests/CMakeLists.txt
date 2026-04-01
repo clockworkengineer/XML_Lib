@@ -64,6 +64,7 @@ target_sources(${TEST_EXECUTABLE}
     source/node/XML_LIb_Tests_EntityReference.cpp
     source/node/XML_Lib_Tests_DTD.cpp
     source/traverse/XML_Lib_Tests_Traverse.cpp
+    source/xpath/XML_Lib_Tests_XPath.cpp
 )
 target_include_directories(${TEST_EXECUTABLE}
     PUBLIC

@@ -80,6 +80,16 @@ void XML::validate() const { implementation->validate(); }
 void XML::validate(const std::string_view &xsdSource) const { implementation->validate(xsdSource); }
 
 /// <summary>
+/// Evaluate an XPath 1.0 expression against the parsed document.
+/// </summary>
+/// <param name="expression">XPath expression string.</param>
+/// <returns>Node pointers matching the expression (into the internal node tree).</returns>
+std::vector<const Node *> XML::xpath(const std::string_view expression) const
+{
+  return implementation->xpath(expression);
+}
+
+/// <summary>
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well-formed).
 /// </summary>

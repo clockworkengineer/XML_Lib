@@ -25,8 +25,7 @@ static std::string readFile(const fs::path &path)
 /// Parse an XML file and validate it against a schema file, logging the outcome.
 static void validatePair(const fs::path &xmlPath, const fs::path &xsdPath)
 {
-  PLOG_INFO << "Validating  " << xmlPath.filename().string()
-            << "  against  " << xsdPath.filename().string();
+  PLOG_INFO << "Validating  " << xmlPath.filename().string() << "  against  " << xsdPath.filename().string();
   try {
     xl::XML xml;
     xml.parse(xl::FileSource{ xmlPath.string() });

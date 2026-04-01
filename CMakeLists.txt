@@ -38,6 +38,11 @@ target_sources(${XML_LIBRARY_NAME}
   classes/source/implementation/xsd/XSD_Validator_Impl.cpp
   classes/source/implementation/xsd/XSD_Validator_Impl_Parse.cpp
   classes/source/implementation/xsd/XSD_Validator_Impl_Validate.cpp
+  classes/source/XPath.cpp
+  classes/source/implementation/xpath/XPath_Lexer.cpp
+  classes/source/implementation/xpath/XPath_Parser.cpp
+  classes/source/implementation/xpath/XPath_Evaluator.cpp
+  classes/source/implementation/xpath/XPath_Impl.cpp
   classes/source/implementation/common/XML_Character.cpp
   classes/source/implementation/common/XML_Parse.cpp
   classes/source/implementation/common/XML_Utility.cpp
@@ -60,6 +65,7 @@ target_include_directories(${XML_LIBRARY_NAME}
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/xpath>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/variants>
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
 )

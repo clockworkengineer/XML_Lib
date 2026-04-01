@@ -16,3 +16,5 @@
 #include <cstring>
 #include <regex>
 #include <ranges>
+#include <functional>
+#include <sstream>

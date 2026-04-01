@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bookstore>
-  <book category="fiction">
-    <title>The Great Gatsby</title>
-    <author>F. Scott Fitzgerald</author>
-    <year>1925</year>
-    <price>9.99</price>
-  </book>
-  <book category="nonfiction">
-    <title>A Brief History of Time</title>
-    <author>Stephen Hawking</author>
-    <year>1988</year>
-    <price>14.99</price>
-  </book>
+    <book category="fiction">
+        <title>The Great Gatsby</title>
+        <author>F. Scott Fitzgerald</author>
+        <year>1925</year>
+        <price>9.99</price>
+    </book>
+    <book category="nonfiction">
+        <title>A Brief History of Time</title>
+        <author>Stephen Hawking</author>
+        <year>1988</year>
+        <price>14.99</price>
+    </book>
 </bookstore>

@@ -40,6 +40,8 @@ public:
   void validate() const;
   // Validate XML against an XSD schema supplied as a string or file path
   void validate(const std::string_view &xsdSource) const;
+  // Evaluate an XPath 1.0 expression against the parsed document
+  [[nodiscard]] std::vector<const Node *> xpath(std::string_view expression) const;
   // Return version string
   [[nodiscard]] static std::string version();
   // Parse XML source

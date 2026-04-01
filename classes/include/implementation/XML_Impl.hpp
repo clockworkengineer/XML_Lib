@@ -26,6 +26,7 @@ public:
   void traverse(IAction &action) const;
   void validate();
   void validate(const std::string_view &xsdSource);
+  [[nodiscard]] std::vector<const Node *> xpath(std::string_view expression);
   [[nodiscard]] static std::string version();
 
   [[nodiscard]] static std::string fromFile(const std::string_view &fileName);

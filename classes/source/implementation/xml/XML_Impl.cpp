@@ -8,6 +8,7 @@
 
 #include "XML_Impl.hpp"
 #include "XSD_Validator.hpp"
+#include "XPath.hpp"
 
 namespace XML_Lib {
 
@@ -69,6 +70,12 @@ void XML_Impl::validate(const std::string_view &xsdSource)
   BufferSource source(xsdSource);
   xsdValidator.parse(source);
   xsdValidator.validate(root());
+}
+
+std::vector<const Node *> XML_Impl::xpath(const std::string_view expression)
+{
+  XPath xp(root());
+  return xp.evaluate(expression);
 }
 
 void XML_Impl::parse(ISource &source) { xmlRoot = xmlParser->parse(source); }

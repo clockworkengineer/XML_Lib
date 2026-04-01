@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-
-  <xs:simpleType name="CategoryType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="fiction"/>
-      <xs:enumeration value="nonfiction"/>
-      <xs:enumeration value="reference"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:complexType name="BookType">
-    <xs:sequence>
-      <xs:element name="title"  type="xs:string"/>
-      <xs:element name="author" type="xs:string"/>
-      <xs:element name="year">
-        <xs:simpleType>
-          <xs:restriction base="xs:integer">
-            <xs:minInclusive value="1000"/>
-            <xs:maxInclusive value="2100"/>
-          </xs:restriction>
-        </xs:simpleType>
-      </xs:element>
-      <xs:element name="price" type="xs:decimal"/>
-    </xs:sequence>
-    <xs:attribute name="category" type="CategoryType" use="required"/>
-  </xs:complexType>
-
-  <xs:element name="bookstore">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="book" type="BookType" minOccurs="0" maxOccurs="unbounded"/>
-      </xs:sequence>
+    <xs:simpleType name="CategoryType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="fiction"/>
+            <xs:enumeration value="nonfiction"/>
+            <xs:enumeration value="reference"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="BookType">
+        <xs:sequence>
+            <xs:element name="title"  type="xs:string"/>
+            <xs:element name="author" type="xs:string"/>
+            <xs:element name="year">
+                <xs:simpleType>
+                    <xs:restriction base="xs:integer">
+                        <xs:minInclusive value="1000"/>
+                        <xs:maxInclusive value="2100"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="price" type="xs:decimal"/>
+        </xs:sequence>
+        <xs:attribute name="category" type="CategoryType" use="required"/>
     </xs:complexType>
-  </xs:element>
-
+    <xs:element name="bookstore">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="book" type="BookType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 </xs:schema>
