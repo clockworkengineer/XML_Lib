@@ -189,6 +189,83 @@ const std::string xsd = R"(
 // <age>200</age> — IValidator::Error: maxInclusive violation
 ```
 
+## XPath Queries
+
+XML_Lib supports XPath 1.0 queries via the `XPath` class (or the `xml.xpath()` shorthand).
+
+### Basic Node Selection
+```cpp
+#include "XML.hpp"
+#include "XPath.hpp"
+using namespace XML_Lib;
+
+XML xml;
+xml.parse(BufferSource{xmlString});
+
+// Select all <book> elements anywhere in the document
+auto books = xml.xpath("//book");
+std::cout << books.size() << " books found\n";
+
+// Select the root element by name
+auto root = xml.xpath("/bookstore");
+```
+
+### Working with Results
+```cpp
+// Returned pointers are valid only while the XML object is alive.
+for (const Node *n : xml.xpath("//book/title")) {
+    std::cout << NRef<Element>(*n).name() << ": "
+              << n->getContents() << "\n";
+}
+```
+
+### Predicates
+```cpp
+// By position
+auto first = xml.xpath("//book[1]");
+auto last  = xml.xpath("//book[last()]");
+
+// By attribute value
+auto web = xml.xpath("//book[@category='web']");
+
+// By child element value
+auto recent = xml.xpath("//book[year=2005]");
+```
+
+### Convenience Wrappers
+```cpp
+XPath xp(xml.root());
+
+// String value of first title
+std::string title = xp.evaluateString("string(//title[1])");
+
+// Count of books
+double count = xp.evaluateNumber("count(//book)");
+
+// Boolean test
+bool hasWebBooks = xp.evaluateBool("count(//book[@category='web']) > 0");
+```
+
+### Error Handling
+```cpp
+try {
+    auto nodes = xml.xpath("//book[");  // malformed expression
+} catch (const XPath::Error &e) {
+    std::cerr << e.what() << "\n";
+    // e.g. "XPath Error: Expected primary expression, got ''."
+}
+```
+
+### Axes
+```cpp
+// Explicit axis syntax
+auto self       = xml.xpath("self::bookstore");
+auto children   = xml.xpath("child::book");
+auto desc       = xml.xpath("descendant::title");
+auto descSelf   = xml.xpath("descendant-or-self::book");
+auto attrs      = xml.xpath("//book/@category");  // attribute nodes
+```
+
 ## Examples
 See the [examples](../examples/) directory for more sample code.
 

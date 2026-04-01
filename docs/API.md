@@ -17,6 +17,7 @@ xml.stringify(IDestination &dest);                  // Serialise back to XML
 xml.validate();                                     // Validate against DTD (if present)
 xml.validate(const std::string_view &xsdSource);    // Validate against an XSD schema string
 xml.traverse(IAction &action);                      // Walk the Node tree
+std::vector<const Node *> xml.xpath(std::string_view expr); // Evaluate XPath 1.0 expression
 Node &xml.prolog();                                 // Root prolog Node
 Node &xml.root();                                   // Root element Node
 Node &xml.declaration();                            // XML declaration Node
@@ -154,12 +155,46 @@ validator.validate(xml.root());   // throws IValidator::Error on failure
 - Attribute declarations: `use="required"`, `use="optional"`, `use="prohibited"`, `fixed`, `xs:anyAttribute`
 - Inline anonymous complex and simple types
 
+### `XPath`
+Evaluates XPath 1.0 expressions against a parsed document tree.
+
+```cpp
+#include "XPath.hpp"
+using namespace XML_Lib;
+
+XPath xp(xml.root());
+
+// Returns pointers into the Node tree — do not store beyond the XML object's lifetime.
+std::vector<const Node *> nodes = xp.evaluate("//book[@category='web']");
+
+// Convenience wrappers
+std::string s = xp.evaluateString("string(//title[1])");
+bool        b = xp.evaluateBool  ("count(//book) > 2");
+double      n = xp.evaluateNumber("count(//book)");
+```
+
+The `xml.xpath(expr)` shorthand on the `XML` class is also available:
+```cpp
+auto nodes = xml.xpath("//book");  // equivalent to XPath(xml.root()).evaluate(expr)
+```
+
+**Supported features:**
+- All 13 XPath 1.0 axes: `child`, `parent`, `self`, `ancestor`, `ancestor-or-self`, `descendant`, `descendant-or-self`, `attribute`, `following-sibling`, `preceding-sibling`, `following`, `preceding`, `namespace`
+- Abbreviated syntax: `/`, `//`, `.`, `..`, `@`
+- Predicates: positional (`[1]`, `[last()]`), boolean, and comparison (`[@attr='value']`)
+- 28+ built-in functions: `count`, `string`, `number`, `boolean`, `not`, `true`, `false`, `concat`, `contains`, `starts-with`, `substring`, `substring-before`, `substring-after`, `string-length`, `normalize-space`, `translate`, `name`, `local-name`, `namespace-uri`, `position`, `last`, `sum`, `floor`, `ceiling`, `round`, `id`, `lang`
+- Union expressions: `expr1 | expr2`
+- All comparison operators: `=`, `!=`, `<`, `<=`, `>`, `>=`
+
+**Error type**: `XPath::Error` (derives from `std::runtime_error`), message prefix `"XPath Error: "`.
+
 ## Error Handling
 All errors throw exceptions derived from `std::runtime_error`:
 - `SyntaxError` — malformed XML or namespace violations.
 - `Node::Error` — invalid node access.
 - `XMLAttribute::Error` — attribute not found.
 - `IValidator::Error` — DTD or XSD validation failure.
+- `XPath::Error` — invalid XPath expression or evaluation error.
 - `FileSource::Error` / `BufferSource::Error` — I/O errors.
 
 ## Example Usage
