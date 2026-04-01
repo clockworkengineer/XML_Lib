@@ -8,6 +8,7 @@
 - **XML Serialization**: Serialize data structures to XML format.
 - **XML Namespaces**: Full W3C XML Namespace support — `xmlns` declarations, prefix scoping, QName parsing (`getPrefix()`, `getLocalName()`, `getNamespaceURI()`), and well-formedness enforcement.
 - **DTD Validation**: Internal and external DTD parsing and validation.
+- **XSD Validation**: Phase 1 W3C XML Schema (XSD) validation via `XML::validate(xsdSource)` — element content models (sequence/choice/all), attribute constraints (required/optional/prohibited/fixed), all builtin simple types, and all standard restriction facets.
 - **Memory Efficiency**: Optimized algorithms to minimize memory usage.
 - **Error Handling**: Robust error and exception handling mechanisms, with detailed standard-compliant error messages.
 - **Cross-platform Compatibility**: Designed to run seamlessly on Linux, Windows, and macOS environments.
@@ -76,6 +77,7 @@ XML_Lib is fully compliant with XML 1.0, including:
 - Whitespace normalization
 - Detailed error reporting for all non-compliant cases
 - **W3C XML Namespaces** — `xmlns`/`xmlns:prefix` declarations, prefix scoping, QName decomposition (`getPrefix()`, `getLocalName()`, `getNamespaceURI()`), and attribute prefix validation
+- **XSD Schema Validation** (Phase 1) — `XML::validate(xsdSource)` validates element structure, attribute constraints, and simple type restrictions against a W3C XML Schema
 Unit tests cover all standard and edge cases.
 
 ### Integration with your Project

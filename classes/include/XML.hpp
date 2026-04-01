@@ -36,8 +36,10 @@ public:
   [[nodiscard]] Node &declaration() const;
   // Get reference to root element Node
   [[nodiscard]] Node &root() const;
-  // Validate XML
+  // Validate XML against DTD (if present)
   void validate() const;
+  // Validate XML against an XSD schema supplied as a string or file path
+  void validate(const std::string_view &xsdSource) const;
   // Return version string
   [[nodiscard]] static std::string version();
   // Parse XML source

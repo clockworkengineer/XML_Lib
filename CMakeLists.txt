@@ -34,6 +34,10 @@ target_sources(${XML_LIBRARY_NAME}
   classes/source/implementation/dtd/DTD_Validator_Impl_Parse.cpp
   classes/source/implementation/dtd/DTD_Validator_Impl_Parse_Content.cpp
   classes/source/implementation/dtd/DTD_Validator_Impl_Parse_External.cpp
+  classes/source/implementation/xsd/XSD_Validator.cpp
+  classes/source/implementation/xsd/XSD_Validator_Impl.cpp
+  classes/source/implementation/xsd/XSD_Validator_Impl_Parse.cpp
+  classes/source/implementation/xsd/XSD_Validator_Impl_Validate.cpp
   classes/source/implementation/common/XML_Character.cpp
   classes/source/implementation/common/XML_Parse.cpp
   classes/source/implementation/common/XML_Utility.cpp

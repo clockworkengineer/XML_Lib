@@ -7,18 +7,19 @@
 //
 
 #include "XML_Impl.hpp"
+#include "XSD_Validator.hpp"
 
 namespace XML_Lib {
 
 XML_Impl::XML_Impl(IStringify *stringify, IParser *parser)
 {
   entityMapper = std::make_unique<XML_EntityMapper>();
-  if (parser==nullptr) {
+  if (parser == nullptr) {
     xmlParser = std::make_unique<Default_Parser>(*entityMapper);
   } else {
     xmlParser.reset(parser);
   }
-  if (stringify==nullptr) {
+  if (stringify == nullptr) {
     xmlStringifier = std::make_unique<Default_Stringify>();
   } else {
     xmlStringifier.reset(stringify);
@@ -46,9 +47,7 @@ Node &XML_Impl::dtd()
 
 Node &XML_Impl::prolog()
 {
-  if (!xmlRoot.isEmpty()) {
-    return xmlRoot;
-  }
+  if (!xmlRoot.isEmpty()) { return xmlRoot; }
   throw Error("No XML has been parsed.");
 }
 
@@ -63,6 +62,14 @@ Node &XML_Impl::root()
 }
 
 void XML_Impl::validate() { xmlParser->validate(prolog()); }
+
+void XML_Impl::validate(const std::string_view &xsdSource)
+{
+  XSD_Validator xsdValidator(root());
+  BufferSource source(xsdSource);
+  xsdValidator.parse(source);
+  xsdValidator.validate(root());
+}
 
 void XML_Impl::parse(ISource &source) { xmlRoot = xmlParser->parse(source); }
 

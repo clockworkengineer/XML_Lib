@@ -25,6 +25,7 @@ public:
   void traverse(IAction &action);
   void traverse(IAction &action) const;
   void validate();
+  void validate(const std::string_view &xsdSource);
   [[nodiscard]] static std::string version();
 
   [[nodiscard]] static std::string fromFile(const std::string_view &fileName);

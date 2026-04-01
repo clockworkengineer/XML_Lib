@@ -12,14 +12,15 @@ The top-level class. Provides parse, stringify, traverse, and validate entry poi
 
 ```cpp
 XML xml;
-xml.parse(ISource &source);         // Parse XML from a source (BufferSource, FileSource)
-xml.stringify(IDestination &dest);  // Serialise back to XML
-xml.validate();                     // Validate against DTD (if present)
-xml.traverse(IAction &action);      // Walk the Node tree
-Node &xml.prolog();                 // Root prolog Node
-Node &xml.root();                   // Root element Node
-Node &xml.declaration();            // XML declaration Node
-Node &xml.dtd();                    // DTD Node (throws if none)
+xml.parse(ISource &source);                         // Parse XML from a source (BufferSource, FileSource)
+xml.stringify(IDestination &dest);                  // Serialise back to XML
+xml.validate();                                     // Validate against DTD (if present)
+xml.validate(const std::string_view &xsdSource);    // Validate against an XSD schema string
+xml.traverse(IAction &action);                      // Walk the Node tree
+Node &xml.prolog();                                 // Root prolog Node
+Node &xml.root();                                   // Root element Node
+Node &xml.declaration();                            // XML declaration Node
+Node &xml.dtd();                                    // DTD Node (throws if none)
 static std::string XML::version();
 ```
 
@@ -123,11 +124,42 @@ std::cout << table.getNamespaceURI();  // "http://www.w3.org/TR/html4/"
 std::cout << table.getNameSpace("h").getParsed();  // "http://www.w3.org/TR/html4/"
 ```
 
+### `XSD_Validator`
+Parses a W3C XML Schema (XSD) and validates a document against it. Constructed and used internally by `XML::validate(xsdSource)`.
+
+```cpp
+// Typical usage via the XML class:
+XML xml;
+xml.parse(BufferSource{xmlString});
+xml.validate(xsdSchemaString);   // throws IValidator::Error on failure
+```
+
+You can also use `XSD_Validator` directly:
+```cpp
+XML xml;
+xml.parse(BufferSource{xmlString});
+
+XSD_Validator validator{xml.root()};
+BufferSource schemaSource{xsdString};
+validator.parse(schemaSource);    // builds internal schema model
+validator.validate(xml.root());   // throws IValidator::Error on failure
+```
+
+**Error format**: `"IValidator Error: XSD Validation Error [Element: <name>] <description>."`
+
+**Supported Phase 1 features:**
+- `xs:sequence`, `xs:choice`, `xs:all` content models; `minOccurs`/`maxOccurs`
+- All builtin simple types (`xs:string`, `xs:boolean`, `xs:integer` family, `xs:decimal`, etc.)
+- Named `xs:simpleType` with restriction facets: `minInclusive`, `maxInclusive`, `minExclusive`, `maxExclusive`, `pattern`, `enumeration`, `minLength`, `maxLength`, `length`
+- Attribute declarations: `use="required"`, `use="optional"`, `use="prohibited"`, `fixed`, `xs:anyAttribute`
+- Inline anonymous complex and simple types
+
 ## Error Handling
 All errors throw exceptions derived from `std::runtime_error`:
 - `SyntaxError` — malformed XML or namespace violations.
 - `Node::Error` — invalid node access.
 - `XMLAttribute::Error` — attribute not found.
+- `IValidator::Error` — DTD or XSD validation failure.
 - `FileSource::Error` / `BufferSource::Error` — I/O errors.
 
 ## Example Usage

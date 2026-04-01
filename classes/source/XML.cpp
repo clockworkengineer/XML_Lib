@@ -26,7 +26,11 @@ XML::XML(const std::string_view &xmlString) : XML() { parse(BufferSource{ xmlStr
 /// <summary>
 /// XML assignment (parse in a default XML string).
 /// </summary>
-XML &XML::operator=(const std::string_view &xmlString) { parse(BufferSource{ xmlString }); return *this;}
+XML &XML::operator=(const std::string_view &xmlString)
+{
+  parse(BufferSource{ xmlString });
+  return *this;
+}
 
 /// <summary>
 /// XML destructor.
@@ -68,6 +72,12 @@ Node &XML::root() const { return implementation->root(); }
 /// exception is thrown, then there is a validation issue and the XML is not valid.
 /// </summary>
 void XML::validate() const { implementation->validate(); }
+
+/// <summary>
+/// Validate XML against an XSD schema supplied as a UTF-8 XML string.
+/// </summary>
+/// <param name="xsdSource">XSD schema XML string.</param>
+void XML::validate(const std::string_view &xsdSource) const { implementation->validate(xsdSource); }
 
 /// <summary>
 /// Parse XML read from source stream into internal object generating an exception

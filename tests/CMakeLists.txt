@@ -46,6 +46,7 @@ target_sources(${TEST_EXECUTABLE}
     source/dtd/XML_Lib_Tests_DTD_Validate_Elements.cpp
     source/dtd/XML_Lib_Tests_DTD_Validate_Attributes.cpp
     source/dtd/XML_Lib_Tests_DTD_Validate_Misc.cpp
+    source/xsd/XML_Lib_Tests_XSD.cpp
     source/entitymapper/XML_Lib_Tests_Entity_Mapper.cpp
     source/data/XML_Lib_Tests_External_Reference.cpp
     source/data/XML_Lib_Tests_Value.cpp
