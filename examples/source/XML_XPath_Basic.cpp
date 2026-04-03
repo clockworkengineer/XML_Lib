@@ -71,26 +71,26 @@ int main()
   gXml.parse(source);
 
   PLOG_INFO << "--- Absolute paths ---";
-  query("Root element via /bookstore",               "/bookstore");
-  query("All book elements via /bookstore/book",     "/bookstore/book");
-  query("All titles via /bookstore/book/title",      "/bookstore/book/title");
+  query("Root element via /bookstore", "/bookstore");
+  query("All book elements via /bookstore/book", "/bookstore/book");
+  query("All titles via /bookstore/book/title", "/bookstore/book/title");
 
   PLOG_INFO << "--- Descendant shorthand (//) ---";
-  query("All book elements anywhere (//book)",       "//book");
-  query("All title elements anywhere (//title)",     "//title");
-  query("All elements anywhere (//*)",               "//*");
+  query("All book elements anywhere (//book)", "//book");
+  query("All title elements anywhere (//title)", "//title");
+  query("All elements anywhere (//*)", "//*");
 
   PLOG_INFO << "--- Self and parent (. and ..) ---";
-  query("Self — context is root element (.)",        ".");
-  query("Self by name (self::bookstore)",            "self::bookstore");
+  query("Self — context is root element (.)", ".");
+  query("Self by name (self::bookstore)", "self::bookstore");
 
   PLOG_INFO << "--- Wildcard (*) ---";
-  query("All children of root (/bookstore/*)",       "/bookstore/*");
-  query("All grandchildren (/bookstore/book/*)",     "/bookstore/book/*");
+  query("All children of root (/bookstore/*)", "/bookstore/*");
+  query("All grandchildren (/bookstore/book/*)", "/bookstore/book/*");
 
   PLOG_INFO << "--- Attribute axis (@) ---";
   query("category attribute of all books (//book/@category)", "//book/@category");
-  query("lang attribute of all titles (//title/@lang)",       "//title/@lang");
+  query("lang attribute of all titles (//title/@lang)", "//title/@lang");
 
   PLOG_INFO << "--- Evaluatestring / number shortcuts ---";
   xl::XPath xp(gXml.root());

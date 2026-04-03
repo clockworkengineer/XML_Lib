@@ -56,8 +56,8 @@ static void query(const std::string &label, const std::string &expr)
     PLOG_INFO << "    expression  : " << expr;
     PLOG_INFO << "    result count: " << nodes.size();
     for (const auto *n : nodes) {
-      const std::string title = xp.evaluateString(
-        "string(title)");// evaluated from context — use evaluateString for display
+      const std::string title =
+        xp.evaluateString("string(title)");// evaluated from context — use evaluateString for display
       // Just show the element name; use a separate XPath for title text
       if (xl::isA<xl::Element>(*n) || xl::isA<xl::Root>(*n)) {
         const std::string nm = xl::NRef<xl::Element>(*n).name();
@@ -81,38 +81,32 @@ int main()
   xl::XPath xp(gXml.root());
 
   PLOG_INFO << "--- Positional predicates ---";
-  query("First book  [//book[1]]",               "//book[1]");
-  query("Last book   [//book[last()]]",           "//book[last()]");
-  query("Second book [//book[2]]",               "//book[2]");
-  query("All but first [//book[position()>1]]",  "//book[position()>1]");
+  query("First book  [//book[1]]", "//book[1]");
+  query("Last book   [//book[last()]]", "//book[last()]");
+  query("Second book [//book[2]]", "//book[2]");
+  query("All but first [//book[position()>1]]", "//book[position()>1]");
 
   PLOG_INFO << "--- Attribute value predicates ---";
-  query("Books with category='web'   [//book[@category='web']]",      "//book[@category='web']");
-  query("Books with category='cooking' [//book[@category='cooking']]","//book[@category='cooking']");
-  query("Books that have a category attr [//book[@category]]",        "//book[@category]");
-  query("Titles with lang='en' [//title[@lang='en']]",                "//title[@lang='en']");
+  query("Books with category='web'   [//book[@category='web']]", "//book[@category='web']");
+  query("Books with category='cooking' [//book[@category='cooking']]", "//book[@category='cooking']");
+  query("Books that have a category attr [//book[@category]]", "//book[@category]");
+  query("Titles with lang='en' [//title[@lang='en']]", "//title[@lang='en']");
 
   PLOG_INFO << "--- Child element value predicates ---";
-  query("Books where year=2003 [//book[year=2003]]",                  "//book[year=2003]");
-  query("Books where year=2005 [//book[year=2005]]",                  "//book[year=2005]");
-  query("Books with price>35   [//book[price>35]]",                   "//book[price>35]");
-  query("Books with price<35   [//book[price<35]]",                   "//book[price<35]");
+  query("Books where year=2003 [//book[year=2003]]", "//book[year=2003]");
+  query("Books where year=2005 [//book[year=2005]]", "//book[year=2005]");
+  query("Books with price>35   [//book[price>35]]", "//book[price>35]");
+  query("Books with price<35   [//book[price<35]]", "//book[price<35]");
 
   PLOG_INFO << "--- Compound predicates ---";
-  query("Web books published in 2003 [//book[@category='web'][year=2003]]",
-        "//book[@category='web'][year=2003]");
-  query("First web book [//book[@category='web'][1]]",
-        "//book[@category='web'][1]");
+  query("Web books published in 2003 [//book[@category='web'][year=2003]]", "//book[@category='web'][year=2003]");
+  query("First web book [//book[@category='web'][1]]", "//book[@category='web'][1]");
 
   PLOG_INFO << "--- Using evaluateString on filtered results ---";
-  PLOG_INFO << "  Title of first book       : "
-            << xp.evaluateString("string(//book[1]/title)");
-  PLOG_INFO << "  Title of last book        : "
-            << xp.evaluateString("string(//book[last()]/title)");
-  PLOG_INFO << "  Title of first web book   : "
-            << xp.evaluateString("string(//book[@category='web'][1]/title)");
-  PLOG_INFO << "  Price of cheapest (first) : "
-            << xp.evaluateString("string(//book[price<35][1]/price)");
+  PLOG_INFO << "  Title of first book       : " << xp.evaluateString("string(//book[1]/title)");
+  PLOG_INFO << "  Title of last book        : " << xp.evaluateString("string(//book[last()]/title)");
+  PLOG_INFO << "  Title of first web book   : " << xp.evaluateString("string(//book[@category='web'][1]/title)");
+  PLOG_INFO << "  Price of cheapest (first) : " << xp.evaluateString("string(//book[price<35][1]/price)");
 
   PLOG_INFO << "XML_XPath_Predicates exited.";
   return 0;

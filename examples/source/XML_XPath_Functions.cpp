@@ -80,80 +80,65 @@ int main()
 
   // ── Node-set functions ──────────────────────────────────────────────────
   PLOG_INFO << "--- Node-set functions ---";
-  evalNum("count(//book)                  — total books",      "count(//book)",                 xp);
-  evalNum("count(//book[@category='web']) — web books",        "count(//book[@category='web'])", xp);
-  evalNum("count(//title)                — total titles",      "count(//title)",                 xp);
-  evalStr("name(//book[1])               — name of 1st book",  "name(//book[1])",                xp);
-  evalStr("name(/*)                      — name of root",      "name(/*)",                       xp);
+  evalNum("count(//book)                  — total books", "count(//book)", xp);
+  evalNum("count(//book[@category='web']) — web books", "count(//book[@category='web'])", xp);
+  evalNum("count(//title)                — total titles", "count(//title)", xp);
+  evalStr("name(//book[1])               — name of 1st book", "name(//book[1])", xp);
+  evalStr("name(/*)                      — name of root", "name(/*)", xp);
 
   // ── String functions ────────────────────────────────────────────────────
   PLOG_INFO << "--- String functions ---";
-  evalStr("string(//title[1])                    — first title as string",
-          "string(//title[1])", xp);
+  evalStr("string(//title[1])                    — first title as string", "string(//title[1])", xp);
   evalStr("concat(//title[1], ' / ', //title[2]) — join two titles",
-          "concat(string(//title[1]), ' / ', string(//title[2]))", xp);
+    "concat(string(//title[1]), ' / ', string(//title[2]))",
+    xp);
   evalStr("contains(//title[1], 'Italian')       — does first title contain 'Italian'?",
-          "string(contains(//title[1], 'Italian'))", xp);
+    "string(contains(//title[1], 'Italian'))",
+    xp);
   evalStr("starts-with(//title[1], 'Everyday')   — starts with 'Everyday'?",
-          "string(starts-with(//title[1], 'Everyday'))", xp);
-  evalStr("substring(//title[1], 1, 8)           — first 8 chars of first title",
-          "substring(string(//title[1]), 1, 8)", xp);
-  evalStr("substring-before(//title[1], ' ')     — word before first space",
-          "substring-before(string(//title[1]), ' ')", xp);
-  evalStr("substring-after(//title[1], ' ')      — text after first space",
-          "substring-after(string(//title[1]), ' ')", xp);
-  evalNum("string-length(//title[1])             — character count of first title",
-          "string-length(string(//title[1]))", xp);
-  evalStr("normalize-space('  hello   world  ')  — collapse whitespace",
-          "normalize-space('  hello   world  ')", xp);
-  evalStr("translate(//title[1], 'aeiou', '*****') — vowels → *",
-          "translate(string(//title[1]), 'aeiou', '*****')", xp);
+    "string(starts-with(//title[1], 'Everyday'))",
+    xp);
+  evalStr(
+    "substring(//title[1], 1, 8)           — first 8 chars of first title", "substring(string(//title[1]), 1, 8)", xp);
+  evalStr(
+    "substring-before(//title[1], ' ')     — word before first space", "substring-before(string(//title[1]), ' ')", xp);
+  evalStr(
+    "substring-after(//title[1], ' ')      — text after first space", "substring-after(string(//title[1]), ' ')", xp);
+  evalNum(
+    "string-length(//title[1])             — character count of first title", "string-length(string(//title[1]))", xp);
+  evalStr("normalize-space('  hello   world  ')  — collapse whitespace", "normalize-space('  hello   world  ')", xp);
+  evalStr(
+    "translate(//title[1], 'aeiou', '*****') — vowels → *", "translate(string(//title[1]), 'aeiou', '*****')", xp);
 
   // ── Number functions ────────────────────────────────────────────────────
   PLOG_INFO << "--- Number functions ---";
-  evalNum("number(//book[1]/price)             — price of first book as number",
-          "number(string(//book[1]/price))", xp);
-  evalNum("sum(//price)                        — total price of all books",
-          "sum(//price)", xp);
-  evalNum("floor(49.7)                         — floor of 49.7",
-          "floor(49.7)", xp);
-  evalNum("ceiling(49.2)                       — ceiling of 49.2",
-          "ceiling(49.2)", xp);
-  evalNum("round(49.5)                         — round 49.5",
-          "round(49.5)", xp);
-  evalNum("round(49.4)                         — round 49.4",
-          "round(49.4)", xp);
+  evalNum("number(//book[1]/price)             — price of first book as number", "number(string(//book[1]/price))", xp);
+  evalNum("sum(//price)                        — total price of all books", "sum(//price)", xp);
+  evalNum("floor(49.7)                         — floor of 49.7", "floor(49.7)", xp);
+  evalNum("ceiling(49.2)                       — ceiling of 49.2", "ceiling(49.2)", xp);
+  evalNum("round(49.5)                         — round 49.5", "round(49.5)", xp);
+  evalNum("round(49.4)                         — round 49.4", "round(49.4)", xp);
 
   // ── Boolean functions ───────────────────────────────────────────────────
   PLOG_INFO << "--- Boolean functions ---";
-  evalBool("boolean(//book)                    — node-set is non-empty → true",
-           "boolean(//book)", xp);
-  evalBool("boolean(//nonexistent)             — empty node-set → false",
-           "boolean(//nonexistent)", xp);
-  evalBool("not(//nonexistent)                 — not of false → true",
-           "not(//nonexistent)", xp);
-  evalBool("true()                             — literal true",
-           "true()", xp);
-  evalBool("false()                            — literal false",
-           "false()", xp);
-  evalBool("count(//book) > 2                  — arithmetic comparison",
-           "count(//book) > 2", xp);
-  evalBool("count(//book[@category='web']) = 2 — equality comparison",
-           "count(//book[@category='web']) = 2", xp);
+  evalBool("boolean(//book)                    — node-set is non-empty → true", "boolean(//book)", xp);
+  evalBool("boolean(//nonexistent)             — empty node-set → false", "boolean(//nonexistent)", xp);
+  evalBool("not(//nonexistent)                 — not of false → true", "not(//nonexistent)", xp);
+  evalBool("true()                             — literal true", "true()", xp);
+  evalBool("false()                            — literal false", "false()", xp);
+  evalBool("count(//book) > 2                  — arithmetic comparison", "count(//book) > 2", xp);
+  evalBool("count(//book[@category='web']) = 2 — equality comparison", "count(//book[@category='web']) = 2", xp);
 
   // ── Contains in a predicate ─────────────────────────────────────────────
   PLOG_INFO << "--- Functions inside predicates ---";
   const auto xmlTitles = gXml.xpath("//title[contains(., 'XML')]");
-  PLOG_INFO << "  //title[contains(., 'XML')] — titles containing 'XML': "
-            << xmlTitles.size();
+  PLOG_INFO << "  //title[contains(., 'XML')] — titles containing 'XML': " << xmlTitles.size();
   for (const auto *n : xmlTitles) {
-    if (xl::isA<xl::Element>(*n))
-      PLOG_INFO << "    text: " << xp.evaluateString("string(//title[contains(., 'XML')])");
+    if (xl::isA<xl::Element>(*n)) PLOG_INFO << "    text: " << xp.evaluateString("string(//title[contains(., 'XML')])");
   }
 
   const auto longTitles = gXml.xpath("//title[string-length(.) > 12]");
-  PLOG_INFO << "  //title[string-length(.) > 12] — titles longer than 12 chars: "
-            << longTitles.size();
+  PLOG_INFO << "  //title[string-length(.) > 12] — titles longer than 12 chars: " << longTitles.size();
 
   PLOG_INFO << "XML_XPath_Functions exited.";
   return 0;

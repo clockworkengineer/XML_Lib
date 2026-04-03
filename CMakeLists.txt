@@ -1,7 +1,7 @@
 # Modernized CMakeLists.txt for XML_Lib
 cmake_minimum_required(VERSION 3.20)
 
-project(XML_Lib VERSION 1.1.0 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
+project(XML_Lib VERSION 1.2.0 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
