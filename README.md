@@ -9,6 +9,7 @@
 - **XML Namespaces**: Full W3C XML Namespace support — `xmlns` declarations, prefix scoping, QName parsing (`getPrefix()`, `getLocalName()`, `getNamespaceURI()`), and well-formedness enforcement.
 - **DTD Validation**: Internal and external DTD parsing and validation.
 - **XSD Validation**: Phase 1 W3C XML Schema (XSD) validation via `XML::validate(xsdSource)` — element content models (sequence/choice/all), attribute constraints (required/optional/prohibited/fixed), all builtin simple types, and all standard restriction facets.
+- **XPath Queries**: Full XPath 1.0 evaluation via the `XPath` class and `xml.xpath(expr)` shorthand — all 13 axes, 28+ built-in functions, predicates, all result types (node-set, string, number, boolean), and abbreviated syntax (`//`, `.`, `..`, `@`).
 - **Memory Efficiency**: Optimized algorithms to minimize memory usage.
 - **Error Handling**: Robust error and exception handling mechanisms, with detailed standard-compliant error messages.
 - **Cross-platform Compatibility**: Designed to run seamlessly on Linux, Windows, and macOS environments.
@@ -69,6 +70,36 @@ int main() {
 }
 ```
 
+### XPath Example
+```cpp
+#include "XML.hpp"
+#include "XPath.hpp"
+using namespace XML_Lib;
+
+int main() {
+   XML xml;
+   BufferSource source{R"(<?xml version="1.0"?>
+   <bookstore>
+     <book category="web"><title>Learning XML</title><price>39.95</price></book>
+     <book category="cooking"><title>Everyday Italian</title><price>30.00</price></book>
+   </bookstore>)"};
+   xml.parse(source);
+
+   // Select nodes
+   auto books = xml.xpath("//book");
+   std::cout << books.size() << " books found\n";  // 2
+
+   // Filter by attribute
+   auto webBooks = xml.xpath("//book[@category='web']");
+
+   // Built-in functions
+   XPath xp(xml.root());
+   std::cout << xp.evaluateString("string(//title[1])") << "\n"; // Learning XML
+   std::cout << xp.evaluateNumber("sum(//price)") << "\n";       // 69.95
+   std::cout << xp.evaluateBool("count(//book) > 1") << "\n";   // 1 (true)
+}
+```
+
 ### Standard Compliance
 XML_Lib is fully compliant with XML 1.0, including:
 - Strict validation of tag and attribute names
@@ -78,6 +109,8 @@ XML_Lib is fully compliant with XML 1.0, including:
 - Detailed error reporting for all non-compliant cases
 - **W3C XML Namespaces** — `xmlns`/`xmlns:prefix` declarations, prefix scoping, QName decomposition (`getPrefix()`, `getLocalName()`, `getNamespaceURI()`), and attribute prefix validation
 - **XSD Schema Validation** (Phase 1) — `XML::validate(xsdSource)` validates element structure, attribute constraints, and simple type restrictions against a W3C XML Schema
+- **XPath 1.0** — `xml.xpath(expr)` / `XPath::evaluate(expr)` supports all 13 axes, 28+ functions, predicates, and all result types
+
 Unit tests cover all standard and edge cases.
 
 ### Integration with your Project
