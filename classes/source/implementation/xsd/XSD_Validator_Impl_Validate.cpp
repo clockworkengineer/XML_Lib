@@ -279,7 +279,8 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
     }
 
     // Check for unexpected children
-    for (const auto &[childName, count] : childCounts) {
+    for (const auto &childEntry : childCounts) {
+      const auto &childName = childEntry.first;
       const bool declared =
         std::ranges::any_of(type.particles, [&](const XSD_Particle &p) { return p.elementName == childName; });
       if (!declared) { xsdError(elemName, "unexpected child element <" + childName + ">."); }
@@ -312,7 +313,8 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
       xsdError(elemName, "xs:choice requires exactly one of: " + options + ".");
     }
     // Check for unexpected children not in any branch
-    for (const auto &[childName, count] : childCounts) {
+    for (const auto &childEntry : childCounts) {
+      const auto &childName = childEntry.first;
       const bool declared =
         std::ranges::any_of(type.particles, [&](const XSD_Particle &p) { return p.elementName == childName; });
       if (!declared) { xsdError(elemName, "unexpected child element <" + childName + ">."); }

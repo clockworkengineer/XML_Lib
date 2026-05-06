@@ -7,6 +7,7 @@
 //
 
 #include "XSD_Impl.hpp"
+#include <algorithm>
 
 namespace XML_Lib {
 
@@ -407,7 +408,7 @@ bool XSD_Impl::isBuiltinType(const std::string_view &typeName) const
     "xs:unsignedInt",
     "xs:unsignedLong",
     "xs:unsignedShort" };
-  return std::ranges::contains(builtins, typeName);
+  return std::find(builtins.begin(), builtins.end(), typeName) != builtins.end();
 }
 
 }// namespace XML_Lib

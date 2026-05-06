@@ -134,7 +134,9 @@ int main()
   const auto xmlTitles = gXml.xpath("//title[contains(., 'XML')]");
   PLOG_INFO << "  //title[contains(., 'XML')] — titles containing 'XML': " << xmlTitles.size();
   for (const auto *n : xmlTitles) {
-    if (xl::isA<xl::Element>(*n)) PLOG_INFO << "    text: " << xp.evaluateString("string(//title[contains(., 'XML')])");
+    if (xl::isA<xl::Element>(*n)) {
+      PLOG_INFO << "    text: " << xp.evaluateString("string(//title[contains(., 'XML')])");
+    }
   }
 
   const auto longTitles = gXml.xpath("//title[string-length(.) > 12]");

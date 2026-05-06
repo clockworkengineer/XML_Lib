@@ -13,6 +13,11 @@
 #include "XPath_Parser.hpp"
 #include "XPath.hpp"
 
+#include <algorithm>
+#include <cmath>
+#include <sstream>
+#include <limits>
+
 namespace XML_Lib {
 
 // ========================================================================
@@ -370,7 +375,7 @@ static XPathResult evalStepResult(const XPathStep &step,
     }
 
     for (const auto &c : passing) {
-      if (!std::ranges::contains(output, c.node)) {
+      if (std::find(output.begin(), output.end(), c.node) == output.end()) {
         output.push_back(c.node);
         if (c.isAttr) {
           // Retrieve attribute value from the element
@@ -452,7 +457,8 @@ static XPathResult evalPathExpr(const XPathPathExpr &pathExpr,
         auto sr = evalStepResult(step, current, currentAttrs, docRoot, ancestorStack);
         std::vector<const Node *> nextSet = sr.nodeSet;
         if (i == 1 && step0.axis == XPathAxis::DescendantOrSelf && step.axis == XPathAxis::Child) {
-          if (matchNodeTest(docRoot, step.nodeTest, step.axis) && !std::ranges::contains(nextSet, &docRoot)) {
+          if (matchNodeTest(docRoot, step.nodeTest, step.axis)
+            && std::find(nextSet.begin(), nextSet.end(), &docRoot) == nextSet.end()) {
             nextSet.insert(nextSet.begin(), &docRoot);
           }
         }
@@ -807,7 +813,7 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     for (const auto *n : filterResult.nodeSet) {
       auto sub = evalPathExpr(*pathExprPtr, *n, docRoot, ancestorStack);
       for (const auto *r : sub.nodeSet) {
-        if (!std::ranges::contains(combined, r)) combined.push_back(r);
+        if (std::find(combined.begin(), combined.end(), r) == combined.end()) combined.push_back(r);
       }
     }
     XPathResult result;
@@ -843,7 +849,7 @@ static XPathResult evalExpr(const XPathExpr &expr,
     r.nodeSet = left.type == XPathResultType::NodeSet ? left.nodeSet : std::vector<const Node *>{};
     if (right.type == XPathResultType::NodeSet) {
       for (const auto *n : right.nodeSet) {
-        if (!std::ranges::contains(r.nodeSet, n)) r.nodeSet.push_back(n);
+        if (std::find(r.nodeSet.begin(), r.nodeSet.end(), n) == r.nodeSet.end()) r.nodeSet.push_back(n);
       }
     }
     return r;
