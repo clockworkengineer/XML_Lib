@@ -53,28 +53,38 @@ target_sources(${XML_LIBRARY_NAME}
 
 target_include_directories(${XML_LIBRARY_NAME}
   PUBLIC
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/interface>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/converter>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/entity>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/io>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/parser>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/xpath>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/variants>
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include>
+  PRIVATE
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/interface>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/converter>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/entity>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/io>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/parser>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/xpath>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/variants>
+    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
 )
 
+target_compile_definitions(${XML_LIBRARY_NAME} PRIVATE XML_LIB_INTERNAL)
+
 target_precompile_headers(${XML_LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h)
+
+set(XML_PUBLIC_HEADERS
+  ${PROJECT_SOURCE_DIR}/classes/include/XML.hpp
+  ${PROJECT_SOURCE_DIR}/classes/include/XPath.hpp
+  ${PROJECT_SOURCE_DIR}/classes/include/DTD_Validator.hpp
+  ${PROJECT_SOURCE_DIR}/classes/include/XSD_Validator.hpp
+)
 
 add_subdirectory(tests)
 add_subdirectory(examples)
 
 # install
 install(TARGETS ${XML_LIBRARY_NAME} DESTINATION lib)
-install(FILES ${XML_INCLUDES} DESTINATION include)
+install(FILES ${XML_PUBLIC_HEADERS} DESTINATION include)

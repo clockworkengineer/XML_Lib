@@ -72,6 +72,23 @@ target_include_directories(${TEST_EXECUTABLE}
     ${CMAKE_CURRENT_SOURCE_DIR}/../include
     ${Catch2_SOURCE_DIR}/src
 )
+
+target_include_directories(${TEST_EXECUTABLE} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../build
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/interface
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/converter
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/data
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/entity
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/io
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/parser
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/validator
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/node
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/stringify
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/xpath
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/variants
+)
 target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
 target_precompile_headers(${TEST_EXECUTABLE} REUSE_FROM XML_Lib)
 
