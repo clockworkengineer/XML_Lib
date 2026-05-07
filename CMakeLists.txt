@@ -53,22 +53,22 @@ target_sources(${XML_LIBRARY_NAME}
 
 target_include_directories(${XML_LIBRARY_NAME}
   PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include>
   PRIVATE
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/interface>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/converter>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/entity>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/io>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/parser>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/xpath>
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/variants>
-    $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/interface>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/converter>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/entity>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/io>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/parser>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/xpath>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/variants>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
 )
 
 target_compile_definitions(${XML_LIBRARY_NAME} PRIVATE XML_LIB_INTERNAL)
