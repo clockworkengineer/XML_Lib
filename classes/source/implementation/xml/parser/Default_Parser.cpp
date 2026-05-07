@@ -122,6 +122,7 @@ std::string Default_Parser::parseDeclarationAttribute(ISource &source,
 Node Default_Parser::parseComment(ISource &source)
 {
   std::string comment;
+  comment.reserve(64);
   while (source.more() && !source.match("--")) {
     comment += toUtf8(source.current());
     source.next();
@@ -144,6 +145,7 @@ Node Default_Parser::parsePI(ISource &source)
     throw SyntaxError(source.getPosition(), "Declaration allowed only at the start of the document.");
   }
   std::string parameters;
+  parameters.reserve(64);
   while (source.more() && !source.match("?>")) {
     parameters += toUtf8(source.current());
     source.next();
@@ -159,8 +161,7 @@ Node Default_Parser::parsePI(ISource &source)
 /// <returns>Pointer to CDATA Node.</returns>
 Node Default_Parser::parseCDATA(ISource &source)
 {
-  std::string cdata;
-  while (source.more() && !source.match("]]>")) {
+  std::string cdata;  cdata.reserve(128);  while (source.more() && !source.match("]]>")) {
     if (source.match("<![CDATA[")) {
       throw SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed.");
     }
@@ -206,6 +207,7 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
 void Default_Parser::parseWhiteSpaceToContent(ISource &source, Node &xNode)
 {
   std::string whiteSpace;
+  whiteSpace.reserve(32);
   while (source.more() && source.isWS()) {
     whiteSpace += toUtf8(source.current());
     source.next();
