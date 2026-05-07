@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 namespace XML_Lib {
 
 struct XML_EntityMapper final : IEntityMapper
@@ -39,16 +41,27 @@ struct XML_EntityMapper final : IEntityMapper
   void reset() override;
 
 private:
+  // Transparent hash/equality functors for std::string_view lookups.
+  struct EntityMapHash {
+    using is_transparent = void;
+    [[nodiscard]] size_t operator()(const std::string_view &sv) const noexcept { return std::hash<std::string_view>{}(sv); }
+  };
+  struct EntityMapEq {
+    using is_transparent = void;
+    [[nodiscard]] bool operator()(const std::string_view &lhs, const std::string_view &rhs) const noexcept { return lhs == rhs; }
+  };
+
   //  Check for any recursion in an entity reference
   void
     recurseOverEntityReference(const std::string_view &entityName, Char type, std::set<std::string> &currentEntities);
   // Get the contents of the file that is pointed to by an entity reference
-  [[nodiscard]] static std::string getFileMappingContents(const std::string_view &fileName);
+  [[nodiscard]] std::string getFileMappingContents(const std::string_view &fileName) const;
   // Get entity reference mapping entry
   [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string_view &entityName);
   // Reset entity map
   void resetToDefault();
 
-  std::map<std::string, XML_EntityMapping> entityMappings;
+  std::unordered_map<std::string, XML_EntityMapping, EntityMapHash, EntityMapEq> entityMappings;
+  mutable std::unordered_map<std::string, std::string> externalFileCache;
 };
 }// namespace XML_Lib

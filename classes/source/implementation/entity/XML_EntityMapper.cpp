@@ -8,6 +8,9 @@
 
 #include "XML.hpp"
 #include "XML_Core.hpp"
+#include <algorithm>
+#include <fstream>
+#include <vector>
 
 namespace XML_Lib {
 
@@ -17,6 +20,7 @@ namespace XML_Lib {
 void  XML_EntityMapper::resetToDefault()
 {
   entityMappings.clear();
+  entityMappings.reserve(16);
   entityMappings.emplace("&amp;", XML_EntityMapping{ "&#x26;" });
   entityMappings.emplace("&quot;", XML_EntityMapping{ "&#x22;" });
   entityMappings.emplace("&apos;", XML_EntityMapping{ "&#x27;" });
@@ -65,15 +69,28 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entity
 /// </summary>
 /// <param name="fileName"></param>
 /// <returns>String containing the contents of entity reference mapping file.</returns>
-std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fileName)
+std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fileName) const
 {
-  std::string content;
-  FileSource entitySource{ fileName };
-  while (entitySource.more()) {
-    content += toUtf8(entitySource.current());
-    entitySource.next();
+  const std::string key{ fileName };
+  if (const auto it = externalFileCache.find(key); it != externalFileCache.end()) {
+    return it->second;
   }
-  return content;
+
+  std::ifstream file(key, std::ios::binary);
+  if (!file) {
+    throw SyntaxError(std::string("Entity '") + key + "' source file does not exist.");
+  }
+
+  std::string content;
+  file.seekg(0, std::ios::end);
+  const auto size = file.tellg();
+  if (size > 0) {
+    content.reserve(static_cast<size_t>(size));
+    file.seekg(0, std::ios::beg);
+  }
+  content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+  externalFileCache.emplace(key, content);
+  return externalFileCache.at(key);
 }
 
 /// <summary>
@@ -83,9 +100,11 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fil
 /// <returns>Reference to entity mapping in the internal map.</returns>
 XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string_view &entityName)
 {
-  if (!isPresent(entityName)) { entityMappings.emplace(entityName, XML_EntityMapping()); }
-  if (const auto entity = entityMappings.find(std::string(entityName)); entity != entityMappings.end()) { return entity->second; }
-  throw Error("Could not find entity reference in map.");
+  if (auto entity = entityMappings.find(entityName); entity != entityMappings.end()) {
+    return entity->second;
+  }
+  const auto [it, inserted] = entityMappings.emplace(std::string(entityName), XML_EntityMapping());
+  return it->second;
 }
 
 /// <summary>
@@ -113,7 +132,7 @@ XML_EntityMapper::~XML_EntityMapper() = default;
 /// <returns></returns>
 bool XML_EntityMapper::isPresent(const std::string_view &entityName) const
 {
-  return entityMappings.contains(std::string(entityName));
+  return entityMappings.find(entityName) != entityMappings.end();
 }
 
 /// <summary>
@@ -125,18 +144,16 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 {
   if (isPresent(entityReference.getUnparsed())) {
     std::string parsed{ entityReference.getUnparsed() };
-    // Internal so from memory.
-    if (const auto entityMapping = getEntityMapping(entityReference.getUnparsed()); !entityMapping.getInternal().empty()) {
+    auto &entityMapping = getEntityMapping(entityReference.getUnparsed());
+    if (!entityMapping.getInternal().empty()) {
       parsed = entityMapping.getInternal();
-    } else
-    // External so from a file.
-    // *** TODO Need to add support for external other than file ***
-    {
-      if (std::filesystem::exists(entityMapping.getExternal().getSystemID())) {
-        parsed = getFileMappingContents(entityMapping.getExternal().getSystemID());
+    } else if (entityMapping.isExternal()) {
+      const auto &systemID = entityMapping.getExternal().getSystemID();
+      if (std::filesystem::exists(systemID)) {
+        parsed = getFileMappingContents(systemID);
       } else {
         throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
-                          + entityMapping.getExternal().getSystemID() + "' does not exist.");
+                          + systemID + "' does not exist.");
       }
     }
     return XMLValue{ entityReference.getUnparsed(), parsed };
@@ -151,20 +168,51 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 /// <returns>Translated string.</returns>
 std::string XML_EntityMapper::translate(const std::string_view &toTranslate, const char type) const
 {
-  std::string translated { toTranslate} ;
-  bool matchFound;
-  do {
-    matchFound = false;
-    for (const auto &[fst, snd] : entityMappings) {
-      if (fst[0] == type) {
-        if (const size_t position = translated.find(fst); position != std::string::npos) {
-          translated.replace(position, fst.length(), snd.getInternal());
-          matchFound = true;
-          break;
+  if (toTranslate.empty()) { return std::string{}; }
+
+  std::vector<std::pair<std::string_view, const XML_EntityMapping *>> candidates;
+  candidates.reserve(entityMappings.size());
+  for (const auto &[key, mapping] : entityMappings) {
+    if (!key.empty() && key[0] == type) {
+      candidates.emplace_back(std::string_view(key), &mapping);
+    }
+  }
+  if (candidates.empty()) { return std::string(toTranslate); }
+
+  std::sort(candidates.begin(), candidates.end(), [](const auto &a, const auto &b) {
+    return a.first.size() > b.first.size();
+  });
+
+  std::string translated;
+  translated.reserve(toTranslate.size());
+  size_t pos = 0;
+  while (pos < toTranslate.size()) {
+    if (toTranslate[pos] != type) {
+      translated.push_back(toTranslate[pos]);
+      ++pos;
+      continue;
+    }
+
+    bool replaced = false;
+    for (const auto &[key, mapping] : candidates) {
+      if (toTranslate.size() - pos >= key.size() && toTranslate.substr(pos, key.size()) == key) {
+        if (mapping->isInternal()) {
+          translated.append(mapping->getInternal());
+        } else if (mapping->isExternal()) {
+          translated.append(getFileMappingContents(mapping->getExternal().getSystemID()));
+        } else {
+          translated.append(key);
         }
+        pos += key.size();
+        replaced = true;
+        break;
       }
     }
-  } while (matchFound);
+    if (!replaced) {
+      translated.push_back(toTranslate[pos]);
+      ++pos;
+    }
+  }
   return translated;
 }
 
