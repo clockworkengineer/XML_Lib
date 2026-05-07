@@ -7,11 +7,25 @@
 /// <param name="xmlFileName">Test data file name.</param>
 std::string prefixTestDataPath(const std::string &xmlFileName)
 {
-  if (std::filesystem::is_directory("./files")) {
-    return (std::filesystem::current_path() / "./files" / xmlFileName).string();
-  } else {
-    return (std::filesystem::current_path() / "../files" / xmlFileName).string();
+  const std::filesystem::path base = std::filesystem::current_path();
+  const std::vector<std::filesystem::path> candidates{
+    base / "./files",
+    base / "./tests/files",
+    base / "../files",
+    base / "../tests/files",
+    base / "./build/tests/files",
+    base / "../build/tests/files",
+  };
+
+  for (const auto &candidate : candidates) {
+    const auto filePath = candidate / xmlFileName;
+    if (std::filesystem::exists(filePath)) {
+      return filePath.string();
+    }
   }
+
+  // Fall back to the original path so the returned path is still usable for diagnostics.
+  return (base / "./files" / xmlFileName).string();
 }
 
 /// <summary>
