@@ -108,13 +108,9 @@ XMLValue parseCharacter(ISource &source)
   XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character value encountered."));
 }
 
-/// <summary>
-/// Parse a literal string value and return it.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <param name="entityMapper">Entity mapper.</param>
-/// <returns>Literal string value.</returns>
-XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
+namespace {
+
+XMLValue parseValueImpl(ISource &source, IEntityMapper *entityMapper)
 {
   if (source.current() == '\'' || source.current() == '"') {
     std::string unparsed;
@@ -125,8 +121,9 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
     const Char quote = source.current();
     source.next();
     while (source.more() && source.current() != quote) {
-      if (XMLValue character{ parseCharacter(source) }; character.isEntityReference()) {
-        XMLValue entityReference{ entityMapper.map(character) };
+      XMLValue character{ parseCharacter(source) };
+      if (entityMapper != nullptr && character.isEntityReference()) {
+        XMLValue entityReference{ entityMapper->map(character) };
         unparsed += entityReference.getUnparsed();
         parsed += entityReference.getParsed();
       } else {
@@ -141,6 +138,19 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
   XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid attribute value."));
 }
 
+} // namespace
+
+/// <summary>
+/// Parse a literal string value and return it.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="entityMapper">Entity mapper.</param>
+/// <returns>Literal string value.</returns>
+XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
+{
+  return parseValueImpl(source, &entityMapper);
+}
+
 /// <summary>
 /// Parse a literal string value and return it.
 /// </summary>
@@ -148,24 +158,7 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 /// <returns>Literal string value.</returns>
 XMLValue parseValue(ISource &source)
 {
-  if (source.current() == '\'' || source.current() == '"') {
-    std::string unparsed;
-    std::string parsed;
-    unparsed.reserve(32);
-    parsed.reserve(32);
-
-    const Char quote = source.current();
-    source.next();
-    while (source.more() && source.current() != quote) {
-      XMLValue character{ parseCharacter(source) };
-      unparsed += character.getUnparsed();
-      parsed += character.getParsed();
-    }
-    source.next();
-    source.ignoreWS();
-    return XMLValue{ unparsed, parsed, static_cast<char>(quote) };
-  }
-  XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid attribute value."));
+  return parseValueImpl(source, nullptr);
 }
 
 /// <summary>
