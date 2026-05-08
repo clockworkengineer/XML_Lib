@@ -22,7 +22,9 @@ public:
   [[nodiscard]] Node &root();
   [[nodiscard]] Node &declaration();
   void parse(ISource &source);
+#if defined(XML_LIB_ENABLE_STRINGIFY)
   void stringify(IDestination &destination);
+#endif
   void traverse(IAction &action);
   void traverse(IAction &action) const;
 #if defined(XML_LIB_ENABLE_DTD)

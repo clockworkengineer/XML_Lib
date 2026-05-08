@@ -25,11 +25,15 @@ XML_Impl::XML_Impl(IStringify *stringify, IParser *parser)
   } else {
     xmlParser.reset(parser);
   }
+#if defined(XML_LIB_ENABLE_STRINGIFY)
   if (stringify == nullptr) {
     xmlStringifier = std::make_unique<Default_Stringify>();
   } else {
     xmlStringifier.reset(stringify);
   }
+#else
+  (void)stringify;
+#endif
 }
 
 XML_Impl::~XML_Impl() = default;
@@ -97,8 +101,9 @@ void XML_Impl::parse(ISource &source)
 #endif
   xmlRoot = xmlParser->parse(source);
 }
-
+#if defined(XML_LIB_ENABLE_STRINGIFY)
 void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(prolog(), destination, 0); }
+#endif
 
 void XML_Impl::traverse(IAction &action)
 {

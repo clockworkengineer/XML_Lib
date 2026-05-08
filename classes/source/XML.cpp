@@ -107,9 +107,10 @@ void XML::parse(ISource &&source) const { implementation->parse(source); }
 /// <summary>
 /// Create XML text from an XML object.
 /// </summary>
-/// <param name="destination">XML destination stream.</param>
+#if defined(XML_LIB_ENABLE_STRINGIFY)
 void XML::stringify(IDestination &destination) const { implementation->stringify(destination); }
 void XML::stringify(IDestination &&destination) const { implementation->stringify(destination); }
+#endif
 
 /// <summary>
 /// Recursively traverse Node structure calling IAction methods (read-only)

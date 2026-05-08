@@ -59,9 +59,11 @@ public:
   // Parse XML source
   void parse(ISource &source) const;
   void parse(ISource &&source) const;
+#if defined(XML_LIB_ENABLE_STRINGIFY)
   // Stringify XML object to the destination text
   void stringify(IDestination &destination) const;
   void stringify(IDestination &&destination) const;
+#endif
   // Traverse the XML tree
   void traverse(IAction &action);
   void traverse(IAction &action) const;
