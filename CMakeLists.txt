@@ -221,8 +221,11 @@ if(SIZE_EXECUTABLE)
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
   add_custom_target(size_report_embedded
-    COMMAND ${CMAKE_COMMAND} -E echo "Embedded library size report for ${XML_LIBRARY_NAME}:"
+    COMMAND ${CMAKE_COMMAND} -E echo "=== Embedded library size report for ${XML_LIBRARY_NAME} ==="
     COMMAND ${SIZE_EXECUTABLE} --format=gnu $<TARGET_FILE:${XML_LIBRARY_NAME}>
+    COMMAND ${CMAKE_COMMAND} -E echo ""
+    COMMAND ${CMAKE_COMMAND} -E echo "=== File size ==="
+    COMMAND ls -lh $<TARGET_FILE:${XML_LIBRARY_NAME}>
     DEPENDS ${XML_LIBRARY_NAME}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
