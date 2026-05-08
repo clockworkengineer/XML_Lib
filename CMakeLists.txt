@@ -188,9 +188,6 @@ endif()
 
 set(XML_PUBLIC_HEADERS
   ${PROJECT_SOURCE_DIR}/classes/include/XML.hpp
-  ${PROJECT_SOURCE_DIR}/classes/include/XML_Sources.hpp
-  ${PROJECT_SOURCE_DIR}/classes/include/implementation/io/XML_BufferSource.hpp
-  ${PROJECT_SOURCE_DIR}/classes/include/implementation/io/XML_FileSource.hpp
   ${PROJECT_SOURCE_DIR}/classes/include/interface/XML_Interfaces.hpp
 )
 
