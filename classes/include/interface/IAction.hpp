@@ -27,66 +27,26 @@ public:
   // Constructors/destructors
   // ========================
   virtual ~IAction() = default;
-  // ============================
-  // Node encountered so process
-  // ============================
-  virtual void onNode([[maybe_unused]] Node &Node){ }
-  virtual void onNode([[maybe_unused]] const Node &Node){ }
-  // ==================================
-  // CDATA Node encountered so process
-  // ==================================
-  virtual void onCDATA([[maybe_unused]] Node &Node){ }
-  virtual void onCDATA([[maybe_unused]] const Node &Node){ }
-  // ====================================
-  // Comment Node encountered so process
-  // ====================================
-  virtual void onComment([[maybe_unused]] Node &Node){ }
-  virtual void onComment([[maybe_unused]] const Node &Node){ }
-  // ====================================
-  // Content Node encountered so process
-  // ====================================
-  virtual void onContent([[maybe_unused]] Node &Node){ }
-  virtual void onContent([[maybe_unused]] const Node &Node){ }
-  // ========================================
-  // Declaration Node encountered so process
-  // ========================================
-  virtual void onDeclaration([[maybe_unused]] Node &Node){ }
-  virtual void onDeclaration([[maybe_unused]] const Node &Node){ }
-  // ================================
-  // DTD_Validator Node encountered so process
-  // ================================
-  virtual void onDTD([[maybe_unused]] Node &Node){ }
-  virtual void onDTD([[maybe_unused]] const Node &Node){ }
-  // ====================================
-  // Element Node encountered so process
-  // ====================================
-  virtual void onElement([[maybe_unused]] Node &Node){ }
-  virtual void onElement([[maybe_unused]] const Node &Node){ }
-  // =============================================
-  // Entity reference Node encountered so process
-  // =============================================
-  virtual void onEntityReference([[maybe_unused]] Node &Node){ }
-  virtual void onEntityReference([[maybe_unused]] const Node &Node){ }
-  // ===============================
-  // PI Node encountered so process
-  // ===============================
-  virtual void onPI([[maybe_unused]] Node &Node){ }
-  virtual void onPI([[maybe_unused]] const Node &Node){ }
-  // ===================================
-  // Prolog Node encountered so process
-  // ===================================
-  virtual void onProlog([[maybe_unused]] Node &Node){ }
-  virtual void onProlog([[maybe_unused]] const Node &Node){ }
-  // =================================
-  // Root Node encountered so process
-  // =================================
-  virtual void onRoot([[maybe_unused]] Node &Node){ }
-  virtual void onRoot([[maybe_unused]] const Node &Node){ }
-  // =================================
-  // Self Node encountered so process
-  // =================================
-  virtual void onSelf([[maybe_unused]] Node &Node){ }
-  virtual void onSelf([[maybe_unused]] const Node &Node){ }
+  // ================================================================
+  // Each macro declares both mutable and const overloads for a single
+  // node-type event, keeping the pair in sync with one line of code.
+  // ================================================================
+#define IACTION_EVENT(name)                                                  \
+  virtual void on##name([[maybe_unused]] Node &Node) { }                    \
+  virtual void on##name([[maybe_unused]] const Node &Node) { }
+  IACTION_EVENT(Node)
+  IACTION_EVENT(CDATA)
+  IACTION_EVENT(Comment)
+  IACTION_EVENT(Content)
+  IACTION_EVENT(Declaration)
+  IACTION_EVENT(DTD)
+  IACTION_EVENT(Element)
+  IACTION_EVENT(EntityReference)
+  IACTION_EVENT(PI)
+  IACTION_EVENT(Prolog)
+  IACTION_EVENT(Root)
+  IACTION_EVENT(Self)
+#undef IACTION_EVENT
 
 };
 }// namespace XML_Lib
