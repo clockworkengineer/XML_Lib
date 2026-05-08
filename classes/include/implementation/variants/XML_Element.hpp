@@ -21,11 +21,7 @@ struct Element : Variant
       }
     }
   }
-  Element(const Element &other) = delete;
-  Element &operator=(const Element &other) = delete;
-  Element(Element &&other) = default;
-  Element &operator=(Element &&other) = default;
-  ~Element() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(Element);
   // Is an attribute present?
   [[nodiscard]] bool hasAttribute(const std::string_view &attributeName) const
   {

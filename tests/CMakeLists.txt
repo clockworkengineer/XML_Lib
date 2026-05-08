@@ -188,9 +188,11 @@ target_include_directories(${PERFORMANCE_EXECUTABLE} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/variants
 )
 target_link_libraries(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
+
 if(NOT XML_LIB_EMBEDDED)
     target_precompile_headers(${PERFORMANCE_EXECUTABLE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../stdafx.h)
 endif()
+
 add_test(NAME ${PERFORMANCE_EXECUTABLE} COMMAND ${PERFORMANCE_EXECUTABLE})
 
 add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/files files)

@@ -6,10 +6,6 @@ struct Prolog final : Variant
 {
   // Constructors/Destructors
   Prolog() : Variant(Type::prolog) {}
-  Prolog(const Prolog &other) = delete;
-  Prolog &operator=(const Prolog &other) = delete;
-  Prolog(Prolog &&other) = default;
-  Prolog &operator=(Prolog &&other) = default;
-  ~Prolog() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(Prolog);
 };
 }// namespace XML_Lib

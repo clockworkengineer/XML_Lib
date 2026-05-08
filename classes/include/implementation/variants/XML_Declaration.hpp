@@ -8,11 +8,7 @@ struct Declaration final : Variant
   Declaration(const std::string_view & version, const std::string_view & encoding, const std::string_view & standalone)
     : Variant(Type::declaration), xmlVersion(version), xmlEncoding(encoding), xmlStandalone(standalone)
   {}
-  Declaration(const Declaration &other) = delete;
-  Declaration &operator=(const Declaration &other) = delete;
-  Declaration(Declaration &&other) = default;
-  Declaration &operator=(Declaration &&other) = default;
-  ~Declaration() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(Declaration);
   // Get reference to declaration attributes
   [[nodiscard]] const std::string &version() const { return xmlVersion; }
   [[nodiscard]] const std::string &encoding() const { return xmlEncoding; }

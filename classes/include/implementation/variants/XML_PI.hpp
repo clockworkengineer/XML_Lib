@@ -8,11 +8,7 @@ struct PI final : Variant
   PI(const std::string_view &name, const std::string_view &parameters)
     : Variant(Type::pi), piName(name), piParameters(parameters)
   {}
-  PI(const PI &other) = delete;
-  PI &operator=(const PI &other) = delete;
-  PI(PI &&other) = default;
-  PI &operator=(PI &&other) = default;
-  ~PI() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(PI);
   // Return reference to name
   [[nodiscard]] const std::string &name() const { return piName; }
   // Return reference to parameters

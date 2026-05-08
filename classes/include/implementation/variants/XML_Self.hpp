@@ -11,10 +11,6 @@ struct Self final : Element
     const std::vector<XMLAttribute> &namespaces)
     : Element(name, attributes, namespaces, Type::self)
   {}
-  Self(const Self &other) = delete;
-  Self &operator=(const Self &other) = delete;
-  Self(Self &&other) = default;
-  Self &operator=(Self &&other) = default;
-  ~Self() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(Self);
 };
 }// namespace XML_Lib

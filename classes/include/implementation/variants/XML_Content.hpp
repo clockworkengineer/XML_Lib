@@ -6,11 +6,7 @@ struct Content final : Variant
 {
   // Constructors/Destructors
   explicit Content(const std::string_view &content, const bool whiteSpaceDefault = true) : Variant(Type::content), xmlContent(content), whiteSpace(whiteSpaceDefault) {}
-  Content(const Content &other) = delete;
-  Content &operator=(const Content &other) = delete;
-  Content(Content &&other) = default;
-  Content &operator=(Content &&other) = default;
-  ~Content() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(Content);
   // Get reference to content string
   [[nodiscard]] std::string value() const { return xmlContent; }
   // Add to content

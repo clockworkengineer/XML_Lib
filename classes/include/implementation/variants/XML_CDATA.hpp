@@ -6,11 +6,7 @@ struct CDATA final : Variant
 {
   // Constructors/Destructors
   explicit CDATA(const std::string_view &cdata) : Variant(Type::cdata), cdata(cdata) {}
-  CDATA(const CDATA &other) = delete;
-  CDATA &operator=(const CDATA &other) = delete;
-  CDATA(CDATA &&other) = default;
-  CDATA &operator=(CDATA &&other) = default;
-  ~CDATA() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(CDATA);
   // Return reference to cdata
   [[nodiscard]] std::string_view value() const { return cdata; }
   // Return Variant contents

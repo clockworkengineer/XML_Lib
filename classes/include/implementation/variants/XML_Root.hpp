@@ -11,10 +11,6 @@ struct Root final : Element
     const std::vector<XMLAttribute> &namespaces)
     : Element(name, attributes, namespaces, Type::root)
   {}
-  Root(const Root &other) = delete;
-  Root &operator=(const Root &other) = delete;
-  Root(Root &&other) = default;
-  Root &operator=(Root &&other) = default;
-  ~Root() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(Root);
 };
 }// namespace XML_Lib

@@ -6,11 +6,7 @@ struct EntityReference final : Variant
 {
   // Constructors/Destructors
   explicit EntityReference(XMLValue value) : Variant(Type::entity), entityReferenceValue(std::move(value)) {}
-  EntityReference(const EntityReference &other) = delete;
-  EntityReference &operator=(const EntityReference &other) = delete;
-  EntityReference(EntityReference &&other) = default;
-  EntityReference &operator=(EntityReference &&other) = default;
-  ~EntityReference() override = default;
+  XML_LIB_NO_COPY_MOVE_DTOR(EntityReference);
   // Return reference to entity reference
   [[nodiscard]] const XMLValue &value() const { return entityReferenceValue; }
   // Return Variant contents

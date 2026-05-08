@@ -1,5 +1,14 @@
 #pragma once
 
+// Suppress the rule-of-five boilerplate that every Variant subclass repeats.
+// Deletes copy ctor/assignment, defaults move ctor/assignment, and overrides dtor.
+#define XML_LIB_NO_COPY_MOVE_DTOR(TypeName)              \
+  TypeName(const TypeName &) = delete;                   \
+  TypeName &operator=(const TypeName &) = delete;        \
+  TypeName(TypeName &&) = default;                       \
+  TypeName &operator=(TypeName &&) = default;            \
+  ~TypeName() override = default
+
 #include <memory_resource>
 
 namespace XML_Lib {
