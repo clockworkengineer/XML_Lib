@@ -35,13 +35,15 @@ static XPathResult evalExpr(const XPathExpr &expr,
   const std::vector<const Node *> &ancestorStack);
 
 // ========================================================================
-// String-value of a node
+// Append the string-value of a node into an existing buffer
 // ========================================================================
-static std::string nodeStringValue(const Node &node)
+static void appendNodeStringValue(const Node &node, std::string &out)
 {
-  if (isA<Content>(node)) { return NRef<Content>(node).getContents(); }
+  if (isA<Content>(node)) {
+    out += NRef<Content>(node).getContents();
+    return;
+  }
 
-  std::string result;
   std::vector<const Node *> stack;
   stack.reserve(16);
   stack.push_back(&node);
@@ -50,7 +52,7 @@ static std::string nodeStringValue(const Node &node)
     const Node *current = stack.back();
     stack.pop_back();
     if (isA<Content>(*current)) {
-      result += NRef<Content>(*current).getContents();
+      out += NRef<Content>(*current).getContents();
       continue;
     }
     const auto &children = current->getChildren();
@@ -58,6 +60,16 @@ static std::string nodeStringValue(const Node &node)
       stack.push_back(&*it);
     }
   }
+}
+
+// ========================================================================
+// String-value of a node
+// ========================================================================
+static std::string nodeStringValue(const Node &node)
+{
+  std::string result;
+  result.reserve(64);
+  appendNodeStringValue(node, result);
   return result;
 }
 
@@ -104,13 +116,9 @@ static std::string resultToString(const XPathResult &r)
   case XPathResultType::Number: {
     if (std::isnan(r.numberValue)) return "NaN";
     if (std::isinf(r.numberValue)) return (r.numberValue > 0) ? "Infinity" : "-Infinity";
-    std::string result;
-    result.reserve(32);
-    const auto [ptr, ec] = std::to_chars(result.data(), result.data() + result.capacity(), r.numberValue);
-    if (ec == std::errc()) {
-      result.resize(ptr - result.data());
-      return result;
-    }
+    char buffer[64];
+    const auto [ptr, ec] = std::to_chars(buffer, buffer + sizeof(buffer), r.numberValue);
+    if (ec == std::errc()) return std::string(buffer, ptr);
     std::ostringstream os;
     os << r.numberValue;
     return os.str();
@@ -260,6 +268,7 @@ static std::vector<CandidateNode> axisNodes(XPathAxis axis,
   const std::vector<const Node *> &ancestorStack)
 {
   std::vector<CandidateNode> result;
+  result.reserve(8);
 
   switch (axis) {
   case XPathAxis::Child:
@@ -285,6 +294,7 @@ static std::vector<CandidateNode> axisNodes(XPathAxis axis,
 
   case XPathAxis::Descendant: {
     std::vector<const Node *> tmp;
+    tmp.reserve(16);
     collectDescendants(contextNode, tmp);
     for (const auto *n : tmp) result.push_back({ n, "", false });
     break;
@@ -293,6 +303,7 @@ static std::vector<CandidateNode> axisNodes(XPathAxis axis,
   case XPathAxis::DescendantOrSelf: {
     result.push_back({ &contextNode, "", false });
     std::vector<const Node *> tmp;
+    tmp.reserve(16);
     collectDescendants(contextNode, tmp);
     for (const auto *n : tmp) result.push_back({ n, "", false });
     break;
@@ -359,6 +370,7 @@ static XPathResult evalStepResult(const XPathStep &step,
   const std::vector<const Node *> &ancestorsOfContext)
 {
   std::vector<const Node *> output;
+  output.reserve(inputNodeSet.size());
   std::unordered_map<const Node *, std::string> outAttrValues;
 
   for (const auto *inputNode : inputNodeSet) {
@@ -367,6 +379,7 @@ static XPathResult evalStepResult(const XPathStep &step,
 
     // Filter by node-test
     std::vector<CandidateNode> passing;
+    passing.reserve(candidates.size());
     for (const auto &c : candidates) {
       if (matchNodeTest(*c.node, step.nodeTest, step.axis, c.attrName, c.isAttr)) { passing.push_back(c); }
     }
@@ -651,13 +664,15 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     double total = 0.0;
     if (!args.empty() && args[0].type == XPathResultType::NodeSet) {
       for (const auto *n : args[0].nodeSet) {
-        const std::string sv = nodeStringValue(*n);
-        try {
-          total += std::stod(sv);
-        } catch (...) {
+        XPathResult nr;
+        nr.type = XPathResultType::String;
+        nr.stringValue = nodeStringValue(*n);
+        const double value = resultToNumber(nr);
+        if (std::isnan(value)) {
           total = std::numeric_limits<double>::quiet_NaN();
           break;
         }
+        total += value;
       }
     }
     XPathResult r;
@@ -717,7 +732,9 @@ static XPathResult evalBuiltinFunction(const std::string &name,
       r.boolValue = false;
       return r;
     }
-    r.boolValue = resultToString(args[0]).starts_with(resultToString(args[1]));
+    const std::string left = resultToString(args[0]);
+    const std::string right = resultToString(args[1]);
+    r.boolValue = left.starts_with(right);
     return r;
   }
   if (name == "contains") {
@@ -728,7 +745,9 @@ static XPathResult evalBuiltinFunction(const std::string &name,
       r.boolValue = false;
       return r;
     }
-    r.boolValue = resultToString(args[0]).find(resultToString(args[1])) != std::string::npos;
+    const std::string left = resultToString(args[0]);
+    const std::string right = resultToString(args[1]);
+    r.boolValue = left.find(right) != std::string::npos;
     return r;
   }
   if (name == "string-length") {
@@ -755,7 +774,10 @@ static XPathResult evalBuiltinFunction(const std::string &name,
       r.stringValue = args.empty() ? "" : resultToString(args[0]);
       return r;
     }
-    r.stringValue = fnTranslate(resultToString(args[0]), resultToString(args[1]), resultToString(args[2]));
+    const std::string source = resultToString(args[0]);
+    const std::string from = resultToString(args[1]);
+    const std::string to = resultToString(args[2]);
+    r.stringValue = fnTranslate(source, from, to);
     return r;
   }
   if (name == "substring") {
@@ -904,8 +926,19 @@ static XPathResult evalExpr(const XPathExpr &expr,
     // Equality / relational use special node-set comparison rules
     auto nodeSetContains = [&](const XPathResult &nodeSetRes, const XPathResult &other) -> bool {
       if (nodeSetRes.type != XPathResultType::NodeSet) return false;
+      std::vector<std::string> otherStrings;
+      if (other.type == XPathResultType::NodeSet) {
+        otherStrings.reserve(other.nodeSet.size());
+        for (const auto *m : other.nodeSet) {
+          if (const auto it = other.attrValues.find(m); it != other.attrValues.end()) {
+            otherStrings.push_back(it->second);
+          } else {
+            otherStrings.push_back(nodeStringValue(*m));
+          }
+        }
+      }
+
       for (const auto *n : nodeSetRes.nodeSet) {
-        // Use attribute value if this is an attribute-proxy node
         std::string sv;
         if (const auto it = nodeSetRes.attrValues.find(n); it != nodeSetRes.attrValues.end()) {
           sv = it->second;
@@ -925,10 +958,9 @@ static XPathResult evalExpr(const XPathExpr &expr,
           br.stringValue = sv;
           if (resultToBool(br) == other.boolValue) return true;
         }
-        // node-set vs node-set: compare string values
         if (other.type == XPathResultType::NodeSet) {
-          for (const auto *m : other.nodeSet) {
-            if (sv == nodeStringValue(*m)) return true;
+          for (const auto &otherSv : otherStrings) {
+            if (sv == otherSv) return true;
           }
         }
       }
