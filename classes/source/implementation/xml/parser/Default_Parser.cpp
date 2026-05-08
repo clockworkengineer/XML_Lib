@@ -455,10 +455,8 @@ Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 /// <returns>Prolog Node.</returns>
 Node Default_Parser::parse(ISource &source)
 {
-#if defined(XML_LIB_EMBEDDED)
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
-#endif
   // Reset XML before next parse
   entityMapper.reset();
   hasRoot = false;

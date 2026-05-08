@@ -95,10 +95,8 @@ std::vector<const Node *> XML_Impl::xpath(const std::string_view expression)
 
 void XML_Impl::parse(ISource &source)
 {
-#if defined(XML_LIB_EMBEDDED)
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
-#endif
   xmlRoot = xmlParser->parse(source);
 }
 #if defined(XML_LIB_ENABLE_STRINGIFY)
