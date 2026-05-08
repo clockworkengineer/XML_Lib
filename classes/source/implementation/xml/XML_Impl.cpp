@@ -45,6 +45,7 @@ std::string XML_Impl::version()
   return versionString.str();
 }
 
+#if defined(XML_LIB_ENABLE_DTD)
 Node &XML_Impl::dtd()
 {
   if (xmlParser->canValidate()) {
@@ -54,6 +55,7 @@ Node &XML_Impl::dtd()
   }
   XML_LIB_THROW(Error("No DTD found."));
 }
+#endif
 
 Node &XML_Impl::prolog()
 {

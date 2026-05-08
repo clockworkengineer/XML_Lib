@@ -37,4 +37,6 @@
 #include "XML_Destinations.hpp"
 #include "XML_Parse.hpp"
 #include "Default_Parser.hpp"
+#if defined(XML_LIB_ENABLE_STRINGIFY)
 #include "Default_Stringify.hpp"
+#endif

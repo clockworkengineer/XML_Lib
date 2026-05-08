@@ -17,7 +17,9 @@ public:
   XML_Impl &operator=(XML_Impl &&other) = delete;
   ~XML_Impl();
 
+#if defined(XML_LIB_ENABLE_DTD)
   [[nodiscard]] Node &dtd();
+#endif
   [[nodiscard]] Node &prolog();
   [[nodiscard]] Node &root();
   [[nodiscard]] Node &declaration();

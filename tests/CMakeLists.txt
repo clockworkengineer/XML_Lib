@@ -17,8 +17,7 @@ enable_testing()
 set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
 
 add_executable(${TEST_EXECUTABLE})
-target_sources(${TEST_EXECUTABLE}
-    PRIVATE
+set(TEST_CORE_SOURCES
     source/io/XML_Lib_Tests_ISource.cpp
     source/io/XML_Lib_Tests_IDestination.cpp
     source/io/XML_Lib_Tests_File.cpp
@@ -33,20 +32,8 @@ target_sources(${TEST_EXECUTABLE}
     source/xml/XML_Lib_Tests_Parse_PI.cpp
     source/xml/XML_Lib_Tests_Parse_CDATA.cpp
     source/xml/XML_Lib_Tests_Parse_Namespace.cpp
-    source/xml/XML_Lib_Tests_Stringify.cpp
     source/xml/XML_Lib_Tests_XML.cpp
     source/xml/XML_Lib_Tests_Helper.cpp
-    source/dtd/XML_Lib_Tests_DTD_Parse_Misc.cpp
-    source/dtd/XML_Lib_Tests_DTD_Parse_Entity.cpp
-    source/dtd/XML_Lib_Tests_DTD_Parse_Attributes.cpp
-    source/dtd/XML_Lib_Tests_DTD_Parse_Attributes_Error.cpp
-    source/dtd/XML_Lib_Tests_DTD_Parse_Attributes_Misc.cpp
-    source/dtd/XML_Lib_Tests_DTD_Parse_Tags.cpp
-    source/dtd/XML_Lib_Tests_DTD_Stringify.cpp
-    source/dtd/XML_Lib_Tests_DTD_Validate_Elements.cpp
-    source/dtd/XML_Lib_Tests_DTD_Validate_Attributes.cpp
-    source/dtd/XML_Lib_Tests_DTD_Validate_Misc.cpp
-    source/xsd/XML_Lib_Tests_XSD.cpp
     source/entitymapper/XML_Lib_Tests_Entity_Mapper.cpp
     source/data/XML_Lib_Tests_External_Reference.cpp
     source/data/XML_Lib_Tests_Value.cpp
@@ -62,9 +49,40 @@ target_sources(${TEST_EXECUTABLE}
     source/node/XML_Lib_Tests_Root.cpp
     source/node/XML_Lib_Tests_Self.cpp
     source/node/XML_LIb_Tests_EntityReference.cpp
-    source/node/XML_Lib_Tests_DTD.cpp
     source/traverse/XML_Lib_Tests_Traverse.cpp
-    source/xpath/XML_Lib_Tests_XPath.cpp
+)
+
+if(XML_LIB_ENABLE_STRINGIFY)
+    list(APPEND TEST_CORE_SOURCES source/xml/XML_Lib_Tests_Stringify.cpp)
+endif()
+
+if(XML_LIB_ENABLE_DTD)
+    list(APPEND TEST_CORE_SOURCES
+        source/dtd/XML_Lib_Tests_DTD_Parse_Misc.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Entity.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Attributes.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Attributes_Error.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Attributes_Misc.cpp
+        source/dtd/XML_Lib_Tests_DTD_Parse_Tags.cpp
+        source/dtd/XML_Lib_Tests_DTD_Stringify.cpp
+        source/dtd/XML_Lib_Tests_DTD_Validate_Elements.cpp
+        source/dtd/XML_Lib_Tests_DTD_Validate_Attributes.cpp
+        source/dtd/XML_Lib_Tests_DTD_Validate_Misc.cpp
+        source/node/XML_Lib_Tests_DTD.cpp
+    )
+endif()
+
+if(XML_LIB_ENABLE_XSD)
+    list(APPEND TEST_CORE_SOURCES source/xsd/XML_Lib_Tests_XSD.cpp)
+endif()
+
+if(XML_LIB_ENABLE_XPATH)
+    list(APPEND TEST_CORE_SOURCES source/xpath/XML_Lib_Tests_XPath.cpp)
+endif()
+
+target_sources(${TEST_EXECUTABLE}
+    PRIVATE
+    ${TEST_CORE_SOURCES}
 )
 target_include_directories(${TEST_EXECUTABLE}
     PUBLIC
@@ -92,7 +110,7 @@ target_include_directories(${TEST_EXECUTABLE} PRIVATE
 
 if(NOT XML_LIB_EMBEDDED)
     target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
-    target_precompile_headers(${TEST_EXECUTABLE} REUSE_FROM XML_Lib)
+    target_precompile_headers(${TEST_EXECUTABLE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../stdafx.h)
 
     add_test(NAME ${TEST_EXECUTABLE} COMMAND ${TEST_EXECUTABLE})
 endif()
@@ -171,7 +189,7 @@ target_include_directories(${PERFORMANCE_EXECUTABLE} PRIVATE
 )
 target_link_libraries(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
 if(NOT XML_LIB_EMBEDDED)
-    target_precompile_headers(${PERFORMANCE_EXECUTABLE} REUSE_FROM XML_Lib)
+    target_precompile_headers(${PERFORMANCE_EXECUTABLE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../stdafx.h)
 endif()
 add_test(NAME ${PERFORMANCE_EXECUTABLE} COMMAND ${PERFORMANCE_EXECUTABLE})
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(XML_LIB_ENABLE_DTD)
+
 namespace XML_Lib {
 
 // ====================
@@ -30,3 +32,5 @@ private:
   const std::unique_ptr<DTD_Impl> implementation;
 };
 }// namespace XML_Lib
+
+#endif// XML_LIB_ENABLE_DTD

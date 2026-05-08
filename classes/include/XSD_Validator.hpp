@@ -1,5 +1,7 @@
 #pragma once
 
+#if defined(XML_LIB_ENABLE_XSD)
+
 namespace XML_Lib {
 
 // ====================
@@ -31,3 +33,5 @@ private:
 };
 
 }// namespace XML_Lib
+
+#endif// XML_LIB_ENABLE_XSD

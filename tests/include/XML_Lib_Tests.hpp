@@ -6,9 +6,15 @@
 
 #include "XML.hpp"
 #include "XML_Core.hpp"
+#if defined(XML_LIB_ENABLE_DTD)
 #include "DTD_Validator.hpp"
+#endif
+#if defined(XML_LIB_ENABLE_XSD)
 #include "XSD_Validator.hpp"
+#endif
+#if defined(XML_LIB_ENABLE_XPATH)
 #include "XPath.hpp"
+#endif
 
 #define kSingleXMLFile "testfile001.xml"
 #define kNonExistantXMLFile "doesntexist.xml"
