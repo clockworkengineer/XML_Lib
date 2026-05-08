@@ -46,10 +46,8 @@ if(XML_LIB_MINIMAL_FEATURES)
 endif()
 
 if(MSVC)
-  add_compile_options(/W4)
   set(PLATFORM "windows")
 else()
-  add_compile_options(-Wall -Werror -pedantic -fvisibility=hidden)
   set(PLATFORM "linux")
 endif()
 
@@ -143,6 +141,12 @@ target_compile_definitions(${XML_LIBRARY_NAME}
   $<$<BOOL:${XML_LIB_ENABLE_PERFORMANCE_COUNTERS}>:XML_LIB_ENABLE_PERFORMANCE_COUNTERS>
 )
 
+if(MSVC)
+  target_compile_options(${XML_LIBRARY_NAME} PRIVATE /W4)
+else()
+  target_compile_options(${XML_LIBRARY_NAME} PRIVATE -Wall -Werror -pedantic -fvisibility=hidden)
+endif()
+
 if(NOT MSVC)
   if(XML_LIB_BUILD_SIZE_OPTIMIZED)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE
@@ -166,11 +170,7 @@ if(NOT MSVC)
   endif()
 
   if(XML_LIB_NO_EXCEPTIONS OR XML_LIB_STRICT_NO_EXCEPTIONS)
-    if(MSVC)
-      target_compile_options(${XML_LIBRARY_NAME} PRIVATE /EHs-c-)
-    else()
-      target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fno-exceptions)
-    endif()
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fno-exceptions)
   endif()
 
   if(XML_LIB_EMBEDDED)
