@@ -8,8 +8,21 @@
 
 #include "XSD_Impl.hpp"
 #include <algorithm>
+#include <charconv>
 
 namespace XML_Lib {
+
+namespace {
+
+uint32_t parseUint(const std::string_view &value, uint32_t defaultValue = 1u)
+{
+  if (value.empty()) { return defaultValue; }
+  uint32_t result = 0;
+  const auto [ptr, ec] = std::from_chars(value.data(), value.data() + value.size(), result);
+  return (ec == std::errc()) ? result : defaultValue;
+}
+
+} // namespace
 
 // ----------------------------------------------------------------
 // Utility helpers
@@ -19,21 +32,22 @@ namespace XML_Lib {
 /// Return the local tag name of an XML element node (strips any namespace prefix).
 /// e.g. "xs:element" -> "element", "element" -> "element"
 /// </summary>
-std::string XSD_Impl::localTag(const Node &node)
+std::string_view XSD_Impl::localTag(const Node &node)
 {
   const auto &name = NRef<Element>(node).name();
   const auto pos = name.find(':');
-  return pos != std::string::npos ? name.substr(pos + 1) : name;
+  const auto view = std::string_view(name);
+  return pos != std::string::npos ? view.substr(pos + 1) : view;
 }
 
 /// <summary>
-/// Return the value of a named attribute on a node, or empty string if absent.
+/// Return the value of a named attribute on a node, or empty string view if absent.
 /// </summary>
-std::string XSD_Impl::attrValue(const Node &node, const std::string_view &attrName)
+std::string_view XSD_Impl::attrValue(const Node &node, const std::string_view &attrName)
 {
   const auto &elem = NRef<Element>(node);
   if (elem.hasAttribute(attrName)) { return elem[attrName].getParsed(); }
-  return "";
+  return std::string_view{};
 }
 
 /// <summary>
@@ -59,8 +73,13 @@ std::string XSD_Impl::resolveType(const std::string_view &typeStr)
 std::vector<std::reference_wrapper<const Node>> XSD_Impl::childElements(const Node &node)
 {
   const auto &children = node.getChildren();
+  size_t count = 0;
+  for (const auto &child : children) {
+    if (isA<Element>(child) || isA<Root>(child) || isA<Self>(child)) { ++count; }
+  }
+
   std::vector<std::reference_wrapper<const Node>> result;
-  result.reserve(children.size());
+  result.reserve(count);
   for (const auto &child : children) {
     if (isA<Element>(child) || isA<Root>(child) || isA<Self>(child)) { result.emplace_back(child); }
   }
@@ -82,29 +101,29 @@ void XSD_Impl::parseRestriction(const Node &restrictNode, XSD_SimpleType &st)
     const auto tag = localTag(child);
     const auto val = attrValue(child, "value");
     if (tag == "minLength") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::minLength, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::minLength, std::string(val) });
     } else if (tag == "maxLength") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::maxLength, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::maxLength, std::string(val) });
     } else if (tag == "length") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::length, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::length, std::string(val) });
     } else if (tag == "pattern") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::pattern, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::pattern, std::string(val) });
     } else if (tag == "enumeration") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::enumeration, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::enumeration, std::string(val) });
     } else if (tag == "minInclusive") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::minInclusive, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::minInclusive, std::string(val) });
     } else if (tag == "maxInclusive") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::maxInclusive, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::maxInclusive, std::string(val) });
     } else if (tag == "minExclusive") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::minExclusive, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::minExclusive, std::string(val) });
     } else if (tag == "maxExclusive") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::maxExclusive, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::maxExclusive, std::string(val) });
     } else if (tag == "totalDigits") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::totalDigits, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::totalDigits, std::string(val) });
     } else if (tag == "fractionDigits") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::fractionDigits, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::fractionDigits, std::string(val) });
     } else if (tag == "whiteSpace") {
-      st.restrictions.push_back({ XSD_Restriction::Facet::whiteSpace, val });
+      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::whiteSpace, std::string(val) });
     }
   }
 }
@@ -157,11 +176,11 @@ void XSD_Impl::parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr)
 /// </summary>
 void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
 {
-  particle.elementName = attrValue(particleNode, "name");
+  particle.elementName = std::string(attrValue(particleNode, "name"));
   const auto minStr = attrValue(particleNode, "minOccurs");
   const auto maxStr = attrValue(particleNode, "maxOccurs");
-  particle.minOccurs = minStr.empty() ? 1u : static_cast<uint32_t>(std::stoul(minStr));
-  particle.maxOccurs = maxStr == "unbounded" ? 0u : maxStr.empty() ? 1u : static_cast<uint32_t>(std::stoul(maxStr));
+  particle.minOccurs = parseUint(minStr, 1u);
+  particle.maxOccurs = maxStr == "unbounded" ? 0u : maxStr.empty() ? 1u : parseUint(maxStr, 1u);
   particle.typeRef = resolveType(attrValue(particleNode, "type"));
 
   // Check for inline type declarations
@@ -261,12 +280,12 @@ void XSD_Impl::parseComplexType(const Node &ctNode, XSD_ComplexType &ct)
 void XSD_Impl::parseTopLevelElement(const Node &elemNode)
 {
   XSD_ElementDecl decl;
-  decl.name = attrValue(elemNode, "name");
+  decl.name = std::string(attrValue(elemNode, "name"));
   decl.typeRef = resolveType(attrValue(elemNode, "type"));
   const auto minStr = attrValue(elemNode, "minOccurs");
   const auto maxStr = attrValue(elemNode, "maxOccurs");
-  decl.minOccurs = minStr.empty() ? 1u : static_cast<uint32_t>(std::stoul(minStr));
-  decl.maxOccurs = maxStr == "unbounded" ? 0u : maxStr.empty() ? 1u : static_cast<uint32_t>(std::stoul(maxStr));
+  decl.minOccurs = parseUint(minStr, 1u);
+  decl.maxOccurs = maxStr == "unbounded" ? 0u : maxStr.empty() ? 1u : parseUint(maxStr, 1u);
   decl.fixedValue = attrValue(elemNode, "fixed");
   decl.defaultValue = attrValue(elemNode, "default");
 

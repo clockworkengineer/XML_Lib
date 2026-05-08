@@ -7,25 +7,41 @@
 /// <param name="xmlFileName">Test data file name.</param>
 std::string prefixTestDataPath(const std::string &xmlFileName)
 {
-  const std::filesystem::path base = std::filesystem::current_path();
+  std::filesystem::path base;
+  const std::filesystem::path sourceFile = __FILE__;
+  if (sourceFile.is_absolute()) {
+    auto repoRoot = sourceFile.parent_path(); // tests/source/xml
+    if (repoRoot.filename() == "xml") { repoRoot = repoRoot.parent_path(); }
+    if (repoRoot.filename() == "source") { repoRoot = repoRoot.parent_path(); }
+    if (repoRoot.filename() == "tests") { repoRoot = repoRoot.parent_path(); }
+    base = repoRoot;
+  } else {
+    try {
+      base = std::filesystem::current_path();
+    } catch (const std::filesystem::filesystem_error &) {
+      base.clear();
+    }
+  }
+
   const std::vector<std::filesystem::path> candidates{
-    base / "./files",
-    base / "./tests/files",
-    base / "../files",
-    base / "../tests/files",
-    base / "./build/tests/files",
-    base / "../build/tests/files",
+    base / "tests" / "files",
+    base / "files",
+    base / "build" / "tests" / "files",
+    base / "build-tests" / "tests" / "files",
   };
 
   for (const auto &candidate : candidates) {
     const auto filePath = candidate / xmlFileName;
-    if (std::filesystem::exists(filePath)) {
+    if (!filePath.empty() && std::filesystem::exists(filePath)) {
       return filePath.string();
     }
   }
 
-  // Fall back to the original path so the returned path is still usable for diagnostics.
-  return (base / "./files" / xmlFileName).string();
+  if (!base.empty()) {
+    return (base / "tests" / "files" / xmlFileName).string();
+  }
+
+  return xmlFileName;
 }
 
 /// <summary>

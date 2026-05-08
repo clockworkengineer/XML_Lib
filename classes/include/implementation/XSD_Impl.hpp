@@ -115,14 +115,14 @@ private:
   void parseParticle(const Node &particleNode, XSD_Particle &particle);
   void parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr);
   void parseRestriction(const Node &restrictNode, XSD_SimpleType &st);
-  // Retrieve attribute value from a schema node, empty string if absent
-  [[nodiscard]] static std::string attrValue(const Node &node, const std::string_view &attrName);
+  // Retrieve attribute value from a schema node, empty string view if absent
+  [[nodiscard]] static std::string_view attrValue(const Node &node, const std::string_view &attrName);
   // Resolve a possibly-prefixed xs: type name to a canonical string
   [[nodiscard]] static std::string resolveType(const std::string_view &typeStr);
   // Return child nodes that are elements (skip text/comment nodes)
   [[nodiscard]] static std::vector<std::reference_wrapper<const Node>> childElements(const Node &node);
   // Return local name of schema element tag (strip xs: prefix)
-  [[nodiscard]] static std::string localTag(const Node &node);
+  [[nodiscard]] static std::string_view localTag(const Node &node);
 
   // ----------------------------------------------------------------
   // Validation helpers
