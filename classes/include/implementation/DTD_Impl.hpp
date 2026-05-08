@@ -38,6 +38,8 @@ private:
   void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpecDestination);
   static void parseElementName(ISource &contentSpecSource, IDestination &contentSpecDestination);
   static void parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpecDestination);
+  template<typename SeparatorHandler, typename ItemParser>
+  static void parseDelimitedList(ISource &source, char delimiter, SeparatorHandler &&separatorHandler, ItemParser &&itemParser);
   [[nodiscard]] XMLValue parseElementInternalSpecification(const std::string_view &elementName, const XMLValue &contentSpec);
   void parseExternalReferenceContent();
   void parseAttributeList(ISource &source) const;
@@ -71,4 +73,15 @@ private:
   long lineNumber = 1;
   DTD &xDTD;
 };
+
+// Shared helper used by multiple DTD content parsing functions.
+template<typename SeparatorHandler, typename ItemParser>
+void DTD_Impl::parseDelimitedList(ISource &source, char delimiter, SeparatorHandler &&separatorHandler, ItemParser &&itemParser)
+{
+  while (source.more() && source.current() == delimiter) {
+    separatorHandler(source);
+    itemParser(source);
+  }
+}
+
 }// namespace XML_Lib

@@ -60,10 +60,10 @@ void DTD_Impl::parseElementChoice(ISource &contentSpecSource, IDestination &cont
   if (contentSpecSource.current() != '(') { throw SyntaxError("Invalid element content specification."); }
   contentSpecDestination.add("(");
   parseElementCP(contentSpecSource, contentSpecDestination);
-  while (contentSpecSource.more() && contentSpecSource.current() == '|') {
-    contentSpecDestination.add("|");
-    parseElementCP(contentSpecSource, contentSpecDestination);
-  }
+  parseDelimitedList(contentSpecSource, '|',
+    [&](ISource &) { contentSpecDestination.add("|"); },
+    [&](ISource &) { parseElementCP(contentSpecSource, contentSpecDestination); }
+  );
   if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
   contentSpecDestination.add(")");
   contentSpecSource.next();
@@ -80,9 +80,10 @@ void DTD_Impl::parseElementSequence(ISource &contentSpecSource, IDestination &co
   if (contentSpecSource.current() != '(') { throw SyntaxError("Invalid element content specification."); }
   contentSpecDestination.add("(");
   parseElementCP(contentSpecSource, contentSpecDestination);
-  while (contentSpecSource.more() && contentSpecSource.current() == ',') {
-    parseElementCP(contentSpecSource, contentSpecDestination);
-  }
+  parseDelimitedList(contentSpecSource, ',',
+    [&](ISource &) {},
+    [&](ISource &) { parseElementCP(contentSpecSource, contentSpecDestination); }
+  );
   if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
   contentSpecDestination.add(")");
   contentSpecSource.next();
@@ -141,16 +142,20 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
   contentSpecSource.ignoreWS();
   contentSpecDestination.add("((<#PCDATA>)");
   if (contentSpecSource.current() == '|') {
-    while (contentSpecSource.more() && contentSpecSource.current() == '|') {
-      contentSpecDestination.add("|");
-      contentSpecSource.next();
-      contentSpecSource.ignoreWS();
-      if (validNameStartChar(contentSpecSource.current())) {
-        parseElementName(contentSpecSource, contentSpecDestination);
-      } else {
-        throw SyntaxError("Invalid element content specification.");
+    parseDelimitedList(contentSpecSource, '|',
+      [&](ISource &) {
+        contentSpecDestination.add("|");
+        contentSpecSource.next();
+        contentSpecSource.ignoreWS();
+      },
+      [&](ISource &) {
+        if (validNameStartChar(contentSpecSource.current())) {
+          parseElementName(contentSpecSource, contentSpecDestination);
+        } else {
+          throw SyntaxError("Invalid element content specification.");
+        }
       }
-    }
+    );
     if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
     contentSpecDestination.add(")");
     contentSpecSource.next();

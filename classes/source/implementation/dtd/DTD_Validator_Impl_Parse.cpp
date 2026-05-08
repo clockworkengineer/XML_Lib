@@ -69,12 +69,16 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
   source.next();
   source.ignoreWS();
   enumerationType += parseName(source);
-  while (source.more() && source.current() == '|') {
-    enumerationType += toUtf8(source.current());
-    source.next();
-    source.ignoreWS();
-    enumerationType += parseName(source);
-  }
+  parseDelimitedList(source, '|',
+    [&](ISource &src) {
+      enumerationType += toUtf8(src.current());
+      src.next();
+      src.ignoreWS();
+    },
+    [&](ISource &) {
+      enumerationType += parseName(source);
+    }
+  );
   if (source.current() != ')') {
     throw SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type.");
   }
