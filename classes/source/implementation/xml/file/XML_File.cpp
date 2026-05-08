@@ -44,7 +44,7 @@ void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, con
       xmlFile.put(static_cast<char>(ch >> 8));
     }
   } else {
-    throw Error("Unsupported XML file format (Byte Order Mark) specified in call to writeXMLString().");
+    XML_LIB_THROW(Error("Unsupported XML file format (Byte Order Mark) specified in call to writeXMLString()."));
   }
 }
 
@@ -79,7 +79,7 @@ std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
       utf16String.push_back(ch16);
     }
   } else {
-    throw Error("Unsupported XML file format (Byte Order Mark) specified in call to readXMLString().");
+    XML_LIB_THROW(Error("Unsupported XML file format (Byte Order Mark) specified in call to readXMLString()."));
   }
   return utf16String;
 }
@@ -132,7 +132,7 @@ std::string XML_Impl::fromFile(const std::string_view &fileName)
     translated = toUtf8(readXMLString(xmlFile, format));
     break;
   default:
-    throw Error("Unsupported XML file format (Byte Order Mark) encountered.");
+    XML_LIB_THROW(Error("Unsupported XML file format (Byte Order Mark) encountered."));
   }
   xmlFile.close();
   // Translate CRLF -> LF
@@ -165,7 +165,7 @@ void XML_Impl::toFile(const std::string_view &fileName, const std::string_view &
     writeXMLString(xmlFile, toUtf16(xmlString.data()), format);
     break;
   default:
-    throw Error("Unsupported XML file format (Byte Order Mark) specified.");
+    XML_LIB_THROW(Error("Unsupported XML file format (Byte Order Mark) specified."));
   }
   xmlFile.close();
 }

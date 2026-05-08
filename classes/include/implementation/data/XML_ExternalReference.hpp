@@ -41,7 +41,7 @@ public:
   {
     if (type == Type::publicID) { return kPublicID; }
     if (type == Type::systemID) { return kSystemID; }
-    throw Error("External reference type not set.");
+    XML_LIB_THROW(Error("External reference type not set."));
   }
   // Check which reference is set
   [[nodiscard]] bool isPublic() const { return type == Type::publicID; }
@@ -50,12 +50,12 @@ public:
   [[nodiscard]] const std::string &getSystemID() const
   {
     if (type != Type::base) { return systemID; }
-    throw Error("External reference has no system value set.");
+    XML_LIB_THROW(Error("External reference has no system value set."));
   }
   [[nodiscard]] const std::string &getPublicID() const
   {
     if (type == Type::publicID) { return publicID; }
-    throw Error("External reference is not public.");
+    XML_LIB_THROW(Error("External reference is not public."));
   }
 
 private:
@@ -72,7 +72,7 @@ private:
     } else if (referenceType.empty()) {
       type = Type::base;
     } else {
-      throw Error("Invalid reference type passed.");
+      XML_LIB_THROW(Error("Invalid reference type passed."));
     }
   }
 };

@@ -1,4 +1,5 @@
 #pragma once
+#include "common/XML_Error.hpp"
 
 #include "ISource.hpp"
 
@@ -25,7 +26,7 @@ public:
   // Constructors/Destructors
   explicit BufferSource(const std::u16string_view &sourceBuffer)// UTF16 source BE/LE
   {
-    if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
+    if (sourceBuffer.empty()) { XML_LIB_THROW(Error("Empty source buffer passed to be parsed.")); }
     std::u16string utf16xml{ sourceBuffer };
     if (utf16xml.starts_with(u"<?xml")) {
       std::transform(utf16xml.begin(), utf16xml.end(), utf16xml.begin(), [](const char16_t &ch) {
@@ -37,7 +38,7 @@ public:
   }
   explicit BufferSource(const std::string_view &sourceBuffer) : buffer{ toUtf16(std::string(sourceBuffer)) }
   {
-    if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
+    if (sourceBuffer.empty()) { XML_LIB_THROW(Error("Empty source buffer passed to be parsed.")); }
     convertCRLFToLF(buffer);
   }
   BufferSource() = default;
@@ -54,7 +55,7 @@ public:
   }
   void next() override
   {
-    if (!more()) { throw Error("Parse buffer empty before parse complete."); }
+    if (!more()) { XML_LIB_THROW(Error("Parse buffer empty before parse complete.")); }
     bufferPosition++;
     columnNo++;
     if (current() == kLineFeed) {

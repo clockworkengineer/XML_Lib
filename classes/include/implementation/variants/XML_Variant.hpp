@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory_resource>
+
 namespace XML_Lib {
 
 struct Variant
@@ -8,7 +10,7 @@ struct Variant
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
 
   // Constructors/Destructors
-  explicit Variant(Type nodeType = Type::base);
+  explicit Variant(Type nodeType = Type::base, std::pmr::memory_resource *resource = std::pmr::get_default_resource());
   Variant(const Variant &other) = delete;
   Variant &operator=(const Variant &other) = delete;
   Variant(Variant &&other) = default;
@@ -22,8 +24,8 @@ struct Variant
     return xmlNodeType;
   }
   // Get Node children reference
-  [[nodiscard]] std::vector<Node> &getChildren();
-  [[nodiscard]] const std::vector<Node> &getChildren() const;
+  [[nodiscard]] std::pmr::vector<Node> &getChildren();
+  [[nodiscard]] const std::pmr::vector<Node> &getChildren() const;
   // Reserve child storage when parse context predicts children
   void reserveChildren(size_t count);
   // Add child
@@ -36,7 +38,7 @@ private:
   // Variant type
   Type xmlNodeType{ Type::base };
   // Node children container (inline to improve locality)
-  mutable std::vector<Node> children;
+  mutable std::pmr::vector<Node> children;
 };
 
 }// namespace XML_Lib

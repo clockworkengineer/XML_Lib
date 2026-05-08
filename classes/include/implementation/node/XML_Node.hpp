@@ -1,5 +1,9 @@
 #pragma once
 
+#include <memory_resource>
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
 struct Node
@@ -11,12 +15,32 @@ struct Node
   };
   // Constructors/Destructors
   Node() = default;
-  template<typename T> explicit Node(T value);
+  explicit Node(Variant *variant, bool ownsVariant = true) noexcept
+    : xmlVariant(variant), ownsVariant(ownsVariant)
+  {}
   Node(const Node &other) = delete;
   Node &operator=(const Node &other) = delete;
-  Node(Node &&other) = default;
-  Node &operator=(Node &&other) = default;
-  ~Node() = default;
+  Node(Node &&other) noexcept
+    : xmlVariant(other.xmlVariant), ownsVariant(other.ownsVariant)
+  {
+    other.xmlVariant = nullptr;
+    other.ownsVariant = false;
+  }
+  Node &operator=(Node &&other) noexcept
+  {
+    if (this != &other) {
+      if (xmlVariant && ownsVariant) { delete xmlVariant; }
+      xmlVariant = other.xmlVariant;
+      ownsVariant = other.ownsVariant;
+      other.xmlVariant = nullptr;
+      other.ownsVariant = false;
+    }
+    return *this;
+  }
+  ~Node()
+  {
+    if (xmlVariant && ownsVariant) { delete xmlVariant; }
+  }
   // Check what Node variant
   [[nodiscard]] bool isEmpty() const { return xmlVariant == nullptr; }
   [[nodiscard]] bool isNameable() const { return xmlVariant->isNameable(); }
@@ -32,19 +56,26 @@ struct Node
   // Reserve child storage when the parse context expects multiple children
   void reserveChildren(size_t count) { xmlVariant->reserveChildren(count); }
   // Get Node children reference
-  [[nodiscard]] std::vector<Node> &getChildren() { return xmlVariant->getChildren(); }
-  [[nodiscard]] const std::vector<Node> &getChildren() const { return xmlVariant->getChildren(); }
+  [[nodiscard]] std::pmr::vector<Node> &getChildren() { return xmlVariant->getChildren(); }
+  [[nodiscard]] const std::pmr::vector<Node> &getChildren() const { return xmlVariant->getChildren(); }
   // Get reference to Node  variant
   [[nodiscard]] Variant &getVariant() { return *xmlVariant; }
   [[nodiscard]] const Variant &getVariant() const { return *xmlVariant; }
   // Make Node
   template<typename T, typename... Args> static Node make(Args &&...args)
   {
-    return Node{ std::make_unique<T>(std::forward<Args>(args)...) };
+#if defined(XML_LIB_EMBEDDED)
+    if (XML_Arena *arena = XML_Arena::getCurrent()) {
+      void *memory = arena->allocate(sizeof(T), alignof(T));
+      return Node{ new (memory) T(std::forward<Args>(args)...), false };
+    }
+#endif
+    return Node{ new T(std::forward<Args>(args)...), true };
   }
 
 private:
   // Node Variant
-  std::unique_ptr<Variant> xmlVariant;
+  Variant *xmlVariant = nullptr;
+  bool ownsVariant = true;
 };
 }// namespace XML_Lib

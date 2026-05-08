@@ -91,7 +91,7 @@ struct DTD final : Variant
     if (const auto element = elements.find(std::string(elementName)); element != elements.end()) {
       return element->second;
     }
-    throw Error("Could not find notation name.");
+    XML_LIB_THROW(Error("Could not find notation name."));
   }
   void addElement(const std::string_view &elementName, const Element &element)
   {
@@ -103,7 +103,7 @@ struct DTD final : Variant
     if (const auto notation = notations.find(std::string(notationName)); notation != notations.end()) {
       return notation->second;
     }
-    throw Error("Could not find notation name.");
+    XML_LIB_THROW(Error("Could not find notation name."));
   }
   void addNotation(const std::string_view &notationName, const XMLExternalReference &notation)
   {

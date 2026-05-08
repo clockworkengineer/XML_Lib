@@ -84,7 +84,7 @@ private:
   else if (isA<DTD>(xNode)) {
     destination.add(NRef<DTD>(xNode).unparsed());
   } else {
-    throw Error("Invalid Node encountered during stringify.");
+    XML_LIB_THROW(Error("Invalid Node encountered during stringify."));
   }
 }
 

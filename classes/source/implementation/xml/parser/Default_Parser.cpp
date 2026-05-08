@@ -107,10 +107,10 @@ std::string Default_Parser::parseDeclarationAttribute(ISource &source,
     value = parseValue(source).getParsed();
     if (name == "encoding") { value = toUpperString(value); }
     if (!values.contains(value)) {
-      throw SyntaxError("Unsupported XML " + std::string(name) + " value '" + value + "' specified.");
+      XML_LIB_THROW(SyntaxError("Unsupported XML " + std::string(name) + " value '" + value + "' specified."));
     }
   } else {
-    throw SyntaxError(source.getPosition(), "Missing '=' after " + std::string(name) + ".");
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '=' after " + std::string(name) + "."));
   }
   return value;
 }
@@ -123,14 +123,14 @@ std::string Default_Parser::parseDeclarationAttribute(ISource &source,
 /// <returns>Pointer to comment Node.</returns>
 Node Default_Parser::parseComment(ISource &source)
 {
-  std::string comment;
+  String comment;
   comment.reserve(64);
   while (source.more() && !source.match("--")) {
-    comment += toUtf8(source.current());
+    comment += source.current();
     source.next();
   }
-  if (!source.match(">")) { throw SyntaxError(source.getPosition(), "Missing closing '>' for comment line."); }
-  return Node::make<Comment>(comment);
+  if (!source.match(">")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing '>' for comment line.")); }
+  return Node::make<Comment>(toUtf8(comment));
 }
 
 /// <summary>
@@ -144,15 +144,15 @@ Node Default_Parser::parsePI(ISource &source)
   std::string name{ parseName(source) };
   // Check not a declaration
   if (name == "xml") {
-    throw SyntaxError(source.getPosition(), "Declaration allowed only at the start of the document.");
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Declaration allowed only at the start of the document."));
   }
-  std::string parameters;
+  String parameters;
   parameters.reserve(64);
   while (source.more() && !source.match("?>")) {
-    parameters += toUtf8(source.current());
+    parameters += source.current();
     source.next();
   }
-  return Node::make<PI>(name, parameters);
+  return Node::make<PI>(name, toUtf8(parameters));
 }
 
 /// <summary>
@@ -163,14 +163,16 @@ Node Default_Parser::parsePI(ISource &source)
 /// <returns>Pointer to CDATA Node.</returns>
 Node Default_Parser::parseCDATA(ISource &source)
 {
-  std::string cdata;  cdata.reserve(128);  while (source.more() && !source.match("]]>")) {
+  String cdata;
+  cdata.reserve(128);
+  while (source.more() && !source.match("]]>") ) {
     if (source.match("<![CDATA[")) {
-      throw SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed."));
     }
-    cdata += toUtf8(source.current());
+    cdata += source.current();
     source.next();
   }
-  return Node::make<CDATA>(cdata);
+  return Node::make<CDATA>(toUtf8(cdata));
 }
 
 /// <summary>
@@ -187,15 +189,15 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
   while (source.more() && source.current() != '/' && source.current() != '>') {
     std::string attributeName{ parseName(source) };
     if (!source.match("=")) {
-      throw SyntaxError(source.getPosition(), "Missing '=' between attribute name and value.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '=' between attribute name and value."));
     }
     source.ignoreWS();
     XMLValue attributeValue = parseValue(source, entityMapper);
     if (!validAttributeValue(attributeValue.getParsed(), attributeValue.getQuote())) {
-      throw SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'."));
     }
     if (XMLAttribute::contains(attributes, attributeName)) {
-      throw SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag.");
+      XML_LIB_THROW(SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag."));
     }
     attributes.emplace_back(attributeName, attributeValue);
   }
@@ -209,13 +211,13 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
 /// <param name="xNode">Current Node.</param>
 void Default_Parser::parseWhiteSpaceToContent(ISource &source, Node &xNode)
 {
-  std::string whiteSpace;
+  String whiteSpace;
   whiteSpace.reserve(32);
   while (source.more() && source.isWS()) {
-    whiteSpace += toUtf8(source.current());
+    whiteSpace += source.current();
     source.next();
   }
-  addContentToElementChildList(xNode, whiteSpace);
+  addContentToElementChildList(xNode, toUtf8(whiteSpace));
 }
 
 /// <summary>
@@ -276,22 +278,22 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
     const Element &xNodeChildElement = NRef<Element>(xNode.getChildren().back());
     if (const auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
       if (!xNodeChildElement.hasNameSpace(xNodeChildElement.name().substr(0, pos))) {
-        throw SyntaxError(source.getPosition(), "Namespace used but not defined.");
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Namespace used but not defined."));
       }
     }
     for (const auto &attr : xNodeChildElement.getAttributes()) {
       if (!attr.getName().starts_with("xmlns")) {
         if (const auto attrPos = attr.getName().find(':'); attrPos != std::string::npos) {
           if (!xNodeChildElement.hasNameSpace(attr.getName().substr(0, attrPos))) {
-            throw SyntaxError(
-              source.getPosition(), "Namespace used but not defined in attribute '" + attr.getName() + "'.");
+            XML_LIB_THROW(SyntaxError(
+              source.getPosition(), "Namespace used but not defined in attribute '" + attr.getName() + "'."));
           }
         }
       }
     }
   } else {
-    if (source.match("</")) { throw SyntaxError(source.getPosition(), "Missing closing tag."); }
-    if (source.match("]]>")) { throw SyntaxError(source.getPosition(), "']]>' invalid in element content area."); }
+    if (source.match("</")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing tag.")); }
+    if (source.match("]]>")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "']]>' invalid in element content area.")); }
     parseContent(source, xNode, entityMapper);
   }
 }
@@ -326,7 +328,7 @@ Node Default_Parser::parseElement(ISource &source,
     // Self-closing element tag
     return Node::make<Self>(name, attributes, namespaces);
   }
-  throw SyntaxError(source.getPosition(), "Missing closing tag.");
+  XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing tag."));
 }
 
 /// <summary>
@@ -345,7 +347,7 @@ Node Default_Parser::parseDeclaration(ISource &source)
     if (source.match("version")) {
       version = parseDeclarationAttribute(source, "version", { "1.0", "1.1" });
     } else {
-      throw SyntaxError(source.getPosition(), "Version missing from declaration.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Version missing from declaration."));
     }
     if (source.match("encoding")) {
       // XML 1.0 allows a wide range of encodings, not just UTF-8 and UTF-16
@@ -375,9 +377,9 @@ Node Default_Parser::parseDeclaration(ISource &source)
     }
     if (source.match("standalone")) { standalone = parseDeclarationAttribute(source, "standalone", { "yes", "no" }); }
     if (source.match("encoding")) {
-      throw SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes."));
     }
-    if (!source.match("?>")) { throw SyntaxError(source.getPosition(), "Declaration end tag not found."); }
+    if (!source.match("?>")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Declaration end tag not found.")); }
   }
   return Node::make<Declaration>(version, encoding, standalone);
 }
@@ -391,7 +393,7 @@ void Default_Parser::parseEpilog(ISource &source, Node &xProlog)
 {
   while (source.more()) {
     if (!parseCommentsPIAndWhiteSpace(source, xProlog)) {
-      throw SyntaxError(source.getPosition(), "Extra content at the end of document.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Extra content at the end of document."));
     }
   }
 }
@@ -405,7 +407,7 @@ void Default_Parser::parseEpilog(ISource &source, Node &xProlog)
 #if defined(XML_LIB_ENABLE_DTD)
 Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 {
-  if (validator != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
+  if (validator != nullptr) { XML_LIB_THROW(SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.")); }
   auto xNode = Node::make<DTD>(entityMapper);
   validator = std::make_unique<DTD_Validator>(xNode);
   validator->parse(source);
@@ -414,7 +416,7 @@ Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 #else
 Node Default_Parser::parseDTD([[maybe_unused]] ISource &source, [[maybe_unused]] IEntityMapper &entityMapper)
 {
-  throw SyntaxError(source.getPosition(), "DTD support disabled in this build.");
+  XML_LIB_THROW(SyntaxError(source.getPosition(), "DTD support disabled in this build."));
 }
 #endif
 /// <summary>
@@ -439,7 +441,7 @@ Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {
-      throw SyntaxError(source.getPosition(), "Content detected before root element.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Content detected before root element."));
     }
   }
   return xProlog;
@@ -453,6 +455,10 @@ Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 /// <returns>Prolog Node.</returns>
 Node Default_Parser::parse(ISource &source)
 {
+#if defined(XML_LIB_EMBEDDED)
+  XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
+  XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
+#endif
   // Reset XML before next parse
   entityMapper.reset();
   hasRoot = false;
@@ -463,7 +469,7 @@ Node Default_Parser::parse(ISource &source)
   if (source.match("<")) {
     xmlRoot.addChild(parseElement(source, {}, entityMapper));
   } else {
-    throw SyntaxError(source.getPosition(), "Missing root element.");
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing root element."));
   }
   // Handle any epilog
   parseEpilog(source, xmlRoot);
@@ -478,7 +484,7 @@ void Default_Parser::validate(Node &xProlog)
   if (validator != nullptr) {
     validator->validate(xProlog);
   } else {
-    throw Error("No DTD specified for validation.");
+    XML_LIB_THROW(Error("No DTD specified for validation."));
   }
 }
 /// <summary>

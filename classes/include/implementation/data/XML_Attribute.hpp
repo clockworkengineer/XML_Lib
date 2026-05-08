@@ -52,6 +52,6 @@ private:
     attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return attr.getName() == name; });
   // ReSharper disable once CppDFALocalValueEscapesFunction
   if (attribute != attributes.rend()) return *attribute;
-  throw Error("Attribute '" + std::string(name) + "' does not exist.");
+  XML_LIB_THROW(Error("Attribute '" + std::string(name) + "' does not exist."));
 }
 }// namespace XML_Lib

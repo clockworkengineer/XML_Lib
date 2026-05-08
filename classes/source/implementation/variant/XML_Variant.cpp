@@ -18,11 +18,11 @@ void Variant::addChild(Node &&child) const
   children.push_back(std::move(child));
 }
 // Get Node children reference
-std::vector<Node> &Variant::getChildren()
+std::pmr::vector<Node> &Variant::getChildren()
 {
   return children;
 }
-const std::vector<Node> &Variant::getChildren() const
+const std::pmr::vector<Node> &Variant::getChildren() const
 {
   return children;
 }
@@ -30,5 +30,7 @@ void Variant::reserveChildren(const size_t count)
 {
   children.reserve(count);
 }
-Variant::Variant(const Type nodeType) : xmlNodeType(nodeType) {}
+Variant::Variant(const Type nodeType, std::pmr::memory_resource *resource)
+  : xmlNodeType(nodeType), children(resource)
+{}
 }// namespace XML_Lib

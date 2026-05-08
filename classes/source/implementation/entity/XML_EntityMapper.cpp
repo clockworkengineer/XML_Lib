@@ -53,7 +53,7 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entity
       }
       mappedEntityName += toUtf8(entitySource.current());
       if (currentEntities.contains(mappedEntityName)) {
-        throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
+        XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
       }
       if (auto nextMappedName = getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
         currentEntities.emplace(mappedEntityName);
@@ -79,7 +79,7 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fil
 
   std::ifstream file(key, std::ios::binary);
   if (!file) {
-    throw SyntaxError(std::string("Entity '") + key + "' source file does not exist.");
+    XML_LIB_THROW(SyntaxError(std::string("Entity '") + key + "' source file does not exist."));
   }
 
   std::string content;
@@ -153,13 +153,13 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
       if (std::filesystem::exists(systemID)) {
         parsed = getFileMappingContents(systemID);
       } else {
-        throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
-                          + systemID + "' does not exist.");
+        XML_LIB_THROW(SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
+                          + systemID + "' does not exist."));
       }
     }
     return XMLValue{ entityReference.getUnparsed(), parsed };
   }
-  throw SyntaxError("Entity '" + entityReference.getUnparsed() + "' does not exist.");
+  XML_LIB_THROW(SyntaxError("Entity '" + entityReference.getUnparsed() + "' does not exist."));
 }
 /// <summary>
 /// Translate any entity reference to be found in a string.
@@ -232,21 +232,21 @@ const std::string &XML_EntityMapper::getInternal(const std::string_view &entityN
   if (const auto entity = getEntityMapping(entityName); entity.isInternal()) {
     return getEntityMapping(entityName).getInternal();
   }
-  throw Error(std::string("Internal entity reference not found for '").append(entityName)+"'.");
+  XML_LIB_THROW(Error(std::string("Internal entity reference not found for '").append(entityName)+"'."));
 }
 const std::string &XML_EntityMapper::getNotation(const std::string_view &entityName)
 {
   if (const auto entity = getEntityMapping(entityName); entity.isNotation()) {
     return getEntityMapping(entityName).getNotation();
   }
-  throw Error(std::string("Notation entity reference not found for '").append(entityName)+"'.");
+  XML_LIB_THROW(Error(std::string("Notation entity reference not found for '").append(entityName)+"'."));
 }
 const XMLExternalReference &XML_EntityMapper::getExternal(const std::string_view &entityName)
 {
   if (const auto entity = getEntityMapping(entityName); entity.isExternal()) {
     return getEntityMapping(entityName).getExternal();
   }
-  throw Error(std::string("External entity reference not found for '").append(entityName)+"'.");
+  XML_LIB_THROW(Error(std::string("External entity reference not found for '").append(entityName)+"'."));
 }
 
 /// <summary>
@@ -287,7 +287,7 @@ void XML_EntityMapper::checkRecursiveEntity(const std::string_view &entityName,
       }
       mappedEntityName += toUtf8(expandedSource.current());
       if (currentEntities.contains(mappedEntityName)) {
-        throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
+        XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
       }
       if (auto nextMappedName = getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
         currentEntities.emplace(mappedEntityName);

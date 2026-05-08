@@ -48,13 +48,13 @@ Node &XML_Impl::dtd()
       if (isA<DTD>(child)) { return child; }
     }
   }
-  throw Error("No DTD found.");
+  XML_LIB_THROW(Error("No DTD found."));
 }
 
 Node &XML_Impl::prolog()
 {
   if (!xmlRoot.isEmpty()) { return xmlRoot; }
-  throw Error("No XML has been parsed.");
+  XML_LIB_THROW(Error("No XML has been parsed."));
 }
 
 Node &XML_Impl::declaration() { return prolog().getChildren()[0]; }
@@ -64,7 +64,7 @@ Node &XML_Impl::root()
   for (auto &child : prolog().getChildren()) {
     if (isA<Root>(child) || isA<Self>(child)) { return child; }
   }
-  throw Error("No root element found.");
+  XML_LIB_THROW(Error("No root element found."));
 }
 
 #if defined(XML_LIB_ENABLE_DTD)
@@ -95,12 +95,12 @@ void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(
 
 void XML_Impl::traverse(IAction &action)
 {
-  if (xmlRoot.isEmpty()) { throw Error("No XML to traverse."); }
+  if (xmlRoot.isEmpty()) { XML_LIB_THROW(Error("No XML to traverse.")); }
   traverseNodes(xmlRoot, action);
 }
 void XML_Impl::traverse(IAction &action) const
 {
-  if (xmlRoot.isEmpty()) { throw Error("No XML to traverse."); }
+  if (xmlRoot.isEmpty()) { XML_LIB_THROW(Error("No XML to traverse.")); }
   traverseNodes(xmlRoot, action);
 }
 }// namespace XML_Lib

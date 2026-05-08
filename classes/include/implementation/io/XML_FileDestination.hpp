@@ -1,4 +1,5 @@
 #pragma once
+#include "common/XML_Error.hpp"
 
 #include "IDestination.hpp"
 
@@ -24,7 +25,7 @@ public:
   explicit FileDestination(const std::string_view &filename) : filename(filename)
   {
     destination.open(filename.data(), std::ios_base::binary);
-    if (!destination.is_open()) { throw Error("File output stream failed to open or could not be created."); }
+    if (!destination.is_open()) { XML_LIB_THROW(Error("File output stream failed to open or could not be created.")); }
   }
   FileDestination() = default;
   FileDestination(const FileDestination &other) = delete;
@@ -56,7 +57,7 @@ public:
   {
     if (destination.is_open()) { destination.close(); }
     destination.open(filename.c_str(), std::ios_base::binary | std::ios_base::trunc);
-    if (!destination.is_open()) { throw Error("File output stream failed to open or could not be created."); }
+    if (!destination.is_open()) { XML_LIB_THROW(Error("File output stream failed to open or could not be created.")); }
     fileSize = 0;
   }
   std::size_t size() const { return fileSize; }

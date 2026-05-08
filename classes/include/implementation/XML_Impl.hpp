@@ -1,4 +1,5 @@
 #pragma once
+#include "common/XML_Error.hpp"
 
 #include "XML.hpp"
 #include "XML_Core.hpp"
@@ -83,7 +84,7 @@ template<typename T> void XML_Impl::traverseNodes(T &xNode, IAction &action)
   } else if (isA<DTD>(xNode)) {
     action.onDTD(xNode);
   } else {
-    throw Error("Unknown Node type encountered during tree traversal.");
+    XML_LIB_THROW(Error("Unknown Node type encountered during tree traversal."));
   }
   if (!xNode.getChildren().empty()) {
     for (auto &child : xNode.getChildren()) { traverseNodes(child, action); }

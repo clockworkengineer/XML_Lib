@@ -1,4 +1,5 @@
 #pragma once
+#include "common/XML_Error.hpp"
 
 #include <algorithm>
 #include <string>
@@ -11,7 +12,7 @@ namespace XML_Lib {
 inline const Node &Node::operator[](const int index) const
 {
   if (index >= 0 && index < static_cast<int>(getChildren().size())) { return getChildren()[index]; }
-  throw Error("Invalid index used to access Node array.");
+  XML_LIB_THROW(Error("Invalid index used to access Node array."));
 }
 // =================
 // Node name access
@@ -25,7 +26,7 @@ inline const Node &Node::operator[](const std::string_view &name) const
       return *xNode;
     }
   }
-  throw Error("Element '" + std::string(name) + "' does not exist.");
+  XML_LIB_THROW(Error("Element '" + std::string(name) + "' does not exist."));
 }
 // =====================
 // XElement index access
@@ -41,7 +42,7 @@ inline const Element &Element::operator[](const int index) const
       }
     }
   }
-  throw Node::Error("Invalid index used to access Node array.");
+  XML_LIB_THROW(Node::Error("Invalid index used to access Node array."));
 }
 inline Element &Element::operator[](const int index)
 {
@@ -54,7 +55,7 @@ inline Element &Element::operator[](const int index)
       }
     }
   }
-  throw Node::Error("Invalid index used to access Node array.");
+  XML_LIB_THROW(Node::Error("Invalid index used to access Node array."));
 }
 // =========================
 // XElement attribute access

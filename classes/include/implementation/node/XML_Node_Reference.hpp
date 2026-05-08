@@ -1,4 +1,5 @@
 #pragma once
+#include "common/XML_Error.hpp"
 
 namespace XML_Lib {
 // =======================
@@ -38,27 +39,27 @@ template<typename T> bool isA(const Node &xNode)
 template<typename T> void checkNodeType(const Node &xNode)
 {
   if constexpr (std::is_same_v<T, Prolog>) {
-    if (!isA<T>(xNode)) { throw Node::Error("Node not a prolog."); }
+    if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not a prolog.")); }
   } else if constexpr (std::is_same_v<T, Declaration>) {
-    if (!isA<T>(xNode)) { throw Node::Error("Node not a declaration."); }
+    if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not a declaration.")); }
   } else if constexpr (std::is_same_v<T, Element>) {
-    if (!isA<Root>(xNode) && !isA<Self>(xNode)  && !isA<Element>(xNode)) { throw Node::Error("Node not an element."); }
+    if (!isA<Root>(xNode) && !isA<Self>(xNode)  && !isA<Element>(xNode)) { XML_LIB_THROW(Node::Error("Node not an element.")); }
   } else if constexpr (std::is_same_v<T, Self>) {
-    if (!isA<Self>(xNode)) { throw Node::Error("Node not a (root) element."); }
+    if (!isA<Self>(xNode)) { XML_LIB_THROW(Node::Error("Node not a (root) element.")); }
   } else if constexpr (std::is_same_v<T, Root>) {
-    if (!isA<Root>(xNode)) { throw Node::Error("Node not a (self) element."); }
+    if (!isA<Root>(xNode)) { XML_LIB_THROW(Node::Error("Node not a (self) element.")); }
   } else if constexpr (std::is_same_v<T, Content>) {
-    if (!isA<T>(xNode)) { throw Node::Error("Node not content."); }
+    if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not content.")); }
   } else if constexpr (std::is_same_v<T, EntityReference>) {
-    if (!isA<T>(xNode)) { throw Node::Error("Node not an entity."); }
+    if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not an entity.")); }
   } else if constexpr (std::is_same_v<T, Comment>) {
-    if (!isA<T>(xNode)) { throw Node::Error("Node not a comment."); }
+    if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not a comment.")); }
   } else if constexpr (std::is_same_v<T, CDATA>) {
-    if (!isA<T>(xNode)) { throw Node::Error("Node not CDATA."); }
+    if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not CDATA.")); }
   } else if constexpr (std::is_same_v<T, PI>) {
-    if (!isA<T>(xNode)) { throw Node::Error("Node not a PI."); }
+    if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not a PI.")); }
   } else if constexpr (std::is_same_v<T, DTD>) {
-    if (!isA<T>(xNode)) { throw Node::Error("Node not DTD_Validator."); }
+    if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not DTD_Validator.")); }
   }
 }
 template<typename T> T &NRef(Node &xNode)

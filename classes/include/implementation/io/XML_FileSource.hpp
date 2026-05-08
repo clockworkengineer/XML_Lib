@@ -1,4 +1,5 @@
 #pragma once
+#include "common/XML_Error.hpp"
 
 #include "ISource.hpp"
 
@@ -23,7 +24,7 @@ public:
   explicit FileSource(const std::string_view &sourceFileName) : filename(sourceFileName)
   {
     source.open(sourceFileName.data(), std::ios_base::binary);
-    if (!source.is_open()) { throw Error("File input stream failed to open or does not exist."); }
+    if (!source.is_open()) { XML_LIB_THROW(Error("File input stream failed to open or does not exist.")); }
     if (current_character() == kCarriageReturn) {
       source.get();
       if (current_character() != kLineFeed) { source.unget(); }
@@ -39,7 +40,7 @@ public:
   [[nodiscard]] Char current() const override { return current_character(); }
   void next() override
   {
-    if (!more()) { throw Error("Parse buffer empty before parse complete."); }
+    if (!more()) { XML_LIB_THROW(Error("Parse buffer empty before parse complete.")); }
     source.get();
     if (current() == kCarriageReturn) {
       source.get();

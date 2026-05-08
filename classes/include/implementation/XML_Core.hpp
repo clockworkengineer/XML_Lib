@@ -8,6 +8,7 @@
 #include "XML_Interfaces.hpp"
 #include "common/XML_Error.hpp"
 #include "XML_Utility.hpp"
+#include "XML_Arena.hpp"
 #include "XML_Converter.hpp"
 #include "XML_Value.hpp"
 #include "XML_Attribute.hpp"

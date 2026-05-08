@@ -45,5 +45,7 @@ private:
   inline static std::unique_ptr<IValidator> validator;
   // Entity mapper reference
   IEntityMapper &entityMapper;
+  // Embedded node arena
+  XML_Arena arena;
 };
 }// namespace XML_Lib
