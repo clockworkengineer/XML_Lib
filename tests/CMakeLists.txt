@@ -65,7 +65,6 @@ target_sources(${TEST_EXECUTABLE}
     source/node/XML_Lib_Tests_DTD.cpp
     source/traverse/XML_Lib_Tests_Traverse.cpp
     source/xpath/XML_Lib_Tests_XPath.cpp
-    source/performance/XML_Lib_Tests_Performance.cpp
 )
 target_include_directories(${TEST_EXECUTABLE}
     PUBLIC
@@ -94,5 +93,37 @@ target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Cat
 target_precompile_headers(${TEST_EXECUTABLE} REUSE_FROM XML_Lib)
 
 add_test(NAME ${TEST_EXECUTABLE} COMMAND ${TEST_EXECUTABLE})
+
+set(PERFORMANCE_EXECUTABLE ${XML_LIBRARY_NAME}_Performance_Tests)
+add_executable(${PERFORMANCE_EXECUTABLE})
+target_sources(${PERFORMANCE_EXECUTABLE}
+    PRIVATE
+    source/performance/XML_Lib_Tests_Performance.cpp
+)
+target_include_directories(${PERFORMANCE_EXECUTABLE}
+    PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+    ${Catch2_SOURCE_DIR}/src
+)
+target_include_directories(${PERFORMANCE_EXECUTABLE} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../build
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/interface
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/common
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/converter
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/data
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/entity
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/io
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/parser
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/validator
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/node
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/stringify
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/xpath
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/variants
+)
+target_link_libraries(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
+target_precompile_headers(${PERFORMANCE_EXECUTABLE} REUSE_FROM XML_Lib)
+add_test(NAME ${PERFORMANCE_EXECUTABLE} COMMAND ${PERFORMANCE_EXECUTABLE})
 
 add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/files files)
