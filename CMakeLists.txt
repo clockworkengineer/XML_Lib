@@ -214,13 +214,13 @@ endif()
 find_program(SIZE_EXECUTABLE NAMES size)
 
 if(SIZE_EXECUTABLE)
-  add_custom_target(size_report
+  add_custom_target(XML_Size_Report
     COMMAND ${CMAKE_COMMAND} -E echo "Library size report for ${XML_LIBRARY_NAME}:"
     COMMAND ${SIZE_EXECUTABLE} --format=gnu $<TARGET_FILE:${XML_LIBRARY_NAME}>
     DEPENDS ${XML_LIBRARY_NAME}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
-  add_custom_target(size_report_embedded
+  add_custom_target(XML_Size_Report_Embedded
     COMMAND ${CMAKE_COMMAND} -E echo "=== Embedded library size report for ${XML_LIBRARY_NAME} ==="
     COMMAND ${SIZE_EXECUTABLE} --format=gnu $<TARGET_FILE:${XML_LIBRARY_NAME}>
     COMMAND ${CMAKE_COMMAND} -E echo ""
