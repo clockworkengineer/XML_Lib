@@ -7,11 +7,19 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(XML_LIB_ENABLE_LTO "Enable link-time optimization" ON)
+option(XML_LIB_BUILD_SIZE_OPTIMIZED "Build with size optimization" OFF)
+option(XML_LIB_BUILD_TESTS "Build unit tests" ON)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+endif()
+
 if(MSVC)
   add_compile_options(/W4)
   set(PLATFORM "windows")
 else()
-  add_compile_options(-Wall -Werror -pedantic)
+  add_compile_options(-Wall -Werror -pedantic -fvisibility=hidden)
   set(PLATFORM "linux")
 endif()
 
@@ -48,7 +56,6 @@ target_sources(${XML_LIBRARY_NAME}
   classes/source/implementation/common/XML_Utility.cpp
   classes/source/implementation/entity/XML_EntityMapper.cpp
   classes/source/implementation/converter/${PLATFORM}/XML_Converter.cpp
-  XML_Config.hpp
 )
 
 target_include_directories(${XML_LIBRARY_NAME}
@@ -73,6 +80,24 @@ target_include_directories(${XML_LIBRARY_NAME}
 
 target_compile_definitions(${XML_LIBRARY_NAME} PRIVATE XML_LIB_INTERNAL)
 
+if(NOT MSVC)
+  if(XML_LIB_BUILD_SIZE_OPTIMIZED)
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE
+      $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-Os>
+    )
+  else()
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE
+      $<$<CONFIG:Release>:-O3>
+      $<$<CONFIG:MinSizeRel>:-Os>
+    )
+  endif()
+  if(XML_LIB_ENABLE_LTO)
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE
+      $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-flto>
+    )
+  endif()
+endif()
+
 target_precompile_headers(${XML_LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h)
 
 set(XML_PUBLIC_HEADERS
@@ -82,7 +107,9 @@ set(XML_PUBLIC_HEADERS
   ${PROJECT_SOURCE_DIR}/classes/include/XSD_Validator.hpp
 )
 
-add_subdirectory(tests)
+if(XML_LIB_BUILD_TESTS)
+  add_subdirectory(tests)
+endif()
 add_subdirectory(examples)
 
 # install
