@@ -167,6 +167,8 @@ static double resultToNumber(const XPathResult &r)
   return 0.0;
 }
 
+static std::string_view resultToStringView(const XPathResult &r, std::string &scratch);
+
 static bool resultToBool(const XPathResult &r)
 {
   switch (r.type) {
@@ -182,14 +184,35 @@ static bool resultToBool(const XPathResult &r)
   return false;
 }
 
+static std::string_view resultToStringView(const XPathResult &r, std::string &scratch)
+{
+  switch (r.type) {
+  case XPathResultType::String:
+    return r.stringValue;
+  case XPathResultType::Number:
+  case XPathResultType::Boolean:
+  case XPathResultType::NodeSet:
+    scratch = resultToString(r);
+    return scratch;
+  }
+  return scratch;
+}
+
 // ========================================================================
 // Collect all descendants (depth-first, not including self)
 // ========================================================================
 static void collectDescendants(const Node &node, std::vector<const Node *> &out)
 {
-  for (const auto &child : node.getChildren()) {
-    out.push_back(&child);
-    collectDescendants(child, out);
+  std::vector<const Node *> stack;
+  stack.reserve(16);
+  for (const auto &child : node.getChildren()) { stack.push_back(&child); }
+
+  while (!stack.empty()) {
+    const Node *current = stack.back();
+    stack.pop_back();
+    out.push_back(current);
+    const auto &children = current->getChildren();
+    for (auto it = children.rbegin(); it != children.rend(); ++it) { stack.push_back(&*it); }
   }
 }
 
@@ -226,9 +249,9 @@ static bool matchNodeTest(const Node &node,
   case XPathNodeTestKind::NameTest: {
     if (!isElement(node)) return false;
     if (test.name == "*") return true;
-    // Compare local-name or full name
     const std::string_view name = nodeNameView(node);
-    const std::string_view local = nodeLocalNameView(node);
+    const auto pos = name.find(':');
+    const std::string_view local = (pos != std::string_view::npos) ? name.substr(pos + 1) : name;
     return name == test.name || local == test.name;
   }
   }
@@ -372,13 +395,17 @@ static XPathResult evalStepResult(const XPathStep &step,
   std::vector<const Node *> output;
   output.reserve(inputNodeSet.size());
   std::unordered_map<const Node *, std::string> outAttrValues;
+  std::vector<CandidateNode> passing;
+  std::vector<CandidateNode> surviving;
+  passing.reserve(16);
+  surviving.reserve(16);
 
   for (const auto *inputNode : inputNodeSet) {
     // For attribute proxies, the "real" context is still the element
     const auto candidates = axisNodes(step.axis, *inputNode, docRoot, ancestorsOfContext);
 
     // Filter by node-test
-    std::vector<CandidateNode> passing;
+    passing.clear();
     passing.reserve(candidates.size());
     for (const auto &c : candidates) {
       if (matchNodeTest(*c.node, step.nodeTest, step.axis, c.attrName, c.isAttr)) { passing.push_back(c); }
@@ -386,16 +413,18 @@ static XPathResult evalStepResult(const XPathStep &step,
 
     // Apply predicates
     for (const auto &pred : step.predicates) {
-      std::vector<CandidateNode> surviving;
+      surviving.clear();
+      surviving.reserve(passing.size());
       const size_t total = passing.size();
       size_t pos = 1;
       for (const auto &c : passing) {
         std::vector<const Node *> candAncestors = ancestorsOfContext;
+        candAncestors.reserve(ancestorsOfContext.size() + 1);
         candAncestors.push_back(inputNode);
         if (evalPredicate(pred, *c.node, pos, total, docRoot, candAncestors)) { surviving.push_back(c); }
         ++pos;
       }
-      passing = std::move(surviving);
+      passing.swap(surviving);
     }
 
     for (const auto &c : passing) {
@@ -561,6 +590,7 @@ static XPathResult evalBuiltinFunction(const std::string &name,
   // Helper: evaluate all args
   auto evalArgs = [&]() {
     std::vector<XPathResult> res;
+    res.reserve(argExprs.size());
     for (const auto &a : argExprs) {
       res.push_back(evalExpr(*a, contextNode, contextPosition, contextSize, docRoot, ancestorStack));
     }
@@ -718,10 +748,13 @@ static XPathResult evalBuiltinFunction(const std::string &name,
   if (name == "concat") {
     auto args = evalArgs();
     std::string s;
-    for (const auto &a : args) s += resultToString(a);
+    std::string scratch;
+    for (const auto &a : args) {
+      s.append(resultToStringView(a, scratch));
+    }
     XPathResult r;
     r.type = XPathResultType::String;
-    r.stringValue = s;
+    r.stringValue = std::move(s);
     return r;
   }
   if (name == "starts-with") {
@@ -732,8 +765,10 @@ static XPathResult evalBuiltinFunction(const std::string &name,
       r.boolValue = false;
       return r;
     }
-    const std::string left = resultToString(args[0]);
-    const std::string right = resultToString(args[1]);
+    std::string scratchLeft;
+    std::string scratchRight;
+    const std::string_view left = resultToStringView(args[0], scratchLeft);
+    const std::string_view right = resultToStringView(args[1], scratchRight);
     r.boolValue = left.starts_with(right);
     return r;
   }
@@ -745,8 +780,10 @@ static XPathResult evalBuiltinFunction(const std::string &name,
       r.boolValue = false;
       return r;
     }
-    const std::string left = resultToString(args[0]);
-    const std::string right = resultToString(args[1]);
+    std::string scratchLeft;
+    std::string scratchRight;
+    const std::string_view left = resultToStringView(args[0], scratchLeft);
+    const std::string_view right = resultToStringView(args[1], scratchRight);
     r.boolValue = left.find(right) != std::string::npos;
     return r;
   }
@@ -754,16 +791,28 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     auto args = evalArgs();
     XPathResult r;
     r.type = XPathResultType::Number;
-    const std::string s = args.empty() ? nodeStringValue(contextNode) : resultToString(args[0]);
+    if (args.empty()) {
+      const std::string s = nodeStringValue(contextNode);
+      r.numberValue = static_cast<double>(s.size());
+      return r;
+    }
+    std::string scratch;
+    const std::string_view s = resultToStringView(args[0], scratch);
     r.numberValue = static_cast<double>(s.size());
     return r;
   }
   if (name == "normalize-space") {
     auto args = evalArgs();
-    const std::string s = args.empty() ? nodeStringValue(contextNode) : resultToString(args[0]);
     XPathResult r;
     r.type = XPathResultType::String;
-    r.stringValue = fnNormalizeSpace(s);
+    if (args.empty()) {
+      const std::string tmp = nodeStringValue(contextNode);
+      r.stringValue = fnNormalizeSpace(tmp);
+      return r;
+    }
+    std::string scratch;
+    const std::string_view s = resultToStringView(args[0], scratch);
+    r.stringValue = fnNormalizeSpace(std::string(s));
     return r;
   }
   if (name == "translate") {
@@ -771,12 +820,18 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     XPathResult r;
     r.type = XPathResultType::String;
     if (args.size() < 3) {
-      r.stringValue = args.empty() ? "" : resultToString(args[0]);
+      if (args.empty()) {
+        r.stringValue = "";
+      } else {
+        std::string scratch;
+        r.stringValue = std::string(resultToStringView(args[0], scratch));
+      }
       return r;
     }
-    const std::string source = resultToString(args[0]);
-    const std::string from = resultToString(args[1]);
-    const std::string to = resultToString(args[2]);
+    std::string scratch;
+    const std::string source(resultToStringView(args[0], scratch));
+    const std::string from(resultToStringView(args[1], scratch));
+    const std::string to(resultToStringView(args[2], scratch));
     r.stringValue = fnTranslate(source, from, to);
     return r;
   }
@@ -785,9 +840,9 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     XPathResult r;
     r.type = XPathResultType::String;
     if (args.empty()) { return r; }
-    const std::string s = resultToString(args[0]);
+    std::string scratch;
+    const std::string s(resultToStringView(args[0], scratch));
     const double startD = (args.size() >= 2) ? std::round(resultToNumber(args[1])) : 1.0;
-    // XPath's substring is 1-based
     const long start = static_cast<long>(startD) - 1;
     if (args.size() >= 3) {
       const long len = static_cast<long>(std::round(resultToNumber(args[2])));
@@ -805,10 +860,12 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     XPathResult r;
     r.type = XPathResultType::String;
     if (args.size() < 2) return r;
-    const std::string haystack = resultToString(args[0]);
-    const std::string needle = resultToString(args[1]);
+    std::string scratchLeft;
+    std::string scratchRight;
+    const std::string_view haystack = resultToStringView(args[0], scratchLeft);
+    const std::string_view needle = resultToStringView(args[1], scratchRight);
     const auto pos = haystack.find(needle);
-    if (pos != std::string::npos) r.stringValue = haystack.substr(0, pos);
+    if (pos != std::string_view::npos) r.stringValue = std::string(haystack.substr(0, pos));
     return r;
   }
   if (name == "substring-after") {
@@ -816,10 +873,12 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     XPathResult r;
     r.type = XPathResultType::String;
     if (args.size() < 2) return r;
-    const std::string haystack = resultToString(args[0]);
-    const std::string needle = resultToString(args[1]);
+    std::string scratchLeft;
+    std::string scratchRight;
+    const std::string_view haystack = resultToStringView(args[0], scratchLeft);
+    const std::string_view needle = resultToStringView(args[1], scratchRight);
     const auto pos = haystack.find(needle);
-    if (pos != std::string::npos) r.stringValue = haystack.substr(pos + needle.size());
+    if (pos != std::string_view::npos) r.stringValue = std::string(haystack.substr(pos + needle.size()));
     return r;
   }
 
