@@ -181,6 +181,7 @@ set(XML_PUBLIC_HEADERS
   ${PROJECT_SOURCE_DIR}/classes/include/XPath.hpp
   ${PROJECT_SOURCE_DIR}/classes/include/DTD_Validator.hpp
   ${PROJECT_SOURCE_DIR}/classes/include/XSD_Validator.hpp
+  ${PROJECT_SOURCE_DIR}/classes/include/interface/XML_Interfaces.hpp
 )
 
 if(XML_LIB_BUILD_TESTS)
@@ -203,3 +204,6 @@ endif()
 # install
 install(TARGETS ${XML_LIBRARY_NAME} DESTINATION lib)
 install(FILES ${XML_PUBLIC_HEADERS} DESTINATION include)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/classes/include/interface DESTINATION include
+  FILES_MATCHING PATTERN "*.hpp"
+)
