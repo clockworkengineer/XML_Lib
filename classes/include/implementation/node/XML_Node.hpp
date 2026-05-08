@@ -29,6 +29,8 @@ struct Node
   // Add child
   void addChild(Node &child) const { xmlVariant->addChild(child); }
   void addChild(Node &&child) const { xmlVariant->addChild(child); }
+  // Reserve child storage when the parse context expects multiple children
+  void reserveChildren(size_t count) { xmlVariant->reserveChildren(count); }
   // Get Node children reference
   [[nodiscard]] std::vector<Node> &getChildren() { return xmlVariant->getChildren(); }
   [[nodiscard]] const std::vector<Node> &getChildren() const { return xmlVariant->getChildren(); }

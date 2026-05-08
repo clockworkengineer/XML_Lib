@@ -58,8 +58,10 @@ std::string XSD_Impl::resolveType(const std::string_view &typeStr)
 /// </summary>
 std::vector<std::reference_wrapper<const Node>> XSD_Impl::childElements(const Node &node)
 {
+  const auto &children = node.getChildren();
   std::vector<std::reference_wrapper<const Node>> result;
-  for (const auto &child : node.getChildren()) {
+  result.reserve(children.size());
+  for (const auto &child : children) {
     if (isA<Element>(child) || isA<Root>(child) || isA<Self>(child)) { result.emplace_back(child); }
   }
   return result;

@@ -181,6 +181,7 @@ Node Default_Parser::parseCDATA(ISource &source)
 std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEntityMapper &entityMapper)
 {
   std::vector<XMLAttribute> attributes{};
+  attributes.reserve(8);
   while (source.more() && source.current() != '/' && source.current() != '>') {
     std::string attributeName{ parseName(source) };
     if (!source.match("=")) {
@@ -316,6 +317,7 @@ Node Default_Parser::parseElement(ISource &source,
     } else {
       xNode = Node::make<Element>(name, attributes, namespaces);
     }
+    xNode.reserveChildren(8);
     while (source.more() && !source.match("</")) { parseElementInternal(source, xNode, entityMapper); }
     if (source.match(toUtf16(NRef<Element>(xNode).name()) + u">")) { return xNode; }
   } else if (source.match("/>")) {

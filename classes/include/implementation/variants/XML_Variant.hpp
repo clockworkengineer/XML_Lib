@@ -24,6 +24,8 @@ struct Variant
   // Get Node children reference
   [[nodiscard]] std::vector<Node> &getChildren();
   [[nodiscard]] const std::vector<Node> &getChildren() const;
+  // Reserve child storage when parse context predicts children
+  void reserveChildren(size_t count);
   // Add child
   void addChild(Node &child) const;
   void addChild(Node &&child) const;
@@ -33,8 +35,8 @@ struct Variant
 private:
   // Variant type
   Type xmlNodeType{ Type::base };
-  // Node Children
-  mutable std::unique_ptr<std::vector<Node>> children;
+  // Node children container (inline to improve locality)
+  mutable std::vector<Node> children;
 };
 
 }// namespace XML_Lib
