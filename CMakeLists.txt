@@ -91,6 +91,7 @@ if(NOT MSVC)
       $<$<CONFIG:MinSizeRel>:-Os>
     )
   endif()
+
   if(XML_LIB_ENABLE_LTO)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE
       $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-flto>
@@ -110,7 +111,19 @@ set(XML_PUBLIC_HEADERS
 if(XML_LIB_BUILD_TESTS)
   add_subdirectory(tests)
 endif()
+
 add_subdirectory(examples)
+
+find_program(SIZE_EXECUTABLE NAMES size)
+
+if(SIZE_EXECUTABLE)
+  add_custom_target(size_report
+    COMMAND ${CMAKE_COMMAND} -E echo "Library size report for ${XML_LIBRARY_NAME}:"
+    COMMAND ${SIZE_EXECUTABLE} --format=gnu $<TARGET_FILE:${XML_LIBRARY_NAME}>
+    DEPENDS ${XML_LIBRARY_NAME}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  )
+endif()
 
 # install
 install(TARGETS ${XML_LIBRARY_NAME} DESTINATION lib)

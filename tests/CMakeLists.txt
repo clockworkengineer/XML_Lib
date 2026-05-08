@@ -65,6 +65,7 @@ target_sources(${TEST_EXECUTABLE}
     source/node/XML_Lib_Tests_DTD.cpp
     source/traverse/XML_Lib_Tests_Traverse.cpp
     source/xpath/XML_Lib_Tests_XPath.cpp
+    source/performance/XML_Lib_Tests_Performance.cpp
 )
 target_include_directories(${TEST_EXECUTABLE}
     PUBLIC
