@@ -45,4 +45,24 @@ TEST_CASE("Embedded library artifact exists and is non-empty", "[XML][Embedded][
   REQUIRE(std::filesystem::file_size(libPath) > 0);
 }
 
+TEST_CASE("Embedded build feature gating", "[XML][Embedded][Gating]")
+{
+#if !defined(XML_LIB_NO_EXCEPTIONS)
+  FAIL("XML_LIB_NO_EXCEPTIONS must be enabled for embedded builds");
+#endif
+#if !defined(XML_LIB_MINIMAL_FEATURES)
+  FAIL("XML_LIB_MINIMAL_FEATURES must be enabled for embedded builds");
+#endif
+#if defined(XML_LIB_ENABLE_XPATH)
+  FAIL("XML_LIB_ENABLE_XPATH must be disabled for embedded minimal builds");
+#endif
+#if defined(XML_LIB_ENABLE_XSD)
+  FAIL("XML_LIB_ENABLE_XSD must be disabled for embedded minimal builds");
+#endif
+#if defined(XML_LIB_ENABLE_DTD)
+  FAIL("XML_LIB_ENABLE_DTD must be disabled for embedded minimal builds");
+#endif
+  SUCCEED("Embedded feature gating is configured correctly");
+}
+
 #endif

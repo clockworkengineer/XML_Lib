@@ -138,7 +138,6 @@ if(XML_LIB_EMBEDDED)
         $<$<BOOL:${XML_LIB_ENABLE_DTD}>:XML_LIB_ENABLE_DTD>
         $<$<BOOL:${XML_LIB_ENABLE_STRINGIFY}>:XML_LIB_ENABLE_STRINGIFY>
     )
-    target_precompile_headers(${EMBEDDED_TEST_EXECUTABLE} REUSE_FROM XML_Lib)
     add_test(NAME ${EMBEDDED_TEST_EXECUTABLE} COMMAND ${EMBEDDED_TEST_EXECUTABLE})
 endif()
 
@@ -171,7 +170,9 @@ target_include_directories(${PERFORMANCE_EXECUTABLE} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/variants
 )
 target_link_libraries(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
-target_precompile_headers(${PERFORMANCE_EXECUTABLE} REUSE_FROM XML_Lib)
+if(NOT XML_LIB_EMBEDDED)
+    target_precompile_headers(${PERFORMANCE_EXECUTABLE} REUSE_FROM XML_Lib)
+endif()
 add_test(NAME ${PERFORMANCE_EXECUTABLE} COMMAND ${PERFORMANCE_EXECUTABLE})
 
 add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/files files)
