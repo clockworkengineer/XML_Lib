@@ -1,5 +1,9 @@
 #pragma once
 
+#include <codecvt>
+#include <locale>
+#include <string>
+
 namespace XML_Lib {
 // ==================
 // Conversion methods

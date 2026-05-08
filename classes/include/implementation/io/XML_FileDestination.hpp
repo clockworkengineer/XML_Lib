@@ -1,5 +1,13 @@
 #pragma once
 
+#include "IDestination.hpp"
+
+#include <cstring>
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
 class FileDestination final : public IDestination

@@ -7,8 +7,13 @@
 //
 
 #include "XML_Impl.hpp"
+#include <sstream>
+#if defined(XML_LIB_ENABLE_XSD)
 #include "XSD_Validator.hpp"
+#endif
+#if defined(XML_LIB_ENABLE_XPATH)
 #include "XPath.hpp"
+#endif
 
 namespace XML_Lib {
 
@@ -62,8 +67,11 @@ Node &XML_Impl::root()
   throw Error("No root element found.");
 }
 
+#if defined(XML_LIB_ENABLE_DTD)
 void XML_Impl::validate() { xmlParser->validate(prolog()); }
+#endif
 
+#if defined(XML_LIB_ENABLE_XSD)
 void XML_Impl::validate(const std::string_view &xsdSource)
 {
   XSD_Validator xsdValidator(root());
@@ -71,12 +79,15 @@ void XML_Impl::validate(const std::string_view &xsdSource)
   xsdValidator.parse(source);
   xsdValidator.validate(root());
 }
+#endif
 
+#if defined(XML_LIB_ENABLE_XPATH)
 std::vector<const Node *> XML_Impl::xpath(const std::string_view expression)
 {
   XPath xp(root());
   return xp.evaluate(expression);
 }
+#endif
 
 void XML_Impl::parse(ISource &source) { xmlRoot = xmlParser->parse(source); }
 

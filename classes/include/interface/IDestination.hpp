@@ -1,5 +1,10 @@
 #pragma once
 
+#include "XML_Types.hpp"
+#include <stdexcept>
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
 // ==================================================================================

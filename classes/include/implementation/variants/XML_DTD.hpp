@@ -1,5 +1,11 @@
 #pragma once
 
+#include <cstdint>
+#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <vector>
+
 namespace XML_Lib {
 
 struct DTD final : Variant

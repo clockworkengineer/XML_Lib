@@ -12,6 +12,7 @@ option(XML_LIB_BUILD_SIZE_OPTIMIZED "Build with size optimization" OFF)
 option(XML_LIB_BUILD_TESTS "Build unit tests" ON)
 option(XML_LIB_EMBEDDED "Enable embedded-friendly build defaults" OFF)
 option(XML_LIB_NO_EXCEPTIONS "Disable exception support for embedded targets" OFF)
+option(XML_LIB_STRICT_NO_EXCEPTIONS "Compile with -fno-exceptions only when the codebase supports it" OFF)
 option(XML_LIB_NO_RTTI "Disable RTTI support for embedded targets" OFF)
 option(XML_LIB_MINIMAL_FEATURES "Enable minimal embedded feature subset" OFF)
 option(XML_LIB_ENABLE_XPATH "Enable XPath engine" ON)
@@ -159,7 +160,7 @@ if(NOT MSVC)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fno-rtti)
   endif()
 
-  if(XML_LIB_NO_EXCEPTIONS)
+  if(XML_LIB_NO_EXCEPTIONS AND XML_LIB_STRICT_NO_EXCEPTIONS)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fno-exceptions)
   endif()
 
@@ -178,11 +179,23 @@ endif()
 
 set(XML_PUBLIC_HEADERS
   ${PROJECT_SOURCE_DIR}/classes/include/XML.hpp
-  ${PROJECT_SOURCE_DIR}/classes/include/XPath.hpp
-  ${PROJECT_SOURCE_DIR}/classes/include/DTD_Validator.hpp
-  ${PROJECT_SOURCE_DIR}/classes/include/XSD_Validator.hpp
+  ${PROJECT_SOURCE_DIR}/classes/include/XML_Sources.hpp
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/io/XML_BufferSource.hpp
+  ${PROJECT_SOURCE_DIR}/classes/include/implementation/io/XML_FileSource.hpp
   ${PROJECT_SOURCE_DIR}/classes/include/interface/XML_Interfaces.hpp
 )
+
+if(XML_LIB_ENABLE_XPATH)
+  list(APPEND XML_PUBLIC_HEADERS ${PROJECT_SOURCE_DIR}/classes/include/XPath.hpp)
+endif()
+
+if(XML_LIB_ENABLE_DTD)
+  list(APPEND XML_PUBLIC_HEADERS ${PROJECT_SOURCE_DIR}/classes/include/DTD_Validator.hpp)
+endif()
+
+if(XML_LIB_ENABLE_XSD)
+  list(APPEND XML_PUBLIC_HEADERS ${PROJECT_SOURCE_DIR}/classes/include/XSD_Validator.hpp)
+endif()
 
 if(XML_LIB_BUILD_TESTS)
   add_subdirectory(tests)

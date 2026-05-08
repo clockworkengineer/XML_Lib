@@ -9,6 +9,12 @@
 #include "XML.hpp"
 #include "XML_Core.hpp"
 
+#include <algorithm>
+#include <cwctype>
+#include <sstream>
+#include <string>
+#include <vector>
+
 namespace XML_Lib {
 
 /// <summary>
@@ -34,9 +40,9 @@ std::string trimString(const std::string_view &target)
 {
   std::string trimmedString{ target };
   trimmedString.erase(trimmedString.begin(),
-    std::ranges::find_if(trimmedString, [](const unsigned char ch) { return !std::iswspace(ch); }));
+    std::find_if(trimmedString.begin(), trimmedString.end(), [](const unsigned char ch) { return !std::iswspace(ch); }));
   trimmedString.erase(
-    std::ranges::find_if(trimmedString.rbegin(), trimmedString.rend(), [](const unsigned char ch) { return !std::iswspace(ch); })
+    std::find_if(trimmedString.rbegin(), trimmedString.rend(), [](const unsigned char ch) { return !std::iswspace(ch); })
       .base(),
     trimmedString.end());
   return trimmedString;
@@ -49,8 +55,8 @@ std::string trimString(const std::string_view &target)
 std::string toUpperString(const std::string_view &target)
 {
   std::string upperCaseString{ target };
-  std::ranges::transform(
-    upperCaseString, upperCaseString.begin(), [](const unsigned int c) {
+  std::transform(
+    upperCaseString.begin(), upperCaseString.end(), upperCaseString.begin(), [](const unsigned int c) {
     return static_cast<char>(std::toupper(c));
   });
   return upperCaseString;
@@ -63,8 +69,8 @@ std::string toUpperString(const std::string_view &target)
 std::string toLowerString(const std::string_view &target)
 {
   std::string lowerCaseString{ target };
-  std::ranges::transform(
-    lowerCaseString, lowerCaseString.begin(), [](const unsigned int c) {
+  std::transform(
+    lowerCaseString.begin(), lowerCaseString.end(), lowerCaseString.begin(), [](const unsigned int c) {
     return static_cast<char>(std::tolower(c));
   });
   return lowerCaseString;

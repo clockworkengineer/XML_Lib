@@ -43,11 +43,13 @@ XML::~XML() = default;
 /// <returns>Library version string.</returns>
 std::string XML::version() { return XML_Impl::version(); }
 
+#if defined(XML_LIB_ENABLE_DTD)
 /// <summary>
 /// Return reference to any internal DTD_Validator for parsed XML.
 /// </summary>
 /// <returns>Reference to DTD_Validator Node.</returns>
 Node &XML::dtd() const { return implementation->dtd(); }
+#endif
 
 /// <summary>
 /// Return prolog node of the parsed XML tree.
@@ -67,18 +69,23 @@ Node &XML::declaration() const { return implementation->declaration(); }
 /// <returns>Reference to root element Node.</returns>
 Node &XML::root() const { return implementation->root(); }
 
+#if defined(XML_LIB_ENABLE_DTD)
 /// <summary>
 /// Validate XML against any DTD_Validator provided to see whether it is valid. If an
 /// exception is thrown, then there is a validation issue and the XML is not valid.
 /// </summary>
 void XML::validate() const { implementation->validate(); }
+#endif
 
+#if defined(XML_LIB_ENABLE_XSD)
 /// <summary>
 /// Validate XML against an XSD schema supplied as a UTF-8 XML string.
 /// </summary>
 /// <param name="xsdSource">XSD schema XML string.</param>
 void XML::validate(const std::string_view &xsdSource) const { implementation->validate(xsdSource); }
+#endif
 
+#if defined(XML_LIB_ENABLE_XPATH)
 /// <summary>
 /// Evaluate an XPath 1.0 expression against the parsed document.
 /// </summary>
@@ -88,6 +95,7 @@ std::vector<const Node *> XML::xpath(const std::string_view expression) const
 {
   return implementation->xpath(expression);
 }
+#endif
 
 /// <summary>
 /// Parse XML read from source stream into internal object generating an exception

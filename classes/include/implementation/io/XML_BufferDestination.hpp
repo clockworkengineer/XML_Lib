@@ -1,5 +1,14 @@
 #pragma once
 
+#include "IDestination.hpp"
+
+#include <algorithm>
+#include <cstring>
+#include <iterator>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
 class BufferDestination final : public IDestination
@@ -20,7 +29,7 @@ public:
 
   void add(const std::string &bytes) override
   {
-    std::ranges::copy(bytes, std::back_inserter(buffer));
+    std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
   }
   void add(const Char ch) override { add(toUtf8(ch)); }
   void add(const char * bytes) override {
@@ -29,7 +38,7 @@ public:
     }
   }
   void add(const std::string_view &bytes) override {
-    std::ranges::copy(bytes, std::back_inserter(buffer));
+    std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
   }
   void clear() override { buffer.clear(); }
 

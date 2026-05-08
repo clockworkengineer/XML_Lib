@@ -1,5 +1,10 @@
 #pragma once
 
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <utility>
+
 namespace XML_Lib {
 
 struct XMLExternalReference

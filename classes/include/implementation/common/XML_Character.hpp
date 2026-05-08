@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+#include <string_view>
+#include <cstdint>
+
 namespace XML_Lib {
 // ====================
 // Internal String Type

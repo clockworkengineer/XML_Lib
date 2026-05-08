@@ -1,5 +1,9 @@
 #pragma once
 
+#include <memory>
+#include <stdexcept>
+#include <string_view>
+
 namespace XML_Lib {
 
 // ====================

@@ -1,6 +1,12 @@
 #pragma once
 
+#include <set>
+#include <string>
+#include <string_view>
+#include <stdexcept>
 #include <unordered_map>
+
+#include "interface/IEntityMapper.hpp"
 
 namespace XML_Lib {
 
@@ -35,6 +41,8 @@ struct XML_EntityMapper final : IEntityMapper
   [[nodiscard]] XMLValue map(const XMLValue &entityReference) override;
   // Translate any entity reference in a string
   [[nodiscard]] std::string translate(const std::string_view &toTranslate, char type = '%') const override;
+  // Check a specific entity mapping for recursive definitions
+  void checkRecursiveEntity(const std::string_view &entityName, const std::string &expanded, std::set<std::string> &currentEntities) override;
   // Check for a recursive entity reference mapping
   void checkForRecursion() override;
   // Reset entity mapper to default state

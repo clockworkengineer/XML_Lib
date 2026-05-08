@@ -89,10 +89,58 @@ target_include_directories(${TEST_EXECUTABLE} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/xpath
     ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/variants
 )
-target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
-target_precompile_headers(${TEST_EXECUTABLE} REUSE_FROM XML_Lib)
 
-add_test(NAME ${TEST_EXECUTABLE} COMMAND ${TEST_EXECUTABLE})
+if(NOT XML_LIB_EMBEDDED)
+    target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
+    target_precompile_headers(${TEST_EXECUTABLE} REUSE_FROM XML_Lib)
+
+    add_test(NAME ${TEST_EXECUTABLE} COMMAND ${TEST_EXECUTABLE})
+endif()
+
+if(XML_LIB_EMBEDDED)
+    set(EMBEDDED_TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Embedded_Unit_Tests)
+    add_executable(${EMBEDDED_TEST_EXECUTABLE})
+    target_sources(${EMBEDDED_TEST_EXECUTABLE}
+        PRIVATE
+        source/embedded/XML_Lib_Tests_Embedded.cpp
+        source/xml/XML_Lib_Tests_Helper.cpp
+    )
+    target_include_directories(${EMBEDDED_TEST_EXECUTABLE}
+        PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../include
+        ${Catch2_SOURCE_DIR}/src
+    )
+    target_include_directories(${EMBEDDED_TEST_EXECUTABLE} PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/../build
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/interface
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/common
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/converter
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/data
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/entity
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/io
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/parser
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/validator
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/node
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/stringify
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/xpath
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/variants
+    )
+    target_link_libraries(${EMBEDDED_TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
+    target_compile_definitions(${EMBEDDED_TEST_EXECUTABLE} PRIVATE
+        $<$<BOOL:${XML_LIB_EMBEDDED}>:XML_LIB_EMBEDDED>
+        $<$<BOOL:${XML_LIB_NO_EXCEPTIONS}>:XML_LIB_NO_EXCEPTIONS>
+        $<$<BOOL:${XML_LIB_NO_RTTI}>:XML_LIB_NO_RTTI>
+        $<$<BOOL:${XML_LIB_MINIMAL_FEATURES}>:XML_LIB_MINIMAL_FEATURES>
+        $<$<BOOL:${XML_LIB_ENABLE_XPATH}>:XML_LIB_ENABLE_XPATH>
+        $<$<BOOL:${XML_LIB_ENABLE_XSD}>:XML_LIB_ENABLE_XSD>
+        $<$<BOOL:${XML_LIB_ENABLE_DTD}>:XML_LIB_ENABLE_DTD>
+        $<$<BOOL:${XML_LIB_ENABLE_STRINGIFY}>:XML_LIB_ENABLE_STRINGIFY>
+    )
+    target_precompile_headers(${EMBEDDED_TEST_EXECUTABLE} REUSE_FROM XML_Lib)
+    add_test(NAME ${EMBEDDED_TEST_EXECUTABLE} COMMAND ${EMBEDDED_TEST_EXECUTABLE})
+endif()
 
 set(PERFORMANCE_EXECUTABLE ${XML_LIBRARY_NAME}_Performance_Tests)
 add_executable(${PERFORMANCE_EXECUTABLE})

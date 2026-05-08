@@ -1,5 +1,11 @@
 #pragma once
 
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <string_view>
+#include <vector>
+
 namespace XML_Lib {
 
 // ========================
@@ -28,20 +34,26 @@ public:
   XML(XML &&other) = delete;
   XML &operator=(XML &&other) = delete;
   ~XML();
-  // Get reference to DTD_Validator Node
-  [[nodiscard]] Node &dtd() const;
   // Get reference to prolog Node
   [[nodiscard]] Node &prolog() const;
   // Get reference to declaration Node
   [[nodiscard]] Node &declaration() const;
   // Get reference to root element Node
   [[nodiscard]] Node &root() const;
+#if defined(XML_LIB_ENABLE_DTD)
+  // Get reference to DTD_Validator Node
+  [[nodiscard]] Node &dtd() const;
   // Validate XML against DTD (if present)
   void validate() const;
+#endif
+#if defined(XML_LIB_ENABLE_XSD)
   // Validate XML against an XSD schema supplied as a string or file path
   void validate(const std::string_view &xsdSource) const;
+#endif
+#if defined(XML_LIB_ENABLE_XPATH)
   // Evaluate an XPath 1.0 expression against the parsed document
   [[nodiscard]] std::vector<const Node *> xpath(std::string_view expression) const;
+#endif
   // Return version string
   [[nodiscard]] static std::string version();
   // Parse XML source

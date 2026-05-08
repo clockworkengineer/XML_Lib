@@ -1,5 +1,13 @@
 #pragma once
 
+#include "XML_Types.hpp"
+#include <cwctype>
+#include <cstring>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <utility>
+
 namespace XML_Lib {
 // ===================
 // Character constants

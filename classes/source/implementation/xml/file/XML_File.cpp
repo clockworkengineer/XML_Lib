@@ -11,6 +11,9 @@
 //
 
 #include "XML_Impl.hpp"
+#include <fstream>
+#include <sstream>
+#include <string_view>
 
 namespace XML_Lib {
 

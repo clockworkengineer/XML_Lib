@@ -9,7 +9,9 @@
 //
 
 #include "Default_Parser.hpp"
+#if defined(XML_LIB_ENABLE_DTD)
 #include "DTD_Validator.hpp"
+#endif
 
 namespace XML_Lib {
 
@@ -400,6 +402,7 @@ void Default_Parser::parseEpilog(ISource &source, Node &xProlog)
 /// <param name="source">XML source stream.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to DTD Node.</returns>
+#if defined(XML_LIB_ENABLE_DTD)
 Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 {
   if (validator != nullptr) { throw SyntaxError(source.getPosition(), "More than one DOCTYPE declaration."); }
@@ -408,6 +411,12 @@ Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
   validator->parse(source);
   return xNode;
 }
+#else
+Node Default_Parser::parseDTD([[maybe_unused]] ISource &source, [[maybe_unused]] IEntityMapper &entityMapper)
+{
+  throw SyntaxError(source.getPosition(), "DTD support disabled in this build.");
+}
+#endif
 /// <summary>
 /// Parse XML prolog and create the necessary element Nodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
@@ -421,9 +430,12 @@ Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
   auto xProlog = Node::make<Prolog>();
   xProlog.addChild(parseDeclaration(source));
   while (source.more()) {
+#if defined(XML_LIB_ENABLE_DTD)
     if (source.match("<!DOCTYPE")) {
       xProlog.addChild(parseDTD(source, entityMapper));
-    } else if (parseCommentsPIAndWhiteSpace(source, xProlog)) {
+    } else
+#endif
+    if (parseCommentsPIAndWhiteSpace(source, xProlog)) {
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {

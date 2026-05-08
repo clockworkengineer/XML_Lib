@@ -1,5 +1,9 @@
 #pragma once
 
+#include <algorithm>
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 // ====================
 // Node index access
@@ -15,7 +19,7 @@ inline const Node &Node::operator[](const int index) const
 inline const Node &Node::operator[](const std::string_view &name) const
 {
   if (isIndexable()) {
-    if (const auto xNode = std::ranges::find_if(getChildren(),
+    if (const auto xNode = std::find_if(getChildren().begin(), getChildren().end(),
           [&name](const Node &child) { return child.isNameable() && NRef<Element>(child).name() == name; });
         xNode != getChildren().end()) {
       return *xNode;

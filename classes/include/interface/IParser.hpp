@@ -1,12 +1,16 @@
 
 #pragma once
 
+#include <stdexcept>
+#include <string_view>
+
 namespace XML_Lib {
 
 // ====================
 // Forward declarations
 // ====================
 
+class ISource;
 struct Node;
 
 // =========================

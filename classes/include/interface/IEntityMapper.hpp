@@ -1,5 +1,10 @@
 #pragma once
 
+#include <set>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
 // ===================================================
@@ -49,6 +54,10 @@ public:
   // Translate any entity reference in a string
   // ==========================================
   [[nodiscard]] virtual std::string translate(const std::string_view &toTranslate, char type = '%') const = 0;
+  // ==============================================
+  // Check a specific entity mapping for recursive definitions
+  // ==============================================
+  virtual void checkRecursiveEntity(const std::string_view &entityName, const std::string &expanded, std::set<std::string> &currentEntities) = 0;
   // ==============================================
   // Check for a recursive entity reference mapping
   // ==============================================

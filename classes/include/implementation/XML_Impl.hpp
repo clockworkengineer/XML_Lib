@@ -24,9 +24,15 @@ public:
   void stringify(IDestination &destination);
   void traverse(IAction &action);
   void traverse(IAction &action) const;
+#if defined(XML_LIB_ENABLE_DTD)
   void validate();
+#endif
+#if defined(XML_LIB_ENABLE_XSD)
   void validate(const std::string_view &xsdSource);
+#endif
+#if defined(XML_LIB_ENABLE_XPATH)
   [[nodiscard]] std::vector<const Node *> xpath(std::string_view expression);
+#endif
   [[nodiscard]] static std::string version();
 
   [[nodiscard]] static std::string fromFile(const std::string_view &fileName);

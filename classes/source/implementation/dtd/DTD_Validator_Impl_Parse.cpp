@@ -217,7 +217,13 @@ void DTD_Impl::parseEntity(ISource &source) const
   entityName += parseName(source) + ";";
   if (source.current() == '\'' || source.current() == '"') {
     const XMLValue entityValue = parseValue(source);
-    xDTD.getEntityMapper().setInternal(entityName, entityValue.getParsed());
+    // Force expansion to trigger recursion detection
+    std::string expanded = entityValue.getParsed();
+    if (expanded.find('&') != std::string::npos) {
+      std::set<std::string> currentEntities;
+      xDTD.getEntityMapper().checkRecursiveEntity(entityName, expanded, currentEntities);
+    }
+    xDTD.getEntityMapper().setInternal(entityName, expanded);
   } else {
     xDTD.getEntityMapper().setExternal(entityName, parseExternalReference(source));
     if (source.match("NDATA")) {

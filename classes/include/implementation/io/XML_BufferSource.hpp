@@ -1,5 +1,15 @@
 #pragma once
 
+#include "ISource.hpp"
+
+#include <algorithm>
+#include <cstdint>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+
+#include "common/XML_Utility.hpp"
+
 namespace XML_Lib {
 
 class BufferSource final : public ISource
@@ -18,7 +28,7 @@ public:
     if (sourceBuffer.empty()) { throw Error("Empty source buffer passed to be parsed."); }
     std::u16string utf16xml{ sourceBuffer };
     if (utf16xml.starts_with(u"<?xml")) {
-      std::ranges::transform(utf16xml, utf16xml.begin(), [](const char16_t &ch) {
+      std::transform(utf16xml.begin(), utf16xml.end(), utf16xml.begin(), [](const char16_t &ch) {
         return static_cast<char16_t>(static_cast<uint16_t>(ch) >> kBitsPerByte | static_cast<uint16_t>(ch) << kBitsPerByte);
       });
     }

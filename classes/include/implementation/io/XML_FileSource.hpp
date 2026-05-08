@@ -1,5 +1,12 @@
 #pragma once
 
+#include "ISource.hpp"
+
+#include <fstream>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
 class FileSource final : public ISource

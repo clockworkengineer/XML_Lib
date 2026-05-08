@@ -9,6 +9,7 @@
 #include "XML.hpp"
 #include "XML_Core.hpp"
 #include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <vector>
 
@@ -271,6 +272,33 @@ void XML_EntityMapper::setExternal(const std::string_view &entityName, const XML
 /// a current set of used entities; throwing an exception if it is already
 /// being used.
 /// </summary>
+void XML_EntityMapper::checkRecursiveEntity(const std::string_view &entityName,
+  const std::string &expanded,
+  std::set<std::string> &currentEntities)
+{
+  BufferSource expandedSource{ expanded };
+  while (expandedSource.more()) {
+    if (expandedSource.current() == entityName[0]) {
+      std::string mappedEntityName{ toUtf8(expandedSource.current()) };
+      expandedSource.next();
+      while (expandedSource.more() && expandedSource.current() != ';') {
+        mappedEntityName += toUtf8(expandedSource.current());
+        expandedSource.next();
+      }
+      mappedEntityName += toUtf8(expandedSource.current());
+      if (currentEntities.contains(mappedEntityName)) {
+        throw SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed.");
+      }
+      if (auto nextMappedName = getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
+        currentEntities.emplace(mappedEntityName);
+        recurseOverEntityReference(nextMappedName, entityName[0], currentEntities);
+        currentEntities.erase(mappedEntityName);
+      }
+    }
+    expandedSource.next();
+  }
+}
+
 void XML_EntityMapper::checkForRecursion()
 {
   std::set<std::string> currentEntities{};
