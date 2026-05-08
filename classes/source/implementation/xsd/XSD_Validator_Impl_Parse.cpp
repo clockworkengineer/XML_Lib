@@ -9,6 +9,7 @@
 #include "XSD_Impl.hpp"
 #include <algorithm>
 #include <charconv>
+#include <unordered_map>
 
 namespace XML_Lib {
 
@@ -95,35 +96,28 @@ std::vector<std::reference_wrapper<const Node>> XSD_Impl::childElements(const No
 /// </summary>
 void XSD_Impl::parseRestriction(const Node &restrictNode, XSD_SimpleType &st)
 {
+  static const std::unordered_map<std::string_view, XSD_Restriction::Facet> facetMap{
+    { "minLength",    XSD_Restriction::Facet::minLength    },
+    { "maxLength",    XSD_Restriction::Facet::maxLength    },
+    { "length",       XSD_Restriction::Facet::length       },
+    { "pattern",      XSD_Restriction::Facet::pattern      },
+    { "enumeration",  XSD_Restriction::Facet::enumeration  },
+    { "minInclusive", XSD_Restriction::Facet::minInclusive },
+    { "maxInclusive", XSD_Restriction::Facet::maxInclusive },
+    { "minExclusive", XSD_Restriction::Facet::minExclusive },
+    { "maxExclusive", XSD_Restriction::Facet::maxExclusive },
+    { "totalDigits",  XSD_Restriction::Facet::totalDigits  },
+    { "fractionDigits", XSD_Restriction::Facet::fractionDigits },
+    { "whiteSpace",   XSD_Restriction::Facet::whiteSpace   },
+  };
+
   st.baseType = resolveType(attrValue(restrictNode, "base"));
   for (const auto &childRef : childElements(restrictNode)) {
     const auto &child = childRef.get();
     const auto tag = localTag(child);
     const auto val = attrValue(child, "value");
-    if (tag == "minLength") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::minLength, std::string(val) });
-    } else if (tag == "maxLength") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::maxLength, std::string(val) });
-    } else if (tag == "length") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::length, std::string(val) });
-    } else if (tag == "pattern") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::pattern, std::string(val) });
-    } else if (tag == "enumeration") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::enumeration, std::string(val) });
-    } else if (tag == "minInclusive") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::minInclusive, std::string(val) });
-    } else if (tag == "maxInclusive") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::maxInclusive, std::string(val) });
-    } else if (tag == "minExclusive") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::minExclusive, std::string(val) });
-    } else if (tag == "maxExclusive") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::maxExclusive, std::string(val) });
-    } else if (tag == "totalDigits") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::totalDigits, std::string(val) });
-    } else if (tag == "fractionDigits") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::fractionDigits, std::string(val) });
-    } else if (tag == "whiteSpace") {
-      st.restrictions.emplace_back(XSD_Restriction{ XSD_Restriction::Facet::whiteSpace, std::string(val) });
+    if (const auto it = facetMap.find(tag); it != facetMap.end()) {
+      st.restrictions.emplace_back(XSD_Restriction{ it->second, std::string(val) });
     }
   }
 }
