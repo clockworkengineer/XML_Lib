@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/XML_Error.hpp"
+
 #include <cstdint>
 #include <string>
 #include <string_view>
@@ -13,10 +15,7 @@ struct DTD final : Variant
   //
   // DTD Error
   //
-  struct Error final : std::runtime_error
-  {
-    explicit Error(const std::string_view &message) : std::runtime_error(std::string("DTD Error: ").append(message)) {}
-  };
+  XML_LIB_DEFINE_ERROR("DTD");
   //
   // DTD Type
   //

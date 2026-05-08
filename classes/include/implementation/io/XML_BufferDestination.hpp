@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/XML_Error.hpp"
 #include "IDestination.hpp"
 
 #include <algorithm>
@@ -15,10 +16,7 @@ class BufferDestination final : public IDestination
 {
 public:
   // BufferDestination Error
-  struct Error final : std::runtime_error
-  {
-    explicit Error(const std::string_view &message) : std::runtime_error(std::string("BufferDestination Error: ").append(message)) {}
-  };
+  XML_LIB_DEFINE_ERROR("BufferDestination");
   // Constructors/Destructors
   BufferDestination() = default;
   BufferDestination(const BufferDestination &other) = delete;

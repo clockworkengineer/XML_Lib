@@ -4,6 +4,17 @@
 #include <string_view>
 #include <exception>
 
+// Helper macro: defines a nested Error type inheriting std::runtime_error.
+// Only available when exceptions are enabled.
+#ifndef XML_LIB_NO_EXCEPTIONS
+#  include <stdexcept>
+#  define XML_LIB_DEFINE_ERROR(Prefix)                                          \
+     struct Error final : std::runtime_error {                                   \
+       explicit Error(const std::string_view &message)                          \
+         : std::runtime_error(std::string(Prefix " Error: ").append(message)) {} \
+     }
+#endif
+
 namespace XML_Lib {
 #ifdef XML_LIB_NO_EXCEPTIONS
 struct Error { explicit Error(const std::string_view &message) : message(message) {} std::string message; };
@@ -13,11 +24,7 @@ struct ValidationError { explicit ValidationError(const long lineNumber, const s
 template<typename E> [[noreturn]] inline void xml_lib_throw(const E &error) { (void)error; std::terminate(); }
 #define XML_LIB_THROW(exception) XML_Lib::xml_lib_throw(exception)
 #else
-#include <stdexcept>
-struct Error final : std::runtime_error
-{
-  explicit Error(const std::string_view &message) : std::runtime_error(std::string("XML Error: ").append(message)) {}
-};
+XML_LIB_DEFINE_ERROR("XML");
 struct SyntaxError final : std::runtime_error
 {
   explicit SyntaxError(const std::string_view &message) : std::runtime_error(std::string("XML Syntax Error: ").append(message)) {}

@@ -15,12 +15,7 @@ class FileDestination final : public IDestination
 {
 public:
   // FileDestination Error
-  struct Error final : std::runtime_error
-  {
-    explicit Error(const std::string_view &message)
-      : std::runtime_error(std::string("FileSestination Error: ").append(message))
-    {}
-  };
+  XML_LIB_DEFINE_ERROR("FileDestination");
   // Constructors/Destructors
   explicit FileDestination(const std::string_view &filename) : filename(filename)
   {

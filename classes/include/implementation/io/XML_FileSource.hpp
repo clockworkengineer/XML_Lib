@@ -14,12 +14,7 @@ class FileSource final : public ISource
 {
 public:
   // FileSource Error
-  struct Error final : std::runtime_error
-  {
-    explicit Error(const std::string_view &message)
-      : std::runtime_error(std::string("FileSource Error: ").append(message))
-    {}
-  };
+  XML_LIB_DEFINE_ERROR("FileSource");
   // Constructors/Destructors
   explicit FileSource(const std::string_view &sourceFileName) : filename(sourceFileName)
   {
