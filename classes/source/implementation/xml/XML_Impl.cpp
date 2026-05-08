@@ -89,7 +89,14 @@ std::vector<const Node *> XML_Impl::xpath(const std::string_view expression)
 }
 #endif
 
-void XML_Impl::parse(ISource &source) { xmlRoot = xmlParser->parse(source); }
+void XML_Impl::parse(ISource &source)
+{
+#if defined(XML_LIB_EMBEDDED)
+  XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
+  XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
+#endif
+  xmlRoot = xmlParser->parse(source);
+}
 
 void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(prolog(), destination, 0); }
 

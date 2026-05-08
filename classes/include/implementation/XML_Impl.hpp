@@ -41,6 +41,8 @@ public:
   [[nodiscard]] static XML::Format getFileFormat(const std::string_view &fileName);
 
 private:
+  // Embedded arena for parser-allocated nodes
+  XML_Arena arena;
   // Root Node
   Node xmlRoot;
   // Traverse JSON tree

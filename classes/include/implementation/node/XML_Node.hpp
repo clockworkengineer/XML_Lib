@@ -1,8 +1,10 @@
 #pragma once
 
 #include <memory_resource>
+#include <stdexcept>
 #include <string>
 #include <string_view>
+#include "common/XML_Arena.hpp"
 
 namespace XML_Lib {
 
