@@ -94,6 +94,7 @@ endif()
 if(XML_LIB_ENABLE_XPATH)
   list(APPEND XML_LIBRARY_SOURCES
     classes/source/XPath.cpp
+    classes/source/implementation/xpath/XPath_EvalHelpers.cpp
     classes/source/implementation/xpath/XPath_Lexer.cpp
     classes/source/implementation/xpath/XPath_Parser.cpp
     classes/source/implementation/xpath/XPath_Evaluator.cpp

@@ -8,6 +8,7 @@
 //
 
 #include "XPath_Impl.hpp"
+#include "XPath_EvalHelpers.hpp"
 #include "XPath_AST.hpp"
 #include "XPath_Lexer.hpp"
 #include "XPath_Parser.hpp"
@@ -34,64 +35,6 @@ static XPathResult evalExpr(const XPathExpr &expr,
   const Node &documentRoot,
   const std::vector<const Node *> &ancestorStack);
 
-// ========================================================================
-// Append the string-value of a node into an existing buffer
-// ========================================================================
-static void appendNodeStringValue(const Node &node, std::string &out)
-{
-  if (isA<Content>(node)) {
-    out += NRef<Content>(node).getContents();
-    return;
-  }
-
-  std::vector<const Node *> stack;
-  stack.reserve(16);
-  stack.push_back(&node);
-
-  while (!stack.empty()) {
-    const Node *current = stack.back();
-    stack.pop_back();
-    if (isA<Content>(*current)) {
-      out += NRef<Content>(*current).getContents();
-      continue;
-    }
-    const auto &children = current->getChildren();
-    for (auto it = children.rbegin(); it != children.rend(); ++it) {
-      stack.push_back(&*it);
-    }
-  }
-}
-
-// ========================================================================
-// String-value of a node
-// ========================================================================
-static std::string nodeStringValue(const Node &node)
-{
-  std::string result;
-  result.reserve(64);
-  appendNodeStringValue(node, result);
-  return result;
-}
-
-// ========================================================================
-// Get the element name from a node (empty if not an element type)
-// ========================================================================
-static std::string_view nodeNameView(const Node &node)
-{
-  if (isA<Element>(node)) return NRef<Element>(node).name();
-  if (isA<Root>(node)) return NRef<Root>(node).name();
-  if (isA<Self>(node)) return NRef<Self>(node).name();
-  if (isA<PI>(node)) return NRef<PI>(node).name();
-  return std::string_view{};
-}
-
-static std::string_view nodeLocalNameView(const Node &node)
-{
-  const std::string_view nm = nodeNameView(node);
-  const auto pos = nm.find(':');
-  return (pos != std::string_view::npos) ? nm.substr(pos + 1) : nm;
-}
-
 static std::string nodeNamespaceURI(const Node &node)
 {
   if (isA<Element>(node)) return NRef<Element>(node).getNamespaceURI();
@@ -103,49 +46,8 @@ static std::string nodeNamespaceURI(const Node &node)
 // ========================================================================
 // Type conversions
 // ========================================================================
-static std::string resultToString(const XPathResult &r);
 static double resultToNumber(const XPathResult &r);
 static bool resultToBool(const XPathResult &r);
-static double stringToNumber(std::string_view s);
-
-static std::string resultToString(const XPathResult &r)
-{
-  switch (r.type) {
-  case XPathResultType::String:
-    return r.stringValue;
-  case XPathResultType::Number: {
-    if (std::isnan(r.numberValue)) return "NaN";
-    if (std::isinf(r.numberValue)) return (r.numberValue > 0) ? "Infinity" : "-Infinity";
-    char buffer[64];
-    const auto [ptr, ec] = std::to_chars(buffer, buffer + sizeof(buffer), r.numberValue);
-    if (ec == std::errc()) return std::string(buffer, ptr);
-    std::ostringstream os;
-    os << r.numberValue;
-    return os.str();
-  }
-  case XPathResultType::Boolean:
-    return r.boolValue ? "true" : "false";
-  case XPathResultType::NodeSet:
-    if (r.nodeSet.empty()) return "";
-    if (const auto it = r.attrValues.find(r.nodeSet.front()); it != r.attrValues.end()) return it->second;
-    return nodeStringValue(*r.nodeSet.front());
-  }
-  return "";
-}
-
-static double stringToNumber(std::string_view s)
-{
-  const auto trimStart = s.find_first_not_of(" \t\n\r\f\v");
-  if (trimStart == std::string_view::npos) return std::numeric_limits<double>::quiet_NaN();
-  s.remove_prefix(trimStart);
-  const auto trimEnd = s.find_last_not_of(" \t\n\r\f\v");
-  s.remove_suffix(s.size() - trimEnd - 1);
-
-  double result = 0.0;
-  const auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), result);
-  if (ec == std::errc() && ptr == s.data() + s.size()) return result;
-  return std::numeric_limits<double>::quiet_NaN();
-}
 
 static double resultToNumber(const XPathResult &r)
 {
@@ -167,8 +69,6 @@ static double resultToNumber(const XPathResult &r)
   return 0.0;
 }
 
-static std::string_view resultToStringView(const XPathResult &r, std::string &scratch);
-
 static bool resultToBool(const XPathResult &r)
 {
   switch (r.type) {
@@ -182,20 +82,6 @@ static bool resultToBool(const XPathResult &r)
     return !r.nodeSet.empty();
   }
   return false;
-}
-
-static std::string_view resultToStringView(const XPathResult &r, std::string &scratch)
-{
-  switch (r.type) {
-  case XPathResultType::String:
-    return r.stringValue;
-  case XPathResultType::Number:
-  case XPathResultType::Boolean:
-  case XPathResultType::NodeSet:
-    scratch = resultToString(r);
-    return scratch;
-  }
-  return scratch;
 }
 
 // ========================================================================
@@ -248,11 +134,7 @@ static bool matchNodeTest(const Node &node,
     return isA<PI>(node);
   case XPathNodeTestKind::NameTest: {
     if (!isElement(node)) return false;
-    if (test.name == "*") return true;
-    const std::string_view name = nodeNameView(node);
-    const auto pos = name.find(':');
-    const std::string_view local = (pos != std::string_view::npos) ? name.substr(pos + 1) : name;
-    return name == test.name || local == test.name;
+    return matchNodeName(node, test.name);
   }
   }
   return false;
