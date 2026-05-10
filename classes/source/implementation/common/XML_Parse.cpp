@@ -8,6 +8,7 @@
 
 #include "XML.hpp"
 #include "XML_Core.hpp"
+#include "XML_ParseHelpers.hpp"
 #include <charconv>
 
 namespace XML_Lib {
@@ -19,14 +20,11 @@ namespace XML_Lib {
 /// <returns>XML name.</returns>
 std::string parseName(ISource &source)
 {
-  String name;
-  name.reserve(16);
-  while (source.more() && validNameChar(source.current())) {
-    name += source.current();
-    source.next();
-  }
+  const String name = readName(source);
   source.ignoreWS();
-  if (!validName(name)) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered.")); }
+  if (!validName(name)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered."));
+  }
   return toUtf8(name);
 }
 
@@ -37,14 +35,7 @@ std::string parseName(ISource &source)
 /// <returns>Parsed entity reference value.</returns>
 XMLValue parseEntityReference(ISource &source)
 {
-  std::string unparsed;
-  unparsed.reserve(16);
-  unparsed += toUtf8(source.current());
-  source.next();
-  unparsed += parseName(source);
-  if (source.current() != ';') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalidly formed entity reference.")); }
-  unparsed += ';';
-  source.next();
+  const std::string unparsed = readEntityReferenceText(source);
   return XMLValue{ unparsed, unparsed };
 }
 
@@ -62,7 +53,9 @@ XMLValue parseCharacterReference(ISource &source)
     unparsed += toUtf8(source.current());
     source.next();
   }
-  if (source.current() != ';') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalidly formed  character reference.")); }
+  if (source.current() != ';') {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalidly formed  character reference."));
+  }
   source.next();
   unparsed += ';';
 
@@ -94,48 +87,14 @@ XMLValue parseCharacterReference(ISource &source)
 /// <returns>Character value.</returns>
 XMLValue parseCharacter(ISource &source)
 {
-  if (source.match("&#")) {
-    return parseCharacterReference(source);
-  }
-  if (source.current() == '&') {
-    return parseEntityReference(source);
-  }
-  if (validChar(source.current())) {
-    const std::string character{ toUtf8(source.current()) };
-    source.next();
-    return XMLValue{ character, character };
-  }
-  XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character value encountered."));
+  return parseCharacterOrReference(source);
 }
 
 namespace {
 
 XMLValue parseValueImpl(ISource &source, IEntityMapper *entityMapper)
 {
-  if (source.current() == '\'' || source.current() == '"') {
-    std::string unparsed;
-    std::string parsed;
-    unparsed.reserve(32);
-    parsed.reserve(32);
-
-    const Char quote = source.current();
-    source.next();
-    while (source.more() && source.current() != quote) {
-      XMLValue character{ parseCharacter(source) };
-      if (entityMapper != nullptr && character.isEntityReference()) {
-        XMLValue entityReference{ entityMapper->map(character) };
-        unparsed += entityReference.getUnparsed();
-        parsed += entityReference.getParsed();
-      } else {
-        unparsed += character.getUnparsed();
-        parsed += character.getParsed();
-      }
-    }
-    source.next();
-    source.ignoreWS();
-    return XMLValue{ unparsed, parsed, static_cast<char>(quote) };
-  }
-  XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid attribute value."));
+  return parseQuotedValue(source, entityMapper);
 }
 
 } // namespace
@@ -169,12 +128,6 @@ XMLValue parseValue(ISource &source)
 std::string parseTagBody(ISource &source)
 {
   source.ignoreWS();
-  String body;
-  body.reserve(64);
-  while (source.more() && source.current() != '>') {
-    body += source.current();
-    source.next();
-  }
-  return toUtf8(body);
+  return readUntil(source, '>');
 }
 }// namespace  XML_Lib
