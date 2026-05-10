@@ -7,6 +7,7 @@
 //
 
 #include "XSD_Impl.hpp"
+#include "xsd/XSD_NodeHelpers.hpp"
 #include <algorithm>
 #include <charconv>
 #include <unordered_map>
@@ -35,10 +36,7 @@ uint32_t parseUint(const std::string_view &value, uint32_t defaultValue = 1u)
 /// </summary>
 std::string_view XSD_Impl::localTag(const Node &node)
 {
-  const auto &name = NRef<Element>(node).name();
-  const auto pos = name.find(':');
-  const auto view = std::string_view(name);
-  return pos != std::string::npos ? view.substr(pos + 1) : view;
+  return localTagView(node);
 }
 
 /// <summary>
@@ -46,9 +44,7 @@ std::string_view XSD_Impl::localTag(const Node &node)
 /// </summary>
 std::string_view XSD_Impl::attrValue(const Node &node, const std::string_view &attrName)
 {
-  const auto &elem = NRef<Element>(node);
-  if (elem.hasAttribute(attrName)) { return elem[attrName].getParsed(); }
-  return std::string_view{};
+  return attrValueView(node, attrName);
 }
 
 /// <summary>
@@ -73,18 +69,7 @@ std::string XSD_Impl::resolveType(const std::string_view &typeStr)
 /// </summary>
 std::vector<std::reference_wrapper<const Node>> XSD_Impl::childElements(const Node &node)
 {
-  const auto &children = node.getChildren();
-  size_t count = 0;
-  for (const auto &child : children) {
-    if (isA<Element>(child) || isA<Root>(child) || isA<Self>(child)) { ++count; }
-  }
-
-  std::vector<std::reference_wrapper<const Node>> result;
-  result.reserve(count);
-  for (const auto &child : children) {
-    if (isA<Element>(child) || isA<Root>(child) || isA<Self>(child)) { result.emplace_back(child); }
-  }
-  return result;
+  return childElementRefs(node);
 }
 
 // ----------------------------------------------------------------
@@ -132,9 +117,8 @@ void XSD_Impl::parseRestriction(const Node &restrictNode, XSD_SimpleType &st)
 void XSD_Impl::parseSimpleType(const Node &stNode, XSD_SimpleType &st)
 {
   st.name = attrValue(stNode, "name");
-  for (const auto &childRef : childElements(stNode)) {
-    const auto &child = childRef.get();
-    if (localTag(child) == "restriction") { parseRestriction(child, st); }
+  for (const auto &child : childElementViews(stNode)) {
+    if (child.tag == "restriction") { parseRestriction(child.node, st); }
   }
 }
 
@@ -178,15 +162,37 @@ void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
   particle.typeRef = resolveType(attrValue(particleNode, "type"));
 
   // Check for inline type declarations
-  for (const auto &childRef : childElements(particleNode)) {
-    const auto &child = childRef.get();
-    const auto tag = localTag(child);
+  for (const auto &child : childElementViews(particleNode)) {
+    const auto &childNode = child.node.get();
+    const auto tag = child.tag;
     if (tag == "complexType") {
       particle.inlineComplexType = std::make_unique<XSD_ComplexType>();
-      parseComplexType(child, *particle.inlineComplexType);
+      parseComplexType(childNode, *particle.inlineComplexType);
     } else if (tag == "simpleType") {
       particle.inlineSimpleType = std::make_unique<XSD_SimpleType>();
-      parseSimpleType(child, *particle.inlineSimpleType);
+      parseSimpleType(childNode, *particle.inlineSimpleType);
+    }
+  }
+}
+
+void XSD_Impl::parseChildParticleList(const Node &parentNode, XSD_ComplexType &ct)
+{
+  for (const auto &child : childElementViews(parentNode)) {
+    if (child.tag == "element") {
+      XSD_Particle particle;
+      parseParticle(child.node, particle);
+      ct.particles.push_back(std::move(particle));
+    }
+  }
+}
+
+void XSD_Impl::parseChildAttributes(const Node &parentNode, XSD_ComplexType &ct)
+{
+  for (const auto &child : childElementViews(parentNode)) {
+    if (child.tag == "attribute") {
+      XSD_AttributeDecl attr;
+      parseAttributeDecl(child.node, attr);
+      ct.attributes.push_back(std::move(attr));
     }
   }
 }
@@ -204,60 +210,31 @@ void XSD_Impl::parseComplexType(const Node &ctNode, XSD_ComplexType &ct)
   const auto mixedStr = attrValue(ctNode, "mixed");
   ct.mixed = (mixedStr == "true" || mixedStr == "1");
 
-  for (const auto &childRef : childElements(ctNode)) {
-    const auto &child = childRef.get();
-    const auto tag = localTag(child);
+  for (const auto &child : childElementViews(ctNode)) {
+    const auto &childNode = child.node.get();
+    const auto tag = child.tag;
     if (tag == "sequence") {
       ct.compositor = XSD_ComplexType::Compositor::sequence;
-      for (const auto &particleChildRef : childElements(child)) {
-        const auto &particleChild = particleChildRef.get();
-        if (localTag(particleChild) == "element") {
-          XSD_Particle particle;
-          parseParticle(particleChild, particle);
-          ct.particles.push_back(std::move(particle));
-        }
-      }
+      parseChildParticleList(childNode, ct);
     } else if (tag == "choice") {
       ct.compositor = XSD_ComplexType::Compositor::choice;
-      for (const auto &particleChildRef : childElements(child)) {
-        const auto &particleChild = particleChildRef.get();
-        if (localTag(particleChild) == "element") {
-          XSD_Particle particle;
-          parseParticle(particleChild, particle);
-          ct.particles.push_back(std::move(particle));
-        }
-      }
+      parseChildParticleList(childNode, ct);
     } else if (tag == "all") {
       ct.compositor = XSD_ComplexType::Compositor::all;
-      for (const auto &particleChildRef : childElements(child)) {
-        const auto &particleChild = particleChildRef.get();
-        if (localTag(particleChild) == "element") {
-          XSD_Particle particle;
-          parseParticle(particleChild, particle);
-          ct.particles.push_back(std::move(particle));
-        }
-      }
+      parseChildParticleList(childNode, ct);
     } else if (tag == "attribute") {
       XSD_AttributeDecl attr;
-      parseAttributeDecl(child, attr);
+      parseAttributeDecl(childNode, attr);
       ct.attributes.push_back(std::move(attr));
     } else if (tag == "anyAttribute") {
       ct.hasAnyAttribute = true;
     } else if (tag == "simpleContent" || tag == "complexContent") {
       // Handle extension/restriction of content
-      for (const auto &contentChildRef : childElements(child)) {
-        const auto &contentChild = contentChildRef.get();
-        const auto contentTag = localTag(contentChild);
+      for (const auto &contentChild : childElementViews(childNode)) {
+        const auto &contentChildNode = contentChild.node.get();
+        const auto contentTag = contentChild.tag;
         if (contentTag == "extension" || contentTag == "restriction") {
-          // Parse attributes declared inside extension/restriction
-          for (const auto &extChildRef : childElements(contentChild)) {
-            const auto &extChild = extChildRef.get();
-            if (localTag(extChild) == "attribute") {
-              XSD_AttributeDecl attr;
-              parseAttributeDecl(extChild, attr);
-              ct.attributes.push_back(std::move(attr));
-            }
-          }
+          parseChildAttributes(contentChildNode, ct);
         }
       }
     }

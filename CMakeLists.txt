@@ -85,6 +85,7 @@ if(XML_LIB_ENABLE_XSD)
   list(APPEND XML_LIBRARY_SOURCES
     classes/source/implementation/xsd/XSD_Validator.cpp
     classes/source/implementation/xsd/XSD_Validator_Impl.cpp
+    classes/source/implementation/xsd/XSD_NodeHelpers.cpp
     classes/source/implementation/xsd/XSD_Validator_Impl_Parse.cpp
     classes/source/implementation/xsd/XSD_Validator_Impl_Validate.cpp
   )

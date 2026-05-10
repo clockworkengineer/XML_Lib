@@ -113,6 +113,8 @@ private:
   void parseComplexType(const Node &ctNode, XSD_ComplexType &ct);
   void parseSimpleType(const Node &stNode, XSD_SimpleType &st);
   void parseParticle(const Node &particleNode, XSD_Particle &particle);
+  void parseChildParticleList(const Node &parentNode, XSD_ComplexType &ct);
+  void parseChildAttributes(const Node &parentNode, XSD_ComplexType &ct);
   void parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr);
   void parseRestriction(const Node &restrictNode, XSD_SimpleType &st);
   // Retrieve attribute value from a schema node, empty string view if absent
