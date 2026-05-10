@@ -66,6 +66,7 @@ set(XML_LIBRARY_SOURCES
   classes/source/implementation/common/XML_ParseHelpers.cpp
   classes/source/implementation/common/XML_Utility.cpp
   classes/source/implementation/entity/XML_EntityMapper.cpp
+  classes/source/implementation/entity/XML_EntityMapperHelpers.cpp
   classes/source/implementation/converter/${PLATFORM}/XML_Converter.cpp
 )
 

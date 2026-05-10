@@ -8,6 +8,7 @@
 
 #include "XML.hpp"
 #include "XML_Core.hpp"
+#include "entity/XML_EntityMapperHelpers.hpp"
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -20,8 +21,7 @@ namespace XML_Lib {
 /// </summary>
 void  XML_EntityMapper::resetToDefault()
 {
-  entityMappings.clear();
-  entityMappings.reserve(16);
+  entityMappings.clear();  invalidateTranslationCache();  entityMappings.reserve(16);
   entityMappings.emplace("&amp;", XML_EntityMapping{ "&#x26;" });
   entityMappings.emplace("&quot;", XML_EntityMapping{ "&#x22;" });
   entityMappings.emplace("&apos;", XML_EntityMapping{ "&#x27;" });
@@ -72,6 +72,11 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entity
 /// <returns>String containing the contents of entity reference mapping file.</returns>
 std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fileName) const
 {
+  return getCachedFileMapping(fileName);
+}
+
+std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileName) const
+{
   const std::string key{ fileName };
   if (const auto it = externalFileCache.find(key); it != externalFileCache.end()) {
     return it->second;
@@ -94,18 +99,9 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fil
   return externalFileCache.at(key);
 }
 
-/// <summary>
-/// Get entity reference from the map.
-/// </summary>
-/// <param name="entityName">Entity reference name.</param>
-/// <returns>Reference to entity mapping in the internal map.</returns>
 XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string_view &entityName)
 {
-  if (auto entity = entityMappings.find(entityName); entity != entityMappings.end()) {
-    return entity->second;
-  }
-  const auto [it, inserted] = entityMappings.emplace(std::string(entityName), XML_EntityMapping());
-  return it->second;
+  return ensureEntityMapping(entityMappings, entityName);
 }
 
 /// <summary>
@@ -126,6 +122,22 @@ XML_EntityMapper::XML_EntityMapper() { resetToDefault(); }
 /// </summary>
 XML_EntityMapper::~XML_EntityMapper() = default;
 
+void XML_EntityMapper::invalidateTranslationCache() const
+{
+  translationCacheValid = false;
+  translationCandidates.clear();
+}
+
+const std::vector<std::pair<std::string_view, const XML_EntityMapping *>> &XML_EntityMapper::getTranslationCandidates(char type) const
+{
+  if (!translationCacheValid || translationType != type) {
+    translationCandidates = buildTranslationCandidates(entityMappings, type);
+    translationType = type;
+    translationCacheValid = true;
+  }
+  return translationCandidates;
+}
+
 /// <summary>
 /// Is an entry for an entity reference present in the map?
 /// </summary>
@@ -133,23 +145,17 @@ XML_EntityMapper::~XML_EntityMapper() = default;
 /// <returns></returns>
 bool XML_EntityMapper::isPresent(const std::string_view &entityName) const
 {
-  return entityMappings.find(entityName) != entityMappings.end();
+  return findEntityMapping(entityMappings, entityName) != nullptr;
 }
 
-/// <summary>
-/// Get mapping for an entity reference.
-/// </summary>
-/// <param name="entityReference">.</param>
-/// <returns></returns>
 XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 {
-  if (isPresent(entityReference.getUnparsed())) {
+  if (const auto *entityMapping = findEntityMapping(entityMappings, entityReference.getUnparsed())) {
     std::string parsed{ entityReference.getUnparsed() };
-    auto &entityMapping = getEntityMapping(entityReference.getUnparsed());
-    if (!entityMapping.getInternal().empty()) {
-      parsed = entityMapping.getInternal();
-    } else if (entityMapping.isExternal()) {
-      const auto &systemID = entityMapping.getExternal().getSystemID();
+    if (!entityMapping->getInternal().empty()) {
+      parsed = entityMapping->getInternal();
+    } else if (entityMapping->isExternal()) {
+      const auto &systemID = entityMapping->getExternal().getSystemID();
       if (std::filesystem::exists(systemID)) {
         parsed = getFileMappingContents(systemID);
       } else {
@@ -171,18 +177,8 @@ std::string XML_EntityMapper::translate(const std::string_view &toTranslate, con
 {
   if (toTranslate.empty()) { return std::string{}; }
 
-  std::vector<std::pair<std::string_view, const XML_EntityMapping *>> candidates;
-  candidates.reserve(entityMappings.size());
-  for (const auto &[key, mapping] : entityMappings) {
-    if (!key.empty() && key[0] == type) {
-      candidates.emplace_back(std::string_view(key), &mapping);
-    }
-  }
+  const auto &candidates = getTranslationCandidates(type);
   if (candidates.empty()) { return std::string(toTranslate); }
-
-  std::sort(candidates.begin(), candidates.end(), [](const auto &a, const auto &b) {
-    return a.first.size() > b.first.size();
-  });
 
   std::string translated;
   translated.reserve(toTranslate.size());
@@ -194,25 +190,21 @@ std::string XML_EntityMapper::translate(const std::string_view &toTranslate, con
       continue;
     }
 
-    bool replaced = false;
-    for (const auto &[key, mapping] : candidates) {
-      if (toTranslate.size() - pos >= key.size() && toTranslate.substr(pos, key.size()) == key) {
-        if (mapping->isInternal()) {
-          translated.append(mapping->getInternal());
-        } else if (mapping->isExternal()) {
-          translated.append(getFileMappingContents(mapping->getExternal().getSystemID()));
-        } else {
-          translated.append(key);
-        }
-        pos += key.size();
-        replaced = true;
-        break;
+    if (const auto match = matchEntityPrefix(candidates, toTranslate, pos); match.has_value()) {
+      const auto &[key, mapping] = *match;
+      if (mapping->isInternal()) {
+        translated.append(mapping->getInternal());
+      } else if (mapping->isExternal()) {
+        translated.append(getFileMappingContents(mapping->getExternal().getSystemID()));
+      } else {
+        translated.append(key);
       }
+      pos += key.size();
+      continue;
     }
-    if (!replaced) {
-      translated.push_back(toTranslate[pos]);
-      ++pos;
-    }
+
+    translated.push_back(toTranslate[pos]);
+    ++pos;
   }
   return translated;
 }
@@ -220,9 +212,23 @@ std::string XML_EntityMapper::translate(const std::string_view &toTranslate, con
 /// <summary>
 /// Determine entity type
 /// </summary>
-bool XML_EntityMapper::isInternal(const std::string_view &entityName) { return getEntityMapping(entityName).isInternal(); }
-bool XML_EntityMapper::isExternal(const std::string_view &entityName) { return getEntityMapping(entityName).isExternal(); }
-bool XML_EntityMapper::isNotation(const std::string_view &entityName) { return getEntityMapping(entityName).isNotation(); }
+bool XML_EntityMapper::isInternal(const std::string_view &entityName)
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isInternal(); }
+  return false;
+}
+
+bool XML_EntityMapper::isExternal(const std::string_view &entityName)
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isExternal(); }
+  return false;
+}
+
+bool XML_EntityMapper::isNotation(const std::string_view &entityName)
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isNotation(); }
+  return false;
+}
 
 /// <summary>
 /// Get entity mapping values.
@@ -255,14 +261,19 @@ const XMLExternalReference &XML_EntityMapper::getExternal(const std::string_view
 void XML_EntityMapper::setInternal(const std::string_view &entityName, const std::string_view &internal)
 {
   getEntityMapping(entityName).setInternal(internal);
+  invalidateTranslationCache();
 }
+
 void XML_EntityMapper::setNotation(const std::string_view &entityName, const std::string_view &notation)
 {
   getEntityMapping(entityName).setNotation(notation);
+  invalidateTranslationCache();
 }
+
 void XML_EntityMapper::setExternal(const std::string_view &entityName, const XMLExternalReference &external)
 {
   getEntityMapping(entityName).setExternal(external);
+  invalidateTranslationCache();
 }
 
 /// <summary>

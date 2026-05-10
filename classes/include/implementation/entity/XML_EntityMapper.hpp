@@ -64,12 +64,18 @@ private:
     recurseOverEntityReference(const std::string_view &entityName, Char type, std::set<std::string> &currentEntities);
   // Get the contents of the file that is pointed to by an entity reference
   [[nodiscard]] std::string getFileMappingContents(const std::string_view &fileName) const;
+  [[nodiscard]] std::string getCachedFileMapping(const std::string_view &fileName) const;
   // Get entity reference mapping entry
   [[nodiscard]] XML_EntityMapping &getEntityMapping(const std::string_view &entityName);
   // Reset entity map
   void resetToDefault();
+  void invalidateTranslationCache() const;
+  [[nodiscard]] const std::vector<std::pair<std::string_view, const XML_EntityMapping *>> &getTranslationCandidates(char type) const;
 
   std::unordered_map<std::string, XML_EntityMapping, EntityMapHash, EntityMapEq> entityMappings;
   mutable std::unordered_map<std::string, std::string> externalFileCache;
+  mutable std::vector<std::pair<std::string_view, const XML_EntityMapping *>> translationCandidates;
+  mutable char translationType{ '\0' };
+  mutable bool translationCacheValid{ false };
 };
 }// namespace XML_Lib
