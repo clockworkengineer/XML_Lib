@@ -470,6 +470,13 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     }
     return res;
   };
+  auto nodeFromOptArg = [&]() -> const Node * {
+    auto args = evalArgs();
+    if (!args.empty() && args[0].type == XPathResultType::NodeSet && !args[0].nodeSet.empty()) {
+      return args[0].nodeSet.front();
+    }
+    return &contextNode;
+  };
 
   // --- Node-set functions ---
   if (name == "position") {
@@ -486,20 +493,11 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     return makeNumber(static_cast<double>(args[0].nodeSet.size()));
   }
   if (name == "name" || name == "local-name") {
-    auto args = evalArgs();
-    const Node *n = &contextNode;
-    if (!args.empty() && args[0].type == XPathResultType::NodeSet && !args[0].nodeSet.empty()) {
-      n = args[0].nodeSet.front();
-    }
+    const Node *n = nodeFromOptArg();
     return makeString((name == "local-name") ? std::string(nodeLocalNameView(*n)) : std::string(nodeNameView(*n)));
   }
   if (name == "namespace-uri") {
-    auto args = evalArgs();
-    const Node *n = &contextNode;
-    if (!args.empty() && args[0].type == XPathResultType::NodeSet && !args[0].nodeSet.empty()) {
-      n = args[0].nodeSet.front();
-    }
-    return makeString(nodeNamespaceURI(*n));
+    return makeString(nodeNamespaceURI(*nodeFromOptArg()));
   }
 
   // --- Boolean functions ---
@@ -542,13 +540,11 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     }
     return makeNumber(total);
   }
-  if (name == "floor") {
+  if (name == "floor" || name == "ceiling") {
     auto args = evalArgs();
-    return makeNumber(args.empty() ? std::numeric_limits<double>::quiet_NaN() : std::floor(resultToNumber(args[0])));
-  }
-  if (name == "ceiling") {
-    auto args = evalArgs();
-    return makeNumber(args.empty() ? std::numeric_limits<double>::quiet_NaN() : std::ceil(resultToNumber(args[0])));
+    if (args.empty()) { return makeNumber(std::numeric_limits<double>::quiet_NaN()); }
+    const double val = resultToNumber(args[0]);
+    return makeNumber(name == "floor" ? std::floor(val) : std::ceil(val));
   }
   if (name == "round") {
     auto args = evalArgs();

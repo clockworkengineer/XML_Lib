@@ -141,14 +141,11 @@ void DTD_Impl::parseAttributeValue(ISource &source, DTD::Attribute &attribute) c
     attribute.type |= DTD::AttributeType::required;
   } else if (source.match("#IMPLIED")) {
     attribute.type |= DTD::AttributeType::implied;
-  } else if (source.match("#FIXED")) {
-    source.ignoreWS();
-    attribute.value = parseValue(source, xDTD.getEntityMapper());
-    attribute.type |= DTD::AttributeType::fixed;
   } else {
+    const bool isFixed = source.match("#FIXED");
     source.ignoreWS();
     attribute.value = parseValue(source, xDTD.getEntityMapper());
-    attribute.type |= DTD::AttributeType::normal;
+    attribute.type |= isFixed ? DTD::AttributeType::fixed : DTD::AttributeType::normal;
   }
 }
 

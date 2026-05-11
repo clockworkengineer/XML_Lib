@@ -48,31 +48,25 @@ std::string trimString(const std::string_view &target)
   return trimmedString;
 }
 
+namespace {
+std::string transformStringCase(const std::string_view &target, int (*fn)(int))
+{
+  std::string result{ target };
+  std::transform(result.begin(), result.end(), result.begin(),
+    [fn](const unsigned int c) { return static_cast<char>(fn(c)); });
+  return result;
+}
+} // namespace
+
 /// <summary>
 /// Convert a string to all uppercase.
 /// </summary>
 /// <param name="target">String to convert.</param>
-std::string toUpperString(const std::string_view &target)
-{
-  std::string upperCaseString{ target };
-  std::transform(
-    upperCaseString.begin(), upperCaseString.end(), upperCaseString.begin(), [](const unsigned int c) {
-    return static_cast<char>(std::toupper(c));
-  });
-  return upperCaseString;
-}
+std::string toUpperString(const std::string_view &target) { return transformStringCase(target, std::toupper); }
 
 /// <summary>
 /// Convert a string to all lowercase.
 /// </summary>
 /// <param name="target">String to convert.</param>
-std::string toLowerString(const std::string_view &target)
-{
-  std::string lowerCaseString{ target };
-  std::transform(
-    lowerCaseString.begin(), lowerCaseString.end(), lowerCaseString.begin(), [](const unsigned int c) {
-    return static_cast<char>(std::tolower(c));
-  });
-  return lowerCaseString;
-}
+std::string toLowerString(const std::string_view &target) { return transformStringCase(target, std::tolower); }
 }// namespace  XML_Lib

@@ -272,18 +272,8 @@ static std::unique_ptr<XPathPathExpr> parseLocationPath(Parser &p)
     // now parse the rest as relative steps (same path object)
     if (p.cur().type != XPathTokenType::End && p.cur().type != XPathTokenType::RightBracket
         && p.cur().type != XPathTokenType::RightParen && p.cur().type != XPathTokenType::Pipe) {
-      // append more steps
-      while (true) {
-        path->steps.push_back(parseStep(p));
-        if (p.cur().type == XPathTokenType::Slash) {
-          p.consume();
-        } else if (p.cur().type == XPathTokenType::DoubleSlash) {
-          p.consume();
-          path->steps.push_back(makeDescendantOrSelfStep());
-        } else {
-          break;
-        }
-      }
+      path->steps.push_back(parseStep(p));
+      appendPathSteps(p, *path);
     }
     return path;
   }
