@@ -1,7 +1,7 @@
 //
 // XPath_AxisHelpers.cpp
 //
-// Description: Helper utilities for XPath axis traversal — attribute access
+// Description: Helpe utilities for XPath axis traversal — attribute access
 // and element-like node classification for Element, Root, and Self nodes.
 //
 // Dependencies: C++20 - Language standard features used.
@@ -10,11 +10,6 @@
 #include "XPath_AxisHelpers.hpp"
 
 namespace XML_Lib {
-
-bool isElementLikeNode(const Node &node)
-{
-  return isA<Element>(node) || isA<Root>(node) || isA<Self>(node);
-}
 
 const std::vector<XMLAttribute> *nodeAttributes(const Node &node)
 {

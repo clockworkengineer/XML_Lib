@@ -1,6 +1,7 @@
 #pragma once
 
 #include "XPath_Impl.hpp"
+#include "XML_NodeKindHelpers.hpp"
 
 #include <string>
 #include <string_view>
@@ -8,8 +9,7 @@
 
 namespace XML_Lib {
 
-/// Returns true if the node is an element-like node (Element, Root, or Self).
-[[nodiscard]] bool isElementLikeNode(const Node &node);
+// isElementLikeNode() is provided by XML_NodeKindHelpers.hpp
 
 /// Returns a pointer to the attribute list for an element-like node, or nullptr
 /// if the node is not element-like.

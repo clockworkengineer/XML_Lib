@@ -62,6 +62,7 @@ set(XML_LIBRARY_SOURCES
   classes/source/implementation/xml/parser/Default_Parser.cpp
   classes/source/implementation/variant/XML_Variant.cpp
   classes/source/implementation/common/XML_Character.cpp
+  classes/source/implementation/common/XML_NodeKindHelpers.cpp
   classes/source/implementation/common/XML_Parse.cpp
   classes/source/implementation/common/XML_ParseHelpers.cpp
   classes/source/implementation/common/XML_Utility.cpp

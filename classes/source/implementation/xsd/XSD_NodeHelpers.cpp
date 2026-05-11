@@ -1,4 +1,5 @@
 #include "xsd/XSD_NodeHelpers.hpp"
+#include "XML_NodeKindHelpers.hpp"
 
 namespace XML_Lib {
 
@@ -22,13 +23,13 @@ std::vector<std::reference_wrapper<const Node>> childElementRefs(const Node &nod
   const auto &children = node.getChildren();
   size_t count = 0;
   for (const auto &child : children) {
-    if (isA<Element>(child) || isA<Root>(child) || isA<Self>(child)) { ++count; }
+    if (isElementLikeNode(child)) { ++count; }
   }
 
   std::vector<std::reference_wrapper<const Node>> result;
   result.reserve(count);
   for (const auto &child : children) {
-    if (isA<Element>(child) || isA<Root>(child) || isA<Self>(child)) { result.emplace_back(child); }
+    if (isElementLikeNode(child)) { result.emplace_back(child); }
   }
   return result;
 }

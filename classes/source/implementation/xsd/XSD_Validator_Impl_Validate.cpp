@@ -7,6 +7,7 @@
 //
 
 #include "XSD_Impl.hpp"
+#include "XML_NodeKindHelpers.hpp"
 
 #include <charconv>
 #include <regex>
@@ -251,7 +252,7 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
   std::vector<std::string> childOrder;// for sequence validation
 
   for (const auto &child : xNode.getChildren()) {
-    if (isA<Element>(child) || isA<Root>(child) || isA<Self>(child)) {
+    if (isElementLikeNode(child)) {
       const auto &childElem = NRef<Element>(child);
       const auto &childName = childElem.name();
       if (childCounts[childName]++ == 0) { childOrder.push_back(childName); }
@@ -323,7 +324,7 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
 
   // Recursively validate child elements
   for (const auto &child : xNode.getChildren()) {
-    if (!isA<Element>(child) && !isA<Root>(child) && !isA<Self>(child)) { continue; }
+    if (!isElementLikeNode(child)) { continue; }
     const auto &childElem = NRef<Element>(child);
     const auto &childName = childElem.name();
 
