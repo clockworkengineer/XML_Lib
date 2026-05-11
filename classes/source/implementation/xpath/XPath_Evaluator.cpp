@@ -9,6 +9,7 @@
 
 #include "XPath_Impl.hpp"
 #include "XPath_EvalHelpers.hpp"
+#include "XPath_AxisHelpers.hpp"
 #include "XPath_AST.hpp"
 #include "XPath_Lexer.hpp"
 #include "XPath_Parser.hpp"
@@ -103,11 +104,6 @@ static void collectDescendants(const Node &node, std::vector<const Node *> &out)
 }
 
 // ========================================================================
-// Is this node an element-type node (matches element/Root/Self)?
-// ========================================================================
-static bool isElement(const Node &n) { return isA<Element>(n) || isA<Root>(n) || isA<Self>(n); }
-
-// ========================================================================
 // Node-test match
 // ========================================================================
 static bool matchNodeTest(const Node &node,
@@ -133,7 +129,7 @@ static bool matchNodeTest(const Node &node,
   case XPathNodeTestKind::NodeType_PI:
     return isA<PI>(node);
   case XPathNodeTestKind::NameTest: {
-    if (!isElement(node)) return false;
+    if (!isElementLikeNode(node)) return false;
     return matchNodeName(node, test.name);
   }
   }
@@ -215,13 +211,8 @@ static std::vector<CandidateNode> axisNodes(XPathAxis axis,
   }
 
   case XPathAxis::Attribute:
-    if (isElement(contextNode)) {
-      const auto &attrs = [&]() -> const std::vector<XMLAttribute> & {
-        if (isA<Element>(contextNode)) return NRef<Element>(contextNode).getAttributes();
-        if (isA<Root>(contextNode)) return NRef<Root>(contextNode).getAttributes();
-        return NRef<Self>(contextNode).getAttributes();
-      }();
-      for (const auto &attr : attrs) {
+    if (const auto *attrs = nodeAttributes(contextNode); attrs != nullptr) {
+      for (const auto &attr : *attrs) {
         // Skip namespace declarations — they are on the namespace axis
         if (attr.getName().starts_with("xmlns")) continue;
         result.push_back({ &contextNode, attr.getName(), true });
@@ -313,24 +304,7 @@ static XPathResult evalStepResult(const XPathStep &step,
       if (std::find(output.begin(), output.end(), c.node) == output.end()) {
         output.push_back(c.node);
         if (c.isAttr) {
-          // Retrieve attribute value from the element
-          const auto getAttrVal = [&]() -> std::string {
-            if (isA<Element>(*c.node)) {
-              for (const auto &a : NRef<Element>(*c.node).getAttributes()) {
-                if (a.getName() == c.attrName) return a.getParsed();
-              }
-            } else if (isA<Root>(*c.node)) {
-              for (const auto &a : NRef<Root>(*c.node).getAttributes()) {
-                if (a.getName() == c.attrName) return a.getParsed();
-              }
-            } else if (isA<Self>(*c.node)) {
-              for (const auto &a : NRef<Self>(*c.node).getAttributes()) {
-                if (a.getName() == c.attrName) return a.getParsed();
-              }
-            }
-            return "";
-          };
-          outAttrValues[c.node] = getAttrVal();
+          outAttrValues[c.node] = findAttributeValue(*c.node, c.attrName);
         }
       }
     }

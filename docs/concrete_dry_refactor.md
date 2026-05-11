@@ -1,203 +1,212 @@
-# Concrete DRY Refactor Plan for XML_Lib
+# Concrete DRY Refactor Plan for XML_Lib (Post Task 1-4)
 
-## Overview
-This refactor plan is a concrete, code-focused DRY improvement for the XML_Lib library. It is based on the current implementation in:
+## Scope
+This document is a refreshed, code-grounded DRY refactor plan based on the current repository state after completion of parser/entity/XSD/XPath helper extraction tasks.
 
-- `classes/source/implementation/common/XML_Parse.cpp`
-- `classes/source/implementation/entity/XML_EntityMapper.cpp`
-- `classes/source/implementation/xsd/XSD_Validator_Impl_Parse.cpp`
-- `classes/source/implementation/xpath/XPath_Evaluator.cpp`
-- `CMakeLists.txt`
+Already completed:
+- Task 1: parser helper extraction
+- Task 2: entity mapper lookup/translation helper extraction
+- Task 3: XSD parse traversal helper extraction
+- Task 4: XPath name/value/result helper extraction
 
-The goal is to remove repeated code paths, centralize common behaviors, and improve both runtime efficiency and maintainability.
+This plan covers the next set of high-value DRY opportunities that are still present.
 
-## Key Duplication Findings
+## Analysis Basis
+Reviewed current implementations in:
+- classes/source/implementation/xpath/XPath_Evaluator.cpp
+- classes/source/implementation/xpath/XPath_EvalHelpers.cpp
+- classes/source/implementation/xsd/XSD_Validator_Impl_Validate.cpp
+- classes/source/implementation/dtd/DTD_Validator_Impl_Validator.cpp
+- classes/source/implementation/xml/parser/Default_Parser.cpp
+- classes/source/implementation/xml/XML_Impl.cpp
+- CMakeLists.txt
 
-### 1. Parser string assembly
-- `XML_Parse.cpp` repeatedly builds `std::string` values in parse helpers:
-  - `parseName`
-  - `parseEntityReference`
-  - `parseCharacterReference`
-  - `parseCharacter`
-  - `parseValueImpl`
-  - `parseTagBody`
-- The parser converts internal `String`/`Char` values to UTF-8 repeatedly.
-- `parseValueImpl` duplicates logic for entity expansion and value concatenation across quoted strings.
+## Current Duplication Findings
 
-### 2. Entity mapper lookup and translation
-- `XML_EntityMapper.cpp` repeatedly allocates strings for entity names and file paths.
-- Recursion detection uses `std::set<std::string>` and reparses entity strings inside `recurseOverEntityReference`.
-- `getEntityMapping`, `isPresent`, `isInternal`, and `isExternal` each convert `std::string_view` to `std::string` or perform redundant lookups.
-- `translate()` builds candidate tables on every call and performs repeated substring matching.
+### 1. XPath attribute extraction is duplicated
+In classes/source/implementation/xpath/XPath_Evaluator.cpp:
+- Axis attribute selection chooses attributes via repeated Element/Root/Self branches.
+- Attribute value retrieval in evalStepResult repeats the same Element/Root/Self branching again.
 
-### 3. XSD node tag/attribute access
-- `XSD_Validator_Impl_Parse.cpp` uses helper methods such as `localTag`, `attrValue`, `childElements`, and `resolveType` in tight loops.
-- Many traversal loops call `localTag(child)` and `attrValue(child, "...")` repeatedly.
-- `childElements()` enumerates and reserves twice in the same node traversal.
+Impact:
+- Logic duplication and future bug risk when attribute behavior changes.
 
-### 4. XPath node-value and result conversion
-- `XPath_Evaluator.cpp` duplicates string-value computations:
-  - `appendNodeStringValue`
-  - `nodeStringValue`
-- Node name extraction and local name extraction are repeated for every name test.
-- Result conversion to string and number allocates intermediate strings for node-set and numeric cases.
-- `collectDescendants` and `matchNodeTest` reimplement generic tree traversal or name matching patterns.
+### 2. Element-like node classification repeats across modules
+The same "Element or Root or Self" checks appear in multiple modules:
+- classes/source/implementation/xpath/XPath_Evaluator.cpp
+- classes/source/implementation/xsd/XSD_Validator_Impl_Validate.cpp
+- classes/source/implementation/dtd/DTD_Validator_Impl_Validator.cpp
+- classes/source/implementation/xsd/XSD_NodeHelpers.cpp
 
-### 5. Build and include boundaries
-- `CMakeLists.txt` exports many implementation include paths in the public interface.
-- Public targets and internal sources are mixed, weakening encapsulation and build isolation.
+Impact:
+- Inconsistent behavior risk and repetitive type-dispatch logic.
 
-## Concrete DRY Refactor Tasks
+### 3. XSD validation has repeated child counting and declaration checks
+In classes/source/implementation/xsd/XSD_Validator_Impl_Validate.cpp:
+- Building childCounts and childOrder is repetitive infrastructure code.
+- Unexpected-child checks are repeated for sequence/all and choice branches.
+- Similar loops resolve particles then resolve type refs for recursive validation.
 
-### Task 1: Extract parser helper utilities
-Create a shared parser helper module:
+Impact:
+- High cognitive load and difficult-to-change validation flow.
 
-- `classes/include/implementation/common/XML_ParseHelpers.hpp`
-- `classes/source/implementation/common/XML_ParseHelpers.cpp`
+### 4. DTD validator has long node-type dispatch chain
+In classes/source/implementation/dtd/DTD_Validator_Impl_Validator.cpp:
+- checkElements uses a long if/else chain for node type behavior.
+- Multiple branches recurse children similarly.
 
-Move repeated logic into helpers such as:
+Impact:
+- Harder to maintain and reason about edge cases.
 
-- `parseQuotedValue(ISource&, IEntityMapper*)`
-- `readName(ISource&) -> std::string_view` or `String`
-- `readReferenceText(ISource&, char terminator) -> std::string`
-- `appendTextSegment(std::string&, const String&)`
-- `parseCharacterOrReference(ISource&) -> XMLValue`
+### 5. Default parser repeats child-tail whitespace state transitions
+In classes/source/implementation/xml/parser/Default_Parser.cpp:
+- Repeated checks for "last child is Content" followed by setIsWhiteSpace(false).
+- Similar content/CDATA/entity transition handling appears in multiple branches.
 
-Refactor `parseValueImpl` so it reuses the helper for quoted value accumulation and entity expansion.
-Refactor `parseEntityReference` and `parseCharacterReference` to share a `readUntil(ISource&, char delim)` helper.
+Impact:
+- Subtle parsing behavior spread across branches instead of centralized policy.
 
-### Task 2: Centralize entity mapping and eliminate repeated lookups
-Create an entity mapper helper layer:
+### 6. XML_Impl repeats child lookup patterns
+In classes/source/implementation/xml/XML_Impl.cpp:
+- dtd() and root() both iterate prolog children with similar predicate-based return behavior.
 
-- `classes/include/implementation/entity/XML_EntityMapperHelpers.hpp`
-- `classes/source/implementation/entity/XML_EntityMapperHelpers.cpp`
+Impact:
+- Small duplication, but easy cleanup that improves readability.
 
-Refactor `XML_EntityMapper` to:
+## Concrete Refactor Tasks (Next Wave)
 
-- use `std::unordered_map<std::string, XML_EntityMapping>` with reserve(16) and stable string keys.
-- replace repeated `getEntityMapping(entityName)` calls with a single lookup when possible.
-- add a helper `getCachedFileMapping(const std::string_view&)` that returns a reference to cached content.
-- add `matchEntityPrefix(const std::string_view &text, size_t pos) -> std::optional<std::pair<std::string_view, const XML_EntityMapping*>>` for single-pass translation.
+### Task 5: Consolidate XPath attribute-axis and attribute-value helpers
+Add helpers:
+- classes/include/implementation/xpath/XPath_AxisHelpers.hpp
+- classes/source/implementation/xpath/XPath_AxisHelpers.cpp
 
-Rewrite `translate()` to avoid candidate rebuilding every call. If the type is fixed (`&`), maintain a precomputed sorted prefix table or use a trie-like lookup.
+Introduce reusable functions:
+- nodeAttributes(const Node&) -> const std::vector<XMLAttribute>*
+- findAttributeValue(const Node&, std::string_view) -> std::string
+- isElementLikeNode(const Node&) -> bool
 
-### Task 3: Make XSD traversal less repetitive
-Introduce XSD traversal helpers:
+Refactor in classes/source/implementation/xpath/XPath_Evaluator.cpp:
+- axisNodes attribute axis branch
+- evalStepResult attribute value extraction branch
 
-- `classes/include/implementation/xsd/XSD_NodeHelpers.hpp`
-- `classes/source/implementation/xsd/XSD_NodeHelpers.cpp`
+Acceptance criteria:
+- No behavior change in XPath attribute axis tests.
+- Element/Root/Self attribute branching appears in one helper only.
 
-Refactor common behavior:
+### Task 6: Centralize element-like node predicates for validators
+Add common node classification helper:
+- classes/include/implementation/common/XML_NodeKindHelpers.hpp
+- classes/source/implementation/common/XML_NodeKindHelpers.cpp
 
-- `XSD_Impl::localTag()` returns `std::string_view` but should avoid creating temporary `std::string` in callers.
-- `attrValue()` should return stable `std::string_view` and callers should preserve that view rather than converting to `std::string` immediately.
-- `childElements()` should become a reusable iterator-like helper or range adapter.
+Provide helpers:
+- isElementLikeNode(const Node&)
+- isContentNode(const Node&)
+- isStructuralNode(const Node&) (optional)
 
-Replace repeated parser branches such as:
+Refactor call sites:
+- classes/source/implementation/xsd/XSD_NodeHelpers.cpp
+- classes/source/implementation/xsd/XSD_Validator_Impl_Validate.cpp
+- classes/source/implementation/dtd/DTD_Validator_Impl_Validator.cpp
+- classes/source/implementation/xpath/XPath_Evaluator.cpp (if Task 5 does not fully cover it)
 
-- the `sequence`/`choice`/`all` loops
-- the inline type handling loops in `parseParticle` and `parseComplexType`
+Acceptance criteria:
+- Duplicate Element/Root/Self checks removed from target files.
+- Unit tests pass unchanged.
 
-with helper functions:
+### Task 7: Extract XSD validation traversal utilities
+Add helper module:
+- classes/include/implementation/xsd/XSD_ValidateHelpers.hpp
+- classes/source/implementation/xsd/XSD_ValidateHelpers.cpp
 
-- `parseChildParticleList(const Node&, XSD_ComplexType&)`
-- `parseChildAttributes(const Node&, XSD_ComplexType&)`
+Move duplicated validation mechanics out of XSD_Validator_Impl_Validate.cpp:
+- collectElementChildCounts(const Node&) -> child map
+- findDeclaredParticle(const XSD_ComplexType&, std::string_view)
+- validateUnexpectedChildren(...)
+- validateParticleOccurrenceBounds(...)
 
-### Task 4: Abstract XPath node name/value helpers and result conversion
-Create XPath helper utilities:
+Refactor sequence/all/choice branches to call shared utilities.
 
-- `classes/include/implementation/xpath/XPath_EvalHelpers.hpp`
-- `classes/source/implementation/xpath/XPath_EvalHelpers.cpp`
+Acceptance criteria:
+- Same validation errors/messages for existing tests.
+- Reduced branching and repeated loops in validateElement().
 
-Move duplicated logic into:
+### Task 8: Simplify DTD node dispatch with internal handlers
+Refactor classes/source/implementation/dtd/DTD_Validator_Impl_Validator.cpp:
+- Replace long if/else node-type chain with focused handler functions:
+  - handlePrologNode
+  - handleElementNode
+  - handleSelfNode
+  - handleContentNode
+  - handleIgnorableNode
 
-- `nodeStringValue()` and `appendNodeStringValue()` as a single reusable streaming helper
-- `matchNodeName(const Node&, const std::string_view&)`
-- `nodeLocalNameView(const Node&)`
-- `resultToStringView(const XPathResult&, std::string&)`
-- `stringToNumber(std::string_view)`
+Optional (if style permits):
+- table-based dispatch by node kind enum generated through helper predicates.
 
-Refactor `matchNodeTest()` to use the new helpers and avoid repeated `find(':')` work.
-Refactor node-set result conversions to reuse an external scratch buffer instead of allocating inside `resultToString` and `resultToNumber`.
+Acceptance criteria:
+- Validation semantics unchanged.
+- checkElements() shrinks to orchestration-only logic.
 
-### Task 5: Tighten public CMake include/export policy
-Update `CMakeLists.txt` to enforce DRY and correct dependency scope:
+### Task 9: Centralize parser content-tail state updates
+Refactor classes/source/implementation/xml/parser/Default_Parser.cpp:
+- Add helpers in parser module:
+  - markTrailingContentNonWhitespace(Node&)
+  - appendEntityOrContent(Node&, const XMLValue&, IEntityMapper&)
 
-- make only `classes/include` public
-- keep `classes/include/interface`, `classes/include/implementation`, and converter/include directories private
-- remove duplicate or redundant `target_include_directories` entries
-- avoid exporting internal implementation headers accidentally
-- keep `add_library(${XML_LIBRARY_NAME})` and source list separate from public header configuration
+Use these helpers in:
+- parseContent
+- parseElementInternal (CDATA branch and related content transitions)
 
-### Task 6: Add reusable code patterns for future maintenance
-Introduce small reusable abstractions rather than copy/paste:
+Acceptance criteria:
+- Content whitespace behavior remains unchanged in parse/stringify tests.
+- No repeated "last child is Content -> setIsWhiteSpace(false)" blocks.
 
-- `XML_Parse.hpp` and helper modules should provide `string_view` accessors and append helpers.
-- `XSD_NodeHelpers` should provide `NodeRange` or `ElementRange` helpers for repeated child traversal.
-- `XPath_EvalHelpers` should provide `ResultView` helpers for repeated conversion patterns.
+### Task 10: Add generic child lookup helper in XML_Impl
+Refactor classes/source/implementation/xml/XML_Impl.cpp:
+- Add internal helper:
+  - findFirstChild(Node&, predicate) -> Node*
 
-## Implementation Example (Concrete)
+Use it in:
+- dtd()
+- root()
 
-### Parser helper extraction
-Before:
-```cpp
-std::string unparsed;
-unparsed.reserve(32);
-parsed.reserve(32);
-...
-parsed += character.getParsed();
-```
-After:
-```cpp
-XMLValue parseQuotedValue(ISource &source, IEntityMapper *entityMapper)
-{
-  std::string unparsed;
-  std::string parsed;
-  unparsed.reserve(32);
-  parsed.reserve(32);
-  ...
-}
-```
-This avoids duplicate quote parsing logic across `parseValue` overloads.
+Acceptance criteria:
+- No behavior change.
+- Lookup code paths become single-point reusable patterns.
 
-### XSD child traversal helper
-Before:
-```cpp
-for (const auto &childRef : childElements(child)) {
-  const auto &particleChild = particleChildRef.get();
-  if (localTag(particleChild) == "element") {
-    ...
-  }
-}
-```
-After:
-```cpp
-for (const Node &particleChild : elementChildren(child)) {
-  if (nodeLocalTag(particleChild) == "element") {
-    ...
-  }
-}
-```
+### Task 11: DRY CMake include path declarations
+Current include directories are verbose and manually repeated in CMakeLists.txt.
 
-## Acceptance Criteria
+Refactor options:
+- Group implementation include paths into a list variable.
+- Keep only classes/include public.
+- Keep implementation directories private and centrally declared once.
 
-- Source duplication is reduced in parser, entity mapper, XSD, and XPath modules.
-- New helper modules are introduced for repeated behavior and are tested with existing unit tests.
-- No public API changes are required; internal helpers remain implementation-only.
-- `CMakeLists.txt` exports only the intended public headers and keeps implementation include paths private.
-- Performance tests or size-report targets can compare before/after behavior.
+Acceptance criteria:
+- No include regressions.
+- Cleaner target_include_directories configuration.
 
-## Recommended File Additions
+## Suggested Implementation Order
+1. Task 5 (XPath attribute helpers)
+2. Task 7 (XSD validation helpers)
+3. Task 6 (common node-kind helpers)
+4. Task 9 (Default_Parser content-tail helper)
+5. Task 8 (DTD dispatch cleanup)
+6. Task 10 (XML_Impl child lookup helper)
+7. Task 11 (CMake cleanup)
 
-- `docs/concrete_dry_refactor.md`
-- `classes/include/implementation/common/XML_ParseHelpers.hpp`
-- `classes/source/implementation/common/XML_ParseHelpers.cpp`
-- `classes/include/implementation/entity/XML_EntityMapperHelpers.hpp`
-- `classes/source/implementation/entity/XML_EntityMapperHelpers.cpp`
-- `classes/include/implementation/xsd/XSD_NodeHelpers.hpp`
-- `classes/source/implementation/xsd/XSD_NodeHelpers.cpp`
-- `classes/include/implementation/xpath/XPath_EvalHelpers.hpp`
-- `classes/source/implementation/xpath/XPath_EvalHelpers.cpp`
+Rationale:
+- Starts with high-duplication, low-risk consolidations.
+- Defers behavior-sensitive DTD/parser control-flow edits until helper foundation is in place.
 
-## Next Step
-Implement the refactor in stages, starting from the parser helper extraction and the entity mapper lookup consolidation.
+## Validation Strategy
+For each task:
+- Build with existing CMake configuration.
+- Run full unit suite:
+  - build/tests/XML_Lib_Unit_Tests
+- Compare error message strings in tests where behavior is expected to be identical.
+
+## Deliverables
+- Updated docs/concrete_dry_refactor.md (this file)
+- New helper modules per task
+- Refactored call sites with no public API changes
+- Passing existing test suite
