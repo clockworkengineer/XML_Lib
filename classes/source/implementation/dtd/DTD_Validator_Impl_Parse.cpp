@@ -96,45 +96,23 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
 /// <returns>Attribute type as string (UTF-8 encoded).</returns>
 void DTD_Impl::parseAttributeType(ISource &source, DTD::Attribute &attribute) const
 {
-  if (source.match("CDATA")) {
-    attribute.type = DTD::AttributeType::cdata;
-    source.ignoreWS();
-    return;
-  }
-  if (source.match("IDREFS")) {
-    attribute.type = DTD::AttributeType::idrefs;
-    source.ignoreWS();
-    return;
-  }
-  if (source.match("IDREF")) {
-    attribute.type = DTD::AttributeType::idref;
-    source.ignoreWS();
-    return;
-  }
-  if (source.match("ID")) {
-    attribute.type = DTD::AttributeType::id;
-    source.ignoreWS();
-    return;
-  }
-  if (source.match("NMTOKENS")) {
-    attribute.type = DTD::AttributeType::nmtokens;
-    source.ignoreWS();
-    return;
-  }
-  if (source.match("NMTOKEN")) {
-    attribute.type = DTD::AttributeType::nmtoken;
-    source.ignoreWS();
-    return;
-  }
-  if (source.match("ENTITY")) {
-    attribute.type = DTD::AttributeType::entity;
-    source.ignoreWS();
-    return;
-  }
-  if (source.match("ENTITIES")) {
-    attribute.type = DTD::AttributeType::entities;
-    source.ignoreWS();
-    return;
+  // Table-driven keyword match; ordering is significant (IDREFS before IDREF, etc.)
+  static constexpr std::pair<const char *, DTD::AttributeType> kAttrTypeTable[] = {
+    { "CDATA",    DTD::AttributeType::cdata    },
+    { "IDREFS",   DTD::AttributeType::idrefs   },
+    { "IDREF",    DTD::AttributeType::idref    },
+    { "ID",       DTD::AttributeType::id       },
+    { "NMTOKENS", DTD::AttributeType::nmtokens },
+    { "NMTOKEN",  DTD::AttributeType::nmtoken  },
+    { "ENTITIES", DTD::AttributeType::entities },
+    { "ENTITY",   DTD::AttributeType::entity   },
+  };
+  for (const auto &[keyword, type] : kAttrTypeTable) {
+    if (source.match(keyword)) {
+      attribute.type = type;
+      source.ignoreWS();
+      return;
+    }
   }
   if (source.match("NOTATION")) {
     attribute.type = DTD::AttributeType::notation;
