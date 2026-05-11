@@ -41,41 +41,13 @@ XMLValue parseEntityReference(ISource &source)
 
 /// <summary>
 /// Parse a character reference value (hex/dec) returning its value.
+/// Source must be positioned immediately after the consumed \"&#\" prefix.
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Character reference value.</returns>
 XMLValue parseCharacterReference(ISource &source)
 {
-  std::string unparsed;
-  unparsed.reserve(16);
-  unparsed += "&#";
-  while (source.more() && source.current() != ';') {
-    unparsed += toUtf8(source.current());
-    source.next();
-  }
-  if (source.current() != ';') {
-    XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalidly formed  character reference."));
-  }
-  source.next();
-  unparsed += ';';
-
-  const bool isHex = unparsed.size() > 3 && unparsed[2] == 'x';
-  const size_t valueStart = isHex ? 3 : 2;
-  const size_t valueLength = unparsed.size() - valueStart - 1;
-  const std::string_view digits{ unparsed.data() + valueStart, valueLength };
-
-  long result = 0;
-  const auto [ptr, ec] = std::from_chars(digits.data(), digits.data() + digits.size(), result, isHex ? 16 : 10);
-  if (digits.empty()) {
-    XML_LIB_THROW(SyntaxError(source.getPosition(), "Character reference invalid character."));
-  }
-  if (ec == std::errc() && ptr == digits.data() + digits.size()) {
-    if (result < 0 || !validChar(static_cast<Char>(result))) {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "Character reference invalid character."));
-    }
-    return XMLValue{ unparsed, toUtf8(static_cast<Char>(result)) };
-  }
-  XML_LIB_THROW(SyntaxError(source.getPosition(), "Cannot convert character reference."));
+  return decodeCharRef(source);
 }
 
 /// <summary>
