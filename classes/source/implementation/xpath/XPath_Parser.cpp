@@ -231,6 +231,22 @@ static XPathStep makeDescendantOrSelfStep()
 }
 
 // ======================================================================
+// Append slash-delimited steps to an existing path
+// ======================================================================
+static void appendPathSteps(Parser &p, XPathPathExpr &path)
+{
+  while (p.cur().type == XPathTokenType::Slash || p.cur().type == XPathTokenType::DoubleSlash) {
+    if (p.cur().type == XPathTokenType::DoubleSlash) {
+      p.consume();
+      path.steps.push_back(makeDescendantOrSelfStep());
+    } else {
+      p.consume();
+    }
+    path.steps.push_back(parseStep(p));
+  }
+}
+
+// ======================================================================
 // Relative location path  (step (/ or // step)*)
 // ======================================================================
 static std::unique_ptr<XPathPathExpr> parseRelativeLocationPath(Parser &p, const bool absolute)
@@ -238,17 +254,7 @@ static std::unique_ptr<XPathPathExpr> parseRelativeLocationPath(Parser &p, const
   auto path = std::make_unique<XPathPathExpr>();
   path->absolute = absolute;
   path->steps.push_back(parseStep(p));
-
-  while (p.cur().type == XPathTokenType::Slash || p.cur().type == XPathTokenType::DoubleSlash) {
-    if (p.cur().type == XPathTokenType::DoubleSlash) {
-      p.consume();
-      // // → insert  descendant-or-self::node()
-      path->steps.push_back(makeDescendantOrSelfStep());
-    } else {
-      p.consume();// /
-    }
-    path->steps.push_back(parseStep(p));
-  }
+  appendPathSteps(p, *path);
   return path;
 }
 
@@ -294,15 +300,7 @@ static std::unique_ptr<XPathPathExpr> parseLocationPath(Parser &p)
     }
     // absolute path with steps
     path->steps.push_back(parseStep(p));
-    while (p.cur().type == XPathTokenType::Slash || p.cur().type == XPathTokenType::DoubleSlash) {
-      if (p.cur().type == XPathTokenType::DoubleSlash) {
-        p.consume();
-        path->steps.push_back(makeDescendantOrSelfStep());
-      } else {
-        p.consume();
-      }
-      path->steps.push_back(parseStep(p));
-    }
+    appendPathSteps(p, *path);
     return path;
   }
 
