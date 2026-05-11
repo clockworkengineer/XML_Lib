@@ -86,6 +86,39 @@ static bool resultToBool(const XPathResult &r)
 }
 
 // ========================================================================
+// XPathResult factory helpers
+// ========================================================================
+static XPathResult makeNumber(double v)
+{
+  XPathResult r;
+  r.type = XPathResultType::Number;
+  r.numberValue = v;
+  return r;
+}
+static XPathResult makeString(std::string s)
+{
+  XPathResult r;
+  r.type = XPathResultType::String;
+  r.stringValue = std::move(s);
+  return r;
+}
+static XPathResult makeBool(bool b)
+{
+  XPathResult r;
+  r.type = XPathResultType::Boolean;
+  r.boolValue = b;
+  return r;
+}
+static XPathResult makeNodeSet(std::vector<const Node *> ns = {},
+  std::unordered_map<const Node *, std::string> attrs = {})
+{
+  XPathResult r;
+  r.nodeSet = std::move(ns);
+  r.attrValues = std::move(attrs);
+  return r;
+}
+
+// ========================================================================
 // Collect all descendants (depth-first, not including self)
 // ========================================================================
 static void collectDescendants(const Node &node, std::vector<const Node *> &out)
@@ -310,11 +343,7 @@ static XPathResult evalStepResult(const XPathStep &step,
     }
   }
 
-  XPathResult r;
-  r.type = XPathResultType::NodeSet;
-  r.nodeSet = output;
-  r.attrValues = outAttrValues;
-  return r;
+  return makeNodeSet(output, outAttrValues);
 }
 
 // ========================================================================
@@ -330,10 +359,7 @@ static XPathResult evalPathExpr(const XPathPathExpr &pathExpr,
 
   if (pathExpr.absolute) {
     if (pathExpr.steps.empty()) {
-      XPathResult r;
-      r.type = XPathResultType::NodeSet;
-      r.nodeSet = { &docRoot };
-      return r;
+      return makeNodeSet({ &docRoot });
     }
 
     const auto &step0 = pathExpr.steps[0];
@@ -376,11 +402,7 @@ static XPathResult evalPathExpr(const XPathPathExpr &pathExpr,
       }
     }
 
-    XPathResult r;
-    r.type = XPathResultType::NodeSet;
-    r.nodeSet = current;
-    r.attrValues = currentAttrs;
-    return r;
+    return makeNodeSet(current, currentAttrs);
   }
 
   // Relative path
@@ -391,11 +413,7 @@ static XPathResult evalPathExpr(const XPathPathExpr &pathExpr,
     currentAttrs = std::move(sr.attrValues);
   }
 
-  XPathResult r;
-  r.type = XPathResultType::NodeSet;
-  r.nodeSet = current;
-  r.attrValues = currentAttrs;
-  return r;
+  return makeNodeSet(current, currentAttrs);
 }
 
 // ========================================================================
@@ -455,29 +473,17 @@ static XPathResult evalBuiltinFunction(const std::string &name,
 
   // --- Node-set functions ---
   if (name == "position") {
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = static_cast<double>(contextPosition);
-    return r;
+    return makeNumber(static_cast<double>(contextPosition));
   }
   if (name == "last") {
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = static_cast<double>(contextSize);
-    return r;
+    return makeNumber(static_cast<double>(contextSize));
   }
   if (name == "count") {
     auto args = evalArgs();
     if (args.empty() || args[0].type != XPathResultType::NodeSet) {
-      XPathResult r;
-      r.type = XPathResultType::Number;
-      r.numberValue = 0;
-      return r;
+      return makeNumber(0);
     }
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = static_cast<double>(args[0].nodeSet.size());
-    return r;
+    return makeNumber(static_cast<double>(args[0].nodeSet.size()));
   }
   if (name == "name" || name == "local-name") {
     auto args = evalArgs();
@@ -485,10 +491,7 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     if (!args.empty() && args[0].type == XPathResultType::NodeSet && !args[0].nodeSet.empty()) {
       n = args[0].nodeSet.front();
     }
-    XPathResult r;
-    r.type = XPathResultType::String;
-    r.stringValue = (name == "local-name") ? std::string(nodeLocalNameView(*n)) : std::string(nodeNameView(*n));
-    return r;
+    return makeString((name == "local-name") ? std::string(nodeLocalNameView(*n)) : std::string(nodeNameView(*n)));
   }
   if (name == "namespace-uri") {
     auto args = evalArgs();
@@ -496,64 +499,40 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     if (!args.empty() && args[0].type == XPathResultType::NodeSet && !args[0].nodeSet.empty()) {
       n = args[0].nodeSet.front();
     }
-    XPathResult r;
-    r.type = XPathResultType::String;
-    r.stringValue = nodeNamespaceURI(*n);
-    return r;
+    return makeString(nodeNamespaceURI(*n));
   }
 
   // --- Boolean functions ---
   if (name == "true") {
-    XPathResult r;
-    r.type = XPathResultType::Boolean;
-    r.boolValue = true;
-    return r;
+    return makeBool(true);
   }
   if (name == "false") {
-    XPathResult r;
-    r.type = XPathResultType::Boolean;
-    r.boolValue = false;
-    return r;
+    return makeBool(false);
   }
   if (name == "not") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Boolean;
-    r.boolValue = args.empty() ? true : !resultToBool(args[0]);
-    return r;
+    return makeBool(args.empty() ? true : !resultToBool(args[0]));
   }
   if (name == "boolean") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Boolean;
-    r.boolValue = args.empty() ? false : resultToBool(args[0]);
-    return r;
+    return makeBool(args.empty() ? false : resultToBool(args[0]));
   }
   if (name == "lang") {
     // Simplified: always return false
-    XPathResult r;
-    r.type = XPathResultType::Boolean;
-    r.boolValue = false;
-    return r;
+    return makeBool(false);
   }
 
   // --- Number functions ---
   if (name == "number") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = args.empty() ? std::numeric_limits<double>::quiet_NaN() : resultToNumber(args[0]);
-    return r;
+    return makeNumber(args.empty() ? std::numeric_limits<double>::quiet_NaN() : resultToNumber(args[0]));
   }
   if (name == "sum") {
     auto args = evalArgs();
     double total = 0.0;
     if (!args.empty() && args[0].type == XPathResultType::NodeSet) {
       for (const auto *n : args[0].nodeSet) {
-        XPathResult nr;
-        nr.type = XPathResultType::String;
-        nr.stringValue = nodeStringValue(*n);
-        const double value = resultToNumber(nr);
+        const double value = resultToNumber(makeString(nodeStringValue(*n)));
         if (std::isnan(value)) {
           total = std::numeric_limits<double>::quiet_NaN();
           break;
@@ -561,45 +540,26 @@ static XPathResult evalBuiltinFunction(const std::string &name,
         total += value;
       }
     }
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = total;
-    return r;
+    return makeNumber(total);
   }
   if (name == "floor") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = args.empty() ? std::numeric_limits<double>::quiet_NaN() : std::floor(resultToNumber(args[0]));
-    return r;
+    return makeNumber(args.empty() ? std::numeric_limits<double>::quiet_NaN() : std::floor(resultToNumber(args[0])));
   }
   if (name == "ceiling") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = args.empty() ? std::numeric_limits<double>::quiet_NaN() : std::ceil(resultToNumber(args[0]));
-    return r;
+    return makeNumber(args.empty() ? std::numeric_limits<double>::quiet_NaN() : std::ceil(resultToNumber(args[0])));
   }
   if (name == "round") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    if (args.empty()) {
-      r.numberValue = std::numeric_limits<double>::quiet_NaN();
-      return r;
-    }
-    const double v = resultToNumber(args[0]);
-    r.numberValue = std::floor(v + 0.5);
-    return r;
+    if (args.empty()) { return makeNumber(std::numeric_limits<double>::quiet_NaN()); }
+    return makeNumber(std::floor(resultToNumber(args[0]) + 0.5));
   }
 
   // --- String functions ---
   if (name == "string") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::String;
-    r.stringValue = args.empty() ? nodeStringValue(contextNode) : resultToString(args[0]);
-    return r;
+    return makeString(args.empty() ? nodeStringValue(contextNode) : resultToString(args[0]));
   }
   if (name == "concat") {
     auto args = evalArgs();
@@ -608,150 +568,105 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     for (const auto &a : args) {
       s.append(resultToStringView(a, scratch));
     }
-    XPathResult r;
-    r.type = XPathResultType::String;
-    r.stringValue = std::move(s);
-    return r;
+    return makeString(std::move(s));
   }
   if (name == "starts-with") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Boolean;
-    if (args.size() < 2) {
-      r.boolValue = false;
-      return r;
-    }
+    if (args.size() < 2) { return makeBool(false); }
     std::string scratchLeft;
     std::string scratchRight;
     const std::string_view left = resultToStringView(args[0], scratchLeft);
     const std::string_view right = resultToStringView(args[1], scratchRight);
-    r.boolValue = left.starts_with(right);
-    return r;
+    return makeBool(left.starts_with(right));
   }
   if (name == "contains") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Boolean;
-    if (args.size() < 2) {
-      r.boolValue = false;
-      return r;
-    }
+    if (args.size() < 2) { return makeBool(false); }
     std::string scratchLeft;
     std::string scratchRight;
     const std::string_view left = resultToStringView(args[0], scratchLeft);
     const std::string_view right = resultToStringView(args[1], scratchRight);
-    r.boolValue = left.find(right) != std::string::npos;
-    return r;
+    return makeBool(left.find(right) != std::string::npos);
   }
   if (name == "string-length") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::Number;
     if (args.empty()) {
-      const std::string s = nodeStringValue(contextNode);
-      r.numberValue = static_cast<double>(s.size());
-      return r;
+      return makeNumber(static_cast<double>(nodeStringValue(contextNode).size()));
     }
     std::string scratch;
-    const std::string_view s = resultToStringView(args[0], scratch);
-    r.numberValue = static_cast<double>(s.size());
-    return r;
+    return makeNumber(static_cast<double>(resultToStringView(args[0], scratch).size()));
   }
   if (name == "normalize-space") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::String;
     if (args.empty()) {
-      const std::string tmp = nodeStringValue(contextNode);
-      r.stringValue = fnNormalizeSpace(tmp);
-      return r;
+      return makeString(fnNormalizeSpace(nodeStringValue(contextNode)));
     }
     std::string scratch;
-    const std::string_view s = resultToStringView(args[0], scratch);
-    r.stringValue = fnNormalizeSpace(std::string(s));
-    return r;
+    return makeString(fnNormalizeSpace(std::string(resultToStringView(args[0], scratch))));
   }
   if (name == "translate") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::String;
     if (args.size() < 3) {
-      if (args.empty()) {
-        r.stringValue = "";
-      } else {
-        std::string scratch;
-        r.stringValue = std::string(resultToStringView(args[0], scratch));
-      }
-      return r;
+      if (args.empty()) { return makeString(""); }
+      std::string scratch;
+      return makeString(std::string(resultToStringView(args[0], scratch)));
     }
     std::string scratch;
     const std::string source(resultToStringView(args[0], scratch));
     const std::string from(resultToStringView(args[1], scratch));
     const std::string to(resultToStringView(args[2], scratch));
-    r.stringValue = fnTranslate(source, from, to);
-    return r;
+    return makeString(fnTranslate(source, from, to));
   }
   if (name == "substring") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::String;
-    if (args.empty()) { return r; }
+    if (args.empty()) { return makeString(""); }
     std::string scratch;
     const std::string s(resultToStringView(args[0], scratch));
     const double startD = (args.size() >= 2) ? std::round(resultToNumber(args[1])) : 1.0;
     const long start = static_cast<long>(startD) - 1;
+    std::string sub;
     if (args.size() >= 3) {
       const long len = static_cast<long>(std::round(resultToNumber(args[2])));
       const long begin = std::max(0L, start);
       const long end = std::min(static_cast<long>(s.size()), start + len);
-      if (end > begin) r.stringValue = s.substr(static_cast<size_t>(begin), static_cast<size_t>(end - begin));
+      if (end > begin) sub = s.substr(static_cast<size_t>(begin), static_cast<size_t>(end - begin));
     } else {
       const long begin = std::max(0L, start);
-      if (begin < static_cast<long>(s.size())) r.stringValue = s.substr(static_cast<size_t>(begin));
+      if (begin < static_cast<long>(s.size())) sub = s.substr(static_cast<size_t>(begin));
     }
-    return r;
+    return makeString(std::move(sub));
   }
   if (name == "substring-before") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::String;
-    if (args.size() < 2) return r;
+    if (args.size() < 2) { return makeString(""); }
     std::string scratchLeft;
     std::string scratchRight;
     const std::string_view haystack = resultToStringView(args[0], scratchLeft);
     const std::string_view needle = resultToStringView(args[1], scratchRight);
     const auto pos = haystack.find(needle);
-    if (pos != std::string_view::npos) r.stringValue = std::string(haystack.substr(0, pos));
-    return r;
+    return makeString(pos != std::string_view::npos ? std::string(haystack.substr(0, pos)) : "");
   }
   if (name == "substring-after") {
     auto args = evalArgs();
-    XPathResult r;
-    r.type = XPathResultType::String;
-    if (args.size() < 2) return r;
+    if (args.size() < 2) { return makeString(""); }
     std::string scratchLeft;
     std::string scratchRight;
     const std::string_view haystack = resultToStringView(args[0], scratchLeft);
     const std::string_view needle = resultToStringView(args[1], scratchRight);
     const auto pos = haystack.find(needle);
-    if (pos != std::string_view::npos) r.stringValue = std::string(haystack.substr(pos + needle.size()));
-    return r;
+    return makeString(pos != std::string_view::npos ? std::string(haystack.substr(pos + needle.size())) : "");
   }
 
   // --- Internal synthetic: path continuation (filter then path) ---
   if (name == "__pathcont__") {
     // args[0] = filter expression,  args[1] = path expression
     if (argExprs.size() < 2) {
-      XPathResult r;
-      r.type = XPathResultType::NodeSet;
-      return r;
+      return makeNodeSet();
     }
     XPathResult filterResult =
       evalExpr(*argExprs[0], contextNode, contextPosition, contextSize, docRoot, ancestorStack);
     if (filterResult.type != XPathResultType::NodeSet) {
-      XPathResult r;
-      r.type = XPathResultType::NodeSet;
-      return r;
+      return makeNodeSet();
     }
     // Apply the path expression to each node in the filter result
     // The path is a PathExpr (already has steps)
@@ -764,10 +679,7 @@ static XPathResult evalBuiltinFunction(const std::string &name,
         if (std::find(combined.begin(), combined.end(), r) == combined.end()) combined.push_back(r);
       }
     }
-    XPathResult result;
-    result.type = XPathResultType::NodeSet;
-    result.nodeSet = combined;
-    return result;
+    return makeNodeSet(std::move(combined));
   }
 
   throw XPath::Error(std::string("Unknown function '") + name + "'.");
@@ -792,15 +704,13 @@ static XPathResult evalExpr(const XPathExpr &expr,
   if (const auto *u = dynamic_cast<const XPathUnionExpr *>(&expr)) {
     auto left = evalExpr(*u->left, contextNode, contextPosition, contextSize, documentRoot, ancestorStack);
     auto right = evalExpr(*u->right, contextNode, contextPosition, contextSize, documentRoot, ancestorStack);
-    XPathResult r;
-    r.type = XPathResultType::NodeSet;
-    r.nodeSet = left.type == XPathResultType::NodeSet ? left.nodeSet : std::vector<const Node *>{};
+    auto ns = left.type == XPathResultType::NodeSet ? left.nodeSet : std::vector<const Node *>{};
     if (right.type == XPathResultType::NodeSet) {
       for (const auto *n : right.nodeSet) {
-        if (std::find(r.nodeSet.begin(), r.nodeSet.end(), n) == r.nodeSet.end()) r.nodeSet.push_back(n);
+        if (std::find(ns.begin(), ns.end(), n) == ns.end()) ns.push_back(n);
       }
     }
-    return r;
+    return makeNodeSet(std::move(ns));
   }
 
   // Binary expression
@@ -809,30 +719,18 @@ static XPathResult evalExpr(const XPathExpr &expr,
     if (b->op == XPathBinaryExpr::Op::And) {
       auto left = evalExpr(*b->left, contextNode, contextPosition, contextSize, documentRoot, ancestorStack);
       if (!resultToBool(left)) {
-        XPathResult r;
-        r.type = XPathResultType::Boolean;
-        r.boolValue = false;
-        return r;
+        return makeBool(false);
       }
       auto right = evalExpr(*b->right, contextNode, contextPosition, contextSize, documentRoot, ancestorStack);
-      XPathResult r;
-      r.type = XPathResultType::Boolean;
-      r.boolValue = resultToBool(right);
-      return r;
+      return makeBool(resultToBool(right));
     }
     if (b->op == XPathBinaryExpr::Op::Or) {
       auto left = evalExpr(*b->left, contextNode, contextPosition, contextSize, documentRoot, ancestorStack);
       if (resultToBool(left)) {
-        XPathResult r;
-        r.type = XPathResultType::Boolean;
-        r.boolValue = true;
-        return r;
+        return makeBool(true);
       }
       auto right = evalExpr(*b->right, contextNode, contextPosition, contextSize, documentRoot, ancestorStack);
-      XPathResult r;
-      r.type = XPathResultType::Boolean;
-      r.boolValue = resultToBool(right);
-      return r;
+      return makeBool(resultToBool(right));
     }
 
     auto left = evalExpr(*b->left, contextNode, contextPosition, contextSize, documentRoot, ancestorStack);
@@ -896,10 +794,7 @@ static XPathResult evalExpr(const XPathExpr &expr,
       } else {
         eq = (resultToString(left) == resultToString(right));
       }
-      XPathResult r;
-      r.type = XPathResultType::Boolean;
-      r.boolValue = (b->op == XPathBinaryExpr::Op::Eq) ? eq : !eq;
-      return r;
+      return makeBool((b->op == XPathBinaryExpr::Op::Eq) ? eq : !eq);
     }
 
     // Relational and arithmetic: coerce to numbers
@@ -952,10 +847,7 @@ static XPathResult evalExpr(const XPathExpr &expr,
   // Unary minus
   if (const auto *u = dynamic_cast<const XPathUnaryExpr *>(&expr)) {
     auto val = evalExpr(*u->operand, contextNode, contextPosition, contextSize, documentRoot, ancestorStack);
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = -resultToNumber(val);
-    return r;
+    return makeNumber(-resultToNumber(val));
   }
 
   // Function call
@@ -984,18 +876,12 @@ static XPathResult evalExpr(const XPathExpr &expr,
 
   // String literal
   if (const auto *sl = dynamic_cast<const XPathStringLiteral *>(&expr)) {
-    XPathResult r;
-    r.type = XPathResultType::String;
-    r.stringValue = sl->value;
-    return r;
+    return makeString(sl->value);
   }
 
   // Number literal
   if (const auto *nl = dynamic_cast<const XPathNumberLiteral *>(&expr)) {
-    XPathResult r;
-    r.type = XPathResultType::Number;
-    r.numberValue = nl->value;
-    return r;
+    return makeNumber(nl->value);
   }
 
   throw XPath::Error("Internal evaluator error: unknown AST node type.");
