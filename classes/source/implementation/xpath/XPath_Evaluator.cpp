@@ -1002,6 +1002,22 @@ static XPathResult evalExpr(const XPathExpr &expr,
 }
 
 // ========================================================================
+// Shared evaluation entry point
+// ========================================================================
+/// <summary>
+/// Tokenize, parse and evaluate an XPath expression against docRoot.
+/// Throws XPath::Error on empty expression, syntax errors, or runtime errors.
+/// </summary>
+static XPathResult evalExpression(const std::string_view expression, const Node &docRoot)
+{
+  if (expression.empty()) { throw XPath::Error("Empty expression."); }
+  const auto tokens = xpathTokenize(expression);
+  const auto ast = xpathParse(tokens);
+  const std::vector<const Node *> emptyAncestors;
+  return evalExpr(*ast, docRoot, 1, 1, docRoot, emptyAncestors);
+}
+
+// ========================================================================
 // XPath_Impl public methods (called from XPath::evaluate etc.)
 // ========================================================================
 XPath_Impl::XPath_Impl(const Node &root) : xmlRoot(root) {}
@@ -1009,11 +1025,7 @@ XPath_Impl::XPath_Impl(const Node &root) : xmlRoot(root) {}
 std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression) const
 {
   try {
-    if (expression.empty()) { throw XPath::Error("Empty expression."); }
-    const auto tokens = xpathTokenize(expression);
-    const auto ast = xpathParse(tokens);
-    const std::vector<const Node *> emptyAncestors;
-    XPathResult result = evalExpr(*ast, xmlRoot, 1, 1, xmlRoot, emptyAncestors);
+    XPathResult result = evalExpression(expression, xmlRoot);
     if (result.type == XPathResultType::NodeSet) return result.nodeSet;
     return {};
   } catch (const XPath::Error &) {
@@ -1026,12 +1038,7 @@ std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression
 std::string XPath_Impl::evaluateString(const std::string_view expression) const
 {
   try {
-    if (expression.empty()) { throw XPath::Error("Empty expression."); }
-    const auto tokens = xpathTokenize(expression);
-    const auto ast = xpathParse(tokens);
-    const std::vector<const Node *> emptyAncestors;
-    XPathResult result = evalExpr(*ast, xmlRoot, 1, 1, xmlRoot, emptyAncestors);
-    return resultToString(result);
+    return resultToString(evalExpression(expression, xmlRoot));
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
@@ -1042,12 +1049,7 @@ std::string XPath_Impl::evaluateString(const std::string_view expression) const
 bool XPath_Impl::evaluateBool(const std::string_view expression) const
 {
   try {
-    if (expression.empty()) { throw XPath::Error("Empty expression."); }
-    const auto tokens = xpathTokenize(expression);
-    const auto ast = xpathParse(tokens);
-    const std::vector<const Node *> emptyAncestors;
-    XPathResult result = evalExpr(*ast, xmlRoot, 1, 1, xmlRoot, emptyAncestors);
-    return resultToBool(result);
+    return resultToBool(evalExpression(expression, xmlRoot));
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
@@ -1058,12 +1060,7 @@ bool XPath_Impl::evaluateBool(const std::string_view expression) const
 double XPath_Impl::evaluateNumber(const std::string_view expression) const
 {
   try {
-    if (expression.empty()) { throw XPath::Error("Empty expression."); }
-    const auto tokens = xpathTokenize(expression);
-    const auto ast = xpathParse(tokens);
-    const std::vector<const Node *> emptyAncestors;
-    XPathResult result = evalExpr(*ast, xmlRoot, 1, 1, xmlRoot, emptyAncestors);
-    return resultToNumber(result);
+    return resultToNumber(evalExpression(expression, xmlRoot));
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
