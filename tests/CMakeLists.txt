@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-project(XML_Lib_Unit_Tests VERSION 1.0.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
+project(XML_Lib_Unit_Tests VERSION 1.2.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 
 include(FetchContent)
 
@@ -107,7 +107,7 @@ target_sources(${TEST_EXECUTABLE}
     PRIVATE
     ${TEST_CORE_SOURCES}
 )
-target_include_directories(${TEST_EXECUTABLE} PUBLIC  ${XML_LIB_TEST_PUBLIC_INCLUDES})
+target_include_directories(${TEST_EXECUTABLE} PUBLIC ${XML_LIB_TEST_PUBLIC_INCLUDES})
 target_include_directories(${TEST_EXECUTABLE} PRIVATE ${XML_LIB_TEST_PRIVATE_INCLUDES})
 
 if(NOT XML_LIB_EMBEDDED)
@@ -125,7 +125,7 @@ if(XML_LIB_EMBEDDED)
         source/embedded/XML_Lib_Tests_Embedded.cpp
         source/xml/XML_Lib_Tests_Helper.cpp
     )
-    target_include_directories(${EMBEDDED_TEST_EXECUTABLE} PUBLIC  ${XML_LIB_TEST_PUBLIC_INCLUDES})
+    target_include_directories(${EMBEDDED_TEST_EXECUTABLE} PUBLIC ${XML_LIB_TEST_PUBLIC_INCLUDES})
     target_include_directories(${EMBEDDED_TEST_EXECUTABLE} PRIVATE ${XML_LIB_TEST_PRIVATE_INCLUDES})
     target_link_libraries(${EMBEDDED_TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
     target_compile_definitions(${EMBEDDED_TEST_EXECUTABLE} PRIVATE
@@ -147,7 +147,7 @@ target_sources(${PERFORMANCE_EXECUTABLE}
     PRIVATE
     source/performance/XML_Lib_Tests_Performance.cpp
 )
-target_include_directories(${PERFORMANCE_EXECUTABLE} PUBLIC  ${XML_LIB_TEST_PUBLIC_INCLUDES})
+target_include_directories(${PERFORMANCE_EXECUTABLE} PUBLIC ${XML_LIB_TEST_PUBLIC_INCLUDES})
 target_include_directories(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIB_TEST_PRIVATE_INCLUDES})
 target_link_libraries(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
 

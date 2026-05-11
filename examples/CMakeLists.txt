@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-project(XML_Lib_Examples VERSION 1.1.0 DESCRIPTION "XML_Lib example programs")
+project(XML_Lib_Examples VERSION 1.2.0 DESCRIPTION "XML_Lib example programs")
 
 file(GLOB EXAMPLE_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/source/ "${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp")
 
