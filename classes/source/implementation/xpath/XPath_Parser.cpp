@@ -220,6 +220,17 @@ static XPathStep parseStep(Parser &p)
 }
 
 // ======================================================================
+// Implicit // step: descendant-or-self::node()
+// ======================================================================
+static XPathStep makeDescendantOrSelfStep()
+{
+  XPathStep s;
+  s.axis = XPathAxis::DescendantOrSelf;
+  s.nodeTest = { XPathNodeTestKind::NodeType_Node, "" };
+  return s;
+}
+
+// ======================================================================
 // Relative location path  (step (/ or // step)*)
 // ======================================================================
 static std::unique_ptr<XPathPathExpr> parseRelativeLocationPath(Parser &p, const bool absolute)
@@ -232,10 +243,7 @@ static std::unique_ptr<XPathPathExpr> parseRelativeLocationPath(Parser &p, const
     if (p.cur().type == XPathTokenType::DoubleSlash) {
       p.consume();
       // // → insert  descendant-or-self::node()
-      XPathStep ds;
-      ds.axis = XPathAxis::DescendantOrSelf;
-      ds.nodeTest = { XPathNodeTestKind::NodeType_Node, "" };
-      path->steps.push_back(std::move(ds));
+      path->steps.push_back(makeDescendantOrSelfStep());
     } else {
       p.consume();// /
     }
@@ -254,10 +262,7 @@ static std::unique_ptr<XPathPathExpr> parseLocationPath(Parser &p)
     // //rel  →  /descendant-or-self::node()/rel
     auto path = std::make_unique<XPathPathExpr>();
     path->absolute = true;
-    XPathStep ds;
-    ds.axis = XPathAxis::DescendantOrSelf;
-    ds.nodeTest = { XPathNodeTestKind::NodeType_Node, "" };
-    path->steps.push_back(std::move(ds));
+    path->steps.push_back(makeDescendantOrSelfStep());
     // now parse the rest as relative steps (same path object)
     if (p.cur().type != XPathTokenType::End && p.cur().type != XPathTokenType::RightBracket
         && p.cur().type != XPathTokenType::RightParen && p.cur().type != XPathTokenType::Pipe) {
@@ -268,10 +273,7 @@ static std::unique_ptr<XPathPathExpr> parseLocationPath(Parser &p)
           p.consume();
         } else if (p.cur().type == XPathTokenType::DoubleSlash) {
           p.consume();
-          XPathStep ds2;
-          ds2.axis = XPathAxis::DescendantOrSelf;
-          ds2.nodeTest = { XPathNodeTestKind::NodeType_Node, "" };
-          path->steps.push_back(std::move(ds2));
+          path->steps.push_back(makeDescendantOrSelfStep());
         } else {
           break;
         }
@@ -295,10 +297,7 @@ static std::unique_ptr<XPathPathExpr> parseLocationPath(Parser &p)
     while (p.cur().type == XPathTokenType::Slash || p.cur().type == XPathTokenType::DoubleSlash) {
       if (p.cur().type == XPathTokenType::DoubleSlash) {
         p.consume();
-        XPathStep ds;
-        ds.axis = XPathAxis::DescendantOrSelf;
-        ds.nodeTest = { XPathNodeTestKind::NodeType_Node, "" };
-        path->steps.push_back(std::move(ds));
+        path->steps.push_back(makeDescendantOrSelfStep());
       } else {
         p.consume();
       }
@@ -400,10 +399,7 @@ static XPathExprPtr parsePathExpr(Parser &p)
     auto path = std::make_unique<XPathPathExpr>();
     path->absolute = false;
     if (doubleSlash) {
-      XPathStep ds;
-      ds.axis = XPathAxis::DescendantOrSelf;
-      ds.nodeTest = { XPathNodeTestKind::NodeType_Node, "" };
-      path->steps.push_back(std::move(ds));
+      path->steps.push_back(makeDescendantOrSelfStep());
     }
     path->steps.push_back(parseStep(p));
 
