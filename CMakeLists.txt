@@ -88,6 +88,7 @@ if(XML_LIB_ENABLE_XSD)
     classes/source/implementation/xsd/XSD_Validator_Impl.cpp
     classes/source/implementation/xsd/XSD_NodeHelpers.cpp
     classes/source/implementation/xsd/XSD_Validator_Impl_Parse.cpp
+    classes/source/implementation/xsd/XSD_ValidateHelpers.cpp
     classes/source/implementation/xsd/XSD_Validator_Impl_Validate.cpp
   )
 endif()

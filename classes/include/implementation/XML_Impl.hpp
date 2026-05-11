@@ -47,16 +47,16 @@ public:
 private:
   // Embedded arena for parser-allocated nodes
   XML_Arena arena;
-  // Root Node
-  Node xmlRoot;
-  // Traverse JSON tree
-  template<typename T> static void traverseNodes(T &xNode, IAction &action);
   // Entity mapper
   std::unique_ptr<IEntityMapper> entityMapper;
-  // XML parser
-  std::unique_ptr<IParser> xmlParser;
   // XML stringifier
   std::unique_ptr<IStringify> xmlStringifier;
+  // XML parser (owns Default_Parser::arena; must outlive xmlRoot)
+  std::unique_ptr<IParser> xmlParser;
+  // Root Node (children allocated in xmlParser's arena; must be destroyed before xmlParser)
+  Node xmlRoot;
+  // Traverse XML tree
+  template<typename T> static void traverseNodes(T &xNode, IAction &action);
 };
 /// <summary>
 /// Recursively traverse Node tree calling IAction methods and possibly

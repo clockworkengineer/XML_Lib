@@ -8,20 +8,12 @@
 
 #include "XSD_Impl.hpp"
 #include "XML_NodeKindHelpers.hpp"
+#include "xsd/XSD_ValidateHelpers.hpp"
 
 #include <charconv>
 #include <regex>
 
 namespace XML_Lib {
-
-// ----------------------------------------------------------------
-// Error helper
-// ----------------------------------------------------------------
-
-static void xsdError(const std::string &elementName, const std::string &message)
-{
-  throw IValidator::Error("XSD Validation Error [Element: " + elementName + "] " + message);
-}
 
 // ----------------------------------------------------------------
 // Built-in type checking
@@ -247,45 +239,13 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
     return;
   }
 
-  // Build a map of actual child element counts
-  std::unordered_map<std::string, uint32_t> childCounts;
-  std::vector<std::string> childOrder;// for sequence validation
-
-  for (const auto &child : xNode.getChildren()) {
-    if (isElementLikeNode(child)) {
-      const auto &childElem = NRef<Element>(child);
-      const auto &childName = childElem.name();
-      if (childCounts[childName]++ == 0) { childOrder.push_back(childName); }
-    }
-  }
+  // Collect actual child element occurrence counts
+  auto childCounts = collectElementChildCounts(xNode);
 
   if (type.compositor == XSD_ComplexType::Compositor::sequence || type.compositor == XSD_ComplexType::Compositor::all) {
 
-    // Check each declared particle
-    for (const auto &particle : type.particles) {
-      const auto count = childCounts.contains(particle.elementName) ? childCounts.at(particle.elementName) : 0u;
-
-      // Missing required element
-      if (count < particle.minOccurs) {
-        xsdError(elemName,
-          "required child element <" + particle.elementName + "> is missing (expected at least "
-            + std::to_string(particle.minOccurs) + ", found " + std::to_string(count) + ").");
-      }
-      // Too many occurrences
-      if (particle.maxOccurs != 0 && count > particle.maxOccurs) {
-        xsdError(elemName,
-          "child element <" + particle.elementName + "> appears " + std::to_string(count)
-            + " times but maxOccurs=" + std::to_string(particle.maxOccurs) + ".");
-      }
-    }
-
-    // Check for unexpected children
-    for (const auto &childEntry : childCounts) {
-      const auto &childName = childEntry.first;
-      const bool declared =
-        std::ranges::any_of(type.particles, [&](const XSD_Particle &p) { return p.elementName == childName; });
-      if (!declared) { xsdError(elemName, "unexpected child element <" + childName + ">."); }
-    }
+    validateParticleOccurrenceBounds(childCounts, type, elemName);
+    validateUnexpectedChildren(childCounts, type, elemName);
 
   } else if (type.compositor == XSD_ComplexType::Compositor::choice) {
     // Exactly one branch must be present
@@ -314,12 +274,7 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
       xsdError(elemName, "xs:choice requires exactly one of: " + options + ".");
     }
     // Check for unexpected children not in any branch
-    for (const auto &childEntry : childCounts) {
-      const auto &childName = childEntry.first;
-      const bool declared =
-        std::ranges::any_of(type.particles, [&](const XSD_Particle &p) { return p.elementName == childName; });
-      if (!declared) { xsdError(elemName, "unexpected child element <" + childName + ">."); }
-    }
+    validateUnexpectedChildren(childCounts, type, elemName);
   }
 
   // Recursively validate child elements
@@ -329,13 +284,7 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
     const auto &childName = childElem.name();
 
     // Find this child's declared particle
-    const XSD_Particle *particle = nullptr;
-    for (const auto &p : type.particles) {
-      if (p.elementName == childName) {
-        particle = &p;
-        break;
-      }
-    }
+    const XSD_Particle *particle = findDeclaredParticle(type, childName);
     if (!particle) { continue; }
 
     // Resolve type for child

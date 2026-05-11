@@ -1,7 +1,7 @@
 //
-// XML_NodeKindHelpers.cpp
+// XML_NodeKindHelpes.cpp
 //
-// Description: Common node classification predicates shared across XML, XSD,
+// ption: Common node classification predicates shared across XML, XSD,
 // DTD and XPath modules.
 //
 // Dependencies: C++20 - Language standard features used.
