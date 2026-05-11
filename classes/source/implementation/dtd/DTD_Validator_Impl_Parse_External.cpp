@@ -68,20 +68,16 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseExternalContent(ISource &source)
 {
+  const auto dispatch = [&](auto &&parseFn) {
+    BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
+    parseFn(dtdTranslatedSource);
+  };
   while (source.more()) {
-    if (source.match("<!ENTITY")) {
-      BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
-      parseEntity(dtdTranslatedSource);
-    } else if (source.match("<!ELEMENT")) {
-      BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
-      parseElement(dtdTranslatedSource);
-    } else if (source.match("<!ATTLIST")) {
-      BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
-      parseAttributeList(dtdTranslatedSource);
-    } else if (source.match("<!NOTATION")) {
-      BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
-      parseNotation(dtdTranslatedSource);
-    } else if (source.match("<!--")) {
+    if      (source.match("<!ENTITY"))   { dispatch([&](ISource &s) { parseEntity(s);        }); }
+    else if (source.match("<!ELEMENT"))  { dispatch([&](ISource &s) { parseElement(s);       }); }
+    else if (source.match("<!ATTLIST"))  { dispatch([&](ISource &s) { parseAttributeList(s); }); }
+    else if (source.match("<!NOTATION")) { dispatch([&](ISource &s) { parseNotation(s);      }); }
+    else if (source.match("<!--")) {
       parseComment(source);
     } else if (source.current() == '%') {
       parseParameterEntityReference(source);

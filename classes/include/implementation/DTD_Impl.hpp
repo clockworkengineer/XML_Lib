@@ -33,6 +33,7 @@ private:
   [[nodiscard]] static std::string parseAttributeEnumerationType(ISource &source);
   static bool parseIsChoiceOrSequence(ISource &contentSpecSource);
   void parseElementCP(ISource &contentSpecSource, IDestination &contentSpecDestination);
+  void parseGroupBody(ISource &src, IDestination &dst, char delimiter, std::function<void(ISource &)> separatorAction);
   void parseElementChoice(ISource &contentSpecSource, IDestination &contentSpecDestination);
   void parseElementSequence(ISource &contentSpecSource, IDestination &contentSpecDestination);
   void parseElementChildren(ISource &contentSpecSource, IDestination &contentSpecDestination);

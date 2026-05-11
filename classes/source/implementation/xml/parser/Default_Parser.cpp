@@ -65,16 +65,16 @@ void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entity
 /// <param name="source">XML source stream.</param>
 /// <param name="xProlog">XML prolog Node.</param>
 /// <returns>True then items parsed.</returns>
+bool Default_Parser::tryParseCommentOrPI(ISource &source, Node &xNode)
+{
+  if (source.match("<!--")) { xNode.addChild(parseComment(source)); return true; }
+  if (source.match("<?"))   { xNode.addChild(parsePI(source));      return true; }
+  return false;
+}
+
 bool Default_Parser::parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog)
 {
-  if (source.match("<!--")) {
-    xProlog.addChild(parseComment(source));
-    return true;
-  }
-  if (source.match("<?")) {
-    xProlog.addChild(parsePI(source));
-    return true;
-  }
+  if (tryParseCommentOrPI(source, xProlog)) { return true; }
   if (source.isWS()) {
     parseWhiteSpaceToContent(source, xProlog);
     return true;
@@ -283,10 +283,8 @@ void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &e
 /// <param name="entityMapper">Entity mapper interface object.</param>
 void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper)
 {
-  if (source.match("<!--")) {
-    xNode.addChild(parseComment(source));
-  } else if (source.match("<?")) {
-    xNode.addChild(parsePI(source));
+  if (tryParseCommentOrPI(source, xNode)) {
+    // comment or PI handled
   } else if (source.match("<![CDATA[")) {
     markTrailingContentNonWhitespace(xNode);
     xNode.addChild(parseCDATA(source));

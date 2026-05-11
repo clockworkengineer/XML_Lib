@@ -24,6 +24,14 @@ uint32_t parseUint(const std::string_view &value, uint32_t defaultValue = 1u)
   return (ec == std::errc()) ? result : defaultValue;
 }
 
+void parseOccurrenceBounds(const Node &node, uint32_t &minOccurs, uint32_t &maxOccurs)
+{
+  const auto minStr = attrValueView(node, "minOccurs");
+  const auto maxStr = attrValueView(node, "maxOccurs");
+  minOccurs = parseUint(minStr, 1u);
+  maxOccurs = maxStr == "unbounded" ? 0u : maxStr.empty() ? 1u : parseUint(maxStr, 1u);
+}
+
 } // namespace
 
 // ----------------------------------------------------------------
@@ -155,10 +163,7 @@ void XSD_Impl::parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr)
 void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
 {
   particle.elementName = std::string(attrValue(particleNode, "name"));
-  const auto minStr = attrValue(particleNode, "minOccurs");
-  const auto maxStr = attrValue(particleNode, "maxOccurs");
-  particle.minOccurs = parseUint(minStr, 1u);
-  particle.maxOccurs = maxStr == "unbounded" ? 0u : maxStr.empty() ? 1u : parseUint(maxStr, 1u);
+  parseOccurrenceBounds(particleNode, particle.minOccurs, particle.maxOccurs);
   particle.typeRef = resolveType(attrValue(particleNode, "type"));
 
   // Check for inline type declarations
@@ -253,10 +258,7 @@ void XSD_Impl::parseTopLevelElement(const Node &elemNode)
   XSD_ElementDecl decl;
   decl.name = std::string(attrValue(elemNode, "name"));
   decl.typeRef = resolveType(attrValue(elemNode, "type"));
-  const auto minStr = attrValue(elemNode, "minOccurs");
-  const auto maxStr = attrValue(elemNode, "maxOccurs");
-  decl.minOccurs = parseUint(minStr, 1u);
-  decl.maxOccurs = maxStr == "unbounded" ? 0u : maxStr.empty() ? 1u : parseUint(maxStr, 1u);
+  parseOccurrenceBounds(elemNode, decl.minOccurs, decl.maxOccurs);
   decl.fixedValue = attrValue(elemNode, "fixed");
   decl.defaultValue = attrValue(elemNode, "default");
 

@@ -25,6 +25,7 @@ private:
   static void parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper);
   [[nodiscard]] static std::string
     parseDeclarationAttribute(ISource &source, const std::string_view &name, const std::set<std::string> &values);
+  [[nodiscard]] static bool tryParseCommentOrPI(ISource &source, Node &xNode);
   [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog);
   static void  parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper);
   static void appendEntityOrContent(Node &xNode, const XMLValue &value, IEntityMapper &entityMapper);

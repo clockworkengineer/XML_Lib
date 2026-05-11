@@ -11,9 +11,24 @@
 #include "xsd/XSD_ValidateHelpers.hpp"
 
 #include <charconv>
+#include <functional>
 #include <regex>
 
 namespace XML_Lib {
+
+namespace {
+template<typename Cmp>
+void checkNumericFacet(const std::string &value,
+  const std::string &bound,
+  const std::string &context,
+  const std::string &message,
+  Cmp cmp)
+{
+  const double dval  = std::stod(value);
+  const double dbound = std::stod(bound);
+  if (cmp(dval, dbound)) { xsdError(context, message); }
+}
+} // namespace
 
 // ----------------------------------------------------------------
 // Built-in type checking
@@ -103,32 +118,26 @@ void XSD_Impl::validateRestrictions(const std::string &value, const XSD_SimpleTy
       hasEnum = true;
       allowedEnums.push_back(r.value);
       break;
-    case XSD_Restriction::Facet::minInclusive: {
-      const double dval = std::stod(value);
-      const double dmin = std::stod(r.value);
-      if (dval < dmin) { xsdError(context, "value '" + value + "' is less than minInclusive '" + r.value + "'."); }
+    case XSD_Restriction::Facet::minInclusive:
+      checkNumericFacet(value, r.value, context,
+        "value '" + value + "' is less than minInclusive '" + r.value + "'.",
+        std::less<double>{});
       break;
-    }
-    case XSD_Restriction::Facet::maxInclusive: {
-      const double dval = std::stod(value);
-      const double dmax = std::stod(r.value);
-      if (dval > dmax) { xsdError(context, "value '" + value + "' exceeds maxInclusive '" + r.value + "'."); }
+    case XSD_Restriction::Facet::maxInclusive:
+      checkNumericFacet(value, r.value, context,
+        "value '" + value + "' exceeds maxInclusive '" + r.value + "'.",
+        std::greater<double>{});
       break;
-    }
-    case XSD_Restriction::Facet::minExclusive: {
-      const double dval = std::stod(value);
-      const double dmin = std::stod(r.value);
-      if (dval <= dmin) {
-        xsdError(context, "value '" + value + "' is not greater than minExclusive '" + r.value + "'.");
-      }
+    case XSD_Restriction::Facet::minExclusive:
+      checkNumericFacet(value, r.value, context,
+        "value '" + value + "' is not greater than minExclusive '" + r.value + "'.",
+        std::less_equal<double>{});
       break;
-    }
-    case XSD_Restriction::Facet::maxExclusive: {
-      const double dval = std::stod(value);
-      const double dmax = std::stod(r.value);
-      if (dval >= dmax) { xsdError(context, "value '" + value + "' is not less than maxExclusive '" + r.value + "'."); }
+    case XSD_Restriction::Facet::maxExclusive:
+      checkNumericFacet(value, r.value, context,
+        "value '" + value + "' is not less than maxExclusive '" + r.value + "'.",
+        std::greater_equal<double>{});
       break;
-    }
     case XSD_Restriction::Facet::totalDigits:
     case XSD_Restriction::Facet::fractionDigits:
     case XSD_Restriction::Facet::whiteSpace:

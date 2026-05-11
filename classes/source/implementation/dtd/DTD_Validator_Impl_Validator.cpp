@@ -10,6 +10,15 @@
 
 namespace XML_Lib {
 
+namespace {
+static std::set<std::string> buildEnumerationSet(const std::string &enumStr)
+{
+  std::set<std::string> result;
+  for (auto &item : splitString(enumStr.substr(1, enumStr.size() - 2), '|')) { result.insert(item); }
+  return result;
+}
+} // namespace
+
 /// <summary>
 /// Generate an exception for an element error.
 /// </summary>
@@ -163,32 +172,28 @@ void DTD_Impl::checkAttributeType(const Node &xNode, const DTD::Attribute &attri
         elementError(xElement, "NMTOKEN attribute '" + attribute.name + "' contains an invalid NMTOKEN.");
       }
     }
-  } else if ((attribute.type & DTD::AttributeType::entity) != 0) {
-    if (!xDTD.getEntityMapper().isPresent("&" + elementAttribute.getParsed() + ";")) {
-      elementError(xElement,
-        "ENTITY attribute '" + attribute.name + "' value '" + elementAttribute.getParsed() + "' is not defined.");
-    }
-  } else if ((attribute.type & DTD::AttributeType::entities) != 0) {
-    for (const auto &entity : splitString(elementAttribute.getParsed(), ' ')) {
-      if (!xDTD.getEntityMapper().isPresent("&" + entity + ";")) {
-        elementError(xElement, "ENTITIES attribute '" + attribute.name + "' value '" + entity + "' is not defined.");
+  } else if ((attribute.type & DTD::AttributeType::entity) != 0
+             || (attribute.type & DTD::AttributeType::entities) != 0) {
+    const bool isEntities = (attribute.type & DTD::AttributeType::entities) != 0;
+    const std::string typeLabel = isEntities ? "ENTITIES" : "ENTITY";
+    const auto checkEntity = [&](const std::string &entityName) {
+      if (!xDTD.getEntityMapper().isPresent("&" + entityName + ";")) {
+        elementError(xElement,
+          typeLabel + " attribute '" + attribute.name + "' value '" + entityName + "' is not defined.");
       }
+    };
+    if (isEntities) {
+      for (const auto &entity : splitString(elementAttribute.getParsed(), ' ')) { checkEntity(entity); }
+    } else {
+      checkEntity(elementAttribute.getParsed());
     }
   } else if ((attribute.type & DTD::AttributeType::notation) != 0) {
-    std::set<std::string> notations;
-    for (auto &notation : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
-      notations.insert(notation);
-    }
-    if (!notations.contains(elementAttribute.getParsed())) {
+    if (!buildEnumerationSet(attribute.enumeration).contains(elementAttribute.getParsed())) {
       elementError(xElement,
         "NOTATION attribute '" + attribute.name + "' value '" + elementAttribute.getParsed() + "' is not defined.");
     }
   } else if ((attribute.type & DTD::AttributeType::enumeration) != 0) {
-    std::set<std::string> enumeration;
-    for (auto &option : splitString(attribute.enumeration.substr(1, attribute.enumeration.size() - 2), '|')) {
-      enumeration.insert(option);
-    }
-    if (!enumeration.contains(elementAttribute.getParsed())) {
+    if (!buildEnumerationSet(attribute.enumeration).contains(elementAttribute.getParsed())) {
       elementError(xElement,
         "attribute '" + attribute.name + "' contains invalid enumeration value '" + elementAttribute.getParsed()
           + "'.");
@@ -217,16 +222,17 @@ void DTD_Impl::checkContentSpecification(const Node &xNode) const
 {
   const auto &xElement = NRef<Element>(xNode);
   if (xDTD.getElementCount() == 0) { return; }
-  if (xDTD.getElement(xElement.name()).content.getParsed() == "((<#PCDATA>))") {
+  const auto &elemDecl = xDTD.getElement(xElement.name());
+  if (elemDecl.content.getParsed() == "((<#PCDATA>))") {
     if (!checkIsPCDATA(xNode)) { elementError(xElement, "does not contain just any parsable data."); }
     return;
   }
-  if (xDTD.getElement(xElement.name()).content.getParsed() == "EMPTY") {
+  if (elemDecl.content.getParsed() == "EMPTY") {
     if (!checkIsEMPTY(xNode)) { elementError(xElement, "is not empty."); }
     return;
   }
-  if (xDTD.getElement(xElement.name()).content.getParsed() == "ANY") { return; }
-  const std::regex match{ xDTD.getElement(xElement.name()).content.getParsed() };
+  if (elemDecl.content.getParsed() == "ANY") { return; }
+  const std::regex match{ elemDecl.content.getParsed() };
   std::string elements;
   for (auto &child : xElement.getChildren()) {
     if (isA<Element>(child) || isA<Self>(child)) {
@@ -237,7 +243,7 @@ void DTD_Impl::checkContentSpecification(const Node &xNode) const
   }
   if (!std::regex_match(elements, match)) {
     elementError(xElement,
-      "does not conform to the content specification " + xDTD.getElement(xElement.name()).content.getUnparsed() + ".");
+      "does not conform to the content specification " + elemDecl.content.getUnparsed() + ".");
   }
 }
 

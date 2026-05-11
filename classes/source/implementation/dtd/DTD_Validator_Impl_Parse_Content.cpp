@@ -10,6 +10,21 @@
 
 namespace XML_Lib {
 
+void DTD_Impl::parseGroupBody(ISource &src,
+  IDestination &dst,
+  char delimiter,
+  std::function<void(ISource &)> separatorAction)
+{
+  if (src.current() != '(') { throw SyntaxError("Invalid element content specification."); }
+  dst.add("(");
+  parseElementCP(src, dst);
+  parseDelimitedList(src, delimiter, separatorAction, [&](ISource &) { parseElementCP(src, dst); });
+  if (src.current() != ')') { throw SyntaxError("Invalid element content specification."); }
+  dst.add(")");
+  src.next();
+  src.ignoreWS();
+}
+
 /// <summary>
 /// Is the next specification operator to be parsed choice '|' or sequence ','.
 /// </summary>
@@ -57,17 +72,8 @@ void DTD_Impl::parseElementCP(ISource &contentSpecSource, IDestination &contentS
 /// <param name="contentSpecDestination">Parsed content specification stream.</param>
 void DTD_Impl::parseElementChoice(ISource &contentSpecSource, IDestination &contentSpecDestination)
 {
-  if (contentSpecSource.current() != '(') { throw SyntaxError("Invalid element content specification."); }
-  contentSpecDestination.add("(");
-  parseElementCP(contentSpecSource, contentSpecDestination);
-  parseDelimitedList(contentSpecSource, '|',
-    [&](ISource &) { contentSpecDestination.add("|"); },
-    [&](ISource &) { parseElementCP(contentSpecSource, contentSpecDestination); }
-  );
-  if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
-  contentSpecDestination.add(")");
-  contentSpecSource.next();
-  contentSpecSource.ignoreWS();
+  parseGroupBody(contentSpecSource, contentSpecDestination, '|',
+    [&](ISource &) { contentSpecDestination.add("|"); });
 }
 
 /// <summary>
@@ -77,17 +83,7 @@ void DTD_Impl::parseElementChoice(ISource &contentSpecSource, IDestination &cont
 /// <param name="contentSpecDestination">Parsed content specification stream.</param>
 void DTD_Impl::parseElementSequence(ISource &contentSpecSource, IDestination &contentSpecDestination)
 {
-  if (contentSpecSource.current() != '(') { throw SyntaxError("Invalid element content specification."); }
-  contentSpecDestination.add("(");
-  parseElementCP(contentSpecSource, contentSpecDestination);
-  parseDelimitedList(contentSpecSource, ',',
-    [&](ISource &) {},
-    [&](ISource &) { parseElementCP(contentSpecSource, contentSpecDestination); }
-  );
-  if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
-  contentSpecDestination.add(")");
-  contentSpecSource.next();
-  contentSpecSource.ignoreWS();
+  parseGroupBody(contentSpecSource, contentSpecDestination, ',', [](ISource &) {});
 }
 
 /// <summary>
