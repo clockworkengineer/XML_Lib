@@ -570,23 +570,15 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     }
     return makeString(std::move(s));
   }
-  if (name == "starts-with") {
+  if (name == "starts-with" || name == "contains") {
     auto args = evalArgs();
     if (args.size() < 2) { return makeBool(false); }
     std::string scratchLeft;
     std::string scratchRight;
     const std::string_view left = resultToStringView(args[0], scratchLeft);
     const std::string_view right = resultToStringView(args[1], scratchRight);
-    return makeBool(left.starts_with(right));
-  }
-  if (name == "contains") {
-    auto args = evalArgs();
-    if (args.size() < 2) { return makeBool(false); }
-    std::string scratchLeft;
-    std::string scratchRight;
-    const std::string_view left = resultToStringView(args[0], scratchLeft);
-    const std::string_view right = resultToStringView(args[1], scratchRight);
-    return makeBool(left.find(right) != std::string::npos);
+    return makeBool(name == "starts-with" ? left.starts_with(right)
+                                          : left.find(right) != std::string::npos);
   }
   if (name == "string-length") {
     auto args = evalArgs();
@@ -636,7 +628,7 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     }
     return makeString(std::move(sub));
   }
-  if (name == "substring-before") {
+  if (name == "substring-before" || name == "substring-after") {
     auto args = evalArgs();
     if (args.size() < 2) { return makeString(""); }
     std::string scratchLeft;
@@ -644,17 +636,10 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     const std::string_view haystack = resultToStringView(args[0], scratchLeft);
     const std::string_view needle = resultToStringView(args[1], scratchRight);
     const auto pos = haystack.find(needle);
-    return makeString(pos != std::string_view::npos ? std::string(haystack.substr(0, pos)) : "");
-  }
-  if (name == "substring-after") {
-    auto args = evalArgs();
-    if (args.size() < 2) { return makeString(""); }
-    std::string scratchLeft;
-    std::string scratchRight;
-    const std::string_view haystack = resultToStringView(args[0], scratchLeft);
-    const std::string_view needle = resultToStringView(args[1], scratchRight);
-    const auto pos = haystack.find(needle);
-    return makeString(pos != std::string_view::npos ? std::string(haystack.substr(pos + needle.size())) : "");
+    if (pos == std::string_view::npos) { return makeString(""); }
+    return makeString(name == "substring-before"
+      ? std::string(haystack.substr(0, pos))
+      : std::string(haystack.substr(pos + needle.size())));
   }
 
   // --- Internal synthetic: path continuation (filter then path) ---
@@ -800,48 +785,19 @@ static XPathResult evalExpr(const XPathExpr &expr,
     // Relational and arithmetic: coerce to numbers
     const double lv = resultToNumber(left);
     const double rv = resultToNumber(right);
-    XPathResult r;
     switch (b->op) {
-    case XPathBinaryExpr::Op::Lt:
-      r.type = XPathResultType::Boolean;
-      r.boolValue = lv < rv;
-      break;
-    case XPathBinaryExpr::Op::Gt:
-      r.type = XPathResultType::Boolean;
-      r.boolValue = lv > rv;
-      break;
-    case XPathBinaryExpr::Op::LtEq:
-      r.type = XPathResultType::Boolean;
-      r.boolValue = lv <= rv;
-      break;
-    case XPathBinaryExpr::Op::GtEq:
-      r.type = XPathResultType::Boolean;
-      r.boolValue = lv >= rv;
-      break;
-    case XPathBinaryExpr::Op::Add:
-      r.type = XPathResultType::Number;
-      r.numberValue = lv + rv;
-      break;
-    case XPathBinaryExpr::Op::Sub:
-      r.type = XPathResultType::Number;
-      r.numberValue = lv - rv;
-      break;
-    case XPathBinaryExpr::Op::Mul:
-      r.type = XPathResultType::Number;
-      r.numberValue = lv * rv;
-      break;
+    case XPathBinaryExpr::Op::Lt:   return makeBool(lv < rv);
+    case XPathBinaryExpr::Op::Gt:   return makeBool(lv > rv);
+    case XPathBinaryExpr::Op::LtEq: return makeBool(lv <= rv);
+    case XPathBinaryExpr::Op::GtEq: return makeBool(lv >= rv);
+    case XPathBinaryExpr::Op::Add:  return makeNumber(lv + rv);
+    case XPathBinaryExpr::Op::Sub:  return makeNumber(lv - rv);
+    case XPathBinaryExpr::Op::Mul:  return makeNumber(lv * rv);
     case XPathBinaryExpr::Op::Div:
-      r.type = XPathResultType::Number;
-      r.numberValue = (rv == 0.0) ? std::numeric_limits<double>::infinity() : lv / rv;
-      break;
-    case XPathBinaryExpr::Op::Mod:
-      r.type = XPathResultType::Number;
-      r.numberValue = std::fmod(lv, rv);
-      break;
-    default:
-      break;
+      return makeNumber((rv == 0.0) ? std::numeric_limits<double>::infinity() : lv / rv);
+    case XPathBinaryExpr::Op::Mod:  return makeNumber(std::fmod(lv, rv));
+    default:                        return {};
     }
-    return r;
   }
 
   // Unary minus

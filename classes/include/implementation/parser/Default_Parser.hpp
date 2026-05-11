@@ -2,6 +2,7 @@
 
 #include "XML.hpp"
 #include "XML_Core.hpp"
+#include <span>
 
 namespace XML_Lib {
 
@@ -24,7 +25,7 @@ private:
   // XML Parser
   static void parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper);
   [[nodiscard]] static std::string
-    parseDeclarationAttribute(ISource &source, const std::string_view &name, const std::set<std::string> &values);
+    parseDeclarationAttribute(ISource &source, const std::string_view &name, std::span<const std::string_view> values);
   [[nodiscard]] static bool tryParseCommentOrPI(ISource &source, Node &xNode);
   [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog);
   static void  parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper);

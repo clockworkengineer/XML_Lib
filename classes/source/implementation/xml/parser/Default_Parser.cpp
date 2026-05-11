@@ -98,7 +98,7 @@ std::string Default_Parser::parseTagName(ISource &source) { return parseName(sou
 /// <returns>Valid attribute value.</returns>
 std::string Default_Parser::parseDeclarationAttribute(ISource &source,
   const std::string_view &name,
-  const std::set<std::string> &values)
+  std::span<const std::string_view> values)
 {
   std::string value;
   source.ignoreWS();
@@ -106,7 +106,7 @@ std::string Default_Parser::parseDeclarationAttribute(ISource &source,
     source.ignoreWS();
     value = parseValue(source).getParsed();
     if (name == "encoding") { value = toUpperString(value); }
-    if (!values.contains(value)) {
+    if (!std::ranges::any_of(values, [&](const std::string_view sv) { return sv == value; })) {
       XML_LIB_THROW(SyntaxError("Unsupported XML " + std::string(name) + " value '" + value + "' specified."));
     }
   } else {
@@ -360,13 +360,14 @@ Node Default_Parser::parseDeclaration(ISource &source)
   if (source.match("<?xml")) {
     source.ignoreWS();
     if (source.match("version")) {
-      version = parseDeclarationAttribute(source, "version", { "1.0", "1.1" });
+      static constexpr std::array<std::string_view, 2> kVersions{ "1.0", "1.1" };
+      version = parseDeclarationAttribute(source, "version", kVersions);
     } else {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Version missing from declaration."));
     }
     if (source.match("encoding")) {
       // XML 1.0 allows a wide range of encodings, not just UTF-8 and UTF-16
-      static const std::set<std::string> allowedEncodings = { "UTF-8",
+      static constexpr std::array<std::string_view, 22> kEncodings{ "UTF-8",
         "UTF-16",
         "ISO-10646-UCS-2",
         "ISO-10646-UCS-4",
@@ -388,9 +389,10 @@ Node Default_Parser::parseDeclaration(ISource &source)
         "EUC-CN",
         "SHIFT_JIS",
         "US-ASCII" };
-      encoding = parseDeclarationAttribute(source, "encoding", allowedEncodings);
+      encoding = parseDeclarationAttribute(source, "encoding", kEncodings);
     }
-    if (source.match("standalone")) { standalone = parseDeclarationAttribute(source, "standalone", { "yes", "no" }); }
+    static constexpr std::array<std::string_view, 2> kStandalone{ "yes", "no" };
+    if (source.match("standalone")) { standalone = parseDeclarationAttribute(source, "standalone", kStandalone); }
     if (source.match("encoding")) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes."));
     }

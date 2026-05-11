@@ -28,6 +28,16 @@ void checkNumericFacet(const std::string &value,
   const double dbound = std::stod(bound);
   if (cmp(dval, dbound)) { xsdError(context, message); }
 }
+
+template<typename Cmp>
+void checkLengthFacet(const std::string &value,
+  const std::string &bound,
+  const std::string &context,
+  const std::string &message,
+  Cmp cmp)
+{
+  if (cmp(value.size(), static_cast<std::size_t>(std::stoul(bound)))) { xsdError(context, message); }
+}
 } // namespace
 
 // ----------------------------------------------------------------
@@ -92,20 +102,19 @@ void XSD_Impl::validateRestrictions(const std::string &value, const XSD_SimpleTy
   for (const auto &r : st.restrictions) {
     switch (r.facet) {
     case XSD_Restriction::Facet::minLength:
-      if (value.size() < static_cast<std::size_t>(std::stoul(r.value))) {
-        xsdError(context, "value length " + std::to_string(value.size()) + " is less than minLength " + r.value + ".");
-      }
+      checkLengthFacet(value, r.value, context,
+        "value length " + std::to_string(value.size()) + " is less than minLength " + r.value + ".",
+        std::less<std::size_t>{});
       break;
     case XSD_Restriction::Facet::maxLength:
-      if (value.size() > static_cast<std::size_t>(std::stoul(r.value))) {
-        xsdError(context, "value length " + std::to_string(value.size()) + " exceeds maxLength " + r.value + ".");
-      }
+      checkLengthFacet(value, r.value, context,
+        "value length " + std::to_string(value.size()) + " exceeds maxLength " + r.value + ".",
+        std::greater<std::size_t>{});
       break;
     case XSD_Restriction::Facet::length:
-      if (value.size() != static_cast<std::size_t>(std::stoul(r.value))) {
-        xsdError(
-          context, "value length " + std::to_string(value.size()) + " does not equal required length " + r.value + ".");
-      }
+      checkLengthFacet(value, r.value, context,
+        "value length " + std::to_string(value.size()) + " does not equal required length " + r.value + ".",
+        std::not_equal_to<std::size_t>{});
       break;
     case XSD_Restriction::Facet::pattern: {
       std::regex re(r.value);
