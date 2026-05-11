@@ -221,14 +221,28 @@ void Default_Parser::parseWhiteSpaceToContent(ISource &source, Node &xNode)
 }
 
 /// <summary>
-/// Parse any content found inside an element.
+/// Mark the trailing Content child of xNode as non-whitespace, if one exists.
 /// </summary>
-/// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element Node.</param>
-/// <param name="entityMapper">Entity mapper interface object.</param>
-void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper)
+static void markTrailingContentNonWhitespace(Node &xNode)
 {
-  if (XMLValue content{ parseCharacter(source) }; content.isReference()) {
+  if (!xNode.getChildren().empty()) {
+    if (isA<Content>(xNode.getChildren().back())) {
+      NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false);
+    }
+  }
+}
+
+/// <summary>
+/// Append a parsed character value to xNode as entity reference or plain content.
+/// </summary>
+/// <param name="xNode">Current element Node.</param>
+/// <param name="value">Parsed character value.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
+void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, IEntityMapper &entityMapper)
+{
+  if (value.isReference()) {
+    XMLValue content = value;
     if (content.isEntityReference()) { content = entityMapper.map(content); }
     auto xEntityReference = Node::make<EntityReference>(content);
     if (content.isEntityReference()) {
@@ -240,16 +254,23 @@ void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &e
       }
       // NO XML into entity elements list.
       parseEntityReferenceXML(xEntityReference, content, entityMapper);
-      if (!xNode.getChildren().empty()) {
-        if (isA<Content>(xNode.getChildren().back())) {
-          NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false);
-        }
-      }
+      markTrailingContentNonWhitespace(xNode);
     }
     xNode.addChild(std::move(xEntityReference));
   } else {
-    addContentToElementChildList(xNode, content.getParsed());
+    addContentToElementChildList(xNode, value.getParsed());
   }
+}
+
+/// <summary>
+/// Parse any content found inside an element.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="xNode">Current element Node.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
+void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper)
+{
+  appendEntityOrContent(xNode, parseCharacter(source), entityMapper);
 }
 
 /// <summary>
@@ -267,11 +288,7 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
   } else if (source.match("<?")) {
     xNode.addChild(parsePI(source));
   } else if (source.match("<![CDATA[")) {
-    if (!xNode.getChildren().empty()) {
-      if (isA<Content>(xNode.getChildren().back())) {
-        NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false);
-      }
-    }
+    markTrailingContentNonWhitespace(xNode);
     xNode.addChild(parseCDATA(source));
   } else if (source.match("<")) {
     xNode.addChild(parseElement(source, NRef<Element>(xNode).getNameSpaces(), entityMapper));
