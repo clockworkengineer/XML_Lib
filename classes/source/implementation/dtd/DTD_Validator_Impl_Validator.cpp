@@ -252,29 +252,66 @@ void DTD_Impl::checkElement(const Node &xNode)
 }
 
 /// <summary>
+/// Handle a Prolog node: recurse into its children.
+/// </summary>
+void DTD_Impl::handlePrologNode(const Node &xNode)
+{
+  for (auto &child : xNode.getChildren()) { checkElements(child); }
+}
+
+/// <summary>
+/// Handle a Root or Element node: validate the element then recurse.
+/// </summary>
+void DTD_Impl::handleElementNode(const Node &xNode)
+{
+  if (isA<Root>(xNode) && NRef<Element>(xNode).name() != xDTD.getRootName()) {
+    throw ValidationError(
+      lineNumber, "DOCTYPE name does not match that of root element " + NRef<Element>(xNode).name() + " of DTD.");
+  }
+  checkElement(xNode);
+  for (auto &child : xNode.getChildren()) { checkElements(child); }
+}
+
+/// <summary>
+/// Handle a Self-closing element node: validate the element only.
+/// </summary>
+void DTD_Impl::handleSelfNode(const Node &xNode) { checkElement(xNode); }
+
+/// <summary>
+/// Handle a Content node: count line feeds for error reporting.
+/// </summary>
+void DTD_Impl::handleContentNode(const Node &xNode)
+{
+  for (const auto &ch : NRef<Content>(xNode).value()) {
+    if (ch == kLineFeed) { lineNumber++; }
+  }
+}
+
+/// <summary>
+/// Handle nodes that need no validation action (Comment, EntityReference, PI,
+/// CDATA, DTD).
+/// </summary>
+void DTD_Impl::handleIgnorableNode([[maybe_unused]] const Node &xNode) {}
+
+/// <summary>
 /// Recursively check elements of XML document.
 /// </summary>
 /// <param name="xNode">Current element Node.</param>
 void DTD_Impl::checkElements(const Node &xNode)
 {
   if (isA<Prolog>(xNode)) {
-    for (auto &element : xNode.getChildren()) { checkElements(element); }
+    handlePrologNode(xNode);
   } else if (isA<Declaration>(xNode)) {
+    handleIgnorableNode(xNode);
   } else if (isA<Root>(xNode) || isA<Element>(xNode)) {
-    if (isA<Root>(xNode) && NRef<Element>(xNode).name() != xDTD.getRootName()) {
-      throw ValidationError(
-        lineNumber, "DOCTYPE name does not match that of root element " + NRef<Element>(xNode).name() + " of DTD.");
-    }
-    checkElement(xNode);
-    for (auto &element : xNode.getChildren()) { checkElements(element); }
+    handleElementNode(xNode);
   } else if (isA<Self>(xNode)) {
-    checkElement(xNode);
+    handleSelfNode(xNode);
   } else if (isA<Comment>(xNode) || isA<EntityReference>(xNode) || isA<PI>(xNode) || isA<CDATA>(xNode)
              || isA<DTD>(xNode)) {
+    handleIgnorableNode(xNode);
   } else if (isA<Content>(xNode)) {
-    for (const auto &ch : NRef<Content>(xNode).value()) {
-      if (ch == kLineFeed) { lineNumber++; }
-    }
+    handleContentNode(xNode);
   } else {
     throw ValidationError(lineNumber, "Invalid XMLNode encountered during validation.");
   }

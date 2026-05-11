@@ -60,6 +60,11 @@ private:
   void checkContentSpecification(const Node &xNode) const;
   void checkElement(const Node &xNode);
   void checkElements(const Node &xNode);
+  void handlePrologNode(const Node &xNode);
+  void handleElementNode(const Node &xNode);
+  void handleSelfNode(const Node &xNode);
+  void handleContentNode(const Node &xNode);
+  static void handleIgnorableNode(const Node &xNode);
   [[nodiscard]] static bool checkIsNMTOKENOK(const std::string_view &nmTokenValue);
   [[nodiscard]] static bool checkIsIDOK(const std::string_view &idValue);
   void checkAttributeValue(const Node &xNode, const DTD::Attribute &attribute) const;
