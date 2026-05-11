@@ -220,6 +220,18 @@ static std::string getTextContent(const Node &xNode)
   return result.substr(start, result.find_last_not_of(" \t\r\n") - start + 1);
 }
 
+/// Extract text content from xNode, then validate it against a named type
+/// (simple type lookup first, then builtin type fallback).
+void XSD_Impl::validateNodeText(const Node &xNode, const std::string &typeRef, const std::string &context)
+{
+  const auto text = getTextContent(xNode);
+  if (const auto *st = findSimpleType(typeRef)) {
+    validateRestrictions(text, *st, context);
+  } else if (isBuiltinType(typeRef)) {
+    validateBuiltinType(text, typeRef, context);
+  }
+}
+
 // ----------------------------------------------------------------
 // Element validation
 // ----------------------------------------------------------------
@@ -295,17 +307,12 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
     if (particle->inlineComplexType) {
       validateElement(child, *particle->inlineComplexType);
     } else if (particle->inlineSimpleType) {
-      const auto text = getTextContent(child);
-      validateRestrictions(text, *particle->inlineSimpleType, childName);
+      validateRestrictions(getTextContent(child), *particle->inlineSimpleType, childName);
     } else if (!typeRef.empty()) {
       if (const auto *ct = findComplexType(typeRef)) {
         validateElement(child, *ct);
-      } else if (const auto *st = findSimpleType(typeRef)) {
-        const auto text = getTextContent(child);
-        validateRestrictions(text, *st, childName);
-      } else if (isBuiltinType(typeRef)) {
-        const auto text = getTextContent(child);
-        validateBuiltinType(text, typeRef, childName);
+      } else {
+        validateNodeText(child, typeRef, childName);
       }
     }
   }
@@ -350,12 +357,8 @@ void XSD_Impl::validate(const Node &xNode)
 
   if (const auto *ct = findComplexType(decl->typeRef)) {
     validateElement(xNode, *ct);
-  } else if (const auto *st = findSimpleType(decl->typeRef)) {
-    const auto text = getTextContent(xNode);
-    validateRestrictions(text, *st, rootName);
-  } else if (isBuiltinType(decl->typeRef)) {
-    const auto text = getTextContent(xNode);
-    validateBuiltinType(text, decl->typeRef, rootName);
+  } else {
+    validateNodeText(xNode, decl->typeRef, rootName);
   }
 }
 
