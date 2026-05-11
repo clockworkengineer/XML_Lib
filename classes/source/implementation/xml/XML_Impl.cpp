@@ -17,6 +17,18 @@
 
 namespace XML_Lib {
 
+/// <summary>
+/// Return the first child of xNode satisfying predicate, or nullptr.
+/// </summary>
+template<typename Predicate>
+static Node *findFirstChild(Node &xNode, Predicate &&predicate)
+{
+  for (auto &child : xNode.getChildren()) {
+    if (predicate(child)) { return &child; }
+  }
+  return nullptr;
+}
+
 XML_Impl::XML_Impl(IStringify *stringify, IParser *parser)
 {
   entityMapper = std::make_unique<XML_EntityMapper>();
@@ -49,8 +61,8 @@ std::string XML_Impl::version()
 Node &XML_Impl::dtd()
 {
   if (xmlParser->canValidate()) {
-    for (auto &child : prolog().getChildren()) {
-      if (isA<DTD>(child)) { return child; }
+    if (Node *found = findFirstChild(prolog(), [](const Node &n) { return isA<DTD>(n); })) {
+      return *found;
     }
   }
   XML_LIB_THROW(Error("No DTD found."));
@@ -67,8 +79,8 @@ Node &XML_Impl::declaration() { return prolog().getChildren()[0]; }
 
 Node &XML_Impl::root()
 {
-  for (auto &child : prolog().getChildren()) {
-    if (isA<Root>(child) || isA<Self>(child)) { return child; }
+  if (Node *found = findFirstChild(prolog(), [](const Node &n) { return isA<Root>(n) || isA<Self>(n); })) {
+    return *found;
   }
   XML_LIB_THROW(Error("No root element found."));
 }
