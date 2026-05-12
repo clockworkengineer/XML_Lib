@@ -11,7 +11,7 @@
 
 namespace XML_Lib {
 
-const std::vector<XMLAttribute> *nodeAttributes(const Node &node)
+const std::pmr::vector<XMLAttribute> *nodeAttributes(const Node &node)
 {
   if (isA<Element>(node)) return &NRef<Element>(node).getAttributes();
   if (isA<Root>(node)) return &NRef<Root>(node).getAttributes();

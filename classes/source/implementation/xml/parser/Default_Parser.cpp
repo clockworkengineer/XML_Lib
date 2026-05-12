@@ -321,7 +321,7 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
 /// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to element Node.</returns>
 Node Default_Parser::parseElement(ISource &source,
-  const std::vector<XMLAttribute> &namespaces,
+  std::span<const XMLAttribute> namespaces,
   IEntityMapper &entityMapper)
 {
   // Parse tag and attributes

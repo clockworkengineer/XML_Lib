@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -29,24 +30,24 @@ struct XMLAttribute final : XMLValue
   ~XMLAttribute() override = default;
   // Get attribute name
   [[nodiscard]] const std::string &getName() const { return name; }
-  // Search for an attribute in vector of unique attributes
-  [[nodiscard]] static bool contains(const std::vector<XMLAttribute> &attributes, const std::string_view &name);
+  // Search for an attribute in any contiguous range of attributes
+  [[nodiscard]] static bool contains(std::span<const XMLAttribute> attributes, const std::string_view &name);
   // Return attribute entry
-  [[nodiscard]] static XMLAttribute &find(std::vector<XMLAttribute> &attributes, const std::string_view &name);
+  [[nodiscard]] static XMLAttribute &find(std::span<XMLAttribute> attributes, const std::string_view &name);
 
 private:
   // Attribute name
   std::string name;
 };
 
-[[nodiscard]] inline bool XMLAttribute::contains(const std::vector<XMLAttribute> &attributes, const std::string_view &name)
+[[nodiscard]] inline bool XMLAttribute::contains(std::span<const XMLAttribute> attributes, const std::string_view &name)
 {
   return std::find_if(attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) {
     return attr.getName() == name;
   }) != attributes.rend();
 }
 
-[[nodiscard]] inline XMLAttribute &XMLAttribute::find(std::vector<XMLAttribute> &attributes, const std::string_view &name)
+[[nodiscard]] inline XMLAttribute &XMLAttribute::find(std::span<XMLAttribute> attributes, const std::string_view &name)
 {
   const auto attribute = std::find_if(
     attributes.rbegin(), attributes.rend(), [&name](const XMLAttribute &attr) { return attr.getName() == name; });

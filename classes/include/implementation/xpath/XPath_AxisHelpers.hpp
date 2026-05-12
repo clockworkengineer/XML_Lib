@@ -3,6 +3,7 @@
 #include "XPath_Impl.hpp"
 #include "XML_NodeKindHelpers.hpp"
 
+#include <memory_resource>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -13,7 +14,7 @@ namespace XML_Lib {
 
 /// Returns a pointer to the attribute list for an element-like node, or nullptr
 /// if the node is not element-like.
-[[nodiscard]] const std::vector<XMLAttribute> *nodeAttributes(const Node &node);
+[[nodiscard]] const std::pmr::vector<XMLAttribute> *nodeAttributes(const Node &node);
 
 /// Returns the parsed value of the named attribute on an element-like node, or
 /// an empty string if the attribute is not present.

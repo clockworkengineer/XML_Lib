@@ -1,18 +1,24 @@
 #pragma once
 
+#include <memory_resource>
+#include <span>
+
 namespace XML_Lib {
 
 struct Element : Variant
 {
   // Constructors/Destructors
   explicit Element(const std::string_view &name = "", const Type nodeType = Type::element)
-    : Variant(nodeType), elementName(name)
+    : Variant(nodeType), elementName(name),
+      attributes(memoryResource()), namespaces(memoryResource())
   {}
   Element(const std::string_view &name,
-    const std::vector<XMLAttribute> &attributes,
-    const std::vector<XMLAttribute> &namespaces,
+    std::span<const XMLAttribute> attributes,
+    std::span<const XMLAttribute> namespaces,
     const Type nodeType = Type::element)
-    : Variant(nodeType), elementName(name), attributes(attributes), namespaces(namespaces)
+    : Variant(nodeType), elementName(name),
+      attributes(attributes.begin(), attributes.end(), memoryResource()),
+      namespaces(namespaces.begin(), namespaces.end(), memoryResource())
   {
     for (const auto &attribute : attributes) {
       if (attribute.getName().starts_with("xmlns")) {
@@ -30,7 +36,7 @@ struct Element : Variant
   // Add an attribute
   void addAttribute(const std::string_view &name, const XMLValue &value) const { attributes.emplace_back(name, value); }
   // Return reference to an attribute list
-  [[nodiscard]] const std::vector<XMLAttribute> &getAttributes() const { return attributes; }
+  [[nodiscard]] const std::pmr::vector<XMLAttribute> &getAttributes() const { return attributes; }
   // Is namespace present?
   [[nodiscard]] bool hasNameSpace(const std::string_view &name) const
   {
@@ -47,7 +53,7 @@ struct Element : Variant
     return XMLAttribute::find(namespaces, name);
   }
   // Return reference to a namespace list
-  [[nodiscard]] const std::vector<XMLAttribute> &getNameSpaces() const { return namespaces; }
+  [[nodiscard]] const std::pmr::vector<XMLAttribute> &getNameSpaces() const { return namespaces; }
   // Return reference to the element tag name
   [[nodiscard]] const std::string &name() const { return elementName; }
   // QName support: get namespace prefix (empty string if no prefix)
@@ -80,7 +86,7 @@ struct Element : Variant
 
 private:
   std::string elementName;
-  mutable std::vector<XMLAttribute> attributes;
-  mutable std::vector<XMLAttribute> namespaces;
+  mutable std::pmr::vector<XMLAttribute> attributes;
+  mutable std::pmr::vector<XMLAttribute> namespaces;
 };
 }// namespace XML_Lib

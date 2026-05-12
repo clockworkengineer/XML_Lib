@@ -37,7 +37,7 @@ private:
   [[nodiscard]] static Node parsePI(ISource &source);
   static void parseWhiteSpaceToContent(ISource &source, Node &xNode);
   static void parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper);
-  [[nodiscard]] static Node parseElement(ISource &source, const std::vector<XMLAttribute> &namespaces, IEntityMapper & entityMapper);
+  [[nodiscard]] static Node parseElement(ISource &source, std::span<const XMLAttribute> namespaces, IEntityMapper & entityMapper);
   [[nodiscard]] static Node parseDeclaration(ISource &source);
   [[nodiscard]] static Node parseDTD(ISource &source, IEntityMapper &entityMapper);
   [[nodiscard]] static Node parseProlog(ISource &source, IEntityMapper &entityMapper);

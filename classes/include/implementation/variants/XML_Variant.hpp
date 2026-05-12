@@ -43,6 +43,11 @@ struct Variant
   // Return Variant contents
   [[nodiscard]] virtual std::string getContents() const { return ""; }
 
+protected:
+  // Return the memory resource used by this Variant's children storage.
+  // Safe to call once the Variant base sub-object is fully constructed.
+  [[nodiscard]] std::pmr::memory_resource *memoryResource() const noexcept;
+
 private:
   // Variant type
   Type xmlNodeType{ Type::base };

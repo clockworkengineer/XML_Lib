@@ -33,4 +33,9 @@ void Variant::reserveChildren(const size_t count)
 Variant::Variant(const Type nodeType, std::pmr::memory_resource *resource)
   : xmlNodeType(nodeType), children(resource)
 {}
+
+std::pmr::memory_resource *Variant::memoryResource() const noexcept
+{
+  return children.get_allocator().resource();
+}
 }// namespace XML_Lib
