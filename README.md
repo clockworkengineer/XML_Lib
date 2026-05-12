@@ -1,7 +1,7 @@
 # XML_Lib
 
 ## Overview
-**XML_Lib** is a C++23 library designed to simplify the parsing, manipulation, and generation of XML documents. It is intended for developers who need an efficient, lightweight, and feature-rich solution for working with XML in their projects. The library provides a clean interface and conforms to modern C++ coding practices to ensure high performance and reliability.
+**XML_Lib** is a C++20 library designed to simplify the parsing, manipulation, and generation of XML documents. It is intended for developers who need an efficient, lightweight, and feature-rich solution for working with XML in their projects. The library provides a clean interface and conforms to modern C++ coding practices to ensure high performance and reliability.
 
 ## Features
 - **XML Parsing**: Fully compliant with XML 1.0 standard, including strict validation of elements, attributes, entities, whitespace, and declaration.
@@ -13,12 +13,16 @@
 - **Memory Efficiency**: Optimized algorithms to minimize memory usage.
 - **Error Handling**: Robust error and exception handling mechanisms, with detailed standard-compliant error messages.
 - **Cross-platform Compatibility**: Designed to run seamlessly on Linux, Windows, and macOS environments.
-- **C++23 Support**: Full compliance with the C++23 standard.
+- **C++20 Standard**: Uses C++20 features (`std::ranges`, `std::string_view`, `starts_with`/`ends_with`) and C++17 `std::pmr` (Polymorphic Memory Resources) for efficient node allocation. No C++23 features are required.
 
 ## Installation
 
 ### Prerequisites
-- A C++23-compatible compiler (GCC ≥ 13, Clang ≥ 16, MSVC ≥ 19.35)
+- A C++20-compatible compiler:
+  - GCC ≥ 10
+  - Clang ≥ 12
+  - AppleClang ≥ 13 (Xcode 13+)
+  - MSVC ≥ 19.29 (Visual Studio 2019 16.10+)
 - [CMake](https://cmake.org/) (minimum version 3.20)
 - Optional: Git for cloning the repository.
 
