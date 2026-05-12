@@ -124,6 +124,39 @@ Detailed documentation and API references can be found in the `docs/` directory:
 - [Guide.md](docs/Guide.md) — step-by-step user guide
 - [API.md](docs/API.md) — full API reference
 
+## Examples
+
+Complete, runnable example programs are in [`examples/source/`](examples/source/):
+
+| File | Description |
+|---|---|
+| [XML_Analyze_File.cpp](examples/source/XML_Analyze_File.cpp) | Parse every XML file in a directory and produce an analysis report of each document tree. |
+| [XML_Create_At_Runtime.cpp](examples/source/XML_Create_At_Runtime.cpp) | Build an XML document programmatically at runtime using the `XML` class, index operators, and initialiser lists. |
+| [XML_DTD_Validation_Example.cpp](examples/source/XML_DTD_Validation_Example.cpp) | Parse and validate XML with internal and external DTDs; shows error reporting for DTD violations. |
+| [XML_Deep_Nesting_Example.cpp](examples/source/XML_Deep_Nesting_Example.cpp) | Parse and traverse deeply nested XML documents. |
+| [XML_Encoding_Example.cpp](examples/source/XML_Encoding_Example.cpp) | Parse XML with different encodings (UTF-8, UTF-16, UTF-32) and BOM handling. |
+| [XML_Entity_Reference_Example.cpp](examples/source/XML_Entity_Reference_Example.cpp) | Parse XML with predefined and custom entity references, including error handling for undefined entities. |
+| [XML_Large_Attributes_Example.cpp](examples/source/XML_Large_Attributes_Example.cpp) | Parse XML with a large number of attributes per element. |
+| [XML_Malformed_Example.cpp](examples/source/XML_Malformed_Example.cpp) | Handle and report malformed XML input gracefully. |
+| [XML_Mixed_Content_Example.cpp](examples/source/XML_Mixed_Content_Example.cpp) | Parse and validate XML with mixed content (elements containing both text and child elements). |
+| [XML_Parse_File.cpp](examples/source/XML_Parse_File.cpp) | Parse each XML file in a directory, stringify it back to text, and re-parse the buffer; includes timing. |
+| [XML_Whitespace_Example.cpp](examples/source/XML_Whitespace_Example.cpp) | Demonstrate whitespace handling and formatting edge cases. |
+| [XML_XPath_Basic.cpp](examples/source/XML_XPath_Basic.cpp) | XPath 1.0 navigation: absolute paths, `//` descendant shorthand, `.`/`..`, wildcards, and attribute axes. |
+| [XML_XPath_Functions.cpp](examples/source/XML_XPath_Functions.cpp) | XPath 1.0 built-in functions: `count`, `last`, `position`, `string`, `concat`, `contains`, `substring`, and more. |
+| [XML_XPath_Predicates.cpp](examples/source/XML_XPath_Predicates.cpp) | XPath 1.0 predicate filtering: positional predicates, attribute value tests, and child element value tests. |
+| [XML_XSD_Attributes_Example.cpp](examples/source/XML_XSD_Attributes_Example.cpp) | XSD attribute validation: required, optional, prohibited, fixed-value, and `anyAttribute` wildcard declarations. |
+| [XML_XSD_Basic_Validation.cpp](examples/source/XML_XSD_Basic_Validation.cpp) | Basic XSD schema validation against an inline schema; shows how to catch and report schema violations. |
+| [XML_XSD_File_Validation.cpp](examples/source/XML_XSD_File_Validation.cpp) | Load both XML and XSD from files and validate the document against the schema. |
+| [XML_XSD_Type_Restrictions.cpp](examples/source/XML_XSD_Type_Restrictions.cpp) | XSD simple type restriction facets: `minInclusive`/`maxInclusive`, `pattern`, `enumeration`, `minLength`/`maxLength`. |
+| [XML__Fibonacci.cpp](examples/source/XML__Fibonacci.cpp) | Append the next Fibonacci number to an XML array file on each run; creates the file with `[0,1]` if it does not exist. |
+
+To build the examples, configure CMake with `-DXML_LIB_BUILD_EXAMPLES=ON`:
+
+```shell script
+cmake -S . -B build -DXML_LIB_BUILD_EXAMPLES=ON
+cmake --build build
+```
+
 ## Contributing
 Contributions are welcome! If you would like to contribute:
 1. Fork the repository.
