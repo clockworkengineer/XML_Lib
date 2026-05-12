@@ -26,7 +26,7 @@ static std::set<std::string> buildEnumerationSet(const std::string &enumStr)
 /// <param name="error">Error text string.</param>
 void DTD_Impl::elementError(const Element &xElement, const std::string_view &error) const
 {
-  throw ValidationError(lineNumber, "Element <" + xElement.name() + "> " + std::string(error));
+  XML_LIB_THROW(ValidationError(lineNumber, "Element <" + xElement.name() + "> " + std::string(error)));
 }
 
 /// <summary>
@@ -271,8 +271,8 @@ void DTD_Impl::handlePrologNode(const Node &xNode)
 void DTD_Impl::handleElementNode(const Node &xNode)
 {
   if (isA<Root>(xNode) && NRef<Element>(xNode).name() != xDTD.getRootName()) {
-    throw ValidationError(
-      lineNumber, "DOCTYPE name does not match that of root element " + NRef<Element>(xNode).name() + " of DTD.");
+    XML_LIB_THROW(ValidationError(
+      lineNumber, "DOCTYPE name does not match that of root element " + NRef<Element>(xNode).name() + " of DTD."));
   }
   checkElement(xNode);
   for (auto &child : xNode.getChildren()) { checkElements(child); }
@@ -319,7 +319,7 @@ void DTD_Impl::checkElements(const Node &xNode)
   } else if (isA<Content>(xNode)) {
     handleContentNode(xNode);
   } else {
-    throw ValidationError(lineNumber, "Invalid XMLNode encountered during validation.");
+    XML_LIB_THROW(ValidationError(lineNumber, "Invalid XMLNode encountered during validation."));
   }
 }
 
@@ -334,7 +334,7 @@ void DTD_Impl::checkAgainstDTD(const Node &xNode)
   checkElements(xNode);
   for (const auto &idref : assignedIDREFValues) {
     if (!assignedIDValues.contains(idref)) {
-      throw ValidationError(lineNumber, "IDREF attribute '" + idref + "' does not reference any element with the ID.");
+      XML_LIB_THROW(ValidationError(lineNumber, "IDREF attribute '" + idref + "' does not reference any element with the ID."));
     }
   }
 }

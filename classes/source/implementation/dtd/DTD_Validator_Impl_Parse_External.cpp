@@ -55,7 +55,7 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
       }
     }
   } else {
-    throw SyntaxError(source.getPosition(), "Conditional value not INCLUDE or IGNORE.");
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Conditional value not INCLUDE or IGNORE."));
   }
   if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
   source.next();
@@ -86,7 +86,7 @@ void DTD_Impl::parseExternalContent(ISource &source)
       parseConditional(source);
       continue;
     } else {
-      throw SyntaxError(source.getPosition(), "Invalid DTD tag.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid DTD tag."));
     }
     if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
     source.next();
@@ -124,7 +124,7 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
     const std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     return XMLExternalReference{ XMLExternalReference::kPublicID, systemID, publicID };
   }
-  throw SyntaxError(source.getPosition(), "Invalid external DTD specifier.");
+  XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid external DTD specifier."));
 }
 
 /// <summary>

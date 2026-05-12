@@ -296,7 +296,7 @@ void XSD_Impl::parseSchema(const Node &schemaNode)
 {
   const auto tag = localTag(schemaNode);
   if (tag != "schema") {
-    throw IValidator::Error("XSD root element must be 'xs:schema', found: '" + NRef<Element>(schemaNode).name() + "'.");
+    XML_LIB_THROW(IValidator::Error("XSD root element must be 'xs:schema', found: '" + NRef<Element>(schemaNode).name() + "'."));
   }
 
   targetNamespace = attrValue(schemaNode, "targetNamespace");
@@ -336,7 +336,7 @@ void XSD_Impl::parseSchema(const Node &schemaNode)
       const bool found =
         complexTypes.contains(decl.typeRef) || simpleTypes.contains(decl.typeRef) || isBuiltinType(decl.typeRef);
       if (!found) {
-        throw IValidator::Error("Unresolvable type '" + decl.typeRef + "' referenced by element '" + decl.name + "'.");
+        XML_LIB_THROW(IValidator::Error("Unresolvable type '" + decl.typeRef + "' referenced by element '" + decl.name + "'."));
       }
     }
   }

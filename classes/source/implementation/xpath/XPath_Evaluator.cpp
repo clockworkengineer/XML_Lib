@@ -663,7 +663,7 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     return makeNodeSet(std::move(combined));
   }
 
-  throw XPath::Error(std::string("Unknown function '") + name + "'.");
+  XML_LIB_THROW(XPath::Error(std::string("Unknown function '") + name + "'."));
 }
 
 // ========================================================================
@@ -836,7 +836,7 @@ static XPathResult evalExpr(const XPathExpr &expr,
     return makeNumber(nl->value);
   }
 
-  throw XPath::Error("Internal evaluator error: unknown AST node type.");
+  XML_LIB_THROW(XPath::Error("Internal evaluator error: unknown AST node type."));
 }
 
 // ========================================================================
@@ -869,7 +869,7 @@ std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
-    throw XPath::Error(e.what());
+    XML_LIB_THROW(XPath::Error(e.what()));
   }
 }
 
@@ -880,7 +880,7 @@ std::string XPath_Impl::evaluateString(const std::string_view expression) const
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
-    throw XPath::Error(e.what());
+    XML_LIB_THROW(XPath::Error(e.what()));
   }
 }
 
@@ -891,7 +891,7 @@ bool XPath_Impl::evaluateBool(const std::string_view expression) const
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
-    throw XPath::Error(e.what());
+    XML_LIB_THROW(XPath::Error(e.what()));
   }
 }
 
@@ -902,7 +902,7 @@ double XPath_Impl::evaluateNumber(const std::string_view expression) const
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
-    throw XPath::Error(e.what());
+    XML_LIB_THROW(XPath::Error(e.what()));
   }
 }
 

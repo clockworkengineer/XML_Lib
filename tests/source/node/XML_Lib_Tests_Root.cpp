@@ -62,6 +62,13 @@ TEST_CASE("Root edge cases and integration", "[Node][Root][Edge][Integration]")
     REQUIRE(NRef<Element>(xml.root()[0]).name() == "child");
     REQUIRE(NRef<Element>(xml.root()[0]).getContents() == "data");
   }
+
+  SECTION("NRef<Root> on a non-Root node throws correct error message", "[XML][Node][Root][Error][Regression]")
+  {
+    // Regression for task 1.3: error message must say "root", not "self"
+    auto xNode = Node::make<Element>("elem");
+    REQUIRE_THROWS_WITH(NRef<Root>(xNode), Catch::Matchers::ContainsSubstring("root"));
+  }
 }
 
 

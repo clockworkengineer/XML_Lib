@@ -124,7 +124,7 @@ void DTD_Impl::parseElementChildren(ISource &contentSpecSource, IDestination &co
       contentSpecSource.ignoreWS();
     }
   } else {
-    throw SyntaxError("Invalid element content specification.");
+    XML_LIB_THROW(SyntaxError("Invalid element content specification."));
   }
 }
 
@@ -148,7 +148,7 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
         if (validNameStartChar(contentSpecSource.current())) {
           parseElementName(contentSpecSource, contentSpecDestination);
         } else {
-          throw SyntaxError("Invalid element content specification.");
+          XML_LIB_THROW(SyntaxError("Invalid element content specification."));
         }
       }
     );
@@ -161,12 +161,12 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
       contentSpecSource.next();
     }
     if (contentSpecSource.more() && !contentSpecSource.isWS()) {
-      throw SyntaxError("Invalid element content specification.");
+      XML_LIB_THROW(SyntaxError("Invalid element content specification."));
     }
   } else if (contentSpecSource.current() == ')') {
     contentSpecDestination.add(")");
   } else {
-    throw SyntaxError("Invalid element content specification.");
+    XML_LIB_THROW(SyntaxError("Invalid element content specification."));
   }
 }
 
@@ -191,12 +191,12 @@ XMLValue DTD_Impl::parseElementInternalSpecification(const std::string_view &ele
         parseElementChildren(contentSpecSource, contentSpecDestination);
       }
     } else {
-      throw SyntaxError("Invalid element content specification.");
+      XML_LIB_THROW(SyntaxError("Invalid element content specification."));
     }
     return XMLValue{ contentSpec.getUnparsed(), contentSpecDestination.toString() };
   } catch (SyntaxError &e) {
     if (e.what() == std::string("XML Syntax Error: Invalid element content specification.")) {
-      throw SyntaxError("Invalid content specification for element <" + std::string(elementName) + ">.");
+      XML_LIB_THROW(SyntaxError("Invalid content specification for element <" + std::string(elementName) + ">."));
     }
     throw;
   }

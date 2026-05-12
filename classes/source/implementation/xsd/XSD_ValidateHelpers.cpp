@@ -13,7 +13,7 @@ namespace XML_Lib {
 
 [[noreturn]] void xsdError(const std::string &elementName, const std::string &message)
 {
-  throw IValidator::Error("XSD Validation Error [Element: " + elementName + "] " + message);
+  XML_LIB_THROW(IValidator::Error("XSD Validation Error [Element: " + elementName + "] " + message));
 }
 
 std::unordered_map<std::string, uint32_t> collectElementChildCounts(const Node &xNode)

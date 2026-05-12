@@ -40,7 +40,7 @@ struct ValidationError final : std::runtime_error
   {}
 };
 
-template<typename E> [[noreturn]] inline void xml_lib_throw(const E &error) { (void)error; std::terminate(); }
+// xml_lib_throw is intentionally not defined in the exception-enabled path — use XML_LIB_THROW.
 #define XML_LIB_THROW(exception) throw exception
 #endif
 } // namespace XML_Lib

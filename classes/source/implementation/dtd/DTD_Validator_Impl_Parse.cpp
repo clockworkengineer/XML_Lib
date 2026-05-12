@@ -31,12 +31,12 @@ void DTD_Impl::parseValidateAttribute(const std::string_view &elementName, const
 {
   // Attribute cannot be ID and fixed
   if (dtdAttribute.type == (DTD::AttributeType::id | DTD::AttributeType::fixed)) {
-    throw SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED.");
+    XML_LIB_THROW(SyntaxError("Attribute '" + dtdAttribute.name + "' may not be of type ID and FIXED."));
   }
   // Only one ID attribute allowed per element
   if ((dtdAttribute.type & DTD::AttributeType::id) != 0) {
     if (xDTD.getElement(elementName).idAttributePresent) {
-      throw SyntaxError("Element <" + std::string(elementName) + "> has more than one ID attribute.");
+      XML_LIB_THROW(SyntaxError("Element <" + std::string(elementName) + "> has more than one ID attribute."));
     }
     xDTD.getElement(elementName).idAttributePresent = true;
   }
@@ -47,13 +47,13 @@ void DTD_Impl::parseValidateAttribute(const std::string_view &elementName, const
       if (!options.contains(option)) {
         options.insert(option);
       } else {
-        throw SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name
-                          + "' occurs more than once in its definition.");
+        XML_LIB_THROW(SyntaxError("Enumerator value '" + option + "' for attribute '" + dtdAttribute.name
+                          + "' occurs more than once in its definition."));
       }
     }
     if (!options.contains(dtdAttribute.value.getParsed())) {
-      throw SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
-                        + dtdAttribute.name + "' is invalid.");
+      XML_LIB_THROW(SyntaxError("Default value '" + dtdAttribute.value.getParsed() + "' for enumeration attribute '"
+                        + dtdAttribute.name + "' is invalid."));
     }
   }
 }
@@ -80,7 +80,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
     }
   );
   if (source.current() != ')') {
-    throw SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type.");
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing ')' on enumeration attribute type."));
   }
   enumerationType += toUtf8(source.current());
   source.next();
@@ -127,7 +127,7 @@ void DTD_Impl::parseAttributeType(ISource &source, DTD::Attribute &attribute) co
     }
     return;
   }
-  throw SyntaxError(source.getPosition(), "Invalid attribute type specified.");
+  XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid attribute type specified."));
 }
 
 /// <summary>
@@ -278,7 +278,7 @@ void DTD_Impl::parseInternal(ISource &source)
       parseParameterEntityReference(source);
       continue;
     } else {
-      throw SyntaxError(source.getPosition(), "Invalid DTD tag.");
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid DTD tag."));
     }
     if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
     source.next();
@@ -312,7 +312,7 @@ void DTD_Impl::parseDTD(ISource &source)
   }
   // Missing '>' after external DTD reference
   else if (source.current() != '>') {
-    throw SyntaxError(source.getPosition(), "Missing '>' terminator.");
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '>' terminator."));
   }
   // Move to the next component in XML prolog
   else {

@@ -7,6 +7,7 @@
 //
 
 #include "XPath_Lexer.hpp"
+#include "common/XML_Error.hpp"
 
 namespace XML_Lib {
 
@@ -214,7 +215,7 @@ std::vector<XPathToken> xpathTokenize(const std::string_view expression)
       continue;
     }
 
-    throw std::runtime_error(std::string("XPath Error: Unexpected character '") + c + "' in expression.");
+    XML_LIB_THROW(std::runtime_error(std::string("XPath Error: Unexpected character '") + c + "' in expression."));
   }
 
   tokens.push_back({ XPathTokenType::End, "" });

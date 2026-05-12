@@ -8,6 +8,7 @@
 //
 
 #include "XPath_Parser.hpp"
+#include "common/XML_Error.hpp"
 
 namespace XML_Lib {
 
@@ -44,7 +45,7 @@ struct Parser
   XPathToken expect(XPathTokenType t)
   {
     if (cur().type != t) {
-      throw std::runtime_error(std::string("XPath Error: Unexpected token '") + cur().value + "'.");
+      XML_LIB_THROW(std::runtime_error(std::string("XPath Error: Unexpected token '") + cur().value + "'."));
     }
     XPathToken tok = cur();
     ++pos;
@@ -94,7 +95,7 @@ static XPathAxis nameToAxis(const std::string &s)
   if (s == "preceding-sibling") return XPathAxis::PrecedingSibling;
   if (s == "attribute") return XPathAxis::Attribute;
   if (s == "namespace") return XPathAxis::Namespace;
-  throw std::runtime_error(std::string("XPath Error: Unknown axis '") + s + "'.");
+  XML_LIB_THROW(std::runtime_error(std::string("XPath Error: Unknown axis '") + s + "'."));
 }
 
 // Is the current token potentially the start of a LocationPath?
@@ -152,7 +153,7 @@ static XPathNodeTest parseNodeTest(Parser &p)
     p.consume();
     return nt;
   }
-  throw std::runtime_error(std::string("XPath Error: Expected node test, got '") + p.cur().value + "'.");
+  XML_LIB_THROW(std::runtime_error(std::string("XPath Error: Expected node test, got '") + p.cur().value + "'."));
 }
 
 // ======================================================================
@@ -348,7 +349,7 @@ static XPathExprPtr parsePrimaryExpr(Parser &p)
     return call;
   }
 
-  throw std::runtime_error(std::string("XPath Error: Expected primary expression, got '") + p.cur().value + "'.");
+  XML_LIB_THROW(std::runtime_error(std::string("XPath Error: Expected primary expression, got '") + p.cur().value + "'."));
 }
 
 // ======================================================================
@@ -578,8 +579,8 @@ XPathExprPtr xpathParse(const std::vector<XPathToken> &tokens)
   Parser p{ tokens, 0 };
   auto expr = parseExpr(p);
   if (p.cur().type != XPathTokenType::End) {
-    throw std::runtime_error(
-      std::string("XPath Error: Unexpected token '") + p.cur().value + "' at end of expression.");
+    XML_LIB_THROW(std::runtime_error(
+      std::string("XPath Error: Unexpected token '") + p.cur().value + "' at end of expression."));
   }
   return expr;
 }

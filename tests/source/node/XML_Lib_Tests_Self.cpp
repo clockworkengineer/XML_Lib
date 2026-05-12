@@ -61,6 +61,13 @@ TEST_CASE("Self edge cases and integration", "[Node][Self][Edge][Integration]")
     }
     REQUIRE(foundSelf);
   }
+
+  SECTION("NRef<Self> on a non-Self node throws correct error message", "[XML][Node][Self][Error][Regression]")
+  {
+    // Regression for task 1.3: error message must say "self-closing", not "root"
+    auto xNode = Node::make<Element>("elem");
+    REQUIRE_THROWS_WITH(NRef<Self>(xNode), Catch::Matchers::ContainsSubstring("self-closing"));
+  }
 }
 
 
