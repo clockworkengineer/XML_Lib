@@ -139,11 +139,13 @@ public:
   /// @brief Traverse the document tree (const overload).
   void traverse(IAction &action) const;
 
-  /// @brief Read the entire content of @p fileName into a `std::string`.
-  [[nodiscard]] static std::string fromFile(const std::string_view &fileName);
+  /// @brief Read the entire content of @p filePath into a `std::string`.
+  /// Rejects paths with null bytes or `..` components.
+  [[nodiscard]] static std::string fromFile(const std::filesystem::path &filePath);
 
-  /// @brief Write @p xmlString to @p fileName using the specified encoding.
-  static void toFile(const std::string_view &fileName, const std::string_view &xmlString, Format format = Format::utf8);
+  /// @brief Write @p xmlString to @p filePath using the specified encoding.
+  /// Rejects paths with null bytes or `..` components.
+  static void toFile(const std::filesystem::path &filePath, const std::string_view &xmlString, Format format = Format::utf8);
 
   /// @brief Detect the encoding format of an XML file by inspecting its BOM.
   [[nodiscard]] static Format getFileFormat(const std::string_view &fileName);

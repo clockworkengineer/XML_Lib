@@ -151,7 +151,7 @@ void XML::stringify(const std::filesystem::path &filePath, const Format format) 
 {
   BufferDestination buffer;
   implementation->stringify(buffer);
-  XML_Impl::toFile(filePath.string(), buffer.toString(), format);
+  XML_Impl::toFile(filePath, buffer.toString(), format);
 }
 #endif
 
@@ -171,17 +171,17 @@ void XML::traverse(IAction &action) const { std::as_const(*implementation).trave
 /// </summary>
 /// <param name="fileName">XML file name</param>
 /// <returns>XML string.</returns>
-std::string XML::fromFile(const std::string_view &fileName) { return XML_Impl::fromFile(fileName); }
+std::string XML::fromFile(const std::filesystem::path &filePath) { return XML_Impl::fromFile(filePath); }
 
 /// <summary>
 /// Create an XML file and write XML string to it.
 /// </summary>
-/// <param name="fileName">XML file name</param>
+/// <param name="filePath">XML file path</param>
 /// <param name="xmlString">XML string</param>
 /// <param name="format">XML file format</param>
-void XML::toFile(const std::string_view &fileName, const std::string_view &xmlString, const Format format)
+void XML::toFile(const std::filesystem::path &filePath, const std::string_view &xmlString, const Format format)
 {
-  XML_Impl::toFile(fileName, xmlString, format);
+  XML_Impl::toFile(filePath, xmlString, format);
 }
 /// <summary>
 /// Return format of the XML file.

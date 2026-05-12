@@ -40,8 +40,8 @@ public:
 #endif
   [[nodiscard]] static std::string version();
 
-  [[nodiscard]] static std::string fromFile(const std::string_view &fileName);
-  static void toFile(const std::string_view &fileName, const std::string_view &xmlString, XML::Format format);
+  [[nodiscard]] static std::string fromFile(const std::filesystem::path &filePath);
+  static void toFile(const std::filesystem::path &filePath, const std::string_view &xmlString, XML::Format format);
   [[nodiscard]] static XML::Format getFileFormat(const std::string_view &fileName);
 
 private:

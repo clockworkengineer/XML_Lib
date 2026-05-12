@@ -11,11 +11,28 @@
 //
 
 #include "XML_Impl.hpp"
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 #include <string_view>
 
 namespace XML_Lib {
+
+/// <summary>
+/// Validate a file path: reject null bytes and any path component equal to "..".
+/// </summary>
+static void validateFilePath(const std::filesystem::path &filePath)
+{
+  const std::string pathStr = filePath.string();
+  if (pathStr.find('\0') != std::string::npos) {
+    XML_LIB_THROW(Error("Invalid file path: null byte in path."));
+  }
+  for (const auto &component : filePath) {
+    if (component == "..") {
+      XML_LIB_THROW(Error("Invalid file path: '..' path traversal component not allowed."));
+    }
+  }
+}
 
 /// <summary>
 /// Write XML string to a file stream.
@@ -111,10 +128,12 @@ XML::Format XML_Impl::getFileFormat(const std::string_view &fileName)
 /// the buffer. Note any CRLF in the source file are translated to just a
 /// LF internally.
 /// </summary>
-/// <param name="fileName">XML file name</param>
+/// <param name="filePath">XML file path</param>
 /// <returns>XML string.</returns>
-std::string XML_Impl::fromFile(const std::string_view &fileName)
+std::string XML_Impl::fromFile(const std::filesystem::path &filePath)
 {
+  validateFilePath(filePath);
+  const std::string fileName = filePath.string();
   const auto kCRLF = "\x0D\x0A";
   // Get a file format
   const XML::Format format = getFileFormat(fileName);
@@ -148,11 +167,13 @@ std::string XML_Impl::fromFile(const std::string_view &fileName)
 /// <summary>
 /// Create an XML file and write XML string to it.
 /// </summary>
-/// <param name="fileName">XML file name</param>
+/// <param name="filePath">XML file path</param>
 /// <param name="xmlString">XML string</param>
 /// <param name="format">XML file format</param>
-void XML_Impl::toFile(const std::string_view &fileName, const std::string_view &xmlString, const XML::Format format)
+void XML_Impl::toFile(const std::filesystem::path &filePath, const std::string_view &xmlString, const XML::Format format)
 {
+  validateFilePath(filePath);
+  const std::string fileName = filePath.string();
   std::ofstream xmlFile{ fileName.data(), std::ios::binary };
   switch (format) {
   case XML::Format::utf8BOM:
