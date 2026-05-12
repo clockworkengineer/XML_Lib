@@ -5,7 +5,9 @@
 #include "catch2/catch_all.hpp"
 
 #include "XML.hpp"
+#if defined(XML_LIB_TEST_INTERNALS)
 #include "XML_Core.hpp"
+#endif
 #if defined(XML_LIB_ENABLE_DTD)
 #include "DTD_Validator.hpp"
 #endif

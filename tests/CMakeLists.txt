@@ -14,28 +14,37 @@ FetchContent_MakeAvailable(Catch2)
 
 enable_testing()
 
+# Option to expose internal implementation headers to tests.
+# Keep ON for the full test suite; turn OFF to verify public-API-only builds.
+option(XML_LIB_TEST_INTERNALS "Expose internal implementation headers to test targets" ON)
+
 # Common include paths shared by all three test targets
 set(XML_LIB_TEST_PUBLIC_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include
     ${Catch2_SOURCE_DIR}/src
 )
 set(XML_LIB_TEST_PRIVATE_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../build
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/interface
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/common
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/converter
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/data
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/entity
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/io
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/parser
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/validator
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/node
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/stringify
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/xpath
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/nodes
 )
+
+if(XML_LIB_TEST_INTERNALS)
+    list(APPEND XML_LIB_TEST_PRIVATE_INCLUDES
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/interface
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/common
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/converter
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/data
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/entity
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/io
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/parser
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/validator
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/node
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/stringify
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/xpath
+        ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/nodes
+    )
+endif()
 
 set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)
 
@@ -109,6 +118,9 @@ target_sources(${TEST_EXECUTABLE}
 )
 target_include_directories(${TEST_EXECUTABLE} PUBLIC ${XML_LIB_TEST_PUBLIC_INCLUDES})
 target_include_directories(${TEST_EXECUTABLE} PRIVATE ${XML_LIB_TEST_PRIVATE_INCLUDES})
+target_compile_definitions(${TEST_EXECUTABLE} PRIVATE
+    $<$<BOOL:${XML_LIB_TEST_INTERNALS}>:XML_LIB_TEST_INTERNALS>
+)
 
 if(NOT XML_LIB_EMBEDDED)
     target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
@@ -149,6 +161,9 @@ target_sources(${PERFORMANCE_EXECUTABLE}
 )
 target_include_directories(${PERFORMANCE_EXECUTABLE} PUBLIC ${XML_LIB_TEST_PUBLIC_INCLUDES})
 target_include_directories(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIB_TEST_PRIVATE_INCLUDES})
+target_compile_definitions(${PERFORMANCE_EXECUTABLE} PRIVATE
+    $<$<BOOL:${XML_LIB_TEST_INTERNALS}>:XML_LIB_TEST_INTERNALS>
+)
 target_link_libraries(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
 
 if(NOT XML_LIB_EMBEDDED)
