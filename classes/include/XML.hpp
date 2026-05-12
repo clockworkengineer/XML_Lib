@@ -61,6 +61,7 @@ public:
   void parse(ISource &source) const;
   void parse(ISource &&source) const;
   // Parse XML from a plain string (convenience — no ISource needed)
+  void parse(const char *xmlString) const;
   void parse(const std::string_view &xmlString) const;
   // Parse XML from a file path (convenience — no ISource needed)
   void parse(const std::filesystem::path &filePath) const;

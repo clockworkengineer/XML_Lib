@@ -128,16 +128,17 @@ target_include_directories(${XML_LIBRARY_NAME}
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/io>
   # UTF-8/UTF-16 converter used by io headers (toUtf8, toUtf16)
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/converter>
-  PRIVATE
+  # XML_Core.hpp (in implementation/) includes headers from common/ by bare name
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
+  PRIVATE
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/variants>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/entity>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/parser>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/xpath>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/variants>
   $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
 )
 

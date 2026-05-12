@@ -1,118 +1,256 @@
 # XML_Lib User Guide
 
-This guide provides step-by-step instructions for using the XML_Lib library in your C++ projects.
+XML_Lib is a C++23 library for parsing, creating, manipulating, and serialising XML.
+All public symbols live in the `XML_Lib` namespace.
 
-## Getting Started
-1. **Include the Library**: Add the `include/` directory to your project's include path.
-2. **Link the Library**: Link against the compiled XML_Lib library.
-3. **Add Required Headers**:
-   ```cpp
-   #include <XMLDocument.hpp>
-   #include <XMLElement.hpp>
-   #include <XMLAttribute.hpp>
-   ```
+**For a complete method listing see [API.md](API.md).**
 
-## Basic Usage
-### Loading an XML File
+---
+
+## Contents
+
+1. [Including and linking](#1-including-and-linking)
+2. [Parsing XML](#2-parsing-xml)
+3. [Accessing the document tree](#3-accessing-the-document-tree)
+4. [Reading element contents and attributes](#4-reading-element-contents-and-attributes)
+5. [Iterating children](#5-iterating-children)
+6. [Serialising (stringify)](#6-serialising-stringify)
+7. [Error handling](#7-error-handling)
+8. [DTD validation](#8-dtd-validation-xml_lib_enable_dtd)
+9. [XSD validation](#9-xsd-validation-xml_lib_enable_xsd)
+10. [XPath queries](#10-xpath-queries-xml_lib_enable_xpath)
+11. [XML Namespaces](#11-xml-namespaces)
+12. [Advanced I/O (ISource / IDestination)](#12-advanced-io-isource--idestination)
+
+---
+
+## 1. Including and linking
+
 ```cpp
-XMLDocument doc;
-bool loaded = doc.LoadFile("example.xml");
-if (!loaded) {
-    // Handle error
-}
+#include "XML.hpp"          // always required — top-level XML class
+#include "XML_NodeRef.hpp"  // isA<T> / NRef<T> helpers and all variant types
+#include "XML_Sources.hpp"  // BufferSource, FileSource (advanced I/O)
+#include "XML_Destinations.hpp" // BufferDestination, FileDestination (advanced I/O)
+using namespace XML_Lib;
 ```
 
-### Accessing Elements and Attributes
-```cpp
-XMLElement* root = doc.RootElement();
-if (root) {
-    std::string name = root->Name();
-    XMLElement* child = root->FirstChildElement("item");
-    if (child) {
-        XMLAttribute* attr = child->FindAttribute("id");
-        if (attr) {
-            std::string value = attr->Value();
-        }
-    }
-}
-```
+CMake consumers that use `target_link_libraries(myTarget PRIVATE XML_Lib)` automatically
+receive the necessary include paths — no manual `-I` flags are required.
 
-### Creating and Saving XML
-```cpp
-XMLDocument doc;
-XMLElement* root = doc.NewElement("root");
-doc.InsertFirstChild(root);
-XMLElement* child = doc.NewElement("item");
-child->SetText("Hello, XML!");
-root->InsertEndChild(child);
-doc.SaveFile("output.xml");
-```
+---
 
-## Advanced Topics
-- **Error Handling**: Check return values or catch exceptions for robust error management.
-- **Parsing from String**: Use `BufferSource` to parse XML from strings.
-- **Custom Attributes**: Add and manipulate attributes using `addAttribute` / `getAttributes`.
-- **XML Namespaces**: See the Namespace section below.
+## 2. Parsing XML
 
-## XML Namespaces
+### From a string (convenience overload)
 
-XML_Lib fully supports the [W3C XML Namespaces](https://www.w3.org/TR/xml-names/) recommendation.
-
-### Default Namespace
-```cpp
-XML xml;
-BufferSource source{
-  "<table xmlns=\"http://www.w3.org/TR/html4/\">"
-  "<tr><td>Data</td></tr>"
-  "</table>"
-};
-xml.parse(source);
-auto &root = NRef<Element>(xml.root());
-// Default namespace stored under key ":"
-std::cout << root[0].getNameSpace(":").getParsed();  // "http://www.w3.org/TR/html4/"
-std::cout << root[0].getNamespaceURI();              // "http://www.w3.org/TR/html4/"
-```
-
-### Prefixed Namespaces
-```cpp
-XML xml;
-BufferSource source{
-  "<root xmlns:h=\"http://www.w3.org/TR/html4/\">"
-  "<h:table><h:tr><h:td>Data</h:td></h:tr></h:table>"
-  "</root>"
-};
-xml.parse(source);
-auto &root = NRef<Element>(xml.root());
-auto &table = root[0];
-std::cout << table.name();             // "h:table"
-std::cout << table.getPrefix();        // "h"
-std::cout << table.getLocalName();     // "table"
-std::cout << table.getNamespaceURI();  // "http://www.w3.org/TR/html4/"
-```
-
-### Namespace Scoping
-Namespaces declared on a parent element are inherited by all children. `getNameSpaces()` returns all in-scope declarations accumulated from the root down to that element:
-```cpp
-// root declares xmlns:h and xmlns:f; both are visible on child elements
-auto &child = root[0];
-child.getNameSpaces();  // contains both "h" and "f" mappings
-```
-
-### Error Cases
-- Using an undeclared prefix throws `SyntaxError`: _"Namespace used but not defined."_
-- Declaring the same prefix twice on one element throws `SyntaxError`: _"Attribute 'xmlns:f' defined more than once within start tag."_
-- Using a prefixed attribute where the prefix is undeclared throws `SyntaxError`: _"Namespace used but not defined in attribute 'x:border'."_
-
-## XML Schema Validation
-
-XML_Lib supports W3C XML Schema (XSD) validation via `XML::validate(xsdSource)`. The XSD is supplied as a string (or read from a file) and is itself parsed as XML.
-
-### Basic XSD Validation
 ```cpp
 #include "XML.hpp"
 using namespace XML_Lib;
 
-const std::string xsdSchema = R"(
+XML xml;
+xml.parse("<?xml version=\"1.0\"?><root><item id=\"1\">Hello</item></root>");
+```
+
+### From a file path (convenience overload)
+
+```cpp
+xml.parse(std::filesystem::path{"data/config.xml"});
+// or, accepting implicit conversion from a string literal:
+xml.parse(std::filesystem::path{"data/config.xml"});
+```
+
+### Constructor shorthand
+
+```cpp
+XML xml{"<?xml version=\"1.0\"?><root/>"};  // parses immediately
+```
+
+### Assignment shorthand
+
+```cpp
+XML xml;
+xml = "<?xml version=\"1.0\"?><root/>";
+```
+
+---
+
+## 3. Accessing the document tree
+
+After parsing, the document exposes three top-level nodes:
+
+```cpp
+Node &decl  = xml.declaration(); // <?xml version="1.0"?>
+Node &prolog = xml.prolog();     // everything before the root element
+Node &root  = xml.root();        // root element Node
+```
+
+### Casting a Node to a concrete variant type
+
+`Node` is a type-erased wrapper. Use `isA<T>` to test and `NRef<T>` to cast:
+
+```cpp
+#include "XML_NodeRef.hpp"
+using namespace XML_Lib;
+
+if (isA<Root>(xml.root())) {
+    auto &rootElem = NRef<Root>(xml.root());
+    std::cout << rootElem.name() << "\n";  // e.g. "root"
+}
+```
+
+Available variant types: `Root`, `Element`, `Self`, `Content`, `Comment`, `CDATA`,
+`PI`, `EntityReference`, `DTD`, `Declaration`, `Prolog`.
+
+`NRef<T>` throws `Node::Error` if the node is not of type `T`.
+
+### Subscript access
+
+```cpp
+// By child index (0-based)
+const Node &firstChild = xml.root()[0];
+
+// By element name (first match)
+const Node &item = xml.root()["item"];
+```
+
+---
+
+## 4. Reading element contents and attributes
+
+```cpp
+XML xml{"<?xml version=\"1.0\"?><root><item id=\"42\" lang=\"en\">Hello</item></root>"};
+
+auto &rootElem = NRef<Root>(xml.root());
+auto &item     = NRef<Element>(rootElem[0]);
+
+// Element name
+std::cout << item.name() << "\n";        // "item"
+
+// Text content
+std::cout << item.getContents() << "\n"; // "Hello"
+
+// Read a specific attribute
+if (item.hasAttribute("id")) {
+    std::cout << item["id"].getParsed() << "\n";  // "42"
+}
+
+// Iterate all attributes
+for (const auto &attr : item.getAttributes()) {
+    std::cout << attr.getName() << "=" << attr.getParsed() << "\n";
+}
+```
+
+---
+
+## 5. Iterating children
+
+```cpp
+XML xml;
+xml.parse("<?xml version=\"1.0\"?>"
+          "<library><book>C++23</book><book>XML</book></library>");
+
+auto &lib = NRef<Root>(xml.root());
+
+for (const auto &child : lib.getChildren()) {
+    if (isA<Element>(child)) {
+        std::cout << NRef<Element>(child).getContents() << "\n";
+    }
+}
+```
+
+Self-closing elements (`<tag/>`) are `Self` nodes, not `Element` nodes:
+
+```cpp
+if (isA<Self>(child)) {
+    auto &sc = NRef<Self>(child);
+    std::cout << sc.name() << "\n";
+}
+```
+
+---
+
+## 6. Serialising (stringify)
+
+> Requires `XML_LIB_ENABLE_STRINGIFY` (on by default).
+
+### To a string
+
+```cpp
+std::string text = xml.stringify();
+```
+
+### To a file
+
+```cpp
+xml.stringify(std::filesystem::path{"output.xml"});                       // UTF-8
+xml.stringify(std::filesystem::path{"output_bom.xml"}, XML::Format::utf8BOM);
+xml.stringify(std::filesystem::path{"output_u16.xml"}, XML::Format::utf16LE);
+```
+
+Available formats: `utf8`, `utf8BOM`, `utf16BE`, `utf16LE`, `utf32BE`, `utf32LE`.
+
+---
+
+## 7. Error handling
+
+All XML_Lib exceptions derive from `std::runtime_error`:
+
+| Exception | Thrown when |
+|---|---|
+| `SyntaxError` | Malformed XML or namespace violations |
+| `Node::Error` | Invalid node cast or out-of-range access |
+| `XMLAttribute::Error` | Attribute not found |
+| `IValidator::Error` | DTD or XSD validation failure |
+| `XPath::Error` | Invalid XPath expression or evaluation error |
+| `BufferSource::Error` | Empty buffer supplied |
+| `FileSource::Error` | File not found or unreadable |
+
+```cpp
+try {
+    xml.parse("<?xml version=\"1.0\"?><unclosed>");
+} catch (const SyntaxError &e) {
+    std::cerr << e.what() << "\n";
+    // e.g. "XML Syntax Error [Line: 1 Column: 35] ..."
+}
+```
+
+---
+
+## 8. DTD validation (`XML_LIB_ENABLE_DTD`)
+
+When the document contains an internal or external DTD, call `validate()` after parsing:
+
+```cpp
+#include "XML.hpp"
+#if defined(XML_LIB_ENABLE_DTD)
+#include "DTD_Validator.hpp"
+#endif
+using namespace XML_Lib;
+
+XML xml;
+xml.parse(std::filesystem::path{"note.xml"});
+
+try {
+    xml.validate();  // validates against the DTD embedded in the document
+} catch (const IValidator::Error &e) {
+    std::cerr << e.what() << "\n";
+    // e.g. "XML Validation Error [Line: 4] Element <to> not valid in context."
+}
+```
+
+The DTD node is accessible as `xml.dtd()` (throws `Node::Error` if the document has none).
+
+---
+
+## 9. XSD validation (`XML_LIB_ENABLE_XSD`)
+
+Supply an XSD schema as a string (or load it from a file) and call `validate(xsdSource)`:
+
+```cpp
+#include "XML.hpp"
+using namespace XML_Lib;
+
+const std::string schema = R"(
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="note">
@@ -128,146 +266,123 @@ const std::string xsdSchema = R"(
 )";
 
 XML xml;
-xml.parse(BufferSource{R"(
-  <?xml version="1.0"?>
-  <note><to>Alice</to><from>Bob</from><body>Hello!</body></note>
-)"});
-xml.validate(xsdSchema);   // passes silently; throws IValidator::Error on failure
-```
+xml.parse("<?xml version=\"1.0\"?>"
+          "<note><to>Alice</to><from>Bob</from><body>Hello!</body></note>");
 
-### Validating from a File
-```cpp
-XML xml;
-xml.parse(FileSource{"data.xml"});
-
-std::string xsd;
-// read schema file into xsd string...
-xml.validate(xsd);
-```
-
-### Catching Validation Errors
-```cpp
 try {
-    xml.validate(xsdSchema);
+    xml.validate(schema);  // silent on success
 } catch (const IValidator::Error &e) {
     std::cerr << e.what() << "\n";
-    // e.g. "IValidator Error: XSD Validation Error [Element: note] Missing required child element 'to'."
 }
 ```
 
-### Attribute Constraints
-```cpp
-const std::string xsd = R"(
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="person">
-    <xs:complexType>
-      <xs:sequence/>
-      <xs:attribute name="id"    type="xs:integer" use="required"/>
-      <xs:attribute name="email" type="xs:string"  use="optional"/>
-    </xs:complexType>
-  </xs:element>
-</xs:schema>)";
+For file-based schemas, read the XSD into a string first:
 
-// <person id="42"/> — valid
-// <person/>        — IValidator::Error: missing required attribute 'id'
+```cpp
+const std::string xsdText = XML::fromFile("schema.xsd");
+xml.validate(xsdText);
 ```
 
-### Simple Type Restrictions
-```cpp
-const std::string xsd = R"(
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:simpleType name="AgeType">
-    <xs:restriction base="xs:integer">
-      <xs:minInclusive value="0"/>
-      <xs:maxInclusive value="150"/>
-    </xs:restriction>
-  </xs:simpleType>
-  <xs:element name="age" type="AgeType"/>
-</xs:schema>)";
+**Supported XSD features:** `xs:sequence`, `xs:choice`, `xs:all`; `minOccurs`/`maxOccurs`;
+all built-in simple types; named `xs:simpleType` restrictions (`minInclusive`, `maxInclusive`,
+`pattern`, `enumeration`, `length`, `minLength`, `maxLength`); attribute `use` / `fixed`;
+`xs:anyAttribute`; anonymous inline complex and simple types.
 
-// <age>25</age>  — valid
-// <age>200</age> — IValidator::Error: maxInclusive violation
-```
+---
 
-## XPath Queries
+## 10. XPath queries (`XML_LIB_ENABLE_XPATH`)
 
-XML_Lib supports XPath 1.0 queries via the `XPath` class (or the `xml.xpath()` shorthand).
-
-### Basic Node Selection
 ```cpp
 #include "XML.hpp"
 #include "XPath.hpp"
 using namespace XML_Lib;
 
 XML xml;
-xml.parse(BufferSource{xmlString});
+xml.parse(std::filesystem::path{"bookstore.xml"});
 
-// Select all <book> elements anywhere in the document
+// Shorthand on the XML object
 auto books = xml.xpath("//book");
-std::cout << books.size() << " books found\n";
+std::cout << books.size() << " books\n";
 
-// Select the root element by name
-auto root = xml.xpath("/bookstore");
-```
+// Filter by attribute
+auto webBooks = xml.xpath("//book[@category='web']");
 
-### Working with Results
-```cpp
-// Returned pointers are valid only while the XML object is alive.
-for (const Node *n : xml.xpath("//book/title")) {
-    std::cout << NRef<Element>(*n).name() << ": "
-              << n->getContents() << "\n";
-}
-```
-
-### Predicates
-```cpp
-// By position
-auto first = xml.xpath("//book[1]");
-auto last  = xml.xpath("//book[last()]");
-
-// By attribute value
-auto web = xml.xpath("//book[@category='web']");
-
-// By child element value
-auto recent = xml.xpath("//book[year=2005]");
-```
-
-### Convenience Wrappers
-```cpp
+// The XPath class offers typed evaluation
 XPath xp(xml.root());
-
-// String value of first title
-std::string title = xp.evaluateString("string(//title[1])");
-
-// Count of books
-double count = xp.evaluateNumber("count(//book)");
-
-// Boolean test
-bool hasWebBooks = xp.evaluateBool("count(//book[@category='web']) > 0");
+std::string title  = xp.evaluateString("string(//title[1])");
+double      count  = xp.evaluateNumber("count(//book)");
+bool        hasWeb = xp.evaluateBool("count(//book[@category='web']) > 0");
 ```
 
-### Error Handling
+Returned `const Node *` pointers are valid only while the `XML` object is alive.
+
 ```cpp
-try {
-    auto nodes = xml.xpath("//book[");  // malformed expression
-} catch (const XPath::Error &e) {
-    std::cerr << e.what() << "\n";
-    // e.g. "XPath Error: Expected primary expression, got ''."
+for (const Node *n : xml.xpath("//book/title")) {
+    std::cout << NRef<Element>(*n).getContents() << "\n";
 }
 ```
 
-### Axes
-```cpp
-// Explicit axis syntax
-auto self       = xml.xpath("self::bookstore");
-auto children   = xml.xpath("child::book");
-auto desc       = xml.xpath("descendant::title");
-auto descSelf   = xml.xpath("descendant-or-self::book");
-auto attrs      = xml.xpath("//book/@category");  // attribute nodes
-```
-
-## Examples
-See the [examples](../examples/) directory for more sample code.
+**Supported:** all 13 XPath 1.0 axes, abbreviated syntax (`//`, `.`, `..`, `@`),
+predicates, union (`|`), all comparison operators, 28+ built-in functions.
+See [API.md](API.md) for the full function list.
 
 ---
-*For API details, see the [API Reference](API.md).*
+
+## 11. XML Namespaces
+
+```cpp
+XML xml;
+xml.parse("<?xml version=\"1.0\"?>"
+          "<root xmlns:h=\"http://www.w3.org/TR/html4/\">"
+          "<h:table h:border=\"1\"><h:tr><h:td>Data</h:td></h:tr></h:table>"
+          "</root>");
+
+auto &root  = NRef<Root>(xml.root());
+auto &table = NRef<Element>(root[0]);
+
+std::cout << table.name();            // "h:table"
+std::cout << table.getPrefix();       // "h"
+std::cout << table.getLocalName();    // "table"
+std::cout << table.getNamespaceURI(); // "http://www.w3.org/TR/html4/"
+```
+
+- `xmlns="uri"` — default namespace, accessible via `getNameSpace(":")`.
+- `xmlns:prefix="uri"` — prefixed namespace, accessible via `getNameSpace("prefix")`.
+- `getNameSpaces()` returns all in-scope declarations accumulated from root to that element.
+- Undeclared prefixes and duplicate declarations on the same element throw `SyntaxError`.
+
+---
+
+## 12. Advanced I/O (ISource / IDestination)
+
+The convenience overloads on `XML` cover the common cases. For custom sources or
+destinations use `ISource` / `IDestination` directly:
+
+```cpp
+#include "XML_Sources.hpp"
+#include "XML_Destinations.hpp"
+using namespace XML_Lib;
+
+// Parse from a std::string
+std::string xmlText = "<?xml version=\"1.0\"?><root/>";
+BufferSource src{xmlText};
+xml.parse(src);
+
+// Parse from a file
+FileSource fileSrc{"data/config.xml"};
+xml.parse(fileSrc);
+
+// Stringify to a string
+BufferDestination buf;
+xml.stringify(buf);
+std::string result = buf.toString();
+
+// Stringify to a file (UTF-16 LE)
+FileDestination fileDst{"output.xml", XML::Format::utf16LE};
+xml.stringify(fileDst);
+```
+
+---
+
+*For full method signatures and all variant types see the [API Reference](API.md).*  
+*For runnable examples see the [examples/](../examples/) directory.*

@@ -107,6 +107,11 @@ void XML::parse(ISource &&source) const { implementation->parse(source); }
 /// <summary>
 /// Convenience overload: parse XML directly from a string without needing a BufferSource.
 /// </summary>
+void XML::parse(const char *xmlString) const
+{
+  BufferSource source{ std::string_view{ xmlString } };
+  implementation->parse(source);
+}
 void XML::parse(const std::string_view &xmlString) const
 {
   BufferSource source{ xmlString };
