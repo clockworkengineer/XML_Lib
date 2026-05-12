@@ -384,5 +384,55 @@ xml.stringify(fileDst);
 
 ---
 
+## 13. Performance
+
+### Memory allocation model
+
+XML_Lib uses a PMR (Polymorphic Memory Resource) monotonic arena to hold all
+parsed node children.  Attribute and namespace lists on `Element`, `Root`, and
+`Self` nodes also live in the same arena.  This means a typical parse-and-read
+workload performs **zero heap allocations** for node children and attribute
+storage after the initial arena buffer is committed.
+
+The arena size is controlled at configure time:
+
+```sh
+cmake -S . -B build -DXML_LIB_ARENA_SIZE_KB=1024   # 1 MB arena (default: 256 KB)
+```
+
+The default of **256 KB** is sufficient for most documents up to a few hundred
+kilobytes.  For large documents (≥ 1 MB of XML text) set the arena to at least
+twice the uncompressed document size.  When the arena is exhausted the
+`monotonic_buffer_resource` falls back to `new`/`delete` automatically —
+correctness is preserved, only the "zero-allocation" guarantee is lost.
+
+### Baseline benchmark results (v1.2.0, GCC 13, Debug+ASan, Linux)
+
+| Benchmark | Mean | Std Dev |
+|---|---|---|
+| Parse large XML document | 76.1 ms | 7.9 ms |
+| XPath evaluate item name | 143.2 ms | 28.4 ms |
+| XSD validate large document | 3.4 ms | 0.96 ms |
+
+*Results captured with `XML_LIB_ARENA_SIZE_KB=256` (default).*  
+*Benchmarks are run with Catch2's built-in microbenchmark framework (100 samples, 1 iteration each).*
+
+Run the benchmarks yourself:
+
+```sh
+cmake --build build --target XML_Lib_Performance_Tests
+./build/tests/XML_Lib_Performance_Tests
+```
+
+### Content cache
+
+`Element::getContents()` (which concatenates all descendant text nodes into a
+single string) is memoised: the result is cached on first access and reused on
+subsequent calls as long as the child count has not changed.  For parse-once /
+read-many workloads this reduces repeated content access from O(n) per call to
+O(1).
+
+---
+
 *For full method signatures and all variant types see the [API Reference](API.md).*  
 *For runnable examples see the [examples/](../examples/) directory.*
