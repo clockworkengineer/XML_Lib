@@ -470,8 +470,9 @@ Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Prolog Node.</returns>
-Node Default_Parser::parse(ISource &source)
+Node Default_Parser::parse(ISource &source, const ParseOptions &options)
 {
+  parseOptions = options;
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
   // Reset XML before next parse

@@ -20,6 +20,14 @@ class IAction;
 class XML_Impl;
 struct Node;
 
+/// @brief Options controlling parsing behaviour and resource limits.
+struct ParseOptions {
+  std::size_t maxEntityExpansionDepth = 512;  ///< Maximum entity expansion recursion depth (XML bomb defence).
+  std::size_t maxNestingDepth         = 1000; ///< Maximum element nesting depth.
+  std::size_t maxAttributeCount       = 10000;///< Maximum number of attributes per element.
+  bool        allowExternalEntities   = false;///< When false, external entity resolution throws SyntaxError (XXE defence).
+};
+
 /// @brief Top-level XML document class.
 ///
 /// Owns the parsed document tree (prolog, declaration, root element, optional DTD).
@@ -89,22 +97,22 @@ public:
   [[nodiscard]] static std::string version();
 
   /// @brief Parse XML from an lvalue source stream.
-  void parse(ISource &source) const;
+  void parse(ISource &source, const ParseOptions &options = {}) const;
 
   /// @brief Parse XML from an rvalue (temporary) source stream.
-  void parse(ISource &&source) const;
+  void parse(ISource &&source, const ParseOptions &options = {}) const;
 
   /// @brief Parse XML from a null-terminated C string (convenience overload).
   /// @param xmlString Null-terminated UTF-8 XML text.
-  void parse(const char *xmlString) const;
+  void parse(const char *xmlString, const ParseOptions &options = {}) const;
 
   /// @brief Parse XML from a `string_view` (convenience overload).
   /// @param xmlString UTF-8 XML text view.
-  void parse(const std::string_view &xmlString) const;
+  void parse(const std::string_view &xmlString, const ParseOptions &options = {}) const;
 
   /// @brief Parse XML from a file (convenience overload).
   /// @param filePath Path to the XML file to read and parse.
-  void parse(const std::filesystem::path &filePath) const;
+  void parse(const std::filesystem::path &filePath, const ParseOptions &options = {}) const;
 
 #if defined(XML_LIB_ENABLE_STRINGIFY)
   /// @brief Serialise the document tree to an lvalue destination.

@@ -23,7 +23,7 @@ public:
   [[nodiscard]] Node &prolog();
   [[nodiscard]] Node &root();
   [[nodiscard]] Node &declaration();
-  void parse(ISource &source);
+  void parse(ISource &source, const ParseOptions &options = {});
 #if defined(XML_LIB_ENABLE_STRINGIFY)
   void stringify(IDestination &destination);
 #endif

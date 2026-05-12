@@ -17,7 +17,7 @@ public:
   Default_Parser &operator=(Default_Parser &&other) = delete;
   ~Default_Parser() override = default;
 
-  [[nodiscard]] Node parse(ISource &source) override;
+  [[nodiscard]] Node parse(ISource &source, const ParseOptions &options) override;
   [[nodiscard]] bool canValidate() override;
   void validate(Node &xProlog) override;
 
@@ -48,6 +48,8 @@ private:
   inline static std::unique_ptr<IValidator> validator;
   // Entity mapper reference
   IEntityMapper &entityMapper;
+  // Parse options (set at the start of each parse() call)
+  ParseOptions parseOptions{};
   // Embedded node arena
   XML_Arena arena;
 };

@@ -101,30 +101,30 @@ std::vector<const Node *> XML::xpath(const std::string_view expression) const
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well-formed).
 /// </summary>
-void XML::parse(ISource &source) const { implementation->parse(source); }
-void XML::parse(ISource &&source) const { implementation->parse(source); }
+void XML::parse(ISource &source, const ParseOptions &options) const { implementation->parse(source, options); }
+void XML::parse(ISource &&source, const ParseOptions &options) const { implementation->parse(source, options); }
 
 /// <summary>
 /// Convenience overload: parse XML directly from a string without needing a BufferSource.
 /// </summary>
-void XML::parse(const char *xmlString) const
+void XML::parse(const char *xmlString, const ParseOptions &options) const
 {
   BufferSource source{ std::string_view{ xmlString } };
-  implementation->parse(source);
+  implementation->parse(source, options);
 }
-void XML::parse(const std::string_view &xmlString) const
+void XML::parse(const std::string_view &xmlString, const ParseOptions &options) const
 {
   BufferSource source{ xmlString };
-  implementation->parse(source);
+  implementation->parse(source, options);
 }
 
 /// <summary>
 /// Convenience overload: parse XML directly from a file path without needing a FileSource.
 /// </summary>
-void XML::parse(const std::filesystem::path &filePath) const
+void XML::parse(const std::filesystem::path &filePath, const ParseOptions &options) const
 {
   FileSource source{ filePath.string() };
-  implementation->parse(source);
+  implementation->parse(source, options);
 }
 
 /// <summary>

@@ -12,6 +12,7 @@ namespace XML_Lib {
 
 class ISource;
 struct Node;
+struct ParseOptions;
 
 /// @brief Abstract interface for an XML parser.
 ///
@@ -29,7 +30,7 @@ public:
   virtual ~IParser() = default;
 
   /// @brief Parse @p source and return the document root `Node`.
-  virtual Node parse(ISource &source) = 0;
+  virtual Node parse(ISource &source, const ParseOptions &options) = 0;
 
   /// @brief Return `true` if this parser supports validation (DTD/XSD).
   virtual bool canValidate() = 0;
