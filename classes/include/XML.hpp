@@ -7,6 +7,8 @@
 #include <string_view>
 #include <vector>
 
+#include "interface/IEntityResolver.hpp"
+
 namespace XML_Lib {
 
 // ========================
@@ -22,10 +24,11 @@ struct Node;
 
 /// @brief Options controlling parsing behaviour and resource limits.
 struct ParseOptions {
-  std::size_t maxEntityExpansionDepth = 512;  ///< Maximum entity expansion recursion depth (XML bomb defence).
-  std::size_t maxNestingDepth         = 1000; ///< Maximum element nesting depth.
-  std::size_t maxAttributeCount       = 10000;///< Maximum number of attributes per element.
-  bool        allowExternalEntities   = false;///< When false, external entity resolution throws SyntaxError (XXE defence).
+  std::size_t     maxEntityExpansionDepth = 512;    ///< Maximum entity expansion recursion depth (XML bomb defence).
+  std::size_t     maxNestingDepth         = 1000;   ///< Maximum element nesting depth.
+  std::size_t     maxAttributeCount       = 10000;  ///< Maximum number of attributes per element.
+  bool            allowExternalEntities   = false;  ///< When false and no entityResolver set, external entities throw SyntaxError (XXE defence).
+  IEntityResolver *entityResolver         = nullptr;///< Optional custom resolver; overrides allowExternalEntities when non-null.
 };
 
 /// @brief Top-level XML document class.

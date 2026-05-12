@@ -246,14 +246,20 @@ void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, I
     if (content.isEntityReference()) { content = entityMapper.map(content); }
     auto xEntityReference = Node::make<EntityReference>(content);
     if (content.isEntityReference()) {
+      if (entityExpansionDepth >= maxEntityExpansionDepth) {
+        XML_LIB_THROW(SyntaxError("Entity expansion depth limit exceeded."));
+      }
+      ++entityExpansionDepth;
       // Does entity contain start tag ?
       // YES then XML into current element list
       if (content.getParsed().starts_with("<")) {
         parseEntityReferenceXML(xNode, content, entityMapper);
+        --entityExpansionDepth;
         return;
       }
       // NO XML into entity elements list.
       parseEntityReferenceXML(xEntityReference, content, entityMapper);
+      --entityExpansionDepth;
       markTrailingContentNonWhitespace(xNode);
     }
     xNode.addChild(std::move(xEntityReference));
@@ -473,6 +479,8 @@ Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 Node Default_Parser::parse(ISource &source, const ParseOptions &options)
 {
   parseOptions = options;
+  entityExpansionDepth = 0;
+  maxEntityExpansionDepth = options.maxEntityExpansionDepth;
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
   // Reset XML before next parse

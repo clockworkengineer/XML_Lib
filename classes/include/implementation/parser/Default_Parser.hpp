@@ -46,6 +46,10 @@ private:
   inline static bool hasRoot{ false };
   // Parser validator
   inline static std::unique_ptr<IValidator> validator;
+  // Current entity expansion depth (reset at the start of each parse)
+  inline static std::size_t entityExpansionDepth{ 0 };
+  // Maximum allowed expansion depth (copied from ParseOptions at parse start)
+  inline static std::size_t maxEntityExpansionDepth{ 512 };
   // Entity mapper reference
   IEntityMapper &entityMapper;
   // Parse options (set at the start of each parse() call)
