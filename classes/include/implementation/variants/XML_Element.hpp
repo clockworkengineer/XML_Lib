@@ -1,5 +1,6 @@
 #pragma once
 
+#include <limits>
 #include <memory_resource>
 #include <span>
 
@@ -88,5 +89,8 @@ private:
   std::string elementName;
   mutable std::pmr::vector<XMLAttribute> attributes;
   mutable std::pmr::vector<XMLAttribute> namespaces;
+  // Lazy content cache — invalidated when the child count changes.
+  mutable std::string contentCache;
+  mutable std::size_t contentCacheChildCount{ std::numeric_limits<std::size_t>::max() };
 };
 }// namespace XML_Lib

@@ -15,8 +15,14 @@ namespace XML_Lib {
 }
 [[nodiscard]] inline std::string Element::getContents() const
 {
-  std::string result;
-  for (const auto &child : getChildren()) { result += child.getContents(); }
-  return result;
+  // name() and child text are already UTF-8 — no re-encoding occurs.
+  // Cache the concatenated result and revalidate only when the child count changes.
+  const auto currentChildCount = getChildren().size();
+  if (currentChildCount != contentCacheChildCount) {
+    contentCache.clear();
+    for (const auto &child : getChildren()) { contentCache += child.getContents(); }
+    contentCacheChildCount = currentChildCount;
+  }
+  return contentCache;
 }
 }// namespace XML_Lib
