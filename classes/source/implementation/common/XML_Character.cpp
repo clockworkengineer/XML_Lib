@@ -92,7 +92,7 @@ bool validAttributeValue(const std::string_view &value, const char quote )
   if (!value.empty()) {
     BufferSource source {std::string(value)};
     while (source.more()) {
-      if (source.match("&#")) {
+      if (match(source, "&#")) {
         parseCharacterReference(source);
       } else if (source.current() == '&') {
          auto _ = parseEntityReference(source);

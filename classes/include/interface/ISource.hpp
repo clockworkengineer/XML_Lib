@@ -1,8 +1,6 @@
 #pragma once
 
 #include "XML_Types.hpp"
-#include <cwctype>
-#include <cstring>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -52,43 +50,12 @@ public:
   /// @brief Reset the stream to the beginning.
   virtual void reset() = 0;
 
-  /// @brief Return `true` if the current character is ASCII whitespace.
-  [[nodiscard]] bool isWS() const { return std::iswspace(current()) != 0; }
-
-  /// @brief Advance past all leading whitespace characters.
-  void ignoreWS()
-  {
-    while (more() && isWS()) { next(); }
-  }
-
-  /// @brief Try to match @p target at the current position.
-  /// @return `true` and advances the stream on success; `false` and leaves the stream unchanged on failure.
-  bool match(const String &target)
-  {
-    long index = 0;
-    while (more() && current() == target[index]) {
-      next();
-      if (++index == static_cast<long>(target.length())) { return true; }
-    }
-    backup(index);
-    return false;
-  }
-
-  /// @brief Try to match the null-terminated string @p target at the current position.
-  /// @return `true` and advances the stream on success; `false` and leaves the stream unchanged on failure.
-  bool match(const char *target)
-  {
-    long index = 0;
-    while (more() && current() == static_cast<Char>(target[index])) {
-      next();
-      if (++index == static_cast<long>(std::strlen(target))) { return true; }
-    }
-    backup(index);
-    return false;
-  }
-
   /// @brief Return the current `{line, column}` position within the source stream.
   [[nodiscard]] std::pair<long, long> getPosition() const { return std::make_pair(lineNo, columnNo); }
+
+  // --- Utility helpers (isWS, ignoreWS, match) ---
+  // Moved to implementation/common/XML_SourceHelpers.hpp.
+  // Include that header in implementation code that needs them.
 
 protected:
   long lineNo = 1;

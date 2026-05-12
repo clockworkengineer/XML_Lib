@@ -18,26 +18,26 @@ namespace XML_Lib {
 void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
 {
   std::string conditionalValue;
-  source.ignoreWS();
+  ignoreWS(source);
   if (includeOn) {
     if (source.current() == '%') {
       conditionalValue = xDTD.getEntityMapper().map(parseEntityReference(source)).getParsed();
-    } else if (source.match("INCLUDE")) {
+    } else if (match(source, "INCLUDE")) {
       conditionalValue = "INCLUDE";
-    } else if (source.match("IGNORE")) {
+    } else if (match(source, "IGNORE")) {
       conditionalValue = "IGNORE";
     }
   } else {
     conditionalValue = "IGNORE";
   }
-  source.ignoreWS();
+  ignoreWS(source);
   if (conditionalValue == "INCLUDE") {
     if (source.current() != '[') { throw SyntaxError(source.getPosition(), "Missing opening '[' from conditional."); }
     source.next();
-    source.ignoreWS();
+    ignoreWS(source);
     std::string conditionalDTD;
-    while (source.more() && !source.match("]]")) {
-      if (source.match("<![")) {
+    while (source.more() && !match(source, "]]")) {
+      if (match(source, "<![")) {
         parseConditional(source);
       } else {
         conditionalDTD += toUtf8(source.current());
@@ -47,8 +47,8 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
     BufferSource conditionalDTDSource(conditionalDTD);
     parseExternalContent(conditionalDTDSource);
   } else if (conditionalValue == "IGNORE") {
-    while (source.more() && !source.match("]]")) {
-      if (source.match("<![")) {
+    while (source.more() && !match(source, "]]")) {
+      if (match(source, "<![")) {
         parseConditional(source, false);
       } else {
         source.next();
@@ -59,7 +59,7 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
   }
   if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
   source.next();
-  source.ignoreWS();
+  ignoreWS(source);
 }
 
 /// <summary>
@@ -73,16 +73,16 @@ void DTD_Impl::parseExternalContent(ISource &source)
     parseFn(dtdTranslatedSource);
   };
   while (source.more()) {
-    if      (source.match("<!ENTITY"))   { dispatch([&](ISource &s) { parseEntity(s);        }); }
-    else if (source.match("<!ELEMENT"))  { dispatch([&](ISource &s) { parseElement(s);       }); }
-    else if (source.match("<!ATTLIST"))  { dispatch([&](ISource &s) { parseAttributeList(s); }); }
-    else if (source.match("<!NOTATION")) { dispatch([&](ISource &s) { parseNotation(s);      }); }
-    else if (source.match("<!--")) {
+    if      (match(source, "<!ENTITY"))   { dispatch([&](ISource &s) { parseEntity(s);        }); }
+    else if (match(source, "<!ELEMENT"))  { dispatch([&](ISource &s) { parseElement(s);       }); }
+    else if (match(source, "<!ATTLIST"))  { dispatch([&](ISource &s) { parseAttributeList(s); }); }
+    else if (match(source, "<!NOTATION")) { dispatch([&](ISource &s) { parseNotation(s);      }); }
+    else if (match(source, "<!--")) {
       parseComment(source);
     } else if (source.current() == '%') {
       parseParameterEntityReference(source);
       continue;
-    } else if (source.match("<![")) {
+    } else if (match(source, "<![")) {
       parseConditional(source);
       continue;
     } else {
@@ -90,7 +90,7 @@ void DTD_Impl::parseExternalContent(ISource &source)
     }
     if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
     source.next();
-    source.ignoreWS();
+    ignoreWS(source);
   }
 }
 
@@ -114,12 +114,12 @@ void DTD_Impl::parseExternalReferenceContent()
 /// <returns>External reference.</returns>
 XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
 {
-  if (source.match("SYSTEM")) {
-    source.ignoreWS();
+  if (match(source, "SYSTEM")) {
+    ignoreWS(source);
     return XMLExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" };
   }
-  if (source.match(XMLExternalReference::kPublicID)) {
-    source.ignoreWS();
+  if (match(source, XMLExternalReference::kPublicID)) {
+    ignoreWS(source);
     const std::string publicID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     const std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
     return XMLExternalReference{ XMLExternalReference::kPublicID, systemID, publicID };

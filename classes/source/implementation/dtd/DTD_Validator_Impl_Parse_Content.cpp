@@ -22,7 +22,7 @@ void DTD_Impl::parseGroupBody(ISource &src,
   if (src.current() != ')') { throw SyntaxError("Invalid element content specification."); }
   dst.add(")");
   src.next();
-  src.ignoreWS();
+  ignoreWS(src);
 }
 
 /// <summary>
@@ -50,7 +50,7 @@ bool DTD_Impl::parseIsChoiceOrSequence(ISource &contentSpecSource)
 void DTD_Impl::parseElementCP(ISource &contentSpecSource, IDestination &contentSpecDestination)
 {
   contentSpecSource.next();
-  contentSpecSource.ignoreWS();
+  ignoreWS(contentSpecSource);
   if (validNameStartChar(contentSpecSource.current())) {
     parseElementName(contentSpecSource, contentSpecDestination);
   } else if (parseIsChoiceOrSequence(contentSpecSource)) {
@@ -61,7 +61,7 @@ void DTD_Impl::parseElementCP(ISource &contentSpecSource, IDestination &contentS
   if (contentSpecSource.current() == '*' || contentSpecSource.current() == '+' || contentSpecSource.current() == '?') {
     contentSpecDestination.add(contentSpecSource.current());
     contentSpecSource.next();
-    contentSpecSource.ignoreWS();
+    ignoreWS(contentSpecSource);
   }
 }
 
@@ -101,7 +101,7 @@ void DTD_Impl::parseElementName(ISource &contentSpecSource, IDestination &conten
     contentSpecSource.next();
   }
   contentSpecDestination.add(">)");
-  contentSpecSource.ignoreWS();
+  ignoreWS(contentSpecSource);
 }
 
 /// <summary>
@@ -121,7 +121,7 @@ void DTD_Impl::parseElementChildren(ISource &contentSpecSource, IDestination &co
         || contentSpecSource.current() == '?') {
       contentSpecDestination.add(contentSpecSource.current());
       contentSpecSource.next();
-      contentSpecSource.ignoreWS();
+      ignoreWS(contentSpecSource);
     }
   } else {
     XML_LIB_THROW(SyntaxError("Invalid element content specification."));
@@ -135,14 +135,14 @@ void DTD_Impl::parseElementChildren(ISource &contentSpecSource, IDestination &co
 /// <param name="contentSpecDestination">Parsed content specification stream.</param>
 void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination &contentSpecDestination)
 {
-  contentSpecSource.ignoreWS();
+  ignoreWS(contentSpecSource);
   contentSpecDestination.add("((<#PCDATA>)");
   if (contentSpecSource.current() == '|') {
     parseDelimitedList(contentSpecSource, '|',
       [&](ISource &) {
         contentSpecDestination.add("|");
         contentSpecSource.next();
-        contentSpecSource.ignoreWS();
+        ignoreWS(contentSpecSource);
       },
       [&](ISource &) {
         if (validNameStartChar(contentSpecSource.current())) {
@@ -155,12 +155,12 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
     if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
     contentSpecDestination.add(")");
     contentSpecSource.next();
-    contentSpecSource.ignoreWS();
+    ignoreWS(contentSpecSource);
     if (contentSpecSource.current() == '*') {
       contentSpecDestination.add(contentSpecSource.current());
       contentSpecSource.next();
     }
-    if (contentSpecSource.more() && !contentSpecSource.isWS()) {
+    if (contentSpecSource.more() && !isWS(contentSpecSource)) {
       XML_LIB_THROW(SyntaxError("Invalid element content specification."));
     }
   } else if (contentSpecSource.current() == ')') {
@@ -180,11 +180,11 @@ XMLValue DTD_Impl::parseElementInternalSpecification(const std::string_view &ele
   try {
     BufferSource contentSpecSource(contentSpec.getUnparsed());
     BufferDestination contentSpecDestination;
-    contentSpecSource.ignoreWS();
+    ignoreWS(contentSpecSource);
     if (contentSpecSource.current() == '(') {
       contentSpecSource.next();
-      contentSpecSource.ignoreWS();
-      if (contentSpecSource.match("#PCDATA")) {
+      ignoreWS(contentSpecSource);
+      if (match(contentSpecSource, "#PCDATA")) {
         parseElementMixedContent(contentSpecSource, contentSpecDestination);
       } else {
         contentSpecSource.backup(contentSpecSource.position());

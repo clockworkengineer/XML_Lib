@@ -80,7 +80,7 @@ std::string readEntityReferenceText(ISource &source)
 
 XMLValue parseCharacterOrReference(ISource &source)
 {
-  if (source.match("&#")) {
+  if (match(source, "&#")) {
     return decodeCharRef(source);
   }
   if (source.current() == '&') {
@@ -131,7 +131,7 @@ XMLValue parseQuotedValue(ISource &source, IEntityMapper *entityMapper)
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid attribute value."));
   }
   source.next();
-  source.ignoreWS();
+  ignoreWS(source);
 
   return XMLValue{ unparsed, parsed, static_cast<char>(quote) };
 }

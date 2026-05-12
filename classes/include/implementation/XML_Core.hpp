@@ -36,6 +36,7 @@
 #include "io/XML_Sources.hpp"
 #include "io/XML_Destinations.hpp"
 #include "common/XML_Parse.hpp"
+#include "common/XML_SourceHelpers.hpp"
 #include "parser/Default_Parser.hpp"
 #if defined(XML_LIB_ENABLE_STRINGIFY)
 #include "stringify/Default_Stringify.hpp"

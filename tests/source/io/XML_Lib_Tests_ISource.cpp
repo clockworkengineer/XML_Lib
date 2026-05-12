@@ -127,7 +127,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     FileSource source{ generatedFileName };
     String xmlResult;
     while (source.more()) {
-      source.ignoreWS();
+      ignoreWS(source);
       xmlResult += source.current();
       source.next();
     }
@@ -143,7 +143,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
     FileSource source{ generatedFileName };
     while (source.more()) { source.next(); }
-    REQUIRE_NOTHROW(source.ignoreWS());
+    REQUIRE_NOTHROW(ignoreWS(source));
     REQUIRE_THROWS_AS(source.next(), FileSource::Error);
     REQUIRE_THROWS_WITH(source.next(), "FileSource Error: Parse buffer empty before parse complete.");
     source.close();
@@ -155,26 +155,26 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
     FileSource source{ generatedFileName };
-    REQUIRE_FALSE(source.match("<root> "));
-    REQUIRE_FALSE(!source.match("<root>"));
+    REQUIRE_FALSE(match(source, "<root> "));
+    REQUIRE_FALSE(!match(source, "<root>"));
     REQUIRE(source.current() == 'M');
-    REQUIRE_FALSE(!source.match("Match1"));
+    REQUIRE_FALSE(!match(source, "Match1"));
     REQUIRE(source.current() == ' ');
-    source.ignoreWS();
+    ignoreWS(source);
     REQUIRE(source.current() == 'M');
-    REQUIRE_FALSE(source.match("Match3"));
-    REQUIRE_FALSE(!source.match("Match2"));
-    source.ignoreWS();
+    REQUIRE_FALSE(match(source, "Match3"));
+    REQUIRE_FALSE(!match(source, "Match2"));
+    ignoreWS(source);
     REQUIRE(source.current() == '2');
-    REQUIRE_FALSE(!source.match("2hctam"));
+    REQUIRE_FALSE(!match(source, "2hctam"));
     REQUIRE(source.current() == ' ');
-    source.ignoreWS();
-    REQUIRE_FALSE(!source.match("MMAATTCCHHHXML_Lib"));
+    ignoreWS(source);
+    REQUIRE_FALSE(!match(source, "MMAATTCCHHHXML_Lib"));
     REQUIRE(source.current() == ' ');
     source.next();
     REQUIRE(source.current() == '&');
     source.next();
-    REQUIRE_FALSE(!source.match("</root>"));
+    REQUIRE_FALSE(!match(source, "</root>"));
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "FileSource Error: Parse buffer empty before parse complete.");
     source.close();
@@ -186,7 +186,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
     FileSource source{ generatedFileName };
-    source.match("<root>Match1");
+    match(source, "<root>Match1");
     REQUIRE(source.current() == ' ');
     source.backup(12);
     REQUIRE(source.current() == '<');
@@ -357,7 +357,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     BufferSource source{ xmlString };
     String xmlResult;
     while (source.more()) {
-      source.ignoreWS();
+      ignoreWS(source);
       xmlResult += source.current();
       source.next();
     }
@@ -369,7 +369,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     xmlString = "<root>Test Test Test Test</root>";
     BufferSource source{ xmlString };
     while (source.more()) { source.next(); }
-    REQUIRE_NOTHROW(source.ignoreWS());
+    REQUIRE_NOTHROW(ignoreWS(source));
     REQUIRE_THROWS_AS(source.next(), BufferSource::Error);
     REQUIRE_THROWS_WITH(source.next(), "BufferSource Error: Parse buffer empty before parse complete.");
   }
@@ -377,26 +377,26 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
-    REQUIRE_FALSE(source.match("<root> "));
-    REQUIRE_FALSE(!source.match("<root>"));
+    REQUIRE_FALSE(match(source, "<root> "));
+    REQUIRE_FALSE(!match(source, "<root>"));
     REQUIRE(source.current() == 'M');
-    REQUIRE_FALSE(!source.match("Match1"));
+    REQUIRE_FALSE(!match(source, "Match1"));
     REQUIRE(source.current() == ' ');
-    source.ignoreWS();
+    ignoreWS(source);
     REQUIRE(source.current() == 'M');
-    REQUIRE_FALSE(source.match("Match3"));
-    REQUIRE_FALSE(!source.match("Match2"));
-    source.ignoreWS();
+    REQUIRE_FALSE(match(source, "Match3"));
+    REQUIRE_FALSE(!match(source, "Match2"));
+    ignoreWS(source);
     REQUIRE(source.current() == '2');
-    REQUIRE_FALSE(!source.match("2hctam"));
+    REQUIRE_FALSE(!match(source, "2hctam"));
     REQUIRE(source.current() == ' ');
-    source.ignoreWS();
-    REQUIRE_FALSE(!source.match("MMAATTCCHHHXML_Lib"));
+    ignoreWS(source);
+    REQUIRE_FALSE(!match(source, "MMAATTCCHHHXML_Lib"));
     REQUIRE(source.current() == ' ');
     source.next();
     REQUIRE(source.current() == '&');
     source.next();
-    REQUIRE_FALSE(!source.match("</root>"));
+    REQUIRE_FALSE(!match(source, "</root>"));
     REQUIRE(source.current() == static_cast<XML_Lib::Char>(EOF));
     REQUIRE_THROWS_WITH(source.next(), "BufferSource Error: Parse buffer empty before parse complete.");
   }
@@ -404,7 +404,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
-    source.match("<root>Match1");
+    match(source, "<root>Match1");
     REQUIRE(source.current() == ' ');
     source.backup(12);
     REQUIRE(source.current() == '<');
@@ -441,10 +441,10 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
-    while (source.more() && !source.match("Match")) { source.next(); }
+    while (source.more() && !match(source, "Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     long start = source.position();
-    while (source.more() && !source.match("Match2")) { source.next(); }
+    while (source.more() && !match(source, "Match2")) { source.next(); }
     REQUIRE(source.position() == 22);
     REQUIRE(source.getRange(start, source.position()) == "1    Match2");
     REQUIRE(source.position() == 22);
@@ -455,10 +455,10 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
     FileSource source{ generatedFileName };
-    while (source.more() && !source.match("Match")) { source.next(); }
+    while (source.more() && !match(source, "Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     long start = source.position();
-    while (source.more() && !source.match("Match2")) { source.next(); }
+    while (source.more() && !match(source, "Match2")) { source.next(); }
     REQUIRE(source.position() == 22);
     REQUIRE(source.getRange(start, source.position()) == "1    Match2");
     REQUIRE(source.position() == 22);
@@ -470,11 +470,11 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   {
     xmlString = "<root>Match1    Match2 2hctam        MMAATTCCHHHXML_Lib &</root>";
     BufferSource source{ xmlString };
-    while (source.more() && !source.match("Match")) { source.next(); }
+    while (source.more() && !match(source, "Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     source.reset();
     REQUIRE(source.position() == 0);
-    while (source.more() && !source.match("Match")) { source.next(); }
+    while (source.more() && !match(source, "Match")) { source.next(); }
     REQUIRE(source.position() == 11);
   }
   SECTION("Check that FileSource reset() works correctly.", "[XML][FileSource]")
@@ -483,11 +483,11 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
     FileSource source{ generatedFileName };
-    while (source.more() && !source.match("Match")) { source.next(); }
+    while (source.more() && !match(source, "Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     source.reset();
     REQUIRE(source.position() == 0);
-    while (source.more() && !source.match("Match")) { source.next(); }
+    while (source.more() && !match(source, "Match")) { source.next(); }
     REQUIRE(source.position() == 11);
     source.close();
     std::filesystem::remove(generatedFileName);
