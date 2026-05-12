@@ -187,7 +187,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
       "]>\n"
       "<foo>Hello &name;</foo>\n"
     };
-    xml.parse(source);
+    xml.parse(source, ParseOptions{.allowExternalEntities = true});
     DTD &xDTD = NRef<DTD>(xml.dtd());
     REQUIRE_FALSE(!isA<DTD>(xml.prolog().getChildren()[2]));
     REQUIRE(xDTD.getType() == DTD::Type::internal);
@@ -206,7 +206,7 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
       "<foo>Hello &name;</foo>\n"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error: Entity '&name;' source file '../files/unknown.txt' does not exist.");
+      xml.parse(source, ParseOptions{.allowExternalEntities = true}), "XML Syntax Error: Entity '&name;' source file '../files/unknown.txt' does not exist.");
   }
   SECTION("XML with internal DTD with parameter entities to parse  (internal cannot appear within tags).",
     "[XML][DTD][Parse][Entity]")

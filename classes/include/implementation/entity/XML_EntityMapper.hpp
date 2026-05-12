@@ -47,6 +47,8 @@ struct XML_EntityMapper final : IEntityMapper
   void checkForRecursion() override;
   // Reset entity mapper to default state
   void reset() override;
+  // Set external entity resolution policy (XXE)
+  void setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver) override;
 
 private:
   // Transparent hash/equality functors for std::string_view lookups.
@@ -72,6 +74,8 @@ private:
   void invalidateTranslationCache() const;
   [[nodiscard]] const std::vector<std::pair<std::string_view, const XML_EntityMapping *>> &getTranslationCandidates(char type) const;
 
+  bool allowExternalEntities{ false };
+  IEntityResolver *entityResolver{ nullptr };
   std::unordered_map<std::string, XML_EntityMapping, EntityMapHash, EntityMapEq> entityMappings;
   mutable std::unordered_map<std::string, std::string> externalFileCache;
   mutable std::vector<std::pair<std::string_view, const XML_EntityMapping *>> translationCandidates;

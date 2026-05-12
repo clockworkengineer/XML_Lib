@@ -9,6 +9,7 @@
 #include "XML.hpp"
 #include "XML_Core.hpp"
 #include "entity/XML_EntityMapperHelpers.hpp"
+#include "interface/IEntityResolver.hpp"
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -148,6 +149,12 @@ bool XML_EntityMapper::isPresent(const std::string_view &entityName) const
   return findEntityMapping(entityMappings, entityName) != nullptr;
 }
 
+void XML_EntityMapper::setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver)
+{
+  allowExternalEntities = allowExternal;
+  entityResolver = resolver;
+}
+
 XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 {
   if (const auto *entityMapping = findEntityMapping(entityMappings, entityReference.getUnparsed())) {
@@ -155,12 +162,27 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
     if (!entityMapping->getInternal().empty()) {
       parsed = entityMapping->getInternal();
     } else if (entityMapping->isExternal()) {
-      const auto &systemID = entityMapping->getExternal().getSystemID();
-      if (std::filesystem::exists(systemID)) {
-        parsed = getFileMappingContents(systemID);
-      } else {
-        XML_LIB_THROW(SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
-                          + systemID + "' does not exist."));
+      const auto &extRef = entityMapping->getExternal();
+      const auto &systemID = extRef.getSystemID();
+      if (!allowExternalEntities && entityResolver == nullptr) {
+        XML_LIB_THROW(SyntaxError("External entity resolution is disabled. "
+          "Set ParseOptions::allowExternalEntities = true or supply an IEntityResolver."));
+      }
+      bool resolved = false;
+      if (entityResolver != nullptr) {
+        const std::string publicID = extRef.isPublic() ? extRef.getPublicID() : "";
+        if (auto result = entityResolver->resolve(systemID, publicID)) {
+          parsed = std::move(*result);
+          resolved = true;
+        }
+      }
+      if (!resolved) {
+        if (std::filesystem::exists(systemID)) {
+          parsed = getFileMappingContents(systemID);
+        } else {
+          XML_LIB_THROW(SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
+                            + systemID + "' does not exist."));
+        }
       }
     }
     return XMLValue{ entityReference.getUnparsed(), parsed };

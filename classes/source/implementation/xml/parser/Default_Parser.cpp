@@ -488,6 +488,7 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   maxEntityExpansionDepth = options.maxEntityExpansionDepth;
   elementNestingDepth = 0;
   maxElementNestingDepth = options.maxNestingDepth;
+  entityMapper.setExternalEntityPolicy(options.allowExternalEntities, options.entityResolver);
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
   // Reset XML before next parse

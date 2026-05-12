@@ -12,6 +12,7 @@ namespace XML_Lib {
 // ===================================================
 struct XMLExternalReference;
 struct  XMLValue;
+class IEntityResolver;
 
 // ===========================
 // XML Entity mapper interface
@@ -66,6 +67,10 @@ public:
   // Reset entity mapper to default state
   // ====================================
   virtual void reset() = 0;
+  // =============================================
+  // Set external entity resolution policy (XXE)
+  // =============================================
+  virtual void setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver) = 0;
 };
 //
 }// namespace XML_Lib
