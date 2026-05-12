@@ -20,7 +20,9 @@ public:
   // Bits per byte
   static constexpr int kBitsPerByte{ 8 };
   // BufferSource Error
+#ifndef XML_LIB_NO_EXCEPTIONS
   XML_LIB_DEFINE_ERROR("BufferSource");
+#endif
   // Constructors/Destructors
   explicit BufferSource(const std::u16string_view &sourceBuffer)// UTF16 source BE/LE
   {

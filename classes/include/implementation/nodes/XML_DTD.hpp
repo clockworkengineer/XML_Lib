@@ -15,7 +15,9 @@ struct DTD final : Variant
   //
   // DTD Error
   //
+#ifndef XML_LIB_NO_EXCEPTIONS
   XML_LIB_DEFINE_ERROR("DTD");
+#endif
   //
   // DTD Type
   //

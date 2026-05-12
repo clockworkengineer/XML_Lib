@@ -14,7 +14,9 @@ class FileSource final : public ISource
 {
 public:
   // FileSource Error
+#ifndef XML_LIB_NO_EXCEPTIONS
   XML_LIB_DEFINE_ERROR("FileSource");
+#endif
   // Constructors/Destructors
   explicit FileSource(const std::string_view &sourceFileName) : filename(sourceFileName)
   {

@@ -17,7 +17,9 @@ class BufferDestination final : public IDestination
 {
 public:
   // BufferDestination Error
+#ifndef XML_LIB_NO_EXCEPTIONS
   XML_LIB_DEFINE_ERROR("BufferDestination");
+#endif
   // Constructors/Destructors
   BufferDestination() = default;
   BufferDestination(const BufferDestination &other) = delete;

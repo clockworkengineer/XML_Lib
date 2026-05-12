@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+#include <string_view>
+#include <vector>
+
 namespace XML_Lib {
 // ===========
 // XML utility

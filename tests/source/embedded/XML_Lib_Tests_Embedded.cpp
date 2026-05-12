@@ -213,4 +213,88 @@ TEST_CASE("Embedded library artifact exists and is non-empty", "[XML][Embedded][
   REQUIRE(libSize < 5 * 1024 * 1024);
 }
 
+// ============================================================
+// Terminate-on-error (death tests, POSIX subprocess only)
+// ============================================================
+// When XML_LIB_NO_EXCEPTIONS is defined, xml_lib_throw() calls
+// std::terminate() → std::abort() rather than raising an exception.
+// Catch2 cannot intercept SIGABRT, so each "expected-crash" scenario
+// is run inside a forked child process; the parent verifies the child
+// was killed by a signal.
+// ============================================================
+
+#if defined(XML_LIB_NO_EXCEPTIONS)
+
+#  if defined(__unix__) || defined(__linux__) || defined(__APPLE__)
+#    include <sys/types.h>
+#    include <sys/wait.h>
+#    include <unistd.h>
+
+/// Fork a child, execute @p fn inside it, and return true when the child
+/// terminated abnormally (either killed by a signal such as SIGABRT from
+/// std::terminate → std::abort, or exited with a non-zero status after a
+/// signal handler like Catch2's captured the abort).
+template<typename Fn>
+static bool terminatesAbnormally(Fn &&fn)
+{
+  const pid_t pid = ::fork();
+  if (pid == 0) {
+    // Redirect child's stdout/stderr to /dev/null so Catch2 noise from the
+    // child process does not interleave with the parent's test output.
+    std::freopen("/dev/null", "w", stdout);
+    std::freopen("/dev/null", "w", stderr);
+    fn();
+    ::_exit(0); // unreachable if std::terminate fires
+  }
+  int status = 0;
+  ::waitpid(pid, &status, 0);
+  // std::terminate() → std::abort() → SIGABRT.
+  // If a signal handler (e.g., Catch2's) catches SIGABRT and exits via
+  // exit(), the process exits non-zero rather than via signal — accept both.
+  return WIFSIGNALED(status) || (WIFEXITED(status) && WEXITSTATUS(status) != 0);
+}
+
+TEST_CASE("No-exception: parse errors trigger std::terminate", "[XML][Embedded][Terminate]")
+{
+  SECTION("Unclosed root element terminates process")
+  {
+    REQUIRE(terminatesAbnormally([] {
+      XML xml;
+      xml.parse(BufferSource{ "<root" });
+    }));
+  }
+  SECTION("Mismatched closing tag terminates process")
+  {
+    REQUIRE(terminatesAbnormally([] {
+      XML xml;
+      xml.parse(BufferSource{ "<root></other>" });
+    }));
+  }
+  SECTION("Illegal character in tag name terminates process")
+  {
+    REQUIRE(terminatesAbnormally([] {
+      XML xml;
+      xml.parse(BufferSource{ "<1invalid/>" });
+    }));
+  }
+  SECTION("Declaration-only document (no root) terminates process")
+  {
+    REQUIRE(terminatesAbnormally([] {
+      XML xml;
+      xml.parse(BufferSource{ "<?xml version=\"1.0\"?>" });
+    }));
+  }
+}
+
+#  else // non-POSIX
+
+TEST_CASE("No-exception terminate tests: POSIX unavailable", "[XML][Embedded][Terminate]")
+{
+  SKIP("Death tests require POSIX fork/waitpid; not supported on this platform");
+}
+
+#  endif // __unix__ / __linux__ / __APPLE__
+
+#endif // XML_LIB_NO_EXCEPTIONS
+
 #endif// XML_LIB_EMBEDDED

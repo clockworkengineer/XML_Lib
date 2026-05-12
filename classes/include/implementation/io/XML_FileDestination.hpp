@@ -16,7 +16,9 @@ class FileDestination final : public IDestination
 {
 public:
   // FileDestination Error
+#ifndef XML_LIB_NO_EXCEPTIONS
   XML_LIB_DEFINE_ERROR("FileDestination");
+#endif
   // Constructors/Destructors
   explicit FileDestination(const std::string_view &filename) : filename(filename)
   {
