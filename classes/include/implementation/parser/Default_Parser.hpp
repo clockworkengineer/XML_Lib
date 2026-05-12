@@ -50,6 +50,10 @@ private:
   inline static std::size_t entityExpansionDepth{ 0 };
   // Maximum allowed expansion depth (copied from ParseOptions at parse start)
   inline static std::size_t maxEntityExpansionDepth{ 512 };
+  // Current element nesting depth (reset at the start of each parse)
+  inline static std::size_t elementNestingDepth{ 0 };
+  // Maximum allowed nesting depth (copied from ParseOptions at parse start)
+  inline static std::size_t maxElementNestingDepth{ 1000 };
   // Entity mapper reference
   IEntityMapper &entityMapper;
   // Parse options (set at the start of each parse() call)

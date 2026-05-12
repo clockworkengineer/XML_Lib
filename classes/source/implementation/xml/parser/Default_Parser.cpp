@@ -343,7 +343,12 @@ Node Default_Parser::parseElement(ISource &source,
       xNode = Node::make<Element>(name, attributes, namespaces);
     }
     xNode.reserveChildren(8);
+    if (elementNestingDepth >= maxElementNestingDepth) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Maximum element nesting depth exceeded."));
+    }
+    ++elementNestingDepth;
     while (source.more() && !match(source, "</")) { parseElementInternal(source, xNode, entityMapper); }
+    --elementNestingDepth;
     if (match(source, toUtf16(NRef<Element>(xNode).name()) + u">")) { return xNode; }
   } else if (match(source, "/>")) {
     // Self-closing element tag
@@ -481,6 +486,8 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   parseOptions = options;
   entityExpansionDepth = 0;
   maxEntityExpansionDepth = options.maxEntityExpansionDepth;
+  elementNestingDepth = 0;
+  maxElementNestingDepth = options.maxNestingDepth;
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
   // Reset XML before next parse
