@@ -114,15 +114,24 @@ target_sources(${XML_LIBRARY_NAME}
 
 target_include_directories(${XML_LIBRARY_NAME}
   PUBLIC
+
+  # Primary public include root: XML.hpp, XML_Sources.hpp, XML_Destinations.hpp, XML_NodeRef.hpp
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include>
-  PRIVATE
+
+  # Public interfaces (ISource, IDestination, IAction, IParser, IStringify, IValidator, IEntityMapper)
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/interface>
+
+  # Needed so "common/XML_Error.hpp" bare includes in io headers resolve for consumers
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
+
+  # Concrete source/destination types (BufferSource, FileSource, BufferDestination, FileDestination)
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/io>
+  # UTF-8/UTF-16 converter used by io headers (toUtf8, toUtf16)
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/converter>
+  PRIVATE
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/entity>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/io>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/parser>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>

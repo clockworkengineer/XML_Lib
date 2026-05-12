@@ -1,5 +1,6 @@
 #pragma once
 #include "common/XML_Error.hpp"
+#include "XML_Converter.hpp"
 
 #include "IDestination.hpp"
 
