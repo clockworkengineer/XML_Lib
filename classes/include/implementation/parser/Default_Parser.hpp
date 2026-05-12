@@ -54,6 +54,8 @@ private:
   inline static std::size_t elementNestingDepth{ 0 };
   // Maximum allowed nesting depth (copied from ParseOptions at parse start)
   inline static std::size_t maxElementNestingDepth{ 1000 };
+  // Maximum allowed attribute count per element (copied from ParseOptions at parse start)
+  inline static std::size_t maxAttributeCount{ 10000 };
   // Entity mapper reference
   IEntityMapper &entityMapper;
   // Parse options (set at the start of each parse() call)

@@ -200,6 +200,9 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
       XML_LIB_THROW(SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag."));
     }
     attributes.emplace_back(attributeName, attributeValue);
+    if (attributes.size() > maxAttributeCount) {
+      XML_LIB_THROW(SyntaxError("Maximum attribute count exceeded."));
+    }
   }
   return attributes;
 }
@@ -488,6 +491,7 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   maxEntityExpansionDepth = options.maxEntityExpansionDepth;
   elementNestingDepth = 0;
   maxElementNestingDepth = options.maxNestingDepth;
+  maxAttributeCount = options.maxAttributeCount;
   entityMapper.setExternalEntityPolicy(options.allowExternalEntities, options.entityResolver);
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
