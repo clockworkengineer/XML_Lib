@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/XML_Error.hpp"
 #include <stdexcept>
 #include <string>
 #include <string_view>

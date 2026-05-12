@@ -6,9 +6,7 @@
 // Dependencies: C++20 - Language standard features used.
 //
 
-#include "XML.hpp"
-#include "XML_Core.hpp"
-
+#include "XML_Utility.hpp"
 #include <algorithm>
 #include <cwctype>
 #include <sstream>

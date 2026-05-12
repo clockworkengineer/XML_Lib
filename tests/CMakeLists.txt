@@ -34,7 +34,7 @@ set(XML_LIB_TEST_PRIVATE_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/node
     ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/stringify
     ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/xpath
-    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/variants
+    ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include/implementation/nodes
 )
 
 set(TEST_EXECUTABLE ${XML_LIBRARY_NAME}_Unit_Tests)

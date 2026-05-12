@@ -127,14 +127,16 @@ target_include_directories(${XML_LIBRARY_NAME}
 
   # Concrete source/destination types (BufferSource, FileSource, BufferDestination, FileDestination)
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/io>
+
   # UTF-8/UTF-16 converter used by io headers (toUtf8, toUtf16)
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/converter>
+
   # XML_Core.hpp (in implementation/) includes headers from common/ by bare name
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
   PRIVATE
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/variants>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/nodes>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/entity>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/parser>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
@@ -257,6 +259,7 @@ endif()
 
 # Doxygen docs target
 find_package(Doxygen OPTIONAL_COMPONENTS dot)
+
 if(DOXYGEN_FOUND)
   add_custom_target(docs
     COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile

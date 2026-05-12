@@ -25,7 +25,7 @@ foreach(EXAMPLE_PROGRAM ${EXAMPLE_SOURCES})
     ${CMAKE_SOURCE_DIR}/classes/include/implementation/node
     ${CMAKE_SOURCE_DIR}/classes/include/implementation/stringify
     ${CMAKE_SOURCE_DIR}/classes/include/implementation/xpath
-    ${CMAKE_SOURCE_DIR}/classes/include/implementation/variants
+    ${CMAKE_SOURCE_DIR}/classes/include/implementation/nodes
   )
   target_link_libraries(${EXE_NAME} PRIVATE XML_Lib)
   install(TARGETS ${EXE_NAME} DESTINATION bin)

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "XML_Core.hpp"
+#include "nodes/XML_Variant.hpp"
+#include "node/XML_Node.hpp"
 
 #include <functional>
 #include <string_view>

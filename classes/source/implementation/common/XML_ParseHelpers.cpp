@@ -1,5 +1,8 @@
 #include "XML_ParseHelpers.hpp"
-#include "XML_Core.hpp"
+#include "XML_Parse.hpp"
+#include "XML_SourceHelpers.hpp"
+#include "XML_Converter.hpp"
+#include "XML_Error.hpp"
 #include "XML_Utility.hpp"
 #include <charconv>
 

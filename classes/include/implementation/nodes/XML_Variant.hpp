@@ -13,6 +13,8 @@
 
 namespace XML_Lib {
 
+struct Node;  // forward declaration — full definition in node/XML_Node.hpp
+
 struct Variant
 {
   // Node Types

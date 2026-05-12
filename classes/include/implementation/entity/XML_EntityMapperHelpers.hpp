@@ -1,6 +1,5 @@
 #pragma once
 
-#include "XML_Core.hpp"
 #include "XML_ExternalReference.hpp"
 #include "entity/XML_EntityMapping.hpp"
 

@@ -1,6 +1,10 @@
 #pragma once
 
 namespace XML_Lib {
+// Forward declarations
+struct XMLValue;
+class ISource;
+class IEntityMapper;
 // ===========
 // XML parsing
 // ===========

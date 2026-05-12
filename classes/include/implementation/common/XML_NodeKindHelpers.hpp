@@ -1,8 +1,7 @@
 #pragma once
 
-#include "XML_Core.hpp"
-
 namespace XML_Lib {
+struct Node;
 
 /// Returns true if the node is an element-like node (Element, Root, or Self).
 [[nodiscard]] bool isElementLikeNode(const Node &node);

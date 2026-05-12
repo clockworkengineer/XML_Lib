@@ -1,5 +1,10 @@
 #pragma once
 
+// Internal aggregate — do not include in new files.
+// Each new implementation file should include only the specific headers it needs.
+// This header exists for files that genuinely require broad access to all XML_Lib
+// internals (e.g. Default_Parser.cpp, large Impl headers).
+//
 // ==========
 // XML Core
 // ==========
@@ -14,19 +19,19 @@
 #include "data/XML_Attribute.hpp"
 #include "data/XML_ExternalReference.hpp"
 #include "XML_Interfaces.hpp"
-#include "variants/XML_Variant.hpp"
+#include "nodes/XML_Variant.hpp"
 #include "node/XML_Node.hpp"
-#include "variants/XML_Prolog.hpp"
-#include "variants/XML_Declaration.hpp"
-#include "variants/XML_Content.hpp"
-#include "variants/XML_CDATA.hpp"
-#include "variants/XML_EntityReference.hpp"
-#include "variants/XML_Element.hpp"
-#include "variants/XML_Root.hpp"
-#include "variants/XML_Self.hpp"
-#include "variants/XML_Comment.hpp"
-#include "variants/XML_PI.hpp"
-#include "variants/XML_DTD.hpp"
+#include "nodes/XML_Prolog.hpp"
+#include "nodes/XML_Declaration.hpp"
+#include "nodes/XML_Content.hpp"
+#include "nodes/XML_CDATA.hpp"
+#include "nodes/XML_EntityReference.hpp"
+#include "nodes/XML_Element.hpp"
+#include "nodes/XML_Root.hpp"
+#include "nodes/XML_Self.hpp"
+#include "nodes/XML_Comment.hpp"
+#include "nodes/XML_PI.hpp"
+#include "nodes/XML_DTD.hpp"
 #include "node/XML_Node_Contents.hpp"
 #include "node/XML_Node_Reference.hpp"
 #include "node/XML_Node_Index.hpp"

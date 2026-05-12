@@ -6,8 +6,11 @@
 // Dependencies: C++20 - Language standard features used.
 //
 
-#include "XML.hpp"
-#include "XML_Core.hpp"
+#include "XML_Character.hpp"
+#include "XML_SourceHelpers.hpp"
+#include "XML_Value.hpp"
+#include "XML_Parse.hpp"
+#include "XML_Sources.hpp"
 
 namespace XML_Lib {
 

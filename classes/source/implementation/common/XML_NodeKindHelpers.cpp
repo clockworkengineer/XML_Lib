@@ -8,6 +8,7 @@
 //
 
 #include "XML_NodeKindHelpers.hpp"
+#include "XML_Core.hpp"
 
 namespace XML_Lib {
 

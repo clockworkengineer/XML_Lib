@@ -1,4 +1,5 @@
 #include "xsd/XSD_NodeHelpers.hpp"
+#include "XML_Core.hpp"
 #include "XML_NodeKindHelpers.hpp"
 
 namespace XML_Lib {

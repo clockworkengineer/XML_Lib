@@ -1,6 +1,5 @@
 #pragma once
 
-#include "XML_Core.hpp"
 #include "XSD_Impl.hpp"
 
 #include <string>

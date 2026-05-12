@@ -1,6 +1,8 @@
 #pragma once
 
-#include "XML_Core.hpp"
+#include "XML_Interfaces.hpp"
+#include "XML_Character.hpp"
+#include "XML_Value.hpp"
 #include <string>
 
 namespace XML_Lib {
