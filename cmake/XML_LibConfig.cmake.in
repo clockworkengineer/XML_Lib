@@ -1,0 +1,12 @@
+@PACKAGE_INIT@
+
+# Optional feature flags — consumers can test these to know which components
+# were compiled into the installed library.
+set(XML_LIB_ENABLE_DTD       @XML_LIB_ENABLE_DTD@)
+set(XML_LIB_ENABLE_XSD       @XML_LIB_ENABLE_XSD@)
+set(XML_LIB_ENABLE_XPATH     @XML_LIB_ENABLE_XPATH@)
+set(XML_LIB_ENABLE_STRINGIFY @XML_LIB_ENABLE_STRINGIFY@)
+
+include("${CMAKE_CURRENT_LIST_DIR}/XML_LibTargets.cmake")
+
+check_required_components(XML_Lib)

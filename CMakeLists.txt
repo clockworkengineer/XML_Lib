@@ -7,6 +7,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
 option(XML_LIB_ENABLE_LTO "Enable link-time optimization" ON)
 option(XML_LIB_BUILD_SIZE_OPTIMIZED "Build with size optimization" OFF)
 option(XML_LIB_BUILD_TESTS "Build unit tests" ON)
@@ -271,9 +274,42 @@ if(DOXYGEN_FOUND)
   )
 endif()
 
-# install
-install(TARGETS ${XML_LIBRARY_NAME} DESTINATION lib)
-install(FILES ${XML_PUBLIC_HEADERS} DESTINATION include)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/classes/include/interface DESTINATION include
-  FILES_MATCHING PATTERN "*.hpp"
-)
+# ============================================================
+# Install rules
+# ============================================================
+
+# Library binary + CMake export set
+install(TARGETS ${XML_LIBRARY_NAME}
+    EXPORT XML_LibTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+# Public headers only (exclude implementation/ subdirectory)
+install(DIRECTORY classes/include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib
+    FILES_MATCHING PATTERN "*.hpp"
+    PATTERN "implementation" EXCLUDE)
+
+# Export targets file (XML_LibTargets.cmake)
+install(EXPORT XML_LibTargets
+    FILE XML_LibTargets.cmake
+    NAMESPACE XML_Lib::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+
+# Package config file (XML_LibConfig.cmake)
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/XML_LibConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+
+# Package version file (XML_LibConfigVersion.cmake)
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
