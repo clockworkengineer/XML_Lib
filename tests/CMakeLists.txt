@@ -127,7 +127,9 @@ if(NOT XML_LIB_EMBEDDED)
 
     if(NOT XML_LIB_EMBEDDED)
         target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
-        target_precompile_headers(${TEST_EXECUTABLE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../stdafx.h)
+        if(MSVC)
+            target_precompile_headers(${TEST_EXECUTABLE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/stdafx.h)
+        endif()
 
         add_test(NAME ${TEST_EXECUTABLE} COMMAND ${TEST_EXECUTABLE})
     endif()
@@ -172,8 +174,8 @@ if(NOT XML_LIB_EMBEDDED)
     )
     target_link_libraries(${PERFORMANCE_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
 
-    if(NOT XML_LIB_EMBEDDED)
-        target_precompile_headers(${PERFORMANCE_EXECUTABLE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../stdafx.h)
+    if(MSVC)
+        target_precompile_headers(${PERFORMANCE_EXECUTABLE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/stdafx.h)
     endif()
 
     add_test(NAME ${PERFORMANCE_EXECUTABLE} COMMAND ${PERFORMANCE_EXECUTABLE})

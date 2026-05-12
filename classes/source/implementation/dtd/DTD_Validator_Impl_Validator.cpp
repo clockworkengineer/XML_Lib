@@ -8,6 +8,11 @@
 
 #include "DTD_Impl.hpp"
 
+#include <regex>
+#include <set>
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
 namespace {

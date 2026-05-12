@@ -214,7 +214,9 @@ if(NOT MSVC)
 endif()
 
 if(NOT XML_LIB_EMBEDDED)
-  target_precompile_headers(${XML_LIBRARY_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h)
+  if(MSVC)
+    target_precompile_headers(${XML_LIBRARY_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/cmake/stdafx.h)
+  endif()
 endif()
 
 set(XML_PUBLIC_HEADERS
