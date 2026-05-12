@@ -45,9 +45,9 @@ template<typename T> void checkNodeType(const Node &xNode)
   } else if constexpr (std::is_same_v<T, Element>) {
     if (!isA<Root>(xNode) && !isA<Self>(xNode)  && !isA<Element>(xNode)) { XML_LIB_THROW(Node::Error("Node not an element.")); }
   } else if constexpr (std::is_same_v<T, Self>) {
-    if (!isA<Self>(xNode)) { XML_LIB_THROW(Node::Error("Node not a (root) element.")); }
+    if (!isA<Self>(xNode)) { XML_LIB_THROW(Node::Error("Node is not a self-closing element.")); }
   } else if constexpr (std::is_same_v<T, Root>) {
-    if (!isA<Root>(xNode)) { XML_LIB_THROW(Node::Error("Node not a (self) element.")); }
+    if (!isA<Root>(xNode)) { XML_LIB_THROW(Node::Error("Node is not the root element.")); }
   } else if constexpr (std::is_same_v<T, Content>) {
     if (!isA<T>(xNode)) { XML_LIB_THROW(Node::Error("Node not content.")); }
   } else if constexpr (std::is_same_v<T, EntityReference>) {
