@@ -21,6 +21,7 @@ option(XML_LIB_ENABLE_XSD "Enable XSD validation support" ON)
 option(XML_LIB_ENABLE_DTD "Enable DTD validation support" ON)
 option(XML_LIB_ENABLE_STRINGIFY "Enable XML stringify support" ON)
 option(XML_LIB_ENABLE_PERFORMANCE_COUNTERS "Enable internal performance counters" OFF)
+set(XML_LIB_ARENA_SIZE_KB "256" CACHE STRING "Initial PMR arena size in KB")
 
 if(XML_LIB_EMBEDDED)
   set(XML_LIB_BUILD_SIZE_OPTIMIZED ON CACHE BOOL "Build with size optimization" FORCE)
@@ -143,7 +144,7 @@ target_include_directories(${XML_LIBRARY_NAME}
 )
 
 target_compile_definitions(${XML_LIBRARY_NAME}
-  PRIVATE XML_LIB_INTERNAL
+  PRIVATE XML_LIB_INTERNAL XML_LIB_ARENA_SIZE_KB=${XML_LIB_ARENA_SIZE_KB}
   PUBLIC
   $<$<BOOL:${XML_LIB_EMBEDDED}>:XML_LIB_EMBEDDED>
   $<$<BOOL:${XML_LIB_NO_EXCEPTIONS}>:XML_LIB_NO_EXCEPTIONS>

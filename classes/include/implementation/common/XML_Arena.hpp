@@ -6,10 +6,15 @@
 
 namespace XML_Lib {
 
+// Default arena size: use the CMake-controlled macro when available, otherwise 256 KB.
+#if !defined(XML_LIB_ARENA_SIZE_KB)
+#  define XML_LIB_ARENA_SIZE_KB 256
+#endif
+
 class XML_Arena
 {
 public:
-  explicit XML_Arena(std::size_t initialSize = 64 * 1024)
+  explicit XML_Arena(std::size_t initialSize = static_cast<std::size_t>(XML_LIB_ARENA_SIZE_KB) * 1024)
     : buffer(initialSize), resource(buffer.data(), buffer.size())
   {}
 

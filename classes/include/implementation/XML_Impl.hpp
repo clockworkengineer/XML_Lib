@@ -45,8 +45,8 @@ public:
   [[nodiscard]] static XML::Format getFileFormat(const std::string_view &fileName);
 
 private:
-  // Embedded arena for parser-allocated nodes
-  XML_Arena arena;
+  // Embedded arena for parser-allocated nodes (size governed by XML_LIB_ARENA_SIZE_KB)
+  XML_Arena arena{ static_cast<std::size_t>(XML_LIB_ARENA_SIZE_KB) * 1024 };
   // Entity mapper
   std::unique_ptr<IEntityMapper> entityMapper;
   // XML stringifier
