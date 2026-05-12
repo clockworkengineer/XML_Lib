@@ -1,7 +1,7 @@
 # XML_Lib
 
 ## Overview
-**XML_Lib** is a C++20-based library designed to simplify the parsing, manipulation, and generation of XML documents. It is intended for developers who need an efficient, lightweight, and feature-rich solution for working with XML in their projects. The library provides a clean interface and conforms to modern C++ coding practices to ensure high performance and reliability.
+**XML_Lib** is a C++23 library designed to simplify the parsing, manipulation, and generation of XML documents. It is intended for developers who need an efficient, lightweight, and feature-rich solution for working with XML in their projects. The library provides a clean interface and conforms to modern C++ coding practices to ensure high performance and reliability.
 
 ## Features
 - **XML Parsing**: Fully compliant with XML 1.0 standard, including strict validation of elements, attributes, entities, whitespace, and declaration.
@@ -13,19 +13,19 @@
 - **Memory Efficiency**: Optimized algorithms to minimize memory usage.
 - **Error Handling**: Robust error and exception handling mechanisms, with detailed standard-compliant error messages.
 - **Cross-platform Compatibility**: Designed to run seamlessly on Linux, Windows, and macOS environments.
-- **C++20 Support**: Full compliance with the C++20 standard and features such as ranges and smart pointers.
+- **C++23 Support**: Full compliance with the C++23 standard.
 
 ## Installation
 
 ### Prerequisites
-- A C++20-compatible compiler (such as GCC, Clang, or MSVC)
-- [CMake](https://cmake.org/) (minimum version 3.15)
+- A C++23-compatible compiler (GCC ≥ 13, Clang ≥ 16, MSVC ≥ 19.35)
+- [CMake](https://cmake.org/) (minimum version 3.20)
 - Optional: Git for cloning the repository.
 
 ### Build Instructions
 1. Clone the repository:
 ```shell script
-git clone https://github.com/your_user/XML_Lib.git
+git clone https://github.com/clockworkengineer/XML_Lib.git
    cd XML_Lib
 ```
 
@@ -120,7 +120,9 @@ target_link_libraries(your_project_name PRIVATE XML_Lib)
 ```
 
 ## Documentation
-Detailed documentation and API references can be found in the `docs/` directory or on the [online documentation website](https://your_documentation_url.com).
+Detailed documentation and API references can be found in the `docs/` directory:
+- [Guide.md](docs/Guide.md) — step-by-step user guide
+- [API.md](docs/API.md) — full API reference
 
 ## Contributing
 Contributions are welcome! If you would like to contribute:
@@ -135,9 +137,7 @@ This project is licensed under the [MIT License](./LICENSE). Feel free to use, m
 ---
 
 ## Support
-If you encounter issues or have questions, please feel free to:
-- Submit an issue on the GitHub repository.
-- Reach out to the maintainer via email: `support@your_email.com`.
+If you encounter issues or have questions, please submit an issue on the [GitHub repository](https://github.com/clockworkengineer/XML_Lib).
 
 ## Acknowledgements
 Special thanks to contributors and testers who helped refine and improve **XML_Lib**.
