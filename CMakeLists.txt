@@ -48,6 +48,8 @@ endif()
 
 if(MSVC)
   set(PLATFORM "windows")
+elseif(APPLE)
+  set(PLATFORM "macos")
 else()
   set(PLATFORM "linux")
 endif()
