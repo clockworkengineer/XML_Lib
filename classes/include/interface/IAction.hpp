@@ -10,23 +10,29 @@ namespace XML_Lib {
 // ====================
 struct Node;
 
-// ==========================================================
-// Interface for the action events during XML tree traversal
-// ==========================================================
+/// @brief Visitor interface for tree traversal events.
+///
+/// Derive from `IAction` and override the `on*` methods you care about, then pass
+/// an instance to `XML::traverse()`.  Each node type generates a matching callback
+/// with both mutable and const overloads.
+///
+/// Example:
+/// @code
+/// struct MyAction : XML_Lib::IAction {
+///     void onElement(const XML_Lib::Node &node) override { /* … */ }
+/// };
+/// @endcode
 class IAction
 {
 public:
-  // =============
-  // IAction Error
-  // =============
+  /// @brief Exception thrown when an action encounters an error during traversal.
   struct Error final : std::runtime_error
   {
     explicit Error(const std::string_view &message) : std::runtime_error(std::string("IAction Error: ").append(message)) {}
   };
-  // ========================
-  // Constructors/destructors
-  // ========================
+
   virtual ~IAction() = default;
+
   // ================================================================
   // Each macro declares both mutable and const overloads for a single
   // node-type event, keeping the pair in sync with one line of code.

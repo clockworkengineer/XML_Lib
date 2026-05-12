@@ -254,6 +254,17 @@ if(SIZE_EXECUTABLE)
   )
 endif()
 
+# Doxygen docs target
+find_package(Doxygen OPTIONAL_COMPONENTS dot)
+if(DOXYGEN_FOUND)
+  add_custom_target(docs
+    COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    COMMENT "Generating API documentation with Doxygen"
+    VERBATIM
+  )
+endif()
+
 # install
 install(TARGETS ${XML_LIBRARY_NAME} DESTINATION lib)
 install(FILES ${XML_PUBLIC_HEADERS} DESTINATION include)
