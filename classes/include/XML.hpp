@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <string_view>
@@ -59,10 +60,18 @@ public:
   // Parse XML source
   void parse(ISource &source) const;
   void parse(ISource &&source) const;
+  // Parse XML from a plain string (convenience — no ISource needed)
+  void parse(const std::string_view &xmlString) const;
+  // Parse XML from a file path (convenience — no ISource needed)
+  void parse(const std::filesystem::path &filePath) const;
 #if defined(XML_LIB_ENABLE_STRINGIFY)
   // Stringify XML object to the destination text
   void stringify(IDestination &destination) const;
   void stringify(IDestination &&destination) const;
+  // Stringify XML to a string (convenience — no IDestination needed)
+  [[nodiscard]] std::string stringify() const;
+  // Stringify XML to a file path (convenience — no IDestination needed)
+  void stringify(const std::filesystem::path &filePath, Format format = Format::utf8) const;
 #endif
   // Traverse the XML tree
   void traverse(IAction &action);

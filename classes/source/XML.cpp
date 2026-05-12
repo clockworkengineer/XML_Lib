@@ -105,11 +105,49 @@ void XML::parse(ISource &source) const { implementation->parse(source); }
 void XML::parse(ISource &&source) const { implementation->parse(source); }
 
 /// <summary>
+/// Convenience overload: parse XML directly from a string without needing a BufferSource.
+/// </summary>
+void XML::parse(const std::string_view &xmlString) const
+{
+  BufferSource source{ xmlString };
+  implementation->parse(source);
+}
+
+/// <summary>
+/// Convenience overload: parse XML directly from a file path without needing a FileSource.
+/// </summary>
+void XML::parse(const std::filesystem::path &filePath) const
+{
+  FileSource source{ filePath.string() };
+  implementation->parse(source);
+}
+
+/// <summary>
 /// Create XML text from an XML object.
 /// </summary>
 #if defined(XML_LIB_ENABLE_STRINGIFY)
 void XML::stringify(IDestination &destination) const { implementation->stringify(destination); }
 void XML::stringify(IDestination &&destination) const { implementation->stringify(destination); }
+
+/// <summary>
+/// Convenience overload: stringify XML to a string without needing a BufferDestination.
+/// </summary>
+std::string XML::stringify() const
+{
+  BufferDestination destination;
+  implementation->stringify(destination);
+  return destination.toString();
+}
+
+/// <summary>
+/// Convenience overload: stringify XML directly to a file path without needing a FileDestination.
+/// </summary>
+void XML::stringify(const std::filesystem::path &filePath, const Format format) const
+{
+  BufferDestination buffer;
+  implementation->stringify(buffer);
+  XML_Impl::toFile(filePath.string(), buffer.toString(), format);
+}
 #endif
 
 /// <summary>
