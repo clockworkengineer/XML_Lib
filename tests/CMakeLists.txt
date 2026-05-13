@@ -3,14 +3,17 @@ cmake_minimum_required(VERSION 3.20)
 
 project(XML_Lib_Unit_Tests VERSION 1.2.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 
-include(FetchContent)
-
-FetchContent_Declare(
-    Catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG v3.6.0
-)
-FetchContent_MakeAvailable(Catch2)
+find_package(Catch2 3 QUIET)
+if(NOT Catch2_FOUND)
+    message(STATUS "Catch2 not found locally; downloading via FetchContent")
+    include(FetchContent)
+    FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.6.0
+    )
+    FetchContent_MakeAvailable(Catch2)
+endif()
 
 enable_testing()
 

@@ -161,6 +161,11 @@ cmake -S . -B build -DXML_LIB_BUILD_EXAMPLES=ON
 cmake --build build
 ```
 
+## Dependencies
+- **Runtime:** None. XML_Lib uses only the C++20 standard library and C++17 `std::pmr`.
+- **Test (optional):** Catch2 v3 (fetched automatically via FetchContent if not found locally).
+- **Documentation (optional):** Doxygen + Graphviz (for `cmake --build . --target docs`).
+
 ## Contributing
 Contributions are welcome! If you would like to contribute:
 1. Fork the repository.

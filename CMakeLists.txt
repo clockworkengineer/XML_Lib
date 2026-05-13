@@ -49,6 +49,16 @@ if(XML_LIB_MINIMAL_FEATURES)
   set(XML_LIB_ENABLE_STRINGIFY ON CACHE BOOL "Enable XML stringify support" FORCE)
 endif()
 
+include(CheckCXXSourceCompiles)
+set(CMAKE_REQUIRED_FLAGS "-std=c++17")
+check_cxx_source_compiles("
+#include <memory_resource>
+int main() { auto *r = std::pmr::get_default_resource(); (void)r; }
+" HAS_PMR)
+if(NOT HAS_PMR)
+  message(FATAL_ERROR "XML_Lib requires std::pmr (C++17). Your toolchain does not provide <memory_resource>.")
+endif()
+
 if(MSVC)
   set(PLATFORM "windows")
 elseif(APPLE)
