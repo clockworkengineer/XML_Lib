@@ -107,14 +107,17 @@ public:
 
   /// @brief Parse XML from a null-terminated C string (convenience overload).
   /// @param xmlString Null-terminated UTF-8 XML text.
+  /// @param options Parser options such as nesting depth and entity handling.
   void parse(const char *xmlString, const ParseOptions &options = {}) const;
 
   /// @brief Parse XML from a `string_view` (convenience overload).
   /// @param xmlString UTF-8 XML text view.
+  /// @param options Parser options such as nesting depth and entity handling.
   void parse(const std::string_view &xmlString, const ParseOptions &options = {}) const;
 
   /// @brief Parse XML from a file (convenience overload).
   /// @param filePath Path to the XML file to read and parse.
+  /// @param options Parser options such as nesting depth and entity handling.
   void parse(const std::filesystem::path &filePath, const ParseOptions &options = {}) const;
 
 #if defined(XML_LIB_ENABLE_STRINGIFY)

@@ -49,7 +49,12 @@ cmake ..
 cmake --build .
 ```
 
-5. (Optional) Run unit tests:
+5. (Optional) Generate HTML documentation if Doxygen is installed:
+```shell script
+cmake --build . --target docs
+```
+
+6. (Optional) Run unit tests:
 ```shell script
 ctest
 ```
@@ -127,6 +132,12 @@ target_link_libraries(your_project_name PRIVATE XML_Lib)
 Detailed documentation and API references can be found in the `docs/` directory:
 - [Guide.md](docs/Guide.md) — step-by-step user guide
 - [API.md](docs/API.md) — full API reference
+
+If Doxygen is installed, you can generate HTML documentation from the build directory:
+```shell script
+cmake --build . --target docs
+```
+The generated HTML output is written to `docs/html/`.
 
 ## Examples
 

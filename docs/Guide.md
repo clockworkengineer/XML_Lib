@@ -1,6 +1,6 @@
 # XML_Lib User Guide
 
-XML_Lib is a C++23 library for parsing, creating, manipulating, and serialising XML.
+XML_Lib is a modern C++20 library for parsing, creating, manipulating, and serialising XML.
 All public symbols live in the `XML_Lib` namespace.
 
 **For a complete method listing see [API.md](API.md).**
@@ -27,9 +27,9 @@ All public symbols live in the `XML_Lib` namespace.
 ## 1. Including and linking
 
 ```cpp
-#include "XML.hpp"          // always required — top-level XML class
-#include "XML_NodeRef.hpp"  // isA<T> / NRef<T> helpers and all variant types
-#include "XML_Sources.hpp"  // BufferSource, FileSource (advanced I/O)
+#include "XML.hpp"           // always required — top-level XML class
+#include "XML_Node.hpp"       // isA<T> / NRef<T> helpers and all variant types
+#include "XML_Sources.hpp"    // BufferSource, FileSource (advanced I/O)
 #include "XML_Destinations.hpp" // BufferDestination, FileDestination (advanced I/O)
 using namespace XML_Lib;
 ```
@@ -89,7 +89,7 @@ Node &root  = xml.root();        // root element Node
 `Node` is a type-erased wrapper. Use `isA<T>` to test and `NRef<T>` to cast:
 
 ```cpp
-#include "XML_NodeRef.hpp"
+#include "XML_Node.hpp"
 using namespace XML_Lib;
 
 if (isA<Root>(xml.root())) {
