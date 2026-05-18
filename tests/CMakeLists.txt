@@ -25,8 +25,6 @@ option(XML_LIB_TEST_INTERNALS "Expose internal implementation headers to test ta
 set(XML_LIB_TEST_PUBLIC_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../classes/include
-    ${Catch2_SOURCE_DIR}/src
-    ${Catch2_BINARY_DIR}/generated-includes
 )
 set(XML_LIB_TEST_PRIVATE_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../build

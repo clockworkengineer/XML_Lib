@@ -49,7 +49,14 @@ cmake ..
 cmake --build .
 ```
 
-5. (Optional) Generate HTML documentation if Doxygen is installed:
+5. Install the library and public headers to the system prefix or a custom location:
+```shell script
+cmake --install .
+# or to install to a custom directory:
+cmake --install . --prefix /usr/local
+```
+
+6. (Optional) Generate HTML documentation if Doxygen is installed:
 ```shell script
 cmake --build . --target docs
 ```
