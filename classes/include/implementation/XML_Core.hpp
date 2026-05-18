@@ -18,7 +18,6 @@
 #include "data/XML_Value.hpp"
 #include "data/XML_Attribute.hpp"
 #include "data/XML_ExternalReference.hpp"
-#include "XML_Interfaces.hpp"
 #include "nodes/XML_Variant.hpp"
 #include "node/XML_Node.hpp"
 #include "nodes/XML_Prolog.hpp"

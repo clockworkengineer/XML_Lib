@@ -6,7 +6,6 @@
 // Dependencies: C++20 - Language standard features used.
 //
 
-#include "XML.hpp"
 #include "XML_Core.hpp"
 #include "entity/XML_EntityMapperHelpers.hpp"
 #include "interface/IEntityResolver.hpp"

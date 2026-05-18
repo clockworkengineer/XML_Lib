@@ -1,6 +1,6 @@
 #pragma once
 
-// XML_Sourceers.hpp
+// XML_SourceHelpers.hpp
 //
 // Utility free-functions and member-function wrappers that operate on an
 // ISource stream.  Separated from ISource so that the public interface stays
