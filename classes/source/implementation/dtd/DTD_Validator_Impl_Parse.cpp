@@ -18,7 +18,7 @@ namespace XML_Lib {
 void DTD_Impl::parseValidNotations(const std::string_view &notations) const
 {
   for (auto &notation : splitString(notations.substr(1, notations.size() - 2), '|')) {
-    if (xDTD.getNotationCount(notation) == 0) { throw SyntaxError("NOTATION " + notation + " is not defined."); }
+    if (xDTD.getNotationCount(notation) == 0) { XML_LIB_THROW(SyntaxError("NOTATION " + notation + " is not defined.")); }
   }
 }
 
@@ -280,7 +280,7 @@ void DTD_Impl::parseInternal(ISource &source)
     } else {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid DTD tag."));
     }
-    if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
+    if (source.current() != '>') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '>' terminator.")); }
     source.next();
     ignoreWS(source);
   }

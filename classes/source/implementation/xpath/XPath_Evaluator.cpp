@@ -848,7 +848,7 @@ static XPathResult evalExpr(const XPathExpr &expr,
 /// </summary>
 static XPathResult evalExpression(const std::string_view expression, const Node &docRoot)
 {
-  if (expression.empty()) { throw XPath::Error("Empty expression."); }
+  if (expression.empty()) { XML_LIB_THROW(XPath::Error("Empty expression.")); }
   const auto tokens = xpathTokenize(expression);
   const auto ast = xpathParse(tokens);
   const std::vector<const Node *> emptyAncestors;

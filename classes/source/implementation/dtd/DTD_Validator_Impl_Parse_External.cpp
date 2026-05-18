@@ -32,7 +32,7 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
   }
   ignoreWS(source);
   if (conditionalValue == "INCLUDE") {
-    if (source.current() != '[') { throw SyntaxError(source.getPosition(), "Missing opening '[' from conditional."); }
+    if (source.current() != '[') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing opening '[' from conditional.")); }
     source.next();
     ignoreWS(source);
     std::string conditionalDTD;
@@ -57,7 +57,7 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
   } else {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Conditional value not INCLUDE or IGNORE."));
   }
-  if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
+  if (source.current() != '>') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '>' terminator.")); }
   source.next();
   ignoreWS(source);
 }
@@ -88,7 +88,7 @@ void DTD_Impl::parseExternalContent(ISource &source)
     } else {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid DTD tag."));
     }
-    if (source.current() != '>') { throw SyntaxError(source.getPosition(), "Missing '>' terminator."); }
+    if (source.current() != '>') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '>' terminator.")); }
     source.next();
     ignoreWS(source);
   }

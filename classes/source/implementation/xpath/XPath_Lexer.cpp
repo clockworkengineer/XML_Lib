@@ -177,7 +177,7 @@ std::vector<XPathToken> xpathTokenize(const std::string_view expression)
       ++i;
       size_t start = i;
       while (i < len && expression[i] != quote) { ++i; }
-      if (i >= len) { throw std::runtime_error("XPath Error: Unterminated string literal."); }
+      if (i >= len) { XML_LIB_THROW(std::runtime_error("XPath Error: Unterminated string literal.")); }
       tokens.push_back({ XPathTokenType::StringLiteral, std::string(expression.substr(start, i - start)) });
       ++i;// consume closing quote
       continue;

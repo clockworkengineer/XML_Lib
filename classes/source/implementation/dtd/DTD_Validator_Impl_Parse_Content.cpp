@@ -15,11 +15,11 @@ void DTD_Impl::parseGroupBody(ISource &src,
   char delimiter,
   std::function<void(ISource &)> separatorAction)
 {
-  if (src.current() != '(') { throw SyntaxError("Invalid element content specification."); }
+  if (src.current() != '(') { XML_LIB_THROW(SyntaxError("Invalid element content specification.")); }
   dst.add("(");
   parseElementCP(src, dst);
   parseDelimitedList(src, delimiter, separatorAction, [&](ISource &) { parseElementCP(src, dst); });
-  if (src.current() != ')') { throw SyntaxError("Invalid element content specification."); }
+  if (src.current() != ')') { XML_LIB_THROW(SyntaxError("Invalid element content specification.")); }
   dst.add(")");
   src.next();
   ignoreWS(src);
@@ -152,7 +152,7 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
         }
       }
     );
-    if (contentSpecSource.current() != ')') { throw SyntaxError("Invalid element content specification."); }
+    if (contentSpecSource.current() != ')') { XML_LIB_THROW(SyntaxError("Invalid element content specification.")); }
     contentSpecDestination.add(")");
     contentSpecSource.next();
     ignoreWS(contentSpecSource);

@@ -575,7 +575,7 @@ static XPathExprPtr parseExpr(Parser &p) { return parseOrExpr(p); }
 // ======================================================================
 XPathExprPtr xpathParse(const std::vector<XPathToken> &tokens)
 {
-  if (tokens.empty()) { throw std::runtime_error("XPath Error: Empty expression."); }
+  if (tokens.empty()) { XML_LIB_THROW(std::runtime_error("XPath Error: Empty expression.")); }
   Parser p{ tokens, 0 };
   auto expr = parseExpr(p);
   if (p.cur().type != XPathTokenType::End) {
