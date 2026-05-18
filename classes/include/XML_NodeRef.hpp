@@ -13,6 +13,8 @@
 //   auto &elem = NRef<Element>(xml.root());
 //   if (isA<Element>(node)) { ... }
 //
+// XML_Node.hpp is a public alias for this header.
+//
 // The low-level ISource / IDestination overloads and concrete source/
 // destination types are in XML_Sources.hpp / XML_Destinations.hpp.
 // ===========================================================================
