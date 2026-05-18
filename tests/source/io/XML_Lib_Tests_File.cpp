@@ -1,5 +1,7 @@
 #include "XML_Lib_Tests.hpp"
 
+using namespace Catch::Matchers;
+
 TEST_CASE("Sample XML files to read and parse.", "[XML][Parse]")
 {
   TEST_FILE_LIST(file);
@@ -163,5 +165,22 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     badFile = "Z:/this/path/should/not/exist/test.xml";
 #endif
     REQUIRE_THROWS_AS(FileDestination(badFile), FileDestination::Error);
+  }
+  SECTION("XML::fromFile rejects invalid file paths", "[XML][File][Error]")
+  {
+    const std::string badPathWithNull("bad\0path.xml", 12);
+    const std::filesystem::path badPath{ badPathWithNull };
+    REQUIRE_THROWS_AS(XML::fromFile(badPath), Error);
+    REQUIRE_THROWS_WITH(XML::fromFile(badPath), ContainsSubstring("null byte in path."));
+
+    const std::filesystem::path badTraversalPath = std::filesystem::path("..") / "secret.xml";
+    REQUIRE_THROWS_AS(XML::fromFile(badTraversalPath), Error);
+    REQUIRE_THROWS_WITH(XML::fromFile(badTraversalPath), ContainsSubstring("'..' path traversal component not allowed."));
+  }
+  SECTION("XML::toFile rejects invalid file paths", "[XML][File][Error]")
+  {
+    const std::filesystem::path badTraversalPath = std::filesystem::path("..") / "secret.xml";
+    REQUIRE_THROWS_AS(XML::toFile(badTraversalPath, "<root/>", XML::Format::utf8), Error);
+    REQUIRE_THROWS_WITH(XML::toFile(badTraversalPath, "<root/>", XML::Format::utf8), ContainsSubstring("'..' path traversal component not allowed."));
   }
 }
