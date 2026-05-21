@@ -131,6 +131,9 @@ private:
   // ----------------------------------------------------------------
   void validateElement(const Node &xNode, const XSD_ComplexType &type);
   void validateAttributes(const Node &xNode, const XSD_ComplexType &type);
+  void validateDeclaredAttributes(const Element &elem, const XSD_ComplexType &type, const std::string &elemName);
+  void validateDeclaredAttribute(const Element &elem, const XSD_AttributeDecl &declAttr, const std::string &elemName);
+  void validateUndeclaredAttributes(const Element &elem, const XSD_ComplexType &type, const std::string &elemName);
   void validateSimpleValue(const std::string &value, const std::string &typeRef, const std::string &context);
   void validateNodeText(const Node &xNode, const std::string &typeRef, const std::string &context);
   [[nodiscard]] bool isBuiltinType(const std::string_view &typeName) const;

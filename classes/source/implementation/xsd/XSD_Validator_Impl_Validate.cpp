@@ -187,37 +187,53 @@ void XSD_Impl::validateAttributes(const Node &xNode, const XSD_ComplexType &type
   const auto &elem = NRef<Element>(xNode);
   const std::string &elemName = elem.name();
 
-  // Check declared attributes
-  for (const auto &declAttr : type.attributes) {
-    const bool present = elem.hasAttribute(declAttr.name);
-    if (declAttr.use == XSD_AttributeDecl::Use::required && !present) {
-      xsdError(elemName, "missing required attribute '" + declAttr.name + "'.");
+  validateDeclaredAttributes(elem, type, elemName);
+  validateUndeclaredAttributes(elem, type, elemName);
+}
+
+void XSD_Impl::validateDeclaredAttributes(const Element &elem,
+  const XSD_ComplexType &type,
+  const std::string &elemName)
+{
+  for (const auto &declAttr : type.attributes) { validateDeclaredAttribute(elem, declAttr, elemName); }
+}
+
+void XSD_Impl::validateDeclaredAttribute(const Element &elem,
+  const XSD_AttributeDecl &declAttr,
+  const std::string &elemName)
+{
+  const bool present = elem.hasAttribute(declAttr.name);
+  if (declAttr.use == XSD_AttributeDecl::Use::required && !present) {
+    xsdError(elemName, "missing required attribute '" + declAttr.name + "'.");
+  }
+  if (declAttr.use == XSD_AttributeDecl::Use::prohibited && present) {
+    xsdError(elemName, "attribute '" + declAttr.name + "' is prohibited.");
+  }
+  if (present) {
+    const auto attrVal = elem[declAttr.name].getParsed();
+    if (!declAttr.fixedValue.empty() && attrVal != declAttr.fixedValue) {
+      xsdError(elemName,
+        "attribute '" + declAttr.name + "' must have fixed value '" + declAttr.fixedValue + "' but got '" + attrVal
+          + "'.");
     }
-    if (declAttr.use == XSD_AttributeDecl::Use::prohibited && present) {
-      xsdError(elemName, "attribute '" + declAttr.name + "' is prohibited.");
-    }
-    if (present) {
-      const auto attrVal = elem[declAttr.name].getParsed();
-      if (!declAttr.fixedValue.empty() && attrVal != declAttr.fixedValue) {
-        xsdError(elemName,
-          "attribute '" + declAttr.name + "' must have fixed value '" + declAttr.fixedValue + "' but got '" + attrVal
-            + "'.");
-      }
-      if (!declAttr.typeRef.empty()) {
-        validateSimpleValue(attrVal, declAttr.typeRef, elemName + "/@" + declAttr.name);
-      }
+    if (!declAttr.typeRef.empty()) {
+      validateSimpleValue(attrVal, declAttr.typeRef, elemName + "/@" + declAttr.name);
     }
   }
+}
 
-  // Check for undeclared attributes (skip xmlns* always)
-  if (!type.hasAnyAttribute) {
-    for (const auto &attr : elem.getAttributes()) {
-      const auto &attrName = attr.getName();
-      if (attrName.starts_with("xmlns")) { continue; }
-      const bool declared =
-        std::ranges::any_of(type.attributes, [&](const XSD_AttributeDecl &d) { return d.name == attrName; });
-      if (!declared) { xsdError(elemName, "undeclared attribute '" + attrName + "'."); }
-    }
+void XSD_Impl::validateUndeclaredAttributes(const Element &elem,
+  const XSD_ComplexType &type,
+  const std::string &elemName)
+{
+  if (type.hasAnyAttribute) { return; }
+
+  for (const auto &attr : elem.getAttributes()) {
+    const auto &attrName = attr.getName();
+    if (attrName.starts_with("xmlns")) { continue; }
+    const bool declared =
+      std::ranges::any_of(type.attributes, [&](const XSD_AttributeDecl &d) { return d.name == attrName; });
+    if (!declared) { xsdError(elemName, "undeclared attribute '" + attrName + "'."); }
   }
 }
 
