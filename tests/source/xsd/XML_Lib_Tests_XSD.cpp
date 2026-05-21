@@ -259,6 +259,35 @@ TEST_CASE("XSD attribute validation.", "[XML][XSD][Validate][Attributes]")
     REQUIRE(result.find("fixed") != std::string::npos);
     REQUIRE(result.find("2.0") != std::string::npos);
   }
+  SECTION("Missing optional attribute with default value passes.", "[XML][XSD][Validate][Attributes]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"widget\" type=\"WidgetType\"/>\n"
+      "  <xs:complexType name=\"WidgetType\">\n"
+      "    <xs:sequence/>\n"
+      "    <xs:attribute name=\"version\" type=\"xs:integer\" default=\"1\"/>\n"
+      "  </xs:complexType>\n"
+      "</xs:schema>\n"
+    };
+    REQUIRE(validateXSD("<widget/>", xsd).empty());
+  }
+  SECTION("Missing attribute uses default value for type validation.", "[XML][XSD][Validate][Attributes]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"widget\" type=\"WidgetType\"/>\n"
+      "  <xs:complexType name=\"WidgetType\">\n"
+      "    <xs:sequence/>\n"
+      "    <xs:attribute name=\"version\" type=\"xs:integer\" default=\"1\"/>\n"
+      "  </xs:complexType>\n"
+      "</xs:schema>\n"
+    };
+    const auto result = validateXSD("<widget version=\"bad\"/>", xsd);
+    REQUIRE(result.find("value 'bad' is not a valid xs:integer") != std::string::npos);
+  }
   SECTION("xs:anyAttribute allows unknown attributes.", "[XML][XSD][Validate][Attributes]")
   {
     const std::string xsd{
