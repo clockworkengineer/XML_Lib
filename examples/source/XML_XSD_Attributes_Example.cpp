@@ -46,6 +46,7 @@ static const std::string kPersonSchema = R"(
       </xs:sequence>
       <xs:attribute name="id"      type="xs:integer" use="required"/>
       <xs:attribute name="version" type="xs:string"  use="optional" fixed="1.0"/>
+      <xs:attribute name="status"  type="xs:integer" use="optional" default="1"/>
       <xs:attribute name="email"   type="xs:string"  use="optional"/>
       <xs:attribute name="legacy"  type="xs:string"  use="prohibited"/>
     </xs:complexType>
@@ -96,6 +97,15 @@ int main()
   // --- Undeclared attribute ---
   tryValidate("Undeclared 'nickname' attribute (error)",
     R"(<person id="1" nickname="dave"><name>Dave</name></person>)",
+    kPersonSchema);
+
+  // --- Default attribute value ---
+  tryValidate("Missing optional 'status' uses default value (valid)",
+    R"(<person id="2"><name>Eve</name></person>)",
+    kPersonSchema);
+
+  tryValidate("Invalid explicit 'status' type (error)",
+    R"(<person id="2" status="bad"><name>Eve</name></person>)",
     kPersonSchema);
 
   // --- anyAttribute wildcard ---
