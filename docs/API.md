@@ -152,7 +152,8 @@ validator.validate(xml.root());   // throws IValidator::Error on failure
 - `xs:sequence`, `xs:choice`, `xs:all` content models; `minOccurs`/`maxOccurs`
 - All builtin simple types (`xs:string`, `xs:boolean`, `xs:integer` family, `xs:decimal`, etc.)
 - Named `xs:simpleType` with restriction facets: `minInclusive`, `maxInclusive`, `minExclusive`, `maxExclusive`, `pattern`, `enumeration`, `minLength`, `maxLength`, `length`
-- Attribute declarations: `use="required"`, `use="optional"`, `use="prohibited"`, `fixed`, `xs:anyAttribute`
+- Attribute declarations: `use="required"`, `use="optional"`, `use="prohibited"`, `fixed`, `default`, `xs:anyAttribute`
+- `default` attribute values are validated without mutating the XML tree during Phase 1
 - Inline anonymous complex and simple types
 
 ### `XPath`

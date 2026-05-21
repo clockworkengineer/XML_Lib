@@ -27,7 +27,8 @@ XML Schema Definition (XSD) validation is supported via `XML::validate(xsdSource
 - Named `xs:simpleType` with all restriction facets: `minInclusive`, `maxInclusive`, `minExclusive`, `maxExclusive`, `pattern`, `enumeration`, `minLength`, `maxLength`, `length`, `totalDigits`, `fractionDigits`, `whiteSpace`
 - All builtin types: `xs:string`, `xs:boolean`, `xs:integer` and subtypes (`xs:int`, `xs:long`, `xs:short`, etc.), `xs:decimal`, `xs:float`, `xs:double`, `xs:date`, `xs:time`, `xs:dateTime`, `xs:anyURI`, `xs:base64Binary`, `xs:hexBinary`, `xs:ID`, `xs:IDREF`, `xs:NMTOKEN`, `xs:NCName`, `xs:QName`, `xs:token`, `xs:normalizedString`, `xs:language`
 - Attribute declarations: `use="required"`, `use="optional"`, `use="prohibited"`, `fixed`, `default`
-- `xs:anyAttribute` wildcard (suppresses undeclared-attribute errors)
+- `default` attribute values are applied during validation in Phase 1 without mutating the document tree
+- `xs:anyAttribute` wildcard accepts undeclared attributes while still preserving prohibited attribute semantics
 - `minOccurs`/`maxOccurs` on elements (0=optional, unbounded=unlimited)
 - Inline anonymous complex and simple types on element declarations
 - `xs:element` top-level declarations (root element dispatch)
