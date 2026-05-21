@@ -74,7 +74,7 @@ static const std::string kProductSchema = R"(
 
 int main()
 {
-  std::cout << "XML_XSD_Attributes_Example started ..."; << std::endl;
+  std::cout << "XML_XSD_Attributes_Example started ..." << std::endl;
   // --- Required attribute ---
   tryValidate("Required 'id' present (valid)", R"(<person id="42"><name>Alice</name></person>)", kPersonSchema);
 

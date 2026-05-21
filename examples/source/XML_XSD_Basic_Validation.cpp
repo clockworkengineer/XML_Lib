@@ -53,7 +53,7 @@ static void tryValidate(const std::string &label, const std::string &xmlSource, 
 
 int main()
 {
-  std::cout << "XML_XSD_Basic_Validation started ..."; << std::endl;
+  std::cout << "XML_XSD_Basic_Validation started ..." << std::endl;
   // 1. Valid document — all four required child elements present
   tryValidate("Valid note document",
     R"(<?xml version="1.0"?>

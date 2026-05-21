@@ -43,7 +43,7 @@ static void validatePair(const fs::path &xmlPath, const fs::path &xsdPath)
 
 int main()
 {
-  std::cout << "XML_XSD_File_Validation started ..."; << std::endl;
+  std::cout << "XML_XSD_File_Validation started ..." << std::endl;
   const fs::path filesDir = fs::current_path() / "files";
 
   // Validate every .xml file in files/ against a matching .xsd if one exists

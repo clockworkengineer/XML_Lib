@@ -71,7 +71,7 @@ static void evalBool(const std::string &label, const std::string &expr, xl::XPat
 
 int main()
 {
-  std::cout << "XML_XPath_Functions started ..."; << std::endl;
+  std::cout << "XML_XPath_Functions started ..." << std::endl;
   xl::BufferSource source{ kBookstore };
   gXml.parse(source);
   xl::XPath xp(gXml.root());
@@ -138,7 +138,7 @@ int main()
   }
 
   const auto longTitles = gXml.xpath("//title[string-length(.) > 12]");
-  std::cout << "  //title[string-length(.) > 12] — titles longer than 12 chars: " << longTitles.size(); << std::endl;
+  std::cout << "  //title[string-length(.) > 12] — titles longer than 12 chars: " << longTitles.size() << std::endl;
   std::cout << "XML_XPath_Functions exited." << std::endl;
   return 0;
 }

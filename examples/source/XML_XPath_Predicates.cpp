@@ -73,7 +73,7 @@ static void query(const std::string &label, const std::string &expr)
 
 int main()
 {
-  std::cout << "XML_XPath_Predicates started ..."; << std::endl;
+  std::cout << "XML_XPath_Predicates started ..." << std::endl;
   xl::BufferSource source{ kBookstore };
   gXml.parse(source);
   xl::XPath xp(gXml.root());
@@ -104,7 +104,7 @@ int main()
   std::cout << "  Title of first book       : " << xp.evaluateString("string(//book[1]/title)") << std::endl;
   std::cout << "  Title of last book        : " << xp.evaluateString("string(//book[last()]/title)") << std::endl;
   std::cout << "  Title of first web book   : " << xp.evaluateString("string(//book[@category='web'][1]/title)") << std::endl;
-  std::cout << "  Price of cheapest (first) : " << xp.evaluateString("string(//book[price<35][1]/price)"); << std::endl;
+  std::cout << "  Price of cheapest (first) : " << xp.evaluateString("string(//book[price<35][1]/price)") << std::endl;
   std::cout << "XML_XPath_Predicates exited." << std::endl;
   return 0;
 }

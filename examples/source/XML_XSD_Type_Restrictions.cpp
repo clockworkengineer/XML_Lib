@@ -91,7 +91,7 @@ static const std::string kUsernameSchema = R"(
 
 int main()
 {
-  std::cout << "XML_XSD_Type_Restrictions started ..."; << std::endl;
+  std::cout << "XML_XSD_Type_Restrictions started ..." << std::endl;
   // --- Integer range ---
   tryValidate("Age 25 (valid)", R"(<age>25</age>)", kAgeSchema);
   tryValidate("Age 200 (too high)", R"(<age>200</age>)", kAgeSchema);

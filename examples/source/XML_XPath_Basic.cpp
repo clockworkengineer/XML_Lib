@@ -64,7 +64,7 @@ static void query(const std::string &label, const std::string &expr)
 
 int main()
 {
-  std::cout << "XML_XPath_Basic started ..."; << std::endl;
+  std::cout << "XML_XPath_Basic started ..." << std::endl;
   xl::BufferSource source{ kBookstore };
   gXml.parse(source);
 
@@ -94,7 +94,7 @@ int main()
   xl::XPath xp(gXml.root());
   std::cout << "  string(//title[1]) = " << xp.evaluateString("string(//title[1])") << std::endl;
   std::cout << "  count(//book)      = " << xp.evaluateNumber("count(//book)") << std::endl;
-  std::cout << "  boolean(//book)    = " << (xp.evaluateBool("boolean(//book)") ? "true" : "false"); << std::endl;
+  std::cout << "  boolean(//book)    = " << (xp.evaluateBool("boolean(//book)") ? "true" : "false") << std::endl;
   std::cout << "XML_XPath_Basic exited." << std::endl;
   return 0;
 }
