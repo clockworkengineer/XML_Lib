@@ -2,7 +2,7 @@
 //
 // Description: Demonstrates handling and reporting of malformed XML input.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -10,15 +10,14 @@
 namespace xl = XML_Lib;
 
 int main() {
-  init(plog::debug, "XML_Malformed_Example.log");
-  PLOG_INFO << "XML_Malformed_Example started ...";
+  std::cout << "XML_Malformed_Example started ..." << std::endl;
   xl::XML xml;
   try {
     xl::BufferSource source{"<root><child></root>"};
     xml.parse(source);
-    PLOG_INFO << "Parsed malformed XML without error (unexpected).";
+    std::cout << "Parsed malformed XML without error (unexpected)." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Error parsing malformed XML: " << e.what();
+    std::cerr << "Error parsing malformed XML: " << e.what() << std::endl;
   }
   return 0;
 }

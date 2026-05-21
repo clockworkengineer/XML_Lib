@@ -3,7 +3,7 @@
 // Description: Demonstrates parsing XML with different encodings (UTF-8, UTF-16, UTF-32) and BOM handling. Shows error
 // for unsupported encodings.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "../include/XML_Utility.hpp"
@@ -12,17 +12,16 @@ namespace xl = XML_Lib;
 
 int main()
 {
-  init(plog::debug, "XML_Encoding_Example.log");
-  PLOG_INFO << "XML_Encoding_Example started ...";
+  std::cout << "XML_Encoding_Example started ..." << std::endl;
   xl::XML xml;
   // UTF-8 example
   std::string utf8_xml = R"(<?xml version='1.0' encoding='UTF-8'?><root>UTF-8 text: café</root>)";
   try {
     xl::BufferSource source{ utf8_xml };
     xml.parse(source);
-    PLOG_INFO << "Parsed UTF-8 XML successfully.";
+    std::cout << "Parsed UTF-8 XML successfully." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Error: " << e.what();
+    std::cerr << "Error: " << e.what() << std::endl;
   }
   // UTF-16 example (as bytes)
   std::vector<unsigned char> utf16_bytes = { 0xFF,
@@ -162,19 +161,19 @@ int main()
   try {
     xl::BufferSource source{ utf16_xml };
     xml.parse(source);
-    PLOG_INFO << "Parsed UTF-16 XML successfully.";
+    std::cout << "Parsed UTF-16 XML successfully." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Error: " << e.what();
+    std::cerr << "Error: " << e.what() << std::endl;
   }
   // Unsupported encoding example
   std::string unsupported_xml = R"(<?xml version='1.0' encoding='ISO-8859-1'?><root>text</root>)";
   try {
     xl::BufferSource source{ unsupported_xml };
     xml.parse(source);
-    PLOG_INFO << "Parsed unsupported encoding (unexpected).";
+    std::cout << "Parsed unsupported encoding (unexpected)." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Expected encoding error: " << e.what();
+    std::cerr << "Expected encoding error: " << e.what() << std::endl;
   }
-  PLOG_INFO << "XML_Encoding_Example exited.";
+  std::cout << "XML_Encoding_Example exited." << std::endl;
   exit(EXIT_SUCCESS);
 }

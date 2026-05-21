@@ -3,7 +3,7 @@
 // Description: Demonstrates parsing and validation of XML with internal and external DTDs, including error reporting
 // for DTD violations.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -12,8 +12,7 @@ namespace xl = XML_Lib;
 
 int main()
 {
-  init(plog::debug, "XML_DTD_Validation_Example.log");
-  PLOG_INFO << "XML_DTD_Validation_Example started ...";
+  std::cout << "XML_DTD_Validation_Example started ..." << std::endl;
   xl::XML xml;
   // Example with internal DTD
   std::string xml_with_internal_dtd = R"(
@@ -35,9 +34,9 @@ int main()
   try {
     xl::BufferSource source{ xml_with_internal_dtd };
     xml.parse(source);
-    PLOG_INFO << "Parsed XML with internal DTD successfully.";
+    std::cout << "Parsed XML with internal DTD successfully." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Error: " << e.what();
+    std::cerr << "Error: " << e.what() << std::endl;
   }
   // Example with DTD violation
   std::string xml_with_dtd_error = R"(
@@ -59,10 +58,10 @@ int main()
   try {
     xl::BufferSource source{ xml_with_dtd_error };
     xml.parse(source);
-    PLOG_INFO << "Parsed XML with DTD error (unexpected).";
+    std::cout << "Parsed XML with DTD error (unexpected)." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Expected DTD error: " << e.what();
+    std::cerr << "Expected DTD error: " << e.what() << std::endl;
   }
-  PLOG_INFO << "XML_DTD_Validation_Example exited.";
+  std::cout << "XML_DTD_Validation_Example exited." << std::endl;
   exit(EXIT_SUCCESS);
 }

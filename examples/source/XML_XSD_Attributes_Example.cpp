@@ -4,7 +4,7 @@
 // Shows required, optional, prohibited, fixed-value, and anyAttribute
 // wildcard declarations, plus a schema-file-based validation workflow.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -15,17 +15,17 @@ namespace xl = XML_Lib;
 
 static void tryValidate(const std::string &label, const std::string &xmlSource, const std::string &schema)
 {
-  PLOG_INFO << "--- " << label << " ---";
+  std::cout << "--- " << label << " ---" << std::endl;
   try {
     xl::XML xml;
     xl::BufferSource source{ xmlSource };
     xml.parse(source);
     xml.validate(schema);
-    PLOG_INFO << "Validation passed.";
+    std::cout << "Validation passed." << std::endl;
   } catch (const xl::IValidator::Error &e) {
-    PLOG_WARNING << "Validation error: " << e.what();
+    std::cerr << "Validation error: " << e.what() << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Unexpected error: " << e.what();
+    std::cerr << "Unexpected error: " << e.what() << std::endl;
   }
 }
 
@@ -74,9 +74,7 @@ static const std::string kProductSchema = R"(
 
 int main()
 {
-  init(plog::debug, "XML_XSD_Attributes_Example.log");
-  PLOG_INFO << "XML_XSD_Attributes_Example started ...";
-
+  std::cout << "XML_XSD_Attributes_Example started ..."; << std::endl;
   // --- Required attribute ---
   tryValidate("Required 'id' present (valid)", R"(<person id="42"><name>Alice</name></person>)", kPersonSchema);
 
@@ -113,6 +111,6 @@ int main()
     R"(<product sku="ABC-001" color="red" weight="0.5kg"><title>Widget</title></product>)",
     kProductSchema);
 
-  PLOG_INFO << "XML_XSD_Attributes_Example exited.";
+  std::cout << "XML_XSD_Attributes_Example exited." << std::endl;
   return EXIT_SUCCESS;
 }

@@ -5,7 +5,7 @@
 // the self (.) and parent (..) abbreviations, wildcard (*), and
 // the attribute axis (@attr).
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -43,20 +43,20 @@ static xl::XML gXml;
 
 static void query(const std::string &label, const std::string &expr)
 {
-  PLOG_INFO << "  " << label;
+  std::cout << "  " << label << std::endl;
   try {
     const auto nodes = gXml.xpath(expr);
-    PLOG_INFO << "    expression : " << expr;
-    PLOG_INFO << "    node count : " << nodes.size();
+    std::cout << "    expression : " << expr << std::endl;
+    std::cout << "    node count : " << nodes.size() << std::endl;
     for (const auto *n : nodes) {
       if (xl::isA<xl::Element>(*n) || xl::isA<xl::Root>(*n)) {
-        PLOG_INFO << "    element    : <" << xl::NRef<xl::Element>(*n).name() << ">";
+        std::cout << "    element    : <" << xl::NRef<xl::Element>(*n).name() << ">" << std::endl;
       } else if (xl::isA<xl::Content>(*n)) {
-        PLOG_INFO << "    text       : " << n->getContents();
+        std::cout << "    text       : " << n->getContents() << std::endl;
       }
     }
   } catch (const xl::XPath::Error &e) {
-    PLOG_ERROR << "    XPath error: " << e.what();
+    std::cerr << "    XPath error: " << e.what() << std::endl;
   }
 }
 
@@ -64,40 +64,37 @@ static void query(const std::string &label, const std::string &expr)
 
 int main()
 {
-  init(plog::debug, "XML_XPath_Basic.log");
-  PLOG_INFO << "XML_XPath_Basic started ...";
-
+  std::cout << "XML_XPath_Basic started ..."; << std::endl;
   xl::BufferSource source{ kBookstore };
   gXml.parse(source);
 
-  PLOG_INFO << "--- Absolute paths ---";
+  std::cout << "--- Absolute paths ---" << std::endl;
   query("Root element via /bookstore", "/bookstore");
   query("All book elements via /bookstore/book", "/bookstore/book");
   query("All titles via /bookstore/book/title", "/bookstore/book/title");
 
-  PLOG_INFO << "--- Descendant shorthand (//) ---";
+  std::cout << "--- Descendant shorthand (//) ---" << std::endl;
   query("All book elements anywhere (//book)", "//book");
   query("All title elements anywhere (//title)", "//title");
   query("All elements anywhere (//*)", "//*");
 
-  PLOG_INFO << "--- Self and parent (. and ..) ---";
+  std::cout << "--- Self and parent (. and ..) ---" << std::endl;
   query("Self — context is root element (.)", ".");
   query("Self by name (self::bookstore)", "self::bookstore");
 
-  PLOG_INFO << "--- Wildcard (*) ---";
+  std::cout << "--- Wildcard (*) ---" << std::endl;
   query("All children of root (/bookstore/*)", "/bookstore/*");
   query("All grandchildren (/bookstore/book/*)", "/bookstore/book/*");
 
-  PLOG_INFO << "--- Attribute axis (@) ---";
+  std::cout << "--- Attribute axis (@) ---" << std::endl;
   query("category attribute of all books (//book/@category)", "//book/@category");
   query("lang attribute of all titles (//title/@lang)", "//title/@lang");
 
-  PLOG_INFO << "--- Evaluatestring / number shortcuts ---";
+  std::cout << "--- Evaluatestring / number shortcuts ---" << std::endl;
   xl::XPath xp(gXml.root());
-  PLOG_INFO << "  string(//title[1]) = " << xp.evaluateString("string(//title[1])");
-  PLOG_INFO << "  count(//book)      = " << xp.evaluateNumber("count(//book)");
-  PLOG_INFO << "  boolean(//book)    = " << (xp.evaluateBool("boolean(//book)") ? "true" : "false");
-
-  PLOG_INFO << "XML_XPath_Basic exited.";
+  std::cout << "  string(//title[1]) = " << xp.evaluateString("string(//title[1])") << std::endl;
+  std::cout << "  count(//book)      = " << xp.evaluateNumber("count(//book)") << std::endl;
+  std::cout << "  boolean(//book)    = " << (xp.evaluateBool("boolean(//book)") ? "true" : "false"); << std::endl;
+  std::cout << "XML_XPath_Basic exited." << std::endl;
   return 0;
 }

@@ -3,7 +3,7 @@
 // Description: Demonstrates parsing XML with predefined and custom entity references, including error handling for
 // undefined entities.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -12,8 +12,7 @@ namespace xl = XML_Lib;
 
 int main()
 {
-  init(plog::debug, "XML_Entity_Reference_Example.log");
-  PLOG_INFO << "XML_Entity_Reference_Example started ...";
+  std::cout << "XML_Entity_Reference_Example started ..." << std::endl;
   xl::XML xml;
   // Example with predefined entities
   std::string xml_with_entities = R"(
@@ -24,9 +23,9 @@ int main()
   try {
     xl::BufferSource source{ xml_with_entities };
     xml.parse(source);
-    PLOG_INFO << "Parsed XML with predefined entities successfully.";
+    std::cout << "Parsed XML with predefined entities successfully." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Error: " << e.what();
+    std::cerr << "Error: " << e.what() << std::endl;
   }
   // Example with undefined entity
   std::string xml_with_undefined_entity = R"(
@@ -37,10 +36,10 @@ int main()
   try {
     xl::BufferSource source{ xml_with_undefined_entity };
     xml.parse(source);
-    PLOG_INFO << "Parsed XML with undefined entity (unexpected).";
+    std::cout << "Parsed XML with undefined entity (unexpected)." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Expected entity error: " << e.what();
+    std::cerr << "Expected entity error: " << e.what() << std::endl;
   }
-  PLOG_INFO << "XML_Entity_Reference_Example exited.";
+  std::cout << "XML_Entity_Reference_Example exited." << std::endl;
   exit(EXIT_SUCCESS);
 }

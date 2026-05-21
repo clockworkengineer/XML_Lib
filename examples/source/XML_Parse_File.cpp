@@ -5,7 +5,7 @@
 // it back into text form and then parse the buffer created; timing each
 // step in turn for each file.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -25,47 +25,48 @@ void processXMLFile(const std::string &fileName)
   auto elapsedTime = [](const auto &start, const auto &stop) {
     return chrono::duration_cast<chrono::microseconds>(stop - start).count();
   };
-  PLOG_INFO << "Processing " << fileName;
+  std::cout << "Processing " << fileName << std::endl;
   const xl::XML xml;
   xl::BufferDestination xmlDestination;
   // Parse from file
   auto start = chrono::high_resolution_clock::now();
   xml.parse(xl::FileSource{ fileName });
   auto stop = chrono::high_resolution_clock::now();
-  PLOG_INFO << elapsedTime(start, stop) << " microseconds to parse from file.";
+  std::cout << elapsedTime(start, stop) << " microseconds to parse from file." << std::endl;
   // Stringify to file
   start = chrono::high_resolution_clock::now();
   xml.stringify(xl::FileDestination{ fileName + ".new" });
   stop = chrono::high_resolution_clock::now();
-  PLOG_INFO << elapsedTime(start, stop) << " microseconds to stringify to file.";
+  std::cout << elapsedTime(start, stop) << " microseconds to stringify to file." << std::endl;
   // Stringify to buffer
   start = chrono::high_resolution_clock::now();
   xml.stringify(xmlDestination);
   stop = chrono::high_resolution_clock::now();
-  PLOG_INFO << elapsedTime(start, stop) << " microseconds to stringify to buffer.";
+  std::cout << elapsedTime(start, stop) << " microseconds to stringify to buffer." << std::endl;
   // Parse from buffer
   start = chrono::high_resolution_clock::now();
   xml.parse(xl::BufferSource{ xmlDestination.toString() });
   stop = chrono::high_resolution_clock::now();
-  PLOG_INFO << elapsedTime(start, stop) << " microseconds to parse from buffer.";
+  std::cout << elapsedTime(start, stop) << " microseconds to parse from buffer." << std::endl;
   // Display contents
-  if (xmlDestination.toString().size() < kMaxFileLengthToDisplay) { PLOG_INFO << "[" << xmlDestination.toString() << "]"; }
-  PLOG_INFO << "--------------------FILE PROCESSED OK--------------------";
-  PLOG_INFO << "Finished " << fileName << ".";
+  if (xmlDestination.toString().size() < kMaxFileLengthToDisplay) {
+    std::cout << "[" << xmlDestination.toString() << "]" << std::endl;
+  }
+  std::cout << "--------------------FILE PROCESSED OK--------------------" << std::endl;
+  std::cout << "Finished " << fileName << "." << std::endl;
 }
 
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   // Initialise logging.
-  init(plog::debug, "XML_Parse_Files.log");
-  PLOG_INFO << "XML_Parse_Files started ...";
-  PLOG_INFO << xl::XML().version();
+  std::cout << "XML_Parse_Files started ..." << std::endl;
+  std::cout << xl::XML().version() << std::endl;
   // For each xml parse it, stringify it and display unless its to large.
   for (auto &fileName : Utility::createXMLFileList()) {
     try {
       processXMLFile(fileName);
     } catch (std::exception &ex) {
-      PLOG_ERROR << "Error: " << ex.what();
+      std::cerr << "Error: " << ex.what() << std::endl;
     }
   }
   exit(EXIT_SUCCESS);

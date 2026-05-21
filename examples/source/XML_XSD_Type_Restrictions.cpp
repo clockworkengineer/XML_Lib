@@ -4,7 +4,7 @@
 // Covers minInclusive/maxInclusive, pattern, enumeration, and minLength/maxLength
 // on named simpleType definitions.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -15,17 +15,17 @@ namespace xl = XML_Lib;
 
 static void tryValidate(const std::string &label, const std::string &xmlSource, const std::string &schema)
 {
-  PLOG_INFO << "--- " << label << " ---";
+  std::cout << "--- " << label << " ---" << std::endl;
   try {
     xl::XML xml;
     xl::BufferSource source{ xmlSource };
     xml.parse(source);
     xml.validate(schema);
-    PLOG_INFO << "Validation passed.";
+    std::cout << "Validation passed." << std::endl;
   } catch (const xl::IValidator::Error &e) {
-    PLOG_WARNING << "Validation error: " << e.what();
+    std::cerr << "Validation error: " << e.what() << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Unexpected error: " << e.what();
+    std::cerr << "Unexpected error: " << e.what() << std::endl;
   }
 }
 
@@ -91,9 +91,7 @@ static const std::string kUsernameSchema = R"(
 
 int main()
 {
-  init(plog::debug, "XML_XSD_Type_Restrictions.log");
-  PLOG_INFO << "XML_XSD_Type_Restrictions started ...";
-
+  std::cout << "XML_XSD_Type_Restrictions started ..."; << std::endl;
   // --- Integer range ---
   tryValidate("Age 25 (valid)", R"(<age>25</age>)", kAgeSchema);
   tryValidate("Age 200 (too high)", R"(<age>200</age>)", kAgeSchema);
@@ -113,6 +111,6 @@ int main()
   tryValidate("Username 'alice' (valid)", R"(<username>alice</username>)", kUsernameSchema);
   tryValidate("Username (21 chars, too long)", R"(<username>averylongusernameXX</username>)", kUsernameSchema);
 
-  PLOG_INFO << "XML_XSD_Type_Restrictions exited.";
+  std::cout << "XML_XSD_Type_Restrictions exited." << std::endl;
   return EXIT_SUCCESS;
 }

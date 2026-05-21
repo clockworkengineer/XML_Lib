@@ -4,7 +4,7 @@
 // from files and validating the document against the schema. Mirrors the
 // file-based workflow of XML_Parse_File but with XSD validation.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -25,17 +25,17 @@ static std::string readFile(const fs::path &path)
 /// Parse an XML file and validate it against a schema file, logging the outcome.
 static void validatePair(const fs::path &xmlPath, const fs::path &xsdPath)
 {
-  PLOG_INFO << "Validating  " << xmlPath.filename().string() << "  against  " << xsdPath.filename().string();
+  std::cout << "Validating  " << xmlPath.filename().string() << "  against  " << xsdPath.filename().string() << std::endl;
   try {
     xl::XML xml;
     xml.parse(xl::FileSource{ xmlPath.string() });
     const std::string schema = readFile(xsdPath);
     xml.validate(schema);
-    PLOG_INFO << "  -> Passed.";
+    std::cout << "  -> Passed." << std::endl;
   } catch (const xl::IValidator::Error &e) {
-    PLOG_WARNING << "  -> Validation error: " << e.what();
+    std::cerr << "  -> Validation error: " << e.what() << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "  -> Error: " << e.what();
+    std::cerr << "  -> Error: " << e.what() << std::endl;
   }
 }
 
@@ -43,9 +43,7 @@ static void validatePair(const fs::path &xmlPath, const fs::path &xsdPath)
 
 int main()
 {
-  init(plog::debug, "XML_XSD_File_Validation.log");
-  PLOG_INFO << "XML_XSD_File_Validation started ...";
-
+  std::cout << "XML_XSD_File_Validation started ..."; << std::endl;
   const fs::path filesDir = fs::current_path() / "files";
 
   // Validate every .xml file in files/ against a matching .xsd if one exists
@@ -54,12 +52,12 @@ int main()
     fs::path xsdPath = entry.path();
     xsdPath.replace_extension(".xsd");
     if (!fs::exists(xsdPath)) {
-      PLOG_INFO << entry.path().filename().string() << "  — no matching .xsd, skipping.";
+      std::cout << entry.path().filename().string() << "  — no matching .xsd, skipping." << std::endl;
       continue;
     }
     validatePair(entry.path(), xsdPath);
   }
 
-  PLOG_INFO << "XML_XSD_File_Validation exited.";
+  std::cout << "XML_XSD_File_Validation exited." << std::endl;
   return EXIT_SUCCESS;
 }

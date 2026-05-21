@@ -6,7 +6,7 @@
 // sequence to the array stored in fibonacci.xml; if the file does
 // not exist then create the initial sequence of [0,1].
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -49,15 +49,14 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   try {
     // Initialise logging.
-    init(plog::debug, "XML_Fibonacci.log");
-    PLOG_INFO << "XML_Fibonacci started ...";
+    std::cout << "XML_Fibonacci started ..." << std::endl;
     // Log version
-    PLOG_INFO << xl::XML().version();
+    std::cout << xl::XML().version() << std::endl;
     // Update current sequence
     nextFibonacci();
   } catch (std::exception &ex) {
-    PLOG_ERROR << "Error: " << ex.what();
+    std::cerr << "Error: " << ex.what() << std::endl;
   }
-  PLOG_INFO << "XML_Fibonacci exited.";
+  std::cout << "XML_Fibonacci exited." << std::endl;
   exit(EXIT_SUCCESS);
 }

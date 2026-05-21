@@ -3,7 +3,7 @@
 // Description: Demonstrates parsing and validation of XML with mixed content (elements containing both text and child
 // elements), including error handling for invalid mixed content.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -12,8 +12,7 @@ namespace xl = XML_Lib;
 
 int main()
 {
-  init(plog::debug, "XML_Mixed_Content_Example.log");
-  PLOG_INFO << "XML_Mixed_Content_Example started ...";
+  std::cout << "XML_Mixed_Content_Example started ..." << std::endl;
   xl::XML xml;
   // Valid mixed content
   std::string valid_mixed = R"(
@@ -29,9 +28,9 @@ int main()
   try {
     xl::BufferSource source{ valid_mixed };
     xml.parse(source);
-    PLOG_INFO << "Parsed valid mixed content successfully.";
+    std::cout << "Parsed valid mixed content successfully." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Error: " << e.what();
+    std::cerr << "Error: " << e.what() << std::endl;
   }
   // Invalid mixed content (illegal order)
   std::string invalid_mixed = R"(
@@ -44,10 +43,10 @@ int main()
   try {
     xl::BufferSource source{ invalid_mixed };
     xml.parse(source);
-    PLOG_INFO << "Parsed invalid mixed content (unexpected).";
+    std::cout << "Parsed invalid mixed content (unexpected)." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Expected mixed content error: " << e.what();
+    std::cerr << "Expected mixed content error: " << e.what() << std::endl;
   }
-  PLOG_INFO << "XML_Mixed_Content_Example exited.";
+  std::cout << "XML_Mixed_Content_Example exited." << std::endl;
   exit(EXIT_SUCCESS);
 }

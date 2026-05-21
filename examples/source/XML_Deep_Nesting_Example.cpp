@@ -2,7 +2,7 @@
 //
 // Description: Demonstrates parsing and handling of deeply nested XML.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -10,8 +10,7 @@
 namespace xl = XML_Lib;
 
 int main() {
-  init(plog::debug, "XML_Deep_Nesting_Example.log");
-  PLOG_INFO << "XML_Deep_Nesting_Example started ...";
+  std::cout << "XML_Deep_Nesting_Example started ..." << std::endl;
   xl::XML xml;
   std::string deep_xml = "<a>";
   for (int i = 0; i < 50; ++i) deep_xml += "<b>";
@@ -20,9 +19,9 @@ int main() {
   try {
     xl::BufferSource source{deep_xml};
     xml.parse(source);
-    PLOG_INFO << "Successfully parsed deeply nested XML.";
+    std::cout << "Successfully parsed deeply nested XML." << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Error parsing deeply nested XML: " << e.what();
+    std::cerr << "Error parsing deeply nested XML: " << e.what() << std::endl;
   }
   return 0;
 }

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "plog/Initializers/RollingFileInitializer.h"
-#include "plog/Log.h"
-
+#include <iostream>
 #include "XML.hpp"
 #include "XML_Core.hpp"
 

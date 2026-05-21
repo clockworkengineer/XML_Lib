@@ -4,7 +4,7 @@
 // Shows how to validate a well-formed XML document against an inline XSD
 // schema, and how to catch and report schema violations.
 //
-// Dependencies: C++20, PLOG, XML_Lib.
+// Dependencies: C++20, XML_Lib.
 //
 
 #include "XML_Utility.hpp"
@@ -35,17 +35,17 @@ static const std::string kNoteSchema = R"(
 
 static void tryValidate(const std::string &label, const std::string &xmlSource, const std::string &schema)
 {
-  PLOG_INFO << "--- " << label << " ---";
+  std::cout << "--- " << label << " ---" << std::endl;
   try {
     xl::XML xml;
     xl::BufferSource source{ xmlSource };
     xml.parse(source);
     xml.validate(schema);
-    PLOG_INFO << "Validation passed.";
+    std::cout << "Validation passed." << std::endl;
   } catch (const xl::IValidator::Error &e) {
-    PLOG_WARNING << "Validation error: " << e.what();
+    std::cerr << "Validation error: " << e.what() << std::endl;
   } catch (const std::exception &e) {
-    PLOG_ERROR << "Unexpected error: " << e.what();
+    std::cerr << "Unexpected error: " << e.what() << std::endl;
   }
 }
 
@@ -53,9 +53,7 @@ static void tryValidate(const std::string &label, const std::string &xmlSource, 
 
 int main()
 {
-  init(plog::debug, "XML_XSD_Basic_Validation.log");
-  PLOG_INFO << "XML_XSD_Basic_Validation started ...";
-
+  std::cout << "XML_XSD_Basic_Validation started ..."; << std::endl;
   // 1. Valid document — all four required child elements present
   tryValidate("Valid note document",
     R"(<?xml version="1.0"?>
@@ -97,6 +95,6 @@ int main()
     </message>)",
     kNoteSchema);
 
-  PLOG_INFO << "XML_XSD_Basic_Validation exited.";
+  std::cout << "XML_XSD_Basic_Validation exited." << std::endl;
   return EXIT_SUCCESS;
 }
