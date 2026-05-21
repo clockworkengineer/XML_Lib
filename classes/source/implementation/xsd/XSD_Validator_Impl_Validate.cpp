@@ -209,16 +209,21 @@ void XSD_Impl::validateDeclaredAttribute(const Element &elem,
   if (declAttr.use == XSD_AttributeDecl::Use::prohibited && present) {
     xsdError(elemName, "attribute '" + declAttr.name + "' is prohibited.");
   }
-  if (present) {
-    const auto attrVal = elem[declAttr.name].getParsed();
-    if (!declAttr.fixedValue.empty() && attrVal != declAttr.fixedValue) {
-      xsdError(elemName,
-        "attribute '" + declAttr.name + "' must have fixed value '" + declAttr.fixedValue + "' but got '" + attrVal
-          + "'.");
-    }
-    if (!declAttr.typeRef.empty()) {
-      validateSimpleValue(attrVal, declAttr.typeRef, elemName + "/@" + declAttr.name);
-    }
+
+  const bool hasDefaultOrFixed = !declAttr.defaultValue.empty() || !declAttr.fixedValue.empty();
+  if (!present && !hasDefaultOrFixed) { return; }
+
+  const std::string attrValue = present ? elem[declAttr.name].getParsed()
+                                        : (!declAttr.fixedValue.empty() ? declAttr.fixedValue : declAttr.defaultValue);
+
+  if (!declAttr.fixedValue.empty() && attrValue != declAttr.fixedValue) {
+    xsdError(elemName,
+      "attribute '" + declAttr.name + "' must have fixed value '" + declAttr.fixedValue + "' but got '" + attrValue
+        + "'.");
+  }
+
+  if (!declAttr.typeRef.empty()) {
+    validateSimpleValue(attrValue, declAttr.typeRef, elemName + "/@" + declAttr.name);
   }
 }
 
