@@ -9,6 +9,7 @@
 #include "XSD_Impl.hpp"
 #include "xsd/XSD_NodeHelpers.hpp"
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <unordered_map>
 
