@@ -302,6 +302,37 @@ TEST_CASE("XSD attribute validation.", "[XML][XSD][Validate][Attributes]")
     };
     REQUIRE(validateXSD("<widget foo=\"bar\" baz=\"qux\"/>", xsd).empty());
   }
+  SECTION("xs:anyAttribute allows namespace declarations.", "[XML][XSD][Validate][Attributes]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"widget\" type=\"WidgetType\"/>\n"
+      "  <xs:complexType name=\"WidgetType\">\n"
+      "    <xs:sequence/>\n"
+      "    <xs:anyAttribute/>\n"
+      "  </xs:complexType>\n"
+      "</xs:schema>\n"
+    };
+    REQUIRE(validateXSD("<widget xmlns:x=\"http://example.com\" foo=\"bar\"/>", xsd).empty());
+  }
+  SECTION("xs:anyAttribute does not override prohibited attribute semantics.", "[XML][XSD][Validate][Attributes]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"widget\" type=\"WidgetType\"/>\n"
+      "  <xs:complexType name=\"WidgetType\">\n"
+      "    <xs:sequence/>\n"
+      "    <xs:attribute name=\"locked\" type=\"xs:boolean\" use=\"prohibited\"/>\n"
+      "    <xs:anyAttribute/>\n"
+      "  </xs:complexType>\n"
+      "</xs:schema>\n"
+    };
+    const auto result = validateXSD("<widget locked=\"true\" extra=\"x\"/>", xsd);
+    REQUIRE(result.find("locked") != std::string::npos);
+    REQUIRE(result.find("prohibited") != std::string::npos);
+  }
 }
 
 TEST_CASE("XSD simple type validation.", "[XML][XSD][Validate][SimpleTypes]")
