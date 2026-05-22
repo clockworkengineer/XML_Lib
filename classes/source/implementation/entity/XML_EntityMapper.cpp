@@ -42,6 +42,11 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entity
   const Char type,
   std::set<std::string> &currentEntities)
 {
+  static constexpr std::size_t kMaxRecursiveEntityResolutionDepth{ 512 };
+  if (currentEntities.size() > kMaxRecursiveEntityResolutionDepth) {
+    XML_LIB_THROW(SyntaxError("Entity resolution depth exceeds maximum allowed."));
+  }
+
   BufferSource entitySource { std::string(entityName) };
   while (entitySource.more()) {
     if (entitySource.current() == type) {
@@ -65,6 +70,8 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entity
   }
 }
 
+static constexpr std::size_t kMaxExternalEntityFileSize{ 5ULL * 1024ULL * 1024ULL }; // 5 MB
+
 /// <summary>
 /// Grab an entity reference mapping from an external file.
 /// </summary>
@@ -77,6 +84,10 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fil
 
 std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileName) const
 {
+  if (fileName.empty()) {
+    XML_LIB_THROW(SyntaxError("External entity file name is empty."));
+  }
+
   const std::string key{ fileName };
   if (const auto it = externalFileCache.find(key); it != externalFileCache.end()) {
     return it->second;
@@ -87,9 +98,16 @@ std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileN
     XML_LIB_THROW(SyntaxError(std::string("Entity '") + key + "' source file does not exist."));
   }
 
-  std::string content;
   file.seekg(0, std::ios::end);
   const auto size = file.tellg();
+  if (size < 0) {
+    XML_LIB_THROW(SyntaxError(std::string("Entity '") + key + "' source file cannot be read."));
+  }
+  if (static_cast<std::size_t>(size) > kMaxExternalEntityFileSize) {
+    XML_LIB_THROW(SyntaxError("External entity file size exceeds maximum allowed."));
+  }
+
+  std::string content;
   if (size > 0) {
     content.reserve(static_cast<size_t>(size));
     file.seekg(0, std::ios::beg);
@@ -120,7 +138,7 @@ XML_EntityMapper::XML_EntityMapper() { resetToDefault(); }
 /// <summary>
 /// Entity mapper destructor.
 /// </summary>
-XML_EntityMapper::~XML_EntityMapper() = default;
+XML_EntityMapper::~XML_EntityMapper() noexcept = default;
 
 void XML_EntityMapper::invalidateTranslationCache() const
 {

@@ -9,6 +9,13 @@
 
 #include "interface/IEntityResolver.hpp"
 
+#ifndef XML_LIB_MAX_XML_SIZE
+#define XML_LIB_MAX_XML_SIZE (1024ULL * 1024ULL * 100ULL)
+#endif
+#ifndef XML_LIB_MAX_TOTAL_ATTRIBUTES
+#define XML_LIB_MAX_TOTAL_ATTRIBUTES 1000000ULL
+#endif
+
 namespace XML_Lib {
 
 // ========================
@@ -24,9 +31,13 @@ struct Node;
 
 /// @brief Options controlling parsing behaviour and resource limits.
 struct ParseOptions {
+  std::size_t     maxXmlSize              = XML_LIB_MAX_XML_SIZE; ///< Maximum XML input size in bytes.
   std::size_t     maxEntityExpansionDepth = 512;    ///< Maximum entity expansion recursion depth (XML bomb defence).
   std::size_t     maxNestingDepth         = 1000;   ///< Maximum element nesting depth.
+  std::size_t     maxElementCount         = 1000000; ///< Maximum number of XML elements in a document.
   std::size_t     maxAttributeCount       = 10000;  ///< Maximum number of attributes per element.
+  std::size_t     maxTotalAttributeCount  = XML_LIB_MAX_TOTAL_ATTRIBUTES; ///< Maximum number of attributes across the entire document.
+  std::size_t     maxTextNodeSize         = 1024 * 1024; ///< Maximum size of a single text or content node in bytes.
   bool            allowExternalEntities   = false;  ///< When false and no entityResolver set, external entities throw SyntaxError (XXE defence).
   IEntityResolver *entityResolver         = nullptr;///< Optional custom resolver; overrides allowExternalEntities when non-null.
 };
@@ -62,7 +73,7 @@ public:
   XML(XML &&other) = delete;
   XML &operator=(XML &&other) = delete;
 
-  ~XML();
+  ~XML() noexcept;
 
   /// @brief Return a reference to the prolog node (the `<?xml …?>` processing instruction and surrounding whitespace/comments).
   [[nodiscard]] Node &prolog() const;

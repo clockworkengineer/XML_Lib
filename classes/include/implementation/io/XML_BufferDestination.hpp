@@ -30,16 +30,23 @@ public:
 
   void add(const std::string &bytes) override
   {
-    std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
+    buffer.append(bytes);
   }
   void add(const Char ch) override { add(toUtf8(ch)); }
+  void add(const char * bytes, std::size_t length)
+  {
+    if (!bytes && length > 0) { XML_LIB_THROW(Error("Null pointer passed to BufferDestination::add().")); }
+    if (length == 0) { return; }
+    buffer.append(bytes, length);
+  }
   void add(const char * bytes) override {
-    for (std::size_t index=0; index<strlen(bytes); index++) {
-      buffer.push_back(bytes[index]);
-    }
+    if (!bytes) { XML_LIB_THROW(Error("Null pointer passed to BufferDestination::add().")); }
+    const std::size_t length = std::strlen(bytes);
+    add(bytes, length);
   }
   void add(const std::string_view &bytes) override {
-    std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
+    if (bytes.empty()) { return; }
+    buffer.append(bytes.data(), bytes.size());
   }
   void clear() override { buffer.clear(); }
 

@@ -44,6 +44,16 @@ mkdir build
 cmake ..
 ```
 
+Optionally, enable security hardening and reduced attack surface defaults:
+```shell script
+cmake .. -DXML_LIB_ENABLE_SECURITY_HARDENING=ON \
+  -DXML_LIB_DISABLE_DTD=ON \
+  -DXML_LIB_DISABLE_XSD=ON \
+  -DXML_LIB_DISABLE_XPATH=ON \
+  -DXML_LIB_MAX_XML_SIZE=104857600 \
+  -DXML_LIB_MAX_TOTAL_ATTRIBUTES=1000000
+```
+
 4. Compile the library:
 ```shell script
 cmake --build .

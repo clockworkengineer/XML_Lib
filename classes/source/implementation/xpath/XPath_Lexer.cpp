@@ -13,6 +13,8 @@ namespace XML_Lib {
 
 namespace {
 
+  static constexpr std::size_t kMaxXPathExpressionLength{ 8192 };
+
   // Is this character a valid XPath name-start character?
   // (simplified: ASCII letter, underscore, or colon for qualified names)
   bool isNameStart(char c) { return std::isalpha(static_cast<unsigned char>(c)) || c == '_'; }
@@ -44,6 +46,9 @@ namespace {
 /// </summary>
 std::vector<XPathToken> xpathTokenize(const std::string_view expression)
 {
+  if (expression.size() > kMaxXPathExpressionLength) {
+    XML_LIB_THROW(std::runtime_error("XPath Error: Expression exceeds maximum allowed length."));
+  }
   std::vector<XPathToken> tokens;
   size_t i = 0;
   const size_t len = expression.size();

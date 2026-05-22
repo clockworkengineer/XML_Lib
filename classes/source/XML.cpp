@@ -35,7 +35,7 @@ XML &XML::operator=(const std::string_view &xmlString)
 /// <summary>
 /// XML destructor.
 /// </summary>
-XML::~XML() = default;
+XML::~XML() noexcept = default;
 
 /// <summary>
 /// Get XML_Lib version.
@@ -109,12 +109,20 @@ void XML::parse(ISource &&source, const ParseOptions &options) const { implement
 /// </summary>
 void XML::parse(const char *xmlString, const ParseOptions &options) const
 {
-  BufferSource source{ std::string_view{ xmlString } };
+  if (!xmlString) { XML_LIB_THROW(SyntaxError("Null XML string passed to parse().")); }
+  const std::size_t length = std::strlen(xmlString);
+  if (length > options.maxXmlSize) {
+    XML_LIB_THROW(SyntaxError("XML input exceeds maximum allowed size."));
+  }
+  BufferSource source{ std::string_view{ xmlString }, options.maxXmlSize };
   implementation->parse(source, options);
 }
 void XML::parse(const std::string_view &xmlString, const ParseOptions &options) const
 {
-  BufferSource source{ xmlString };
+  if (xmlString.size() > options.maxXmlSize) {
+    XML_LIB_THROW(SyntaxError("XML input exceeds maximum allowed size."));
+  }
+  BufferSource source{ xmlString, options.maxXmlSize };
   implementation->parse(source, options);
 }
 
@@ -123,7 +131,7 @@ void XML::parse(const std::string_view &xmlString, const ParseOptions &options) 
 /// </summary>
 void XML::parse(const std::filesystem::path &filePath, const ParseOptions &options) const
 {
-  FileSource source{ filePath.string() };
+  FileSource source{ filePath.string(), options.maxXmlSize };
   implementation->parse(source, options);
 }
 

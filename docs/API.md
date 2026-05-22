@@ -25,6 +25,32 @@ Node &xml.dtd();                                    // DTD Node (throws if none)
 static std::string XML::version();
 ```
 
+## ParseOptions
+The `ParseOptions` struct controls parser limits and XML processing policy.
+
+- `maxXmlSize` — maximum XML input size in bytes. Defaults to the compile-time macro `XML_LIB_MAX_XML_SIZE`.
+- `maxEntityExpansionDepth` — maximum entity expansion recursion depth (XML bomb defence).
+- `maxNestingDepth` — maximum element nesting depth.
+- `maxElementCount` — maximum number of XML elements in a document.
+- `maxAttributeCount` — maximum number of attributes allowed on a single element.
+- `maxTotalAttributeCount` — maximum total number of attributes across the document. Defaults to the compile-time macro `XML_LIB_MAX_TOTAL_ATTRIBUTES`.
+- `maxTextNodeSize` — maximum size of a single text or content node in bytes.
+- `allowExternalEntities` — when `false` and no `entityResolver` is provided, external entities are rejected by default (XXE defence).
+- `entityResolver` — optional custom resolver. When non-null, it overrides `allowExternalEntities`.
+
+### Example
+```cpp
+ParseOptions options;
+options.maxXmlSize = 20 * 1024 * 1024;         // 20 MiB source limit
+options.maxAttributeCount = 200;
+options.allowExternalEntities = false;
+xml.parse(source, options);
+```
+
+### Notes
+- `allowExternalEntities` defaults to `false` to prevent XXE attacks unless a custom `IEntityResolver` is explicitly supplied.
+- `XML_LIB_MAX_XML_SIZE` and `XML_LIB_MAX_TOTAL_ATTRIBUTES` can be overridden at build time through CMake defines.
+
 ### `Node`
 Owning wrapper around a `Variant`. The Node tree represents the entire document.
 

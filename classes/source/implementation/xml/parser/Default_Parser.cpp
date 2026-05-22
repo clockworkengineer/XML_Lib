@@ -21,8 +21,16 @@ namespace XML_Lib {
 /// </summary>
 /// <param name="xNode">Current element Node.</param>
 /// <param name="content">Content to add to new content Node (XMLNodeContent).</param>
+void Default_Parser::ensureTextNodeSizeWithinLimit(std::size_t nodeSize)
+{
+  if (nodeSize > maxTextNodeSize) {
+    XML_LIB_THROW(SyntaxError("Maximum text node size exceeded."));
+  }
+}
+
 void addContentToElementChildList(Node &xNode, const std::string_view &content)
 {
+  Default_Parser::ensureTextNodeSizeWithinLimit(content.size());
   // Make sure there is a content Node to receive characters
   if (xNode.getChildren().empty() || !isA<Content>(xNode.getChildren().back())) {
     bool isWhiteSpace = true;
@@ -34,6 +42,8 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
     xNode.addChild(Node::make<Content>("", isWhiteSpace));
   }
   auto &xmlContent = NRef<Content>(xNode.getChildren().back());
+  const std::size_t existingSize = xmlContent.value().size();
+  Default_Parser::ensureTextNodeSizeWithinLimit(existingSize + content.size());
   if (xmlContent.isWhiteSpace()) {
     if (std::ranges::all_of(content, [](const char ch) { return std::iswspace(ch); })) {
       xmlContent.setIsWhiteSpace(true);
@@ -197,12 +207,19 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
     if (!validAttributeValue(attributeValue.getParsed(), attributeValue.getQuote())) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'."));
     }
+    if (attributeValue.getParsed().size() > maxTextNodeSize) {
+      XML_LIB_THROW(SyntaxError("Maximum text node size exceeded."));
+    }
     if (XMLAttribute::contains(attributes, attributeName)) {
       XML_LIB_THROW(SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag."));
     }
     attributes.emplace_back(attributeName, attributeValue);
     if (attributes.size() > maxAttributeCount) {
       XML_LIB_THROW(SyntaxError("Maximum attribute count exceeded."));
+    }
+    ++currentTotalAttributeCount;
+    if (currentTotalAttributeCount > maxTotalAttributeCount) {
+      XML_LIB_THROW(SyntaxError("Maximum total attribute count exceeded."));
     }
   }
   return attributes;
@@ -337,6 +354,10 @@ Node Default_Parser::parseElement(ISource &source,
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
   const std::vector attributes{ parseAttributes(source, entityMapper) };
+  ++currentElementCount;
+  if (currentElementCount > maxElementCount) {
+    XML_LIB_THROW(SyntaxError("Maximum element count exceeded."));
+  }
   // Create element Node
   if (Node xNode; match(source, ">")) {
     // Normal element tag
@@ -492,7 +513,12 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   maxEntityExpansionDepth = options.maxEntityExpansionDepth;
   elementNestingDepth = 0;
   maxElementNestingDepth = options.maxNestingDepth;
+  currentElementCount = 0;
+  maxElementCount = options.maxElementCount;
+  currentTotalAttributeCount = 0;
+  maxTotalAttributeCount = options.maxTotalAttributeCount;
   maxAttributeCount = options.maxAttributeCount;
+  maxTextNodeSize = options.maxTextNodeSize;
   entityMapper.setExternalEntityPolicy(options.allowExternalEntities, options.entityResolver);
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);

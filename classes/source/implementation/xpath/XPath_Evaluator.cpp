@@ -846,9 +846,14 @@ static XPathResult evalExpr(const XPathExpr &expr,
 /// Tokenize, parse and evaluate an XPath expression against docRoot.
 /// Throws XPath::Error on empty expression, syntax errors, or runtime errors.
 /// </summary>
+static constexpr std::size_t kMaxXPathExpressionLength = 8192;
+
 static XPathResult evalExpression(const std::string_view expression, const Node &docRoot)
 {
   if (expression.empty()) { XML_LIB_THROW(XPath::Error("Empty expression.")); }
+  if (expression.size() > kMaxXPathExpressionLength) {
+    XML_LIB_THROW(XPath::Error("XPath expression exceeds maximum allowed length."));
+  }
   const auto tokens = xpathTokenize(expression);
   const auto ast = xpathParse(tokens);
   const std::vector<const Node *> emptyAncestors;
