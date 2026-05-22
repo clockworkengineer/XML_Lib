@@ -180,9 +180,15 @@ void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
   }
 }
 
+static constexpr std::size_t kMaxXsdContentChildren{ 4096 };
+
 void XSD_Impl::parseChildParticleList(const Node &parentNode, XSD_ComplexType &ct)
 {
-  for (const auto &child : childElementViews(parentNode)) {
+  const auto children = childElementViews(parentNode);
+  if (children.size() > kMaxXsdContentChildren) {
+    XML_LIB_THROW(std::runtime_error("XSD Error: Schema complexity exceeds maximum allowed."));
+  }
+  for (const auto &child : children) {
     if (child.tag == "element") {
       XSD_Particle particle;
       parseParticle(child.node, particle);
@@ -193,7 +199,11 @@ void XSD_Impl::parseChildParticleList(const Node &parentNode, XSD_ComplexType &c
 
 void XSD_Impl::parseChildAttributes(const Node &parentNode, XSD_ComplexType &ct)
 {
-  for (const auto &child : childElementViews(parentNode)) {
+  const auto children = childElementViews(parentNode);
+  if (children.size() > kMaxXsdContentChildren) {
+    XML_LIB_THROW(std::runtime_error("XSD Error: Schema complexity exceeds maximum allowed."));
+  }
+  for (const auto &child : children) {
     if (child.tag == "attribute") {
       XSD_AttributeDecl attr;
       parseAttributeDecl(child.node, attr);

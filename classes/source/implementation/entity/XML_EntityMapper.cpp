@@ -42,6 +42,11 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entity
   const Char type,
   std::set<std::string> &currentEntities)
 {
+  static constexpr std::size_t kMaxRecursiveEntityResolutionDepth{ 512 };
+  if (currentEntities.size() > kMaxRecursiveEntityResolutionDepth) {
+    XML_LIB_THROW(SyntaxError("Entity resolution depth exceeds maximum allowed."));
+  }
+
   BufferSource entitySource { std::string(entityName) };
   while (entitySource.more()) {
     if (entitySource.current() == type) {
@@ -79,6 +84,10 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fil
 
 std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileName) const
 {
+  if (fileName.empty()) {
+    XML_LIB_THROW(SyntaxError("External entity file name is empty."));
+  }
+
   const std::string key{ fileName };
   if (const auto it = externalFileCache.find(key); it != externalFileCache.end()) {
     return it->second;
@@ -129,7 +138,7 @@ XML_EntityMapper::XML_EntityMapper() { resetToDefault(); }
 /// <summary>
 /// Entity mapper destructor.
 /// </summary>
-XML_EntityMapper::~XML_EntityMapper() = default;
+XML_EntityMapper::~XML_EntityMapper() noexcept = default;
 
 void XML_EntityMapper::invalidateTranslationCache() const
 {

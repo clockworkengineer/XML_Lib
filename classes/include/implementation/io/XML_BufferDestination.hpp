@@ -30,7 +30,7 @@ public:
 
   void add(const std::string &bytes) override
   {
-    std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
+    buffer.append(bytes);
   }
   void add(const Char ch) override { add(toUtf8(ch)); }
   void add(const char * bytes, std::size_t length)
@@ -45,7 +45,8 @@ public:
     add(bytes, length);
   }
   void add(const std::string_view &bytes) override {
-    std::copy(bytes.begin(), bytes.end(), std::back_inserter(buffer));
+    if (bytes.empty()) { return; }
+    buffer.append(bytes.data(), bytes.size());
   }
   void clear() override { buffer.clear(); }
 

@@ -23,7 +23,7 @@ struct XML_EntityMapper final : IEntityMapper
   XML_EntityMapper &operator=(const XML_EntityMapper &other) = delete;
   XML_EntityMapper(XML_EntityMapper &&other) = delete;
   XML_EntityMapper &operator=(XML_EntityMapper &&other) = delete;
-  ~XML_EntityMapper() override;
+  ~XML_EntityMapper() noexcept override;
   // Is entity reference mapping entry present?
   [[nodiscard]] bool isPresent(const std::string_view &entityName) const override;
   // Determine entity type

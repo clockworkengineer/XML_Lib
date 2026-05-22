@@ -26,10 +26,10 @@ public:
   // Constructors/Destructors
   static constexpr std::size_t kMaxSourceBytes{ XML_LIB_MAX_XML_SIZE };
 
-  explicit BufferSource(const std::u16string_view &sourceBuffer)// UTF16 source BE/LE
+  explicit BufferSource(const std::u16string_view &sourceBuffer, std::size_t maxSourceBytes = kMaxSourceBytes)// UTF16 source BE/LE
   {
     if (sourceBuffer.empty()) { XML_LIB_THROW(Error("Empty source buffer passed to be parsed.")); }
-    if (static_cast<std::size_t>(sourceBuffer.size()) > kMaxSourceBytes / sizeof(char16_t)) {
+    if (static_cast<std::size_t>(sourceBuffer.size()) > maxSourceBytes / sizeof(char16_t)) {
       XML_LIB_THROW(Error("Source buffer exceeds maximum allowed size."));
     }
     std::u16string utf16xml{ sourceBuffer };
@@ -41,10 +41,10 @@ public:
     buffer = utf16xml;
     convertCRLFToLF(buffer);
   }
-  explicit BufferSource(const std::string_view &sourceBuffer)
+  explicit BufferSource(const std::string_view &sourceBuffer, std::size_t maxSourceBytes = kMaxSourceBytes)
   {
     if (sourceBuffer.empty()) { XML_LIB_THROW(Error("Empty source buffer passed to be parsed.")); }
-    if (sourceBuffer.size() > kMaxSourceBytes) {
+    if (sourceBuffer.size() > maxSourceBytes) {
       XML_LIB_THROW(Error("Source buffer exceeds maximum allowed size."));
     }
     buffer = toUtf16(std::string(sourceBuffer));
@@ -81,6 +81,13 @@ public:
   [[nodiscard]] long position() const override { return bufferPosition; }
   [[nodiscard]] std::string getRange(const long start, const long end) override
   {
+    if (start < 0 || end < 0 || end < start) {
+      XML_LIB_THROW(Error("Invalid range requested from BufferSource."));
+    }
+    const auto size = static_cast<std::size_t>(buffer.size());
+    if (static_cast<std::size_t>(end) > size) {
+      XML_LIB_THROW(Error("Requested range exceeds source buffer size."));
+    }
     return toUtf8(buffer.substr(start, static_cast<std::size_t>(end) - start));
   }
   void reset() override
