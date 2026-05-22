@@ -125,6 +125,10 @@ The library is a modern C++20 XML parser, validator, and serializer. Key hardeni
 4. Add sanitizer/ASAN CI coverage and static analysis.
 5. Document security configuration and release hardened defaults.
 
+## Implementation status
+- Steps 1 through 5 have been implemented and validated by build/test execution.
+- Security build options, parser limits, I/O boundary checks, XPath/XSD/XEE hardening, and audit-path fixes are committed.
+
 ---
 
 This plan is designed to convert the current codebase into a defensively hardened XML library with explicit resource limits, safe string handling, and regression coverage for malformed or malicious XML input.
