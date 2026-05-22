@@ -85,9 +85,11 @@ endif()
 if(XML_LIB_DISABLE_XPATH)
   set(XML_LIB_ENABLE_XPATH OFF CACHE BOOL "Enable XPath engine" FORCE)
 endif()
+
 if(XML_LIB_DISABLE_XSD)
   set(XML_LIB_ENABLE_XSD OFF CACHE BOOL "Enable XSD validation support" FORCE)
 endif()
+
 if(XML_LIB_DISABLE_DTD)
   set(XML_LIB_ENABLE_DTD OFF CACHE BOOL "Enable DTD validation support" FORCE)
 endif()
