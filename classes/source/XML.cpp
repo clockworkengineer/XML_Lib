@@ -35,7 +35,7 @@ XML &XML::operator=(const std::string_view &xmlString)
 /// <summary>
 /// XML destructor.
 /// </summary>
-XML::~XML() = default;
+XML::~XML() noexcept = default;
 
 /// <summary>
 /// Get XML_Lib version.

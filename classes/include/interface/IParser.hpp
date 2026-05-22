@@ -27,7 +27,7 @@ public:
     explicit Error(const std::string_view &message) : std::runtime_error(std::string("IParser Error: ").append(message)) {}
   };
 
-  virtual ~IParser() = default;
+  virtual ~IParser() noexcept = default;
 
   /// @brief Parse @p source and return the document root `Node`.
   virtual Node parse(ISource &source, const ParseOptions &options) = 0;

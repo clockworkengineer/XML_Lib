@@ -18,10 +18,20 @@ public:
   XML_LIB_DEFINE_ERROR("FileSource");
 #endif
   // Constructors/Destructors
+  static constexpr std::size_t kMaxSourceBytes{ XML_LIB_MAX_XML_SIZE };
+
   explicit FileSource(const std::string_view &sourceFileName) : filename(sourceFileName)
   {
     source.open(sourceFileName.data(), std::ios_base::binary);
     if (!source.is_open()) { XML_LIB_THROW(Error("File input stream failed to open or does not exist.")); }
+
+    source.seekg(0, std::ios_base::end);
+    const std::streampos fileSize = source.tellg();
+    if (fileSize == static_cast<std::streampos>(-1) || static_cast<std::size_t>(fileSize) > kMaxSourceBytes) {
+      XML_LIB_THROW(Error("File exceeds maximum allowed size."));
+    }
+    source.seekg(0, std::ios_base::beg);
+
     if (current_character() == kCarriageReturn) {
       source.get();
       if (current_character() != kLineFeed) { source.unget(); }
@@ -32,7 +42,7 @@ public:
   FileSource &operator=(const FileSource &other) = delete;
   FileSource(FileSource &&other) = delete;
   FileSource &operator=(FileSource &&other) = delete;
-  ~FileSource() override = default;
+  ~FileSource() noexcept override = default;
 
   [[nodiscard]] Char current() const override { return current_character(); }
   void next() override

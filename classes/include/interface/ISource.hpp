@@ -27,7 +27,7 @@ public:
     explicit Error(const std::string_view &message) : std::runtime_error(std::string("ISource Error: ").append(message)) {}
   };
 
-  virtual ~ISource() = default;
+  virtual ~ISource() noexcept = default;
 
   /// @brief Return the character at the current stream position.
   [[nodiscard]] virtual Char current() const = 0;

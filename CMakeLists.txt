@@ -22,13 +22,19 @@ option(XML_LIB_MINIMAL_FEATURES "Enable minimal embedded feature subset" OFF)
 option(XML_LIB_ENABLE_XPATH "Enable XPath engine" ON)
 option(XML_LIB_ENABLE_XSD "Enable XSD validation support" ON)
 option(XML_LIB_ENABLE_DTD "Enable DTD validation support" ON)
+option(XML_LIB_DISABLE_XPATH "Disable XPath engine for minimal attack surface" OFF)
+option(XML_LIB_DISABLE_XSD "Disable XSD validation support for minimal attack surface" OFF)
+option(XML_LIB_DISABLE_DTD "Disable DTD validation support for minimal attack surface" OFF)
 option(XML_LIB_ENABLE_STRINGIFY "Enable XML stringify support" ON)
 option(XML_LIB_ENABLE_PERFORMANCE_COUNTERS "Enable internal performance counters" OFF)
+option(XML_LIB_ENABLE_SECURITY_HARDENING "Enable default security hardening and minimal attack surface defaults" OFF)
 option(XML_LIB_ENABLE_ASAN "Enable AddressSanitizer for builds" OFF)
 option(XML_LIB_ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer for builds" OFF)
 option(XML_LIB_ENABLE_TSAN "Enable ThreadSanitizer for builds" OFF)
 option(XML_LIB_ENABLE_STATIC_ANALYSIS "Enable additional static analysis warning flags" OFF)
 set(XML_LIB_ARENA_SIZE_KB "256" CACHE STRING "Initial PMR arena size in KB")
+set(XML_LIB_MAX_XML_SIZE "104857600" CACHE STRING "Maximum XML source size in bytes")
+set(XML_LIB_MAX_TOTAL_ATTRIBUTES "1000000" CACHE STRING "Default maximum total attributes across an XML document")
 
 if(XML_LIB_ENABLE_ASAN AND XML_LIB_ENABLE_UBSAN)
   message(FATAL_ERROR "Only one sanitizer may be enabled at a time.")
@@ -67,6 +73,23 @@ if(XML_LIB_MINIMAL_FEATURES)
   set(XML_LIB_ENABLE_XSD OFF CACHE BOOL "Enable XSD validation support" FORCE)
   set(XML_LIB_ENABLE_DTD OFF CACHE BOOL "Enable DTD validation support" FORCE)
   set(XML_LIB_ENABLE_STRINGIFY ON CACHE BOOL "Enable XML stringify support" FORCE)
+endif()
+
+if(XML_LIB_ENABLE_SECURITY_HARDENING)
+  set(XML_LIB_DISABLE_XPATH ON CACHE BOOL "Disable XPath engine for minimal attack surface" FORCE)
+  set(XML_LIB_DISABLE_XSD ON CACHE BOOL "Disable XSD validation support for minimal attack surface" FORCE)
+  set(XML_LIB_DISABLE_DTD ON CACHE BOOL "Disable DTD validation support for minimal attack surface" FORCE)
+  set(XML_LIB_ENABLE_STATIC_ANALYSIS ON CACHE BOOL "Enable additional static analysis warning flags" FORCE)
+endif()
+
+if(XML_LIB_DISABLE_XPATH)
+  set(XML_LIB_ENABLE_XPATH OFF CACHE BOOL "Enable XPath engine" FORCE)
+endif()
+if(XML_LIB_DISABLE_XSD)
+  set(XML_LIB_ENABLE_XSD OFF CACHE BOOL "Enable XSD validation support" FORCE)
+endif()
+if(XML_LIB_DISABLE_DTD)
+  set(XML_LIB_ENABLE_DTD OFF CACHE BOOL "Enable DTD validation support" FORCE)
 endif()
 
 include(CheckCXXSourceCompiles)
@@ -195,6 +218,9 @@ target_compile_definitions(${XML_LIBRARY_NAME}
   $<$<BOOL:${XML_LIB_ENABLE_DTD}>:XML_LIB_ENABLE_DTD>
   $<$<BOOL:${XML_LIB_ENABLE_STRINGIFY}>:XML_LIB_ENABLE_STRINGIFY>
   $<$<BOOL:${XML_LIB_ENABLE_PERFORMANCE_COUNTERS}>:XML_LIB_ENABLE_PERFORMANCE_COUNTERS>
+  $<$<BOOL:${XML_LIB_ENABLE_SECURITY_HARDENING}>:XML_LIB_ENABLE_SECURITY_HARDENING>
+  XML_LIB_MAX_XML_SIZE=${XML_LIB_MAX_XML_SIZE}
+  XML_LIB_MAX_TOTAL_ATTRIBUTES=${XML_LIB_MAX_TOTAL_ATTRIBUTES}
 )
 
 if(MSVC)

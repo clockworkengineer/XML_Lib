@@ -24,7 +24,7 @@ public:
   XML_LIB_DEFINE_ERROR("BufferSource");
 #endif
   // Constructors/Destructors
-  static constexpr std::size_t kMaxSourceBytes{ 1024ULL * 1024ULL * 100ULL }; // 100 MB
+  static constexpr std::size_t kMaxSourceBytes{ XML_LIB_MAX_XML_SIZE };
 
   explicit BufferSource(const std::u16string_view &sourceBuffer)// UTF16 source BE/LE
   {
@@ -55,7 +55,7 @@ public:
   BufferSource &operator=(const BufferSource &other) = delete;
   BufferSource(BufferSource &&other) = delete;
   BufferSource &operator=(BufferSource &&other) = delete;
-  ~BufferSource() override = default;
+  ~BufferSource() noexcept override = default;
 
   [[nodiscard]] Char current() const override
   {

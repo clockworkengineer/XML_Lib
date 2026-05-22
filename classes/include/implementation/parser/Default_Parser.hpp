@@ -15,7 +15,7 @@ public:
   Default_Parser &operator=(const Default_Parser &other) = delete;
   Default_Parser(Default_Parser &&other) = delete;
   Default_Parser &operator=(Default_Parser &&other) = delete;
-  ~Default_Parser() override = default;
+  ~Default_Parser() noexcept override = default;
 
   [[nodiscard]] Node parse(ISource &source, const ParseOptions &options) override;
   [[nodiscard]] bool canValidate() override;
