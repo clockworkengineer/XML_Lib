@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<!DOCTYPE root [
+  <!ENTITY ext SYSTEM "nonexistent_security.txt">
+]>
+<root>&ext;</root>

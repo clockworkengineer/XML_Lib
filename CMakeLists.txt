@@ -24,7 +24,27 @@ option(XML_LIB_ENABLE_XSD "Enable XSD validation support" ON)
 option(XML_LIB_ENABLE_DTD "Enable DTD validation support" ON)
 option(XML_LIB_ENABLE_STRINGIFY "Enable XML stringify support" ON)
 option(XML_LIB_ENABLE_PERFORMANCE_COUNTERS "Enable internal performance counters" OFF)
+option(XML_LIB_ENABLE_ASAN "Enable AddressSanitizer for builds" OFF)
+option(XML_LIB_ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer for builds" OFF)
+option(XML_LIB_ENABLE_TSAN "Enable ThreadSanitizer for builds" OFF)
+option(XML_LIB_ENABLE_STATIC_ANALYSIS "Enable additional static analysis warning flags" OFF)
 set(XML_LIB_ARENA_SIZE_KB "256" CACHE STRING "Initial PMR arena size in KB")
+
+if(XML_LIB_ENABLE_ASAN AND XML_LIB_ENABLE_UBSAN)
+  message(FATAL_ERROR "Only one sanitizer may be enabled at a time.")
+endif()
+
+if(XML_LIB_ENABLE_ASAN AND XML_LIB_ENABLE_TSAN)
+  message(FATAL_ERROR "Only one sanitizer may be enabled at a time.")
+endif()
+
+if(XML_LIB_ENABLE_UBSAN AND XML_LIB_ENABLE_TSAN)
+  message(FATAL_ERROR "Only one sanitizer may be enabled at a time.")
+endif()
+
+if(MSVC AND(XML_LIB_ENABLE_ASAN OR XML_LIB_ENABLE_UBSAN OR XML_LIB_ENABLE_TSAN))
+  message(FATAL_ERROR "Sanitizer support is not configured for MSVC in this build.")
+endif()
 
 if(XML_LIB_EMBEDDED)
   set(XML_LIB_BUILD_SIZE_OPTIMIZED ON CACHE BOOL "Build with size optimization" FORCE)
@@ -55,6 +75,7 @@ check_cxx_source_compiles("
 #include <memory_resource>
 int main() { auto *r = std::pmr::get_default_resource(); (void)r; }
 " HAS_PMR)
+
 if(NOT HAS_PMR)
   message(FATAL_ERROR "XML_Lib requires std::pmr (C++17). Your toolchain does not provide <memory_resource>.")
 endif()
@@ -194,6 +215,17 @@ if(NOT MSVC)
     )
   endif()
 
+  if(XML_LIB_ENABLE_STATIC_ANALYSIS)
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE
+      -Wextra
+      -Wshadow
+      -Wconversion
+      -Wsign-conversion
+      -Wformat-security
+      -Wduplicated-branches
+    )
+  endif()
+
   if(XML_LIB_ENABLE_LTO)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE
       $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-flto>
@@ -212,6 +244,20 @@ if(NOT MSVC)
 
   if(XML_LIB_NO_EXCEPTIONS OR XML_LIB_STRICT_NO_EXCEPTIONS)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fno-exceptions)
+  endif()
+
+  if(XML_LIB_ENABLE_ASAN)
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fsanitize=address -fno-omit-frame-pointer)
+    target_compile_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=address -fno-omit-frame-pointer)
+    target_link_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=address)
+  elseif(XML_LIB_ENABLE_UBSAN)
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fsanitize=undefined -fno-sanitize-recover=undefined)
+    target_compile_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=undefined -fno-sanitize-recover=undefined)
+    target_link_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=undefined)
+  elseif(XML_LIB_ENABLE_TSAN)
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
+    target_compile_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=thread -fno-omit-frame-pointer)
+    target_link_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=thread)
   endif()
 
   if(XML_LIB_EMBEDDED)
@@ -292,36 +338,36 @@ endif()
 
 # Library binary + CMake export set
 install(TARGETS ${XML_LIBRARY_NAME}
-    EXPORT XML_LibTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+  EXPORT XML_LibTargets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Public headers only (exclude implementation/ subdirectory)
 install(DIRECTORY classes/include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib
-    FILES_MATCHING PATTERN "*.hpp"
-    PATTERN "implementation" EXCLUDE)
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib
+  FILES_MATCHING PATTERN "*.hpp"
+  PATTERN "implementation" EXCLUDE)
 
 # Export targets file (XML_LibTargets.cmake)
 install(EXPORT XML_LibTargets
-    FILE XML_LibTargets.cmake
-    NAMESPACE XML_Lib::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+  FILE XML_LibTargets.cmake
+  NAMESPACE XML_Lib::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
 
 # Package config file (XML_LibConfig.cmake)
 configure_package_config_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/XML_LibConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/XML_LibConfig.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
 
 # Package version file (XML_LibConfigVersion.cmake)
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
-    VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion)
+  ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion)
 
 install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+  ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
