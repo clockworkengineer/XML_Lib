@@ -69,11 +69,48 @@ public:
   }
   [[nodiscard]] std::string getRange(const long start, const long end) override
   {
-    std::string rangeBuffer(static_cast<std::size_t>(end) - start, ' ');
-    const long currentPosition = static_cast<long>(source.tellg());
+    if (start < 0 || end < 0 || end < start) {
+      XML_LIB_THROW(Error("Invalid range requested from FileSource."));
+    }
+
+    const std::streamsize length = static_cast<std::streamsize>(end - start);
+    if (length == 0) {
+      return {};
+    }
+
+    std::streampos currentPosition = source.tellg();
+    if (currentPosition == static_cast<std::streampos>(-1)) {
+      source.clear();
+    }
+
+    source.seekg(0, std::ios_base::end);
+    const std::streampos fileSize = source.tellg();
+    if (fileSize == static_cast<std::streampos>(-1) || end > fileSize) {
+      source.clear();
+      if (currentPosition != static_cast<std::streampos>(-1)) {
+        source.seekg(currentPosition, std::ios_base::beg);
+      }
+      XML_LIB_THROW(Error("Requested range exceeds file size."));
+    }
+
+    std::string rangeBuffer;
+    rangeBuffer.resize(static_cast<std::size_t>(length));
+
     source.seekg(start, std::ios_base::beg);
-    source.read(&rangeBuffer[0], static_cast<std::streamsize>(end) - start);
-    source.seekg(currentPosition, std::ios_base::beg);
+    source.read(rangeBuffer.data(), length);
+    if (source.gcount() != length) {
+      source.clear();
+      if (currentPosition != static_cast<std::streampos>(-1)) {
+        source.seekg(currentPosition, std::ios_base::beg);
+      }
+      XML_LIB_THROW(Error("Failed to read requested range from file."));
+    }
+
+    if (currentPosition != static_cast<std::streampos>(-1)) {
+      source.clear();
+      source.seekg(currentPosition, std::ios_base::beg);
+    }
+
     return rangeBuffer;
   }
   std::string getFileName() { return filename; }

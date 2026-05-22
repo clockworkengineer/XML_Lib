@@ -24,9 +24,14 @@ public:
   XML_LIB_DEFINE_ERROR("BufferSource");
 #endif
   // Constructors/Destructors
+  static constexpr std::size_t kMaxSourceBytes{ 1024ULL * 1024ULL * 100ULL }; // 100 MB
+
   explicit BufferSource(const std::u16string_view &sourceBuffer)// UTF16 source BE/LE
   {
     if (sourceBuffer.empty()) { XML_LIB_THROW(Error("Empty source buffer passed to be parsed.")); }
+    if (static_cast<std::size_t>(sourceBuffer.size()) > kMaxSourceBytes / sizeof(char16_t)) {
+      XML_LIB_THROW(Error("Source buffer exceeds maximum allowed size."));
+    }
     std::u16string utf16xml{ sourceBuffer };
     if (utf16xml.starts_with(u"<?xml")) {
       std::transform(utf16xml.begin(), utf16xml.end(), utf16xml.begin(), [](const char16_t &ch) {
@@ -36,9 +41,13 @@ public:
     buffer = utf16xml;
     convertCRLFToLF(buffer);
   }
-  explicit BufferSource(const std::string_view &sourceBuffer) : buffer{ toUtf16(std::string(sourceBuffer)) }
+  explicit BufferSource(const std::string_view &sourceBuffer)
   {
     if (sourceBuffer.empty()) { XML_LIB_THROW(Error("Empty source buffer passed to be parsed.")); }
+    if (sourceBuffer.size() > kMaxSourceBytes) {
+      XML_LIB_THROW(Error("Source buffer exceeds maximum allowed size."));
+    }
+    buffer = toUtf16(std::string(sourceBuffer));
     convertCRLFToLF(buffer);
   }
   BufferSource() = default;
