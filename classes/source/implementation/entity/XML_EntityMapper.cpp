@@ -65,6 +65,8 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entity
   }
 }
 
+static constexpr std::size_t kMaxExternalEntityFileSize{ 5ULL * 1024ULL * 1024ULL }; // 5 MB
+
 /// <summary>
 /// Grab an entity reference mapping from an external file.
 /// </summary>
@@ -87,9 +89,16 @@ std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileN
     XML_LIB_THROW(SyntaxError(std::string("Entity '") + key + "' source file does not exist."));
   }
 
-  std::string content;
   file.seekg(0, std::ios::end);
   const auto size = file.tellg();
+  if (size < 0) {
+    XML_LIB_THROW(SyntaxError(std::string("Entity '") + key + "' source file cannot be read."));
+  }
+  if (static_cast<std::size_t>(size) > kMaxExternalEntityFileSize) {
+    XML_LIB_THROW(SyntaxError("External entity file size exceeds maximum allowed."));
+  }
+
+  std::string content;
   if (size > 0) {
     content.reserve(static_cast<size_t>(size));
     file.seekg(0, std::ios::beg);

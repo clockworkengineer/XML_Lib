@@ -24,11 +24,27 @@ XSD_Impl::~XSD_Impl() = default;
 /// Parse XSD schema from source stream.
 /// </summary>
 /// <param name="source">XSD source stream.</param>
+namespace {
+static constexpr std::size_t kMaxXsdSchemaNodeCount = 10000;
+
+static std::size_t countNodesInTree(const Node &node)
+{
+  std::size_t count = 1;
+  for (const auto &child : node.getChildren()) {
+    count += countNodesInTree(child);
+  }
+  return count;
+}
+}
+
 void XSD_Impl::parse(ISource &source)
 {
   // Parse the XSD file as XML using the library itself
   XML xsdXml;
   xsdXml.parse(source);
+  if (countNodesInTree(xsdXml.root()) > kMaxXsdSchemaNodeCount) {
+    XML_LIB_THROW(SyntaxError("XSD schema complexity exceeds maximum allowed nodes."));
+  }
   // Walk the resulting Node tree to populate the schema data model
   parseSchema(xsdXml.root());
 }

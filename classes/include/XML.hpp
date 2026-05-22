@@ -26,7 +26,10 @@ struct Node;
 struct ParseOptions {
   std::size_t     maxEntityExpansionDepth = 512;    ///< Maximum entity expansion recursion depth (XML bomb defence).
   std::size_t     maxNestingDepth         = 1000;   ///< Maximum element nesting depth.
+  std::size_t     maxElementCount         = 1000000; ///< Maximum number of XML elements in a document.
   std::size_t     maxAttributeCount       = 10000;  ///< Maximum number of attributes per element.
+  std::size_t     maxTotalAttributeCount  = 1000000;///< Maximum number of attributes across the entire document.
+  std::size_t     maxTextNodeSize         = 1024 * 1024; ///< Maximum size of a single text or content node in bytes.
   bool            allowExternalEntities   = false;  ///< When false and no entityResolver set, external entities throw SyntaxError (XXE defence).
   IEntityResolver *entityResolver         = nullptr;///< Optional custom resolver; overrides allowExternalEntities when non-null.
 };

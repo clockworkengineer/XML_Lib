@@ -1,5 +1,6 @@
 #include "XML_Lib_Tests.hpp"
 #include "IEntityResolver.hpp"
+#include "XPath.hpp"
 
 // ============================================================
 // ParseOptions security tests (§7 hardening coverage)
@@ -266,6 +267,77 @@ TEST_CASE("ParseOptions security: entity expansion depth limit", "[XML][Security
     XML xml;
     REQUIRE_NOTHROW(xml.parse(BufferSource{ kSimpleEntityXml }, {}));
   }
+}
+
+TEST_CASE("ParseOptions security: total attribute count limit", "[XML][Security][Attributes]")
+{
+  SECTION("Parse succeeds when total attribute count equals the document limit")
+  {
+    ParseOptions opts;
+    opts.maxTotalAttributeCount = 3;
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(BufferSource{ R"(<root a="1" b="2" c="3"/>)" }, opts));
+  }
+  SECTION("Parse throws when total attribute count exceeds the document limit")
+  {
+    ParseOptions opts;
+    opts.maxTotalAttributeCount = 3;
+    XML xml;
+    REQUIRE_THROWS_WITH(
+      xml.parse(BufferSource{ R"(<root a="1" b="2" c="3" d="4"/>)" }, opts),
+      ContainsSubstring("Maximum total attribute count exceeded."));
+  }
+}
+
+TEST_CASE("ParseOptions security: element count limit", "[XML][Security][Elements]")
+{
+  SECTION("Parse succeeds when element count equals the document limit")
+  {
+    ParseOptions opts;
+    opts.maxElementCount = 3;
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(BufferSource{ "<root><a/><b/></root>" }, opts));
+  }
+  SECTION("Parse throws when element count exceeds the document limit")
+  {
+    ParseOptions opts;
+    opts.maxElementCount = 2;
+    XML xml;
+    REQUIRE_THROWS_WITH(
+      xml.parse(BufferSource{ "<root><a/><b/></root>" }, opts),
+      ContainsSubstring("Maximum element count exceeded."));
+  }
+}
+
+TEST_CASE("ParseOptions security: text node size limit", "[XML][Security][Text]")
+{
+  SECTION("Parse content fails when a content node exceeds the limit")
+  {
+    ParseOptions opts;
+    opts.maxTextNodeSize = 10;
+    XML xml;
+    REQUIRE_THROWS_WITH(
+      xml.parse(BufferSource{ "<root>01234567890</root>" }, opts),
+      ContainsSubstring("Maximum text node size exceeded."));
+  }
+  SECTION("Parse attribute value fails when a value exceeds the text limit")
+  {
+    ParseOptions opts;
+    opts.maxTextNodeSize = 5;
+    XML xml;
+    REQUIRE_THROWS_WITH(
+      xml.parse(BufferSource{ R"(<root attr="123456" />)" }, opts),
+      ContainsSubstring("Maximum text node size exceeded."));
+  }
+}
+
+TEST_CASE("XPath security: expression length limit", "[XML][Security][XPath]")
+{
+  XML xml;
+  xml.parse(BufferSource{ "<root><item>1</item></root>" });
+  XPath xp(xml.root());
+  const std::string longExpression(9000, 'x');
+  REQUIRE_THROWS_WITH(xp.evaluate(longExpression), ContainsSubstring("XPath expression exceeds maximum allowed length."));
 }
 
 #endif // XML_LIB_ENABLE_DTD

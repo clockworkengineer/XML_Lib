@@ -20,6 +20,7 @@ public:
   [[nodiscard]] Node parse(ISource &source, const ParseOptions &options) override;
   [[nodiscard]] bool canValidate() override;
   void validate(Node &xProlog) override;
+  static void ensureTextNodeSizeWithinLimit(std::size_t nodeSize);
 
 private:
   // XML Parser
@@ -54,8 +55,18 @@ private:
   inline static std::size_t elementNestingDepth{ 0 };
   // Maximum allowed nesting depth (copied from ParseOptions at parse start)
   inline static std::size_t maxElementNestingDepth{ 1000 };
+  // Maximum allowed element count in the document (copied from ParseOptions at parse start)
+  inline static std::size_t maxElementCount{ 1000000 };
+  // Current element count for the current parse
+  inline static std::size_t currentElementCount{ 0 };
   // Maximum allowed attribute count per element (copied from ParseOptions at parse start)
   inline static std::size_t maxAttributeCount{ 10000 };
+  // Maximum allowed attribute count across the entire document (copied from ParseOptions at parse start)
+  inline static std::size_t maxTotalAttributeCount{ 1000000 };
+  // Current total attribute count for the current parse
+  inline static std::size_t currentTotalAttributeCount{ 0 };
+  // Maximum allowed text/content node size (copied from ParseOptions at parse start)
+  inline static std::size_t maxTextNodeSize{ 1024 * 1024 };
   // Entity mapper reference
   IEntityMapper &entityMapper;
   // Parse options (set at the start of each parse() call)
