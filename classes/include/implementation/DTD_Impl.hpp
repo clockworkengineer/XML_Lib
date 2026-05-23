@@ -82,9 +82,9 @@ private:
 
 // Shared helper used by multiple DTD content parsing functions.
 template<typename SeparatorHandler, typename ItemParser>
-/// <summary>
+/// @brief
 /// Implementation of DTD_Impl::parseDelimitedList.
-/// </summary>
+
 void DTD_Impl::parseDelimitedList(ISource &source, char delimiter, SeparatorHandler &&separatorHandler, ItemParser &&itemParser)
 {
   while (source.more() && source.current() == delimiter) {

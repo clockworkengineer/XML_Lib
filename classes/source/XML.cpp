@@ -13,103 +13,103 @@
 
 namespace XML_Lib {
 
-/// <summary>
+/// @brief
 /// XML constructor.
-/// </summary>
+
 XML::XML(IStringify *stringify, IParser *parser) : implementation(std::make_unique<XML_Impl>(stringify, parser)) {}
 
-/// <summary>
+/// @brief
 /// XML constructor (parse in a default XML string).
-/// </summary>
+
 XML::XML(const std::string_view &xmlString) : XML() { parse(BufferSource{ xmlString }); }
 
-/// <summary>
+/// @brief
 /// XML assignment (parse in a default XML string).
-/// </summary>
+
 XML &XML::operator=(const std::string_view &xmlString)
 {
   parse(BufferSource{ xmlString });
   return *this;
 }
 
-/// <summary>
+/// @brief
 /// XML destructor.
-/// </summary>
+
 XML::~XML() noexcept = default;
 
-/// <summary>
+/// @brief
 /// Get XML_Lib version.
-/// </summary>
-/// <returns>Library version string.</returns>
+
+/// @return Library version string.
 std::string XML::version() { return XML_Impl::version(); }
 
 #if defined(XML_LIB_ENABLE_DTD)
-/// <summary>
+/// @brief
 /// Return reference to any internal DTD_Validator for parsed XML.
-/// </summary>
-/// <returns>Reference to DTD_Validator Node.</returns>
+
+/// @return Reference to DTD_Validator Node.
 Node &XML::dtd() const { return implementation->dtd(); }
 #endif
 
-/// <summary>
+/// @brief
 /// Return prolog node of the parsed XML tree.
-/// </summary>
-/// <returns>Reference to prolog Node.</returns>
+
+/// @return Reference to prolog Node.
 Node &XML::prolog() const { return implementation->prolog(); }
 
-/// <summary>
+/// @brief
 /// Return declaration node of the parsed XML tree.
-/// </summary>
-/// <returns>Reference to declaration Node.</returns>
+
+/// @return Reference to declaration Node.
 Node &XML::declaration() const { return implementation->declaration(); }
 
-/// <summary>
+/// @brief
 /// Return root node of parsed XML tree.
-/// </summary>
-/// <returns>Reference to root element Node.</returns>
+
+/// @return Reference to root element Node.
 Node &XML::root() const { return implementation->root(); }
 
 #if defined(XML_LIB_ENABLE_DTD)
-/// <summary>
+/// @brief
 /// Validate XML against any DTD_Validator provided to see whether it is valid. If an
 /// exception is thrown, then there is a validation issue and the XML is not valid.
-/// </summary>
+
 void XML::validate() const { implementation->validate(); }
 #endif
 
 #if defined(XML_LIB_ENABLE_XSD)
-/// <summary>
+/// @brief
 /// Validate XML against an XSD schema supplied as a UTF-8 XML string.
-/// </summary>
-/// <param name="xsdSource">XSD schema XML string.</param>
+
+/// @param xsdSource XSD schema XML string.
 void XML::validate(const std::string_view &xsdSource) const { implementation->validate(xsdSource); }
 #endif
 
 #if defined(XML_LIB_ENABLE_XPATH)
-/// <summary>
+/// @brief
 /// Evaluate an XPath 1.0 expression against the parsed document.
-/// </summary>
-/// <param name="expression">XPath expression string.</param>
-/// <returns>Node pointers matching the expression (into the internal node tree).</returns>
+
+/// @param expression XPath expression string.
+/// @return Node pointers matching the expression (into the internal node tree).
 std::vector<const Node *> XML::xpath(const std::string_view expression) const
 {
   return implementation->xpath(expression);
 }
 #endif
 
-/// <summary>
+/// @brief
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well-formed).
-/// </summary>
+
 void XML::parse(ISource &source, const ParseOptions &options) const { implementation->parse(source, options); }
-/// <summary>
+/// @brief
 /// Parse XML from an rvalue source.
-/// </summary>
+
 void XML::parse(ISource &&source, const ParseOptions &options) const { implementation->parse(source, options); }
 
-/// <summary>
+/// @brief
 /// Convenience overload: parse XML directly from a string without needing a BufferSource.
-/// </summary>
+
 void XML::parse(const char *xmlString, const ParseOptions &options) const
 {
   if (!xmlString) { XML_LIB_THROW(SyntaxError("Null XML string passed to parse().")); }
@@ -120,9 +120,9 @@ void XML::parse(const char *xmlString, const ParseOptions &options) const
   BufferSource source{ std::string_view{ xmlString }, options.maxXmlSize };
   implementation->parse(source, options);
 }
-/// <summary>
+/// @brief
 /// Parse XML from a string view.
-/// </summary>
+
 void XML::parse(const std::string_view &xmlString, const ParseOptions &options) const
 {
   if (xmlString.size() > options.maxXmlSize) {
@@ -132,31 +132,31 @@ void XML::parse(const std::string_view &xmlString, const ParseOptions &options) 
   implementation->parse(source, options);
 }
 
-/// <summary>
+/// @brief
 /// Convenience overload: parse XML directly from a file path without needing a FileSource.
-/// </summary>
+
 void XML::parse(const std::filesystem::path &filePath, const ParseOptions &options) const
 {
   FileSource source{ filePath.string(), options.maxXmlSize };
   implementation->parse(source, options);
 }
 
-/// <summary>
+/// @brief
 /// Create XML text from an XML object.
-/// </summary>
+
 #if defined(XML_LIB_ENABLE_STRINGIFY)
-/// <summary>
+/// @brief
 /// Serialize XML to the provided destination.
-/// </summary>
+
 void XML::stringify(IDestination &destination) const { implementation->stringify(destination); }
-/// <summary>
+/// @brief
 /// Serialize XML to a temporary destination.
-/// </summary>
+
 void XML::stringify(IDestination &&destination) const { implementation->stringify(destination); }
 
-/// <summary>
+/// @brief
 /// Convenience overload: stringify XML to a string without needing a BufferDestination.
-/// </summary>
+
 std::string XML::stringify() const
 {
   BufferDestination destination;
@@ -164,9 +164,9 @@ std::string XML::stringify() const
   return destination.toString();
 }
 
-/// <summary>
+/// @brief
 /// Convenience overload: stringify XML directly to a file path without needing a FileDestination.
-/// </summary>
+
 void XML::stringify(const std::filesystem::path &filePath, const Format format) const
 {
   BufferDestination buffer;
@@ -175,38 +175,38 @@ void XML::stringify(const std::filesystem::path &filePath, const Format format) 
 }
 #endif
 
-/// <summary>
+/// @brief
 /// Recursively traverse Node structure calling IAction methods (read-only)
 ///  or to change the XML tree node directly.
-/// </summary>
-/// <param name="action">Action methods to call during traversal.</param>
+
+/// @param action Action methods to call during traversal.
 /// Traverse using non-const JSON so can change JSON tree
 void XML::traverse(IAction &action) { implementation->traverse(action); }
 // Traverse using const JSON so cannot change JSON tree
 void XML::traverse(IAction &action) const { std::as_const(*implementation).traverse(action); }
 
-/// <summary>
+/// @brief
 /// Open an XML file, read its contents into a string buffer and return
 /// the buffer.
-/// </summary>
-/// <param name="fileName">XML file name</param>
-/// <returns>XML string.</returns>
+
+/// @param fileName XML file name
+/// @return XML string.
 std::string XML::fromFile(const std::filesystem::path &filePath) { return XML_Impl::fromFile(filePath); }
 
-/// <summary>
+/// @brief
 /// Create an XML file and write XML string to it.
-/// </summary>
-/// <param name="filePath">XML file path</param>
-/// <param name="xmlString">XML string</param>
-/// <param name="format">XML file format</param>
+
+/// @param filePath XML file path
+/// @param xmlString XML string
+/// @param format XML file format
 void XML::toFile(const std::filesystem::path &filePath, const std::string_view &xmlString, const Format format)
 {
   XML_Impl::toFile(filePath, xmlString, format);
 }
-/// <summary>
+/// @brief
 /// Return format of the XML file.
-/// </summary>
-/// <param name="fileName">XML file name</param>
-/// <returns>XML file format.</returns>
+
+/// @param fileName XML file name
+/// @return XML file format.
 XML::Format XML::getFileFormat(const std::string_view &fileName) { return XML_Impl::getFileFormat(fileName); }
 }// namespace XML_Lib

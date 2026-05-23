@@ -9,16 +9,16 @@
 #include "XML_Impl.hpp"
 
 namespace XML_Lib {
-/// <summary>
+/// @brief
 /// Implementation of Variant::addChild.
-/// </summary>
+
 void Variant::addChild(Node &child) const
 {
   children.push_back(std::move(child));
 }
-/// <summary>
+/// @brief
 /// Implementation of Variant::addChild.
-/// </summary>
+
 void Variant::addChild(Node &&child) const
 {
   children.push_back(std::move(child));
@@ -32,9 +32,9 @@ const std::pmr::vector<Node> &Variant::getChildren() const
 {
   return children;
 }
-/// <summary>
+/// @brief
 /// Implementation of Variant::reserveChildren.
-/// </summary>
+
 void Variant::reserveChildren(const size_t count)
 {
   children.reserve(count);

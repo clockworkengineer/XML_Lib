@@ -1,8 +1,8 @@
 #include "XML_Lib_Tests.hpp"
 
-/// <summary>
+/// @brief
 /// Implementation of addAttributes.
-/// </summary>
+
 void addAttributes(const Element &xElement)
 {
   xElement.addAttribute("attr1", XMLValue {"value1", "value1"});
@@ -58,9 +58,9 @@ TEST_CASE("Element edge cases and integration", "[Node][Element][Edge][Integrati
     REQUIRE(foundElement);
   }
 }
-/// <summary>
+/// @brief
 /// Implementation of addNameSpaces.
-/// </summary>
+
 void addNameSpaces(const Element &xElement)
 {
   xElement.addNameSpace("a", XMLValue {"value1", "value1"});

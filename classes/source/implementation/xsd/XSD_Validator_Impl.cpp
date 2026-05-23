@@ -10,26 +10,26 @@
 
 namespace XML_Lib {
 
-/// <summary>
+/// @brief
 /// XSD_Impl constructor.
-/// </summary>
+
 XSD_Impl::XSD_Impl(Node &xNode) : xmlRoot(xNode) {}
 
-/// <summary>
+/// @brief
 /// XSD_Impl destructor.
-/// </summary>
+
 XSD_Impl::~XSD_Impl() = default;
 
-/// <summary>
+/// @brief
 /// Parse XSD schema from source stream.
-/// </summary>
-/// <param name="source">XSD source stream.</param>
+
+/// @param source XSD source stream.
 namespace {
 static constexpr std::size_t kMaxXsdSchemaNodeCount = 10000;
 
-/// <summary>
+/// @brief
 /// Implementation of countNodesInTree.
-/// </summary>
+
 static std::size_t countNodesInTree(const Node &node)
 {
   std::size_t count = 1;
@@ -40,9 +40,9 @@ static std::size_t countNodesInTree(const Node &node)
 }
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XSD_Impl::parse.
-/// </summary>
+
 void XSD_Impl::parse(ISource &source)
 {
   // Parse the XSD file as XML using the library itself
@@ -55,10 +55,10 @@ void XSD_Impl::parse(ISource &source)
   parseSchema(xsdXml.root());
 }
 
-/// <summary>
+/// @brief
 /// Stringify the loaded schema back to XML text.
-/// </summary>
-/// <param name="destination">Destination stream.</param>
+
+/// @param destination Destination stream.
 void XSD_Impl::stringify(IDestination &destination) const
 {
   destination.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");

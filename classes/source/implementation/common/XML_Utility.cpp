@@ -15,12 +15,12 @@
 
 namespace XML_Lib {
 
-/// <summary>
+/// @brief
 /// Split a string into a vector of strings using the passed in delimiter.
-/// </summary>
-/// <param name="target">String to split up.</param>
-/// <param name="delimiter">Character delimiter to split on.</param>
-/// <returns>Vector of split strings.</returns>
+
+/// @param target String to split up.
+/// @param delimiter Character delimiter to split on.
+/// @return Vector of split strings.
 std::vector<std::string> splitString(const std::string_view &target, const char delimiter)
 {
   std::stringstream sourceStream{std::string(target)};
@@ -30,10 +30,10 @@ std::vector<std::string> splitString(const std::string_view &target, const char 
   return splitStrings;
 }
 
-/// <summary>
+/// @brief
 /// Trim whitespace from the beginning and end of a string.
-/// </summary>
-/// <param name="target">String to trim.</param>
+
+/// @param target String to trim.
 std::string trimString(const std::string_view &target)
 {
   std::string trimmedString{ target };
@@ -47,9 +47,9 @@ std::string trimString(const std::string_view &target)
 }
 
 namespace {
-/// <summary>
+/// @brief
 /// Implementation of transformStringCase.
-/// </summary>
+
 std::string transformStringCase(const std::string_view &target, int (*fn)(int))
 {
   std::string result{ target };
@@ -59,15 +59,15 @@ std::string transformStringCase(const std::string_view &target, int (*fn)(int))
 }
 } // namespace
 
-/// <summary>
+/// @brief
 /// Convert a string to all uppercase.
-/// </summary>
-/// <param name="target">String to convert.</param>
+
+/// @param target String to convert.
 std::string toUpperString(const std::string_view &target) { return transformStringCase(target, std::toupper); }
 
-/// <summary>
+/// @brief
 /// Convert a string to all lowercase.
-/// </summary>
-/// <param name="target">String to convert.</param>
+
+/// @param target String to convert.
 std::string toLowerString(const std::string_view &target) { return transformStringCase(target, std::tolower); }
 }// namespace  XML_Lib

@@ -10,7 +10,7 @@
 
 namespace xl = XML_Lib;
 
-/// <summary>Program entry point.</summary>
+/// @briefProgram entry point.</summary>
 int main()
 {
   std::cout << "XML_Entity_Reference_Example started ..." << std::endl;

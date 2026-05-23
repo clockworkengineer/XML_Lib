@@ -17,13 +17,13 @@
 
 namespace XML_Lib {
 
-/// <summary>
+/// @brief
 /// Return the first child of xNode satisfying predicate, or nullptr.
-/// </summary>
+
 template<typename Predicate>
-/// <summary>
+/// @brief
 /// Find the first child matching the supplied predicate.
-/// </summary>
+
 static Node *findFirstChild(Node &xNode, Predicate &&predicate)
 {
   for (auto &child : xNode.getChildren()) {
@@ -32,9 +32,9 @@ static Node *findFirstChild(Node &xNode, Predicate &&predicate)
   return nullptr;
 }
 
-/// <summary>
+/// @brief
 /// Initialize XML_Impl with the provided stringifier and parser.
-/// </summary>
+
 XML_Impl::XML_Impl(IStringify *stringify, IParser *parser)
 {
   entityMapper = std::make_unique<XML_EntityMapper>();
@@ -54,14 +54,14 @@ XML_Impl::XML_Impl(IStringify *stringify, IParser *parser)
 #endif
 }
 
-/// <summary>
+/// @brief
 /// Destroy XML_Impl and release any owned resources.
-/// </summary>
+
 XML_Impl::~XML_Impl() = default;
 
-/// <summary>
+/// @brief
 /// Return the XML_Lib version string.
-/// </summary>
+
 std::string XML_Impl::version()
 {
   std::stringstream versionString;
@@ -70,9 +70,9 @@ std::string XML_Impl::version()
 }
 
 #if defined(XML_LIB_ENABLE_DTD)
-/// <summary>
+/// @brief
 /// Return the DTD node used for document validation.
-/// </summary>
+
 Node &XML_Impl::dtd()
 {
   if (xmlParser->canValidate()) {
@@ -84,23 +84,23 @@ Node &XML_Impl::dtd()
 }
 #endif
 
-/// <summary>
+/// @brief
 /// Return the XML prolog node.
-/// </summary>
+
 Node &XML_Impl::prolog()
 {
   if (!xmlRoot.isEmpty()) { return xmlRoot; }
   XML_LIB_THROW(Error("No XML has been parsed."));
 }
 
-/// <summary>
+/// @brief
 /// Return the XML declaration node.
-/// </summary>
+
 Node &XML_Impl::declaration() { return prolog().getChildren()[0]; }
 
-/// <summary>
+/// @brief
 /// Return the document root node.
-/// </summary>
+
 Node &XML_Impl::root()
 {
   if (Node *found = findFirstChild(prolog(), [](const Node &n) { return isA<Root>(n) || isA<Self>(n); })) {
@@ -110,16 +110,16 @@ Node &XML_Impl::root()
 }
 
 #if defined(XML_LIB_ENABLE_DTD)
-/// <summary>
+/// @brief
 /// Validate the parsed XML against the attached DTD.
-/// </summary>
+
 void XML_Impl::validate() { xmlParser->validate(prolog()); }
 #endif
 
 #if defined(XML_LIB_ENABLE_XSD)
-/// <summary>
+/// @brief
 /// Validate the parsed XML against an XSD schema string.
-/// </summary>
+
 void XML_Impl::validate(const std::string_view &xsdSource)
 {
   XSD_Validator xsdValidator(root());
@@ -130,9 +130,9 @@ void XML_Impl::validate(const std::string_view &xsdSource)
 #endif
 
 #if defined(XML_LIB_ENABLE_XPATH)
-/// <summary>
+/// @brief
 /// Evaluate an XPath expression against the current document.
-/// </summary>
+
 std::vector<const Node *> XML_Impl::xpath(const std::string_view expression)
 {
   XPath xp(root());
@@ -140,9 +140,9 @@ std::vector<const Node *> XML_Impl::xpath(const std::string_view expression)
 }
 #endif
 
-/// <summary>
+/// @brief
 /// Implementation of XML_Impl::parse.
-/// </summary>
+
 void XML_Impl::parse(ISource &source, const ParseOptions &options)
 {
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
@@ -150,24 +150,24 @@ void XML_Impl::parse(ISource &source, const ParseOptions &options)
   xmlRoot = xmlParser->parse(source, options);
 }
 #if defined(XML_LIB_ENABLE_STRINGIFY)
-/// <summary>
+/// @brief
 /// Serialize the current XML document to the destination.
-/// </summary>
+
 void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(prolog(), destination, 0); }
 #endif
 
-/// <summary>
+/// @brief
 /// Traverse the XML tree and invoke the supplied action.
-/// </summary>
+
 void XML_Impl::traverse(IAction &action)
 {
   if (xmlRoot.isEmpty()) { XML_LIB_THROW(Error("No XML to traverse.")); }
   traverseNodes(xmlRoot, action);
 }
 
-/// <summary>
+/// @brief
 /// Traverse the XML tree with a const action handler.
-/// </summary>
+
 void XML_Impl::traverse(IAction &action) const
 {
   if (xmlRoot.isEmpty()) { XML_LIB_THROW(Error("No XML to traverse.")); }

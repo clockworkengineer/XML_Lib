@@ -72,7 +72,7 @@ static const std::string kProductSchema = R"(
 
 // ---- Main ------------------------------------------------------------------
 
-/// <summary>Program entry point.</summary>
+/// @briefProgram entry point.</summary>
 int main()
 {
   std::cout << "XML_XSD_Attributes_Example started ..." << std::endl;

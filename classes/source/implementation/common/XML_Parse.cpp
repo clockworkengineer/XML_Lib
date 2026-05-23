@@ -15,11 +15,11 @@
 
 namespace XML_Lib {
 
-/// <summary>
+/// @brief
 /// Parse  and return XML name.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <returns>XML name.</returns>
+
+/// @param source XML source stream.
+/// @return XML name.
 std::string parseName(ISource &source)
 {
   const String name = readName(source);
@@ -30,35 +30,35 @@ std::string parseName(ISource &source)
   return toUtf8(name);
 }
 
-/// <summary>
+/// @brief
 /// Parse and return XML entity reference.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <returns>Parsed entity reference value.</returns>
+
+/// @param source XML source stream.
+/// @return Parsed entity reference value.
 XMLValue parseEntityReference(ISource &source)
 {
   const std::string unparsed = readEntityReferenceText(source);
   return XMLValue{ unparsed, unparsed };
 }
 
-/// <summary>
+/// @brief
 /// Parse a character reference value (hex/dec) returning its value.
 /// Source must be positioned immediately after the consumed \"&#\" prefix.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <returns>Character reference value.</returns>
+
+/// @param source XML source stream.
+/// @return Character reference value.
 XMLValue parseCharacterReference(ISource &source)
 {
   return decodeCharRef(source);
 }
 
-/// <summary>
+/// @brief
 /// Parse character value which can be either be a plain character,
 /// character reference or entity reference that maps to a string of
 /// characters.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <returns>Character value.</returns>
+
+/// @param source XML source stream.
+/// @return Character value.
 XMLValue parseCharacter(ISource &source)
 {
   return parseCharacterOrReference(source);
@@ -66,9 +66,9 @@ XMLValue parseCharacter(ISource &source)
 
 namespace {
 
-/// <summary>
+/// @brief
 /// Implementation of parseValueImpl.
-/// </summary>
+
 XMLValue parseValueImpl(ISource &source, IEntityMapper *entityMapper)
 {
   return parseQuotedValue(source, entityMapper);
@@ -76,32 +76,32 @@ XMLValue parseValueImpl(ISource &source, IEntityMapper *entityMapper)
 
 } // namespace
 
-/// <summary>
+/// @brief
 /// Parse a literal string value and return it.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <param name="entityMapper">Entity mapper.</param>
-/// <returns>Literal string value.</returns>
+
+/// @param source XML source stream.
+/// @param entityMapper Entity mapper.
+/// @return Literal string value.
 XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 {
   return parseValueImpl(source, &entityMapper);
 }
 
-/// <summary>
+/// @brief
 /// Parse a literal string value and return it.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <returns>Literal string value.</returns>
+
+/// @param source XML source stream.
+/// @return Literal string value.
 XMLValue parseValue(ISource &source)
 {
   return parseValueImpl(source, nullptr);
 }
 
-/// <summary>
+/// @brief
 /// Extract body of tag up until '>'.
-/// </summary>
-/// <param name="source">XML source stream.</param>
-/// <returns>Body of tag.</returns>
+
+/// @param source XML source stream.
+/// @return Body of tag.
 std::string parseTagBody(ISource &source)
 {
   ignoreWS(source);

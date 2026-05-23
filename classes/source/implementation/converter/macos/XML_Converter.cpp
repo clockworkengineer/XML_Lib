@@ -23,17 +23,17 @@ namespace XML_Lib {
 
 static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> utf16Convert;
 
-/// <summary>
+/// @brief
 /// Convert to UTF-8 strings.
-/// </summary>
+
 std::string toUtf8(const char16_t utf16) { return toUtf8(std::u16string(1, utf16)); }
-/// <summary>
+/// @brief
 /// Convert a UTF-16 string to UTF-8.
-/// </summary>
+
 std::string toUtf8(const std::u16string &utf16) { return utf16Convert.to_bytes(utf16); }
-/// <summary>
+/// @brief
 /// Convert to UTF-16 strings.
-/// </summary>
+
 std::u16string toUtf16(const std::string &utf8) { return utf16Convert.from_bytes(utf8); }
 
 }// namespace XML_Lib

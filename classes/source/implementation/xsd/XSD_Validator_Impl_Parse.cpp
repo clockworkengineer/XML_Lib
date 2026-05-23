@@ -17,9 +17,9 @@ namespace XML_Lib {
 
 namespace {
 
-/// <summary>
+/// @brief
 /// Implementation of parseUint.
-/// </summary>
+
 uint32_t parseUint(const std::string_view &value, uint32_t defaultValue = 1u)
 {
   if (value.empty()) { return defaultValue; }
@@ -28,9 +28,9 @@ uint32_t parseUint(const std::string_view &value, uint32_t defaultValue = 1u)
   return (ec == std::errc()) ? result : defaultValue;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of parseOccurrenceBounds.
-/// </summary>
+
 void parseOccurrenceBounds(const Node &node, uint32_t &minOccurs, uint32_t &maxOccurs)
 {
   const auto minStr = attrValueView(node, "minOccurs");
@@ -45,28 +45,28 @@ void parseOccurrenceBounds(const Node &node, uint32_t &minOccurs, uint32_t &maxO
 // Utility helpers
 // ----------------------------------------------------------------
 
-/// <summary>
+/// @brief
 /// Return the local tag name of an XML element node (strips any namespace prefix).
 /// e.g. "xs:element" -> "element", "element" -> "element"
-/// </summary>
+
 std::string_view XSD_Impl::localTag(const Node &node)
 {
   return localTagView(node);
 }
 
-/// <summary>
+/// @brief
 /// Return the value of a named attribute on a node, or empty string view if absent.
-/// </summary>
+
 std::string_view XSD_Impl::attrValue(const Node &node, const std::string_view &attrName)
 {
   return attrValueView(node, attrName);
 }
 
-/// <summary>
+/// @brief
 /// Normalise a type reference, removing a known xs: prefix so all stored
 /// type names use the "xs:xxx" canonical form regardless of the prefix used
 /// in the schema document (xsd:, xs:, etc.)
-/// </summary>
+
 std::string XSD_Impl::resolveType(const std::string_view &typeStr)
 {
   // Already fully qualified with xs:
@@ -78,10 +78,10 @@ std::string XSD_Impl::resolveType(const std::string_view &typeStr)
   return std::string(typeStr);
 }
 
-/// <summary>
+/// @brief
 /// Return a list of child Nodes that are XML element nodes
 /// (skips Content, Comment, PI etc.).
-/// </summary>
+
 std::vector<std::reference_wrapper<const Node>> XSD_Impl::childElements(const Node &node)
 {
   return childElementRefs(node);
@@ -91,9 +91,9 @@ std::vector<std::reference_wrapper<const Node>> XSD_Impl::childElements(const No
 // Restriction parsing
 // ----------------------------------------------------------------
 
-/// <summary>
+/// @brief
 /// Parse xs:restriction and its facet children into a SimpleType.
-/// </summary>
+
 void XSD_Impl::parseRestriction(const Node &restrictNode, XSD_SimpleType &st)
 {
   static const std::unordered_map<std::string_view, XSD_Restriction::Facet> facetMap{
@@ -126,9 +126,9 @@ void XSD_Impl::parseRestriction(const Node &restrictNode, XSD_SimpleType &st)
 // SimpleType parsing
 // ----------------------------------------------------------------
 
-/// <summary>
+/// @brief
 /// Parse xs:simpleType node into a SimpleType struct.
-/// </summary>
+
 void XSD_Impl::parseSimpleType(const Node &stNode, XSD_SimpleType &st)
 {
   st.name = attrValue(stNode, "name");
@@ -141,9 +141,9 @@ void XSD_Impl::parseSimpleType(const Node &stNode, XSD_SimpleType &st)
 // Attribute declaration parsing
 // ----------------------------------------------------------------
 
-/// <summary>
+/// @brief
 /// Parse xs:attribute node into an AttributeDecl.
-/// </summary>
+
 void XSD_Impl::parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr)
 {
   attr.name = attrValue(attrNode, "name");
@@ -164,9 +164,9 @@ void XSD_Impl::parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr)
 // Particle (element child in content model) parsing
 // ----------------------------------------------------------------
 
-/// <summary>
+/// @brief
 /// Parse a single xs:element particle node.
-/// </summary>
+
 void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
 {
   particle.elementName = std::string(attrValue(particleNode, "name"));
@@ -189,9 +189,9 @@ void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
 
 static constexpr std::size_t kMaxXsdContentChildren{ 4096 };
 
-/// <summary>
+/// @brief
 /// Implementation of XSD_Impl::parseChildParticleList.
-/// </summary>
+
 void XSD_Impl::parseChildParticleList(const Node &parentNode, XSD_ComplexType &ct)
 {
   const auto children = childElementViews(parentNode);
@@ -207,9 +207,9 @@ void XSD_Impl::parseChildParticleList(const Node &parentNode, XSD_ComplexType &c
   }
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XSD_Impl::parseChildAttributes.
-/// </summary>
+
 void XSD_Impl::parseChildAttributes(const Node &parentNode, XSD_ComplexType &ct)
 {
   const auto children = childElementViews(parentNode);
@@ -229,9 +229,9 @@ void XSD_Impl::parseChildAttributes(const Node &parentNode, XSD_ComplexType &ct)
 // ComplexType parsing
 // ----------------------------------------------------------------
 
-/// <summary>
+/// @brief
 /// Parse xs:complexType node into a ComplexType struct.
-/// </summary>
+
 void XSD_Impl::parseComplexType(const Node &ctNode, XSD_ComplexType &ct)
 {
   ct.name = attrValue(ctNode, "name");
@@ -273,9 +273,9 @@ void XSD_Impl::parseComplexType(const Node &ctNode, XSD_ComplexType &ct)
 // Top-level element declaration parsing
 // ----------------------------------------------------------------
 
-/// <summary>
+/// @brief
 /// Parse a top-level xs:element declaration.
-/// </summary>
+
 void XSD_Impl::parseTopLevelElement(const Node &elemNode)
 {
   XSD_ElementDecl decl;
@@ -312,9 +312,9 @@ void XSD_Impl::parseTopLevelElement(const Node &elemNode)
 // Schema root parsing
 // ----------------------------------------------------------------
 
-/// <summary>
+/// @brief
 /// Walk the xs:schema element and dispatch to type/element parsers.
-/// </summary>
+
 void XSD_Impl::parseSchema(const Node &schemaNode)
 {
   const auto tag = localTag(schemaNode);
@@ -389,9 +389,9 @@ const XSD_ElementDecl *XSD_Impl::findTopLevelElement(const std::string &name) co
   return nullptr;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XSD_Impl::isBuiltinType.
-/// </summary>
+
 bool XSD_Impl::isBuiltinType(const std::string_view &typeName) const
 {
   static constexpr std::array<std::string_view, 34> builtins{ "xs:ID",

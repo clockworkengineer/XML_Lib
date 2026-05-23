@@ -28,17 +28,17 @@ struct Parser
     return tokens[idx];
   }
 
-/// <summary>
+/// @brief
 /// Implementation of consume.
-/// </summary>
+
   void consume()
   {
     if (cur().type != XPathTokenType::End) { ++pos; }
   }
 
-/// <summary>
+/// @brief
 /// Implementation of accept.
-/// </summary>
+
   bool accept(XPathTokenType t)
   {
     if (cur().type == t) {
@@ -48,9 +48,9 @@ struct Parser
     return false;
   }
 
-/// <summary>
+/// @brief
 /// Implementation of expect.
-/// </summary>
+
   XPathToken expect(XPathTokenType t)
   {
     if (cur().type != t) {

@@ -12,17 +12,17 @@
 
 namespace XML_Lib {
 
-/// <summary>
+/// @brief
 /// Return true if the node is element-like (Element, Root, or Self).
-/// </summary>
+
 bool isElementLikeNode(const Node &node)
 {
   return isA<Element>(node) || isA<Root>(node) || isA<Self>(node);
 }
 
-/// <summary>
+/// @brief
 /// Return true if the node is a Content node.
-/// </summary>
+
 bool isContentNode(const Node &node) { return isA<Content>(node); }
 
 } // namespace XML_Lib

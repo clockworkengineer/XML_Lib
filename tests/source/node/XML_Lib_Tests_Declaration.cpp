@@ -108,9 +108,9 @@ TEST_CASE("Create and use Declaration Node.", "[Node][Declaration][API]")
         void add(const char *bytes) override { data += bytes; }
         void add(const std::string_view &bytes) override { data += std::string(bytes); }
         void clear() override { data.clear(); }
-        /// <summary>
+        /// @brief
         /// Return the declaration node text as a string.
-        /// </summary>
+        
         std::string str() const { return data; }
       };
       StringDestination dest;

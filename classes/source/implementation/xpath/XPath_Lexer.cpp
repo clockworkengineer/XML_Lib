@@ -19,9 +19,9 @@ namespace {
   // (simplified: ASCII letter, underscore, or colon for qualified names)
   bool isNameStart(char c) { return std::isalpha(static_cast<unsigned char>(c)) || c == '_'; }
 
-  /// <summary>
+  /// @brief
   /// Return true if the character can be used in an XPath name.
-  /// </summary>
+  
   bool isNameChar(char c) { return std::isalnum(static_cast<unsigned char>(c)) || c == '_' || c == '-' || c == '.'; }
 
   // Allows a single colon for qualified names (prefix:local), but not double-colon (axis separator)
@@ -37,7 +37,7 @@ namespace {
 
 }// anonymous namespace
 
-/// <summary>
+/// @brief
 /// Tokenize an XPath 1.0 expression.
 ///
 /// Disambiguation (XPath 1.0 spec §3.7):
@@ -46,7 +46,7 @@ namespace {
 /// - Keyword names (div, mod, and, or) are recognised as operators only
 ///   when the immediately preceding token is a value-producing token
 ///   (Name, RightParen, RightBracket, StringLiteral, NumberLiteral).
-/// </summary>
+
 std::vector<XPathToken> xpathTokenize(const std::string_view expression)
 {
   if (expression.size() > kMaxXPathExpressionLength) {

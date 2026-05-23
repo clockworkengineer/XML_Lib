@@ -13,15 +13,15 @@
 
 namespace xl = XML_Lib;
 
-/// <summary>
+/// @brief
 /// Return Fibonacci xml file name.
-/// </summary>
-/// <returns>XML settings file name.</returns>
+
+/// @return XML settings file name.
 std::string xmlFibonacciFile() { return (std::filesystem::current_path() / "files" / "fibonacci.xml").string(); }
-/// <summary>
+/// @brief
 /// Read in current fibonacci sequence from XML file, calculate the
 /// next in sequence and write back to XML file.
-/// </summary>
+
 void nextFibonacci()
 {
   const xl::XML xml;
@@ -45,9 +45,9 @@ void nextFibonacci()
   xml.stringify(xl::FileDestination{ xmlFibonacciFile() });
 }
 
-/// <summary>
+/// @brief
 /// Program entry point.
-/// </summary>
+
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   try {

@@ -16,9 +16,9 @@
 
 namespace XML_Lib {
 
-/// <summary>
+/// @brief
 /// Initialise entity mapping table with defaults.
-/// </summary>
+
 void  XML_EntityMapper::resetToDefault()
 {
   entityMappings.clear();  invalidateTranslationCache();  entityMappings.reserve(16);
@@ -29,15 +29,15 @@ void  XML_EntityMapper::resetToDefault()
   entityMappings.emplace("&gt;", XML_EntityMapping{ "&#x3E;" });
 }
 
-/// <summary>
+/// @brief
 /// Take an entity reference mapping and make sure it is not recursive by calling
 /// recurseOverEntityReference() repeatedly on any mapping found at the next level.
 /// Until no more are found it or the entity reference repeats, in which case
 /// it will cause and infinite loop when decoding and is an error.
-/// </summary>
-/// <param name="entityName">Entity mapping name.</param>
-/// <param name="type">Entity mapping type.</param>
-/// <param name="currentEntities">Currently, defined entities.</param>
+
+/// @param entityName Entity mapping name.
+/// @param type Entity mapping type.
+/// @param currentEntities Currently, defined entities.
 void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entityName,
   const Char type,
   std::set<std::string> &currentEntities)
@@ -72,19 +72,19 @@ void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entity
 
 static constexpr std::size_t kMaxExternalEntityFileSize{ 5ULL * 1024ULL * 1024ULL }; // 5 MB
 
-/// <summary>
+/// @brief
 /// Grab an entity reference mapping from an external file.
-/// </summary>
-/// <param name="fileName"></param>
-/// <returns>String containing the contents of entity reference mapping file.</returns>
+
+/// @param fileName 
+/// @return String containing the contents of entity reference mapping file.
 std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fileName) const
 {
   return getCachedFileMapping(fileName);
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::getCachedFileMapping.
-/// </summary>
+
 std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileName) const
 {
   if (fileName.empty()) {
@@ -125,27 +125,27 @@ XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string_view &en
   return ensureEntityMapping(entityMappings, entityName);
 }
 
-/// <summary>
+/// @brief
 /// Initialise entity mapping table with defaults.
-/// </summary>
+
 void XML_EntityMapper::reset()
 {
   resetToDefault();
 }
 
-/// <summary>
+/// @brief
 /// Entity mapper constructor.
-/// </summary>
+
 XML_EntityMapper::XML_EntityMapper() { resetToDefault(); }
 
-/// <summary>
+/// @brief
 /// Entity mapper destructor.
-/// </summary>
+
 XML_EntityMapper::~XML_EntityMapper() noexcept = default;
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::invalidateTranslationCache.
-/// </summary>
+
 void XML_EntityMapper::invalidateTranslationCache() const
 {
   translationCacheValid = false;
@@ -162,28 +162,28 @@ const std::vector<std::pair<std::string_view, const XML_EntityMapping *>> &XML_E
   return translationCandidates;
 }
 
-/// <summary>
+/// @brief
 /// Is an entry for an entity reference present in the map?
-/// </summary>
-/// <param name="entityName">.</param>
-/// <returns></returns>
+
+/// @param entityName .
+/// @return 
 bool XML_EntityMapper::isPresent(const std::string_view &entityName) const
 {
   return findEntityMapping(entityMappings, entityName) != nullptr;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::setExternalEntityPolicy.
-/// </summary>
+
 void XML_EntityMapper::setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver)
 {
   allowExternalEntities = allowExternal;
   entityResolver = resolver;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::map.
-/// </summary>
+
 XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 {
   if (const auto *entityMapping = findEntityMapping(entityMappings, entityReference.getUnparsed())) {
@@ -218,12 +218,12 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
   }
   XML_LIB_THROW(SyntaxError("Entity '" + entityReference.getUnparsed() + "' does not exist."));
 }
-/// <summary>
+/// @brief
 /// Translate any entity reference to be found in a string.
-/// </summary>
-/// <param name="toTranslate">Source string containing references to be translated.</param>
-/// <param name="type">Entity reference type.</param>
-/// <returns>Translated string.</returns>
+
+/// @param toTranslate Source string containing references to be translated.
+/// @param type Entity reference type.
+/// @return Translated string.
 std::string XML_EntityMapper::translate(const std::string_view &toTranslate, const char type) const
 {
   if (toTranslate.empty()) { return std::string{}; }
@@ -260,36 +260,36 @@ std::string XML_EntityMapper::translate(const std::string_view &toTranslate, con
   return translated;
 }
 
-/// <summary>
+/// @brief
 /// Determine entity type
-/// </summary>
+
 bool XML_EntityMapper::isInternal(const std::string_view &entityName)
 {
   if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isInternal(); }
   return false;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::isExternal.
-/// </summary>
+
 bool XML_EntityMapper::isExternal(const std::string_view &entityName)
 {
   if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isExternal(); }
   return false;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::isNotation.
-/// </summary>
+
 bool XML_EntityMapper::isNotation(const std::string_view &entityName)
 {
   if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isNotation(); }
   return false;
 }
 
-/// <summary>
+/// @brief
 /// Get entity mapping values.
-/// </summary>
+
 const std::string &XML_EntityMapper::getInternal(const std::string_view &entityName)
 {
   if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isInternal()) {
@@ -312,40 +312,40 @@ const XMLExternalReference &XML_EntityMapper::getExternal(const std::string_view
   XML_LIB_THROW(Error(std::string("External entity reference not found for '").append(entityName)+"'."));
 }
 
-/// <summary>
+/// @brief
 /// Set entity mapping values.
-/// </summary>
+
 void XML_EntityMapper::setInternal(const std::string_view &entityName, const std::string_view &internal)
 {
   getEntityMapping(entityName).setInternal(internal);
   invalidateTranslationCache();
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::setNotation.
-/// </summary>
+
 void XML_EntityMapper::setNotation(const std::string_view &entityName, const std::string_view &notation)
 {
   getEntityMapping(entityName).setNotation(notation);
   invalidateTranslationCache();
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::setExternal.
-/// </summary>
+
 void XML_EntityMapper::setExternal(const std::string_view &entityName, const XMLExternalReference &external)
 {
   getEntityMapping(entityName).setExternal(external);
   invalidateTranslationCache();
 }
 
-/// <summary>
+/// @brief
 /// Take an entity reference string, check whether it contains any infinitely
 /// recursive definition and throw an exception if so. This is done by
 /// recursively parsing any entities found in an entity mapping and adding it to
 /// a current set of used entities; throwing an exception if it is already
 /// being used.
-/// </summary>
+
 void XML_EntityMapper::checkRecursiveEntity(const std::string_view &entityName,
   const std::string &expanded,
   std::set<std::string> &currentEntities)
@@ -373,9 +373,9 @@ void XML_EntityMapper::checkRecursiveEntity(const std::string_view &entityName,
   }
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XML_EntityMapper::checkForRecursion.
-/// </summary>
+
 void XML_EntityMapper::checkForRecursion()
 {
   std::set<std::string> currentEntities{};

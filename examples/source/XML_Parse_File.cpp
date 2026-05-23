@@ -15,11 +15,11 @@ namespace chrono = std::chrono;
 
 static constexpr size_t kMaxFileLengthToDisplay = 16 * 1024;
 
-/// <summary>
+/// @brief
 /// Parse XML file, stringify and parse XML from buffer whilst timing each
 /// step.
-/// </summary>
-/// <param name="fileName">XML file name</param>
+
+/// @param fileName XML file name
 void processXMLFile(const std::string &fileName)
 {
   auto elapsedTime = [](const auto &start, const auto &stop) {
@@ -56,9 +56,9 @@ void processXMLFile(const std::string &fileName)
   std::cout << "Finished " << fileName << "." << std::endl;
 }
 
-/// <summary>
+/// @brief
 /// Program entry point.
-/// </summary>
+
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   // Initialise logging.

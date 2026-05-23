@@ -18,9 +18,9 @@
 
 namespace XML_Lib {
 
-/// <summary>
+/// @brief
 /// Validate a file path: reject null bytes and any path component equal to "..".
-/// </summary>
+
 static void validateFilePath(const std::filesystem::path &filePath)
 {
   const std::string pathStr = filePath.string();
@@ -34,18 +34,18 @@ static void validateFilePath(const std::filesystem::path &filePath)
   }
 }
 
-/// <summary>
+/// @brief
 /// Write XML string to a file stream.
-/// </summary>
-/// <param name="xmlFile">XML file stream</param>
-/// <param name="xmlString">XML string</param>
+
+/// @param xmlFile XML file stream
+/// @param xmlString XML string
 void writeXMLString(std::ofstream &xmlFile, const std::string_view &xmlString) { xmlFile << xmlString; }
-/// <summary>
+/// @brief
 /// Write XML string to a file stream.
-/// </summary>
-/// <param name="xmlFile">XML file stream</param>
-/// <param name="xmlString">XML string</param>
-/// <param name="format">XML file format</param>
+
+/// @param xmlFile XML file stream
+/// @param xmlString XML string
+/// @param format XML file format
 void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, const XML::Format format)
 {
   if (format == XML::Format::utf16BE) {
@@ -65,20 +65,20 @@ void writeXMLString(std::ofstream &xmlFile, const std::u16string &xmlString, con
   }
 }
 
-/// <summary>
+/// @brief
 /// Read XML string from a file stream.
-/// </summary>
-/// <param name="xmlFile">XML file stream</param>
-/// <returns>XML string.</returns>
+
+/// @param xmlFile XML file stream
+/// @return XML string.
 std::string readXMLString(const std::ifstream &xmlFile)
 {
   std::ostringstream xmlFileBuffer;
   xmlFileBuffer << xmlFile.rdbuf();
   return xmlFileBuffer.str();
 }
-/// <summary>
+/// @brief
 /// Read an XML file into a UTF-16 string using the specified file format.
-/// </summary>
+
 std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
 {
   std::u16string utf16String;
@@ -104,12 +104,12 @@ std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
   return utf16String;
 }
 
-/// <summary>
+/// @brief
 /// Return format of an XML file after checking for any byte order marks at
 /// the beginning of the XML file.
-/// </summary>
-/// <param name="fileName">XML file name</param>
-/// <returns>XML file format.</returns>
+
+/// @param fileName XML file name
+/// @return XML file format.
 XML::Format XML_Impl::getFileFormat(const std::string_view &fileName)
 {
   std::ifstream xmlFile{ fileName.data(), std::ios_base::binary };
@@ -126,13 +126,13 @@ XML::Format XML_Impl::getFileFormat(const std::string_view &fileName)
   return XML::Format::utf8;
 }
 
-/// <summary>
+/// @brief
 /// Open a XML file, read its contents into a string buffer and return
 /// the buffer. Note any CRLF in the source file are translated to just a
 /// LF internally.
-/// </summary>
-/// <param name="filePath">XML file path</param>
-/// <returns>XML string.</returns>
+
+/// @param filePath XML file path
+/// @return XML string.
 std::string XML_Impl::fromFile(const std::filesystem::path &filePath)
 {
   validateFilePath(filePath);
@@ -167,12 +167,12 @@ std::string XML_Impl::fromFile(const std::filesystem::path &filePath)
   return translated;
 }
 
-/// <summary>
+/// @brief
 /// Create an XML file and write XML string to it.
-/// </summary>
-/// <param name="filePath">XML file path</param>
-/// <param name="xmlString">XML string</param>
-/// <param name="format">XML file format</param>
+
+/// @param filePath XML file path
+/// @param xmlString XML string
+/// @param format XML file format
 void XML_Impl::toFile(const std::filesystem::path &filePath, const std::string_view &xmlString, const XML::Format format)
 {
   validateFilePath(filePath);

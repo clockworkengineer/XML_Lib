@@ -20,21 +20,21 @@ int WideCharToBytes(const wchar_t *wideString, const int wideStringLength, char 
 {
   return WideCharToMultiByte(CP_UTF8, 0, wideString, wideStringLength, bytes, length, nullptr, nullptr);
 }
-/// <summary>
+/// @brief
 /// Implementation of BytesToWideChar.
-/// </summary>
+
 int BytesToWideChar(const char *bytes, const int length, wchar_t *sideString = nullptr, const int wideStringLength = 0)
 {
   return MultiByteToWideChar(CP_UTF8, 0, bytes, length, sideString, wideStringLength);
 }
 
-/// <summary>
+/// @brief
 /// Convert to UTF-8 strings.
-/// </summary>
+
 std::string toUtf8(const char16_t utf16) { return toUtf8(std::u16string(1, utf16)); }
-/// <summary>
+/// @brief
 /// Implementation of toUtf8.
-/// </summary>
+
 std::string toUtf8(const std::u16string &utf16)
 {
   const std::wstring wideString{ utf16.begin(), utf16.end() };
@@ -42,9 +42,9 @@ std::string toUtf8(const std::u16string &utf16)
   WideCharToBytes(&wideString[0], -1, &bytes[0], static_cast<int>(bytes.length()));
   return bytes;
 }
-/// <summary>
+/// @brief
 /// Convert to UTF-16 strings.
-/// </summary>
+
 std::u16string toUtf16(const std::string &utf8)
 {
   std::wstring wideString(BytesToWideChar(utf8.c_str(), static_cast<int>(utf8.length())), 0);

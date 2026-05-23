@@ -16,21 +16,21 @@ public:
   Default_Stringify &operator=(Default_Stringify &&other) = delete;
   ~Default_Stringify() override = default;
 
-/// <summary>
+/// @brief
 /// Recursively parse Node passed in to produce XML output on a
 /// destination stream in UTF-8 encoding.
-/// </summary>
-/// <param name="xNode">Node to convert into XML.</param>
-/// <param name="destination">XML destination stream.</param>
-/// <param name="indent">Current indentation.</param>
+
+/// @param xNode Node to convert into XML.
+/// @param destination XML destination stream.
+/// @param indent Current indentation.
 void stringify(const Node &xNode, IDestination &destination, const unsigned long indent) const override
   {
  stringifyNodes(xNode, destination, indent);
 }
 private:
-/// <summary>
+/// @brief
 /// Implementation of stringifyNodes.
-/// </summary>
+
   static void stringifyNodes(const Node &xNode, IDestination &destination, const unsigned long indent)
   {
   // XML prolog

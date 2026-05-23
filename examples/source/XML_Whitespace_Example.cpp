@@ -9,7 +9,7 @@
 
 namespace xl = XML_Lib;
 
-/// <summary>Program entry point.</summary>
+/// @briefProgram entry point.</summary>
 int main() {
   std::cout << "XML_Whitespace_Example started ..." << std::endl;
   xl::XML xml;

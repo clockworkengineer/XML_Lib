@@ -44,9 +44,9 @@ XMLValue decodeCharRef(ISource &source)
   XML_LIB_THROW(SyntaxError(source.getPosition(), "Cannot convert character reference."));
 }
 
-/// <summary>
+/// @brief
 /// Implementation of readName.
-/// </summary>
+
 String readName(ISource &source)
 {
   String name;
@@ -58,9 +58,9 @@ String readName(ISource &source)
   return name;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of readUntil.
-/// </summary>
+
 std::string readUntil(ISource &source, Char terminator)
 {
   String buffer;
@@ -72,9 +72,9 @@ std::string readUntil(ISource &source, Char terminator)
   return toUtf8(buffer);
 }
 
-/// <summary>
+/// @brief
 /// Implementation of readEntityReferenceText.
-/// </summary>
+
 std::string readEntityReferenceText(ISource &source)
 {
   const std::string entityPrefix = toUtf8(source.current());
@@ -90,9 +90,9 @@ std::string readEntityReferenceText(ISource &source)
   return unparsed;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of parseCharacterOrReference.
-/// </summary>
+
 XMLValue parseCharacterOrReference(ISource &source)
 {
   if (match(source, "&#")) {
@@ -124,9 +124,9 @@ void appendTextSegment(std::string &unparsed,
   parsed += character.getParsed();
 }
 
-/// <summary>
+/// @brief
 /// Implementation of parseQuotedValue.
-/// </summary>
+
 XMLValue parseQuotedValue(ISource &source, IEntityMapper *entityMapper)
 {
   const Char quote = source.current();

@@ -89,7 +89,7 @@ static const std::string kUsernameSchema = R"(
 
 // ---- Main ------------------------------------------------------------------
 
-/// <summary>Program entry point.</summary>
+/// @briefProgram entry point.</summary>
 int main()
 {
   std::cout << "XML_XSD_Type_Restrictions started ..." << std::endl;

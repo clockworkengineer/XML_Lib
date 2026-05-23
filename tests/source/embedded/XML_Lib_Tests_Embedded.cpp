@@ -235,9 +235,9 @@ TEST_CASE("Embedded library artifact exists and is non-empty", "[XML][Embedded][
 /// std::terminate → std::abort, or exited with a non-zero status after a
 /// signal handler like Catch2's captured the abort).
 template<typename Fn>
-/// <summary>
+/// @brief
 /// Implementation of terminatesAbnormally.
-/// </summary>
+
 static bool terminatesAbnormally(Fn &&fn)
 {
   const pid_t pid = ::fork();

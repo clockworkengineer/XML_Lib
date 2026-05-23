@@ -12,10 +12,10 @@
 
 namespace xl = XML_Lib;
 
-/// <summary>
+/// @brief
 /// Parse XML file and analyze its XML tree.
-/// </summary>
-/// <param name="fileName">XML file name</param>
+
+/// @param fileName XML file name
 void processXMLFile(const std::string &fileName)
 {
   std::cout << "Analyzing " << fileName << std::endl;
@@ -27,9 +27,9 @@ void processXMLFile(const std::string &fileName)
   std::cout << "Finished " << fileName << "." << std::endl;
 }
 
-/// <summary>
+/// @brief
 /// Program entry point.
-/// </summary>
+
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   // Initialise logging.

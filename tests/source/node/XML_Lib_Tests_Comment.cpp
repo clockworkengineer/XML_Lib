@@ -69,9 +69,9 @@ TEST_CASE("Create and use Comment Node.", "[Node][Comment][API]")
         void add(const char *bytes) override { data += bytes; }
         void add(const std::string_view &bytes) override { data += std::string(bytes); }
         void clear() override { data.clear(); }
-        /// <summary>
+        /// @brief
         /// Return the comment node contents as a string.
-        /// </summary>
+        
         std::string str() const { return data; }
       };
       StringDestination dest;

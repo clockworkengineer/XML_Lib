@@ -10,7 +10,7 @@
 
 namespace xl = XML_Lib;
 
-/// <summary>Program entry point.</summary>
+/// @briefProgram entry point.</summary>
 int main()
 {
   std::cout << "XML_Mixed_Content_Example started ..." << std::endl;

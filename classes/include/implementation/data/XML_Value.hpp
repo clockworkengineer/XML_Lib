@@ -24,9 +24,9 @@ struct XMLValue
   [[nodiscard]] char getQuote() const { return quote; }
 
 protected:
-/// <summary>
+/// @brief
 /// Implementation of setValue.
-/// </summary>
+
    void setValue(const std::string_view &str1, const std::string_view &str2)
   {
     unparsed = str1;

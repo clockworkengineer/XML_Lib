@@ -36,9 +36,9 @@ static XPathResult evalExpr(const XPathExpr &expr,
   const Node &documentRoot,
   const std::vector<const Node *> &ancestorStack);
 
-/// <summary>
+/// @brief
 /// Implementation of nodeNamespaceURI.
-/// </summary>
+
 static std::string nodeNamespaceURI(const Node &node)
 {
   if (isA<Element>(node)) return NRef<Element>(node).getNamespaceURI();
@@ -53,9 +53,9 @@ static std::string nodeNamespaceURI(const Node &node)
 static double resultToNumber(const XPathResult &r);
 static bool resultToBool(const XPathResult &r);
 
-/// <summary>
+/// @brief
 /// Implementation of resultToNumber.
-/// </summary>
+
 static double resultToNumber(const XPathResult &r)
 {
   switch (r.type) {
@@ -76,9 +76,9 @@ static double resultToNumber(const XPathResult &r)
   return 0.0;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of resultToBool.
-/// </summary>
+
 static bool resultToBool(const XPathResult &r)
 {
   switch (r.type) {
@@ -104,9 +104,9 @@ static XPathResult makeNumber(double v)
   r.numberValue = v;
   return r;
 }
-/// <summary>
+/// @brief
 /// Implementation of makeString.
-/// </summary>
+
 static XPathResult makeString(std::string s)
 {
   XPathResult r;
@@ -114,9 +114,9 @@ static XPathResult makeString(std::string s)
   r.stringValue = std::move(s);
   return r;
 }
-/// <summary>
+/// @brief
 /// Implementation of makeBool.
-/// </summary>
+
 static XPathResult makeBool(bool b)
 {
   XPathResult r;
@@ -450,9 +450,9 @@ static std::string fnNormalizeSpace(const std::string &s)
   return result;
 }
 
-/// <summary>
+/// @brief
 /// Implementation of fnTranslate.
-/// </summary>
+
 static std::string fnTranslate(const std::string &str, const std::string &from, const std::string &to)
 {
   std::string result;
@@ -860,15 +860,15 @@ static XPathResult evalExpr(const XPathExpr &expr,
 // ========================================================================
 // Shared evaluation entry point
 // ========================================================================
-/// <summary>
+/// @brief
 /// Tokenize, parse and evaluate an XPath expression against docRoot.
 /// Throws XPath::Error on empty expression, syntax errors, or runtime errors.
-/// </summary>
+
 static constexpr std::size_t kMaxXPathExpressionLength = 8192;
 
-/// <summary>
+/// @brief
 /// Implementation of evalExpression.
-/// </summary>
+
 static XPathResult evalExpression(const std::string_view expression, const Node &docRoot)
 {
   if (expression.empty()) { XML_LIB_THROW(XPath::Error("Empty expression.")); }
@@ -886,9 +886,9 @@ static XPathResult evalExpression(const std::string_view expression, const Node 
 // ========================================================================
 XPath_Impl::XPath_Impl(const Node &root) : xmlRoot(root) {}
 
-/// <summary>
+/// @brief
 /// Implementation of XPath_Impl::evaluate.
-/// </summary>
+
 std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression) const
 {
   try {
@@ -902,9 +902,9 @@ std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression
   }
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XPath_Impl::evaluateString.
-/// </summary>
+
 std::string XPath_Impl::evaluateString(const std::string_view expression) const
 {
   try {
@@ -916,9 +916,9 @@ std::string XPath_Impl::evaluateString(const std::string_view expression) const
   }
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XPath_Impl::evaluateBool.
-/// </summary>
+
 bool XPath_Impl::evaluateBool(const std::string_view expression) const
 {
   try {
@@ -930,9 +930,9 @@ bool XPath_Impl::evaluateBool(const std::string_view expression) const
   }
 }
 
-/// <summary>
+/// @brief
 /// Implementation of XPath_Impl::evaluateNumber.
-/// </summary>
+
 double XPath_Impl::evaluateNumber(const std::string_view expression) const
 {
   try {

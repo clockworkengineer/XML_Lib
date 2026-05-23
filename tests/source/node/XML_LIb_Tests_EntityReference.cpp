@@ -1,8 +1,8 @@
 #include "XML_Lib_Tests.hpp"
 
-/// <summary>
+/// @brief
 /// Implementation of createXMLValue.
-/// </summary>
+
 XMLValue createXMLValue()
 {
   return XMLValue("unparsed", "parsed");
