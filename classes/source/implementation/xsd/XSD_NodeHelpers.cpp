@@ -4,6 +4,9 @@
 
 namespace XML_Lib {
 
+/// <summary>
+/// Implementation of localTagView.
+/// </summary>
 std::string_view localTagView(const Node &node)
 {
   const auto &name = NRef<Element>(node).name();
@@ -12,6 +15,9 @@ std::string_view localTagView(const Node &node)
   return pos != std::string::npos ? view.substr(pos + 1) : view;
 }
 
+/// <summary>
+/// Implementation of attrValueView.
+/// </summary>
 std::string_view attrValueView(const Node &node, const std::string_view &attrName)
 {
   const auto &elem = NRef<Element>(node);
@@ -19,6 +25,9 @@ std::string_view attrValueView(const Node &node, const std::string_view &attrNam
   return std::string_view{};
 }
 
+/// <summary>
+/// Implementation of childElementRefs.
+/// </summary>
 std::vector<std::reference_wrapper<const Node>> childElementRefs(const Node &node)
 {
   const auto &children = node.getChildren();
@@ -35,6 +44,9 @@ std::vector<std::reference_wrapper<const Node>> childElementRefs(const Node &nod
   return result;
 }
 
+/// <summary>
+/// Implementation of childElementViews.
+/// </summary>
 std::vector<XSD_NodeView> childElementViews(const Node &node)
 {
   auto refs = childElementRefs(node);

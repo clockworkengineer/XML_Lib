@@ -51,6 +51,7 @@ static void tryValidate(const std::string &label, const std::string &xmlSource, 
 
 // ---- Main ------------------------------------------------------------------
 
+/// <summary>Program entry point.</summary>
 int main()
 {
   std::cout << "XML_XSD_Basic_Validation started ..." << std::endl;

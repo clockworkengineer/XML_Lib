@@ -28,6 +28,9 @@ void stringify(const Node &xNode, IDestination &destination, const unsigned long
  stringifyNodes(xNode, destination, indent);
 }
 private:
+/// <summary>
+/// Implementation of stringifyNodes.
+/// </summary>
   static void stringifyNodes(const Node &xNode, IDestination &destination, const unsigned long indent)
   {
   // XML prolog

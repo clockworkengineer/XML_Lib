@@ -11,6 +11,9 @@
 
 namespace xl = XML_Lib;
 
+/// <summary>
+/// Program entry point.
+/// </summary>
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   try {

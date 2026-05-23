@@ -33,6 +33,9 @@ public:
     buffer.append(bytes);
   }
   void add(const Char ch) override { add(toUtf8(ch)); }
+/// <summary>
+/// Implementation of add.
+/// </summary>
   void add(const char * bytes, std::size_t length)
   {
     if (!bytes && length > 0) { XML_LIB_THROW(Error("Null pointer passed to BufferDestination::add().")); }

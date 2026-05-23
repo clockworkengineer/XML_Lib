@@ -36,6 +36,9 @@ static XPathResult evalExpr(const XPathExpr &expr,
   const Node &documentRoot,
   const std::vector<const Node *> &ancestorStack);
 
+/// <summary>
+/// Implementation of nodeNamespaceURI.
+/// </summary>
 static std::string nodeNamespaceURI(const Node &node)
 {
   if (isA<Element>(node)) return NRef<Element>(node).getNamespaceURI();
@@ -50,6 +53,9 @@ static std::string nodeNamespaceURI(const Node &node)
 static double resultToNumber(const XPathResult &r);
 static bool resultToBool(const XPathResult &r);
 
+/// <summary>
+/// Implementation of resultToNumber.
+/// </summary>
 static double resultToNumber(const XPathResult &r)
 {
   switch (r.type) {
@@ -70,6 +76,9 @@ static double resultToNumber(const XPathResult &r)
   return 0.0;
 }
 
+/// <summary>
+/// Implementation of resultToBool.
+/// </summary>
 static bool resultToBool(const XPathResult &r)
 {
   switch (r.type) {
@@ -95,6 +104,9 @@ static XPathResult makeNumber(double v)
   r.numberValue = v;
   return r;
 }
+/// <summary>
+/// Implementation of makeString.
+/// </summary>
 static XPathResult makeString(std::string s)
 {
   XPathResult r;
@@ -102,6 +114,9 @@ static XPathResult makeString(std::string s)
   r.stringValue = std::move(s);
   return r;
 }
+/// <summary>
+/// Implementation of makeBool.
+/// </summary>
 static XPathResult makeBool(bool b)
 {
   XPathResult r;
@@ -435,6 +450,9 @@ static std::string fnNormalizeSpace(const std::string &s)
   return result;
 }
 
+/// <summary>
+/// Implementation of fnTranslate.
+/// </summary>
 static std::string fnTranslate(const std::string &str, const std::string &from, const std::string &to)
 {
   std::string result;
@@ -848,6 +866,9 @@ static XPathResult evalExpr(const XPathExpr &expr,
 /// </summary>
 static constexpr std::size_t kMaxXPathExpressionLength = 8192;
 
+/// <summary>
+/// Implementation of evalExpression.
+/// </summary>
 static XPathResult evalExpression(const std::string_view expression, const Node &docRoot)
 {
   if (expression.empty()) { XML_LIB_THROW(XPath::Error("Empty expression.")); }
@@ -865,6 +886,9 @@ static XPathResult evalExpression(const std::string_view expression, const Node 
 // ========================================================================
 XPath_Impl::XPath_Impl(const Node &root) : xmlRoot(root) {}
 
+/// <summary>
+/// Implementation of XPath_Impl::evaluate.
+/// </summary>
 std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression) const
 {
   try {
@@ -878,6 +902,9 @@ std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression
   }
 }
 
+/// <summary>
+/// Implementation of XPath_Impl::evaluateString.
+/// </summary>
 std::string XPath_Impl::evaluateString(const std::string_view expression) const
 {
   try {
@@ -889,6 +916,9 @@ std::string XPath_Impl::evaluateString(const std::string_view expression) const
   }
 }
 
+/// <summary>
+/// Implementation of XPath_Impl::evaluateBool.
+/// </summary>
 bool XPath_Impl::evaluateBool(const std::string_view expression) const
 {
   try {
@@ -900,6 +930,9 @@ bool XPath_Impl::evaluateBool(const std::string_view expression) const
   }
 }
 
+/// <summary>
+/// Implementation of XPath_Impl::evaluateNumber.
+/// </summary>
 double XPath_Impl::evaluateNumber(const std::string_view expression) const
 {
   try {

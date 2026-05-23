@@ -19,6 +19,9 @@ namespace {
   // (simplified: ASCII letter, underscore, or colon for qualified names)
   bool isNameStart(char c) { return std::isalpha(static_cast<unsigned char>(c)) || c == '_'; }
 
+  /// <summary>
+  /// Return true if the character can be used in an XPath name.
+  /// </summary>
   bool isNameChar(char c) { return std::isalnum(static_cast<unsigned char>(c)) || c == '_' || c == '-' || c == '.'; }
 
   // Allows a single colon for qualified names (prefix:local), but not double-colon (axis separator)

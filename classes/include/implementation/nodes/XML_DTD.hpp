@@ -94,6 +94,9 @@ struct DTD final : Variant
     }
     XML_LIB_THROW(Error("Could not find notation name."));
   }
+/// <summary>
+/// Implementation of addElement.
+/// </summary>
   void addElement(const std::string_view &elementName, const Element &element)
   {
     elements.emplace(elementName, element);
@@ -106,6 +109,9 @@ struct DTD final : Variant
     }
     XML_LIB_THROW(Error("Could not find notation name."));
   }
+/// <summary>
+/// Implementation of addNotation.
+/// </summary>
   void addNotation(const std::string_view &notationName, const XMLExternalReference &notation)
   {
     notations.emplace(notationName, notation);

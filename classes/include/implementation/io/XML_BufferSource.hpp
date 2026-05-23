@@ -41,6 +41,9 @@ public:
     buffer = utf16xml;
     convertCRLFToLF(buffer);
   }
+/// <summary>
+/// Implementation of BufferSource.
+/// </summary>
   explicit BufferSource(const std::string_view &sourceBuffer, std::size_t maxSourceBytes = kMaxSourceBytes)
   {
     if (sourceBuffer.empty()) { XML_LIB_THROW(Error("Empty source buffer passed to be parsed.")); }
@@ -98,6 +101,9 @@ public:
   }
 
 private:
+/// <summary>
+/// Implementation of convertCRLFToLF.
+/// </summary>
   static void convertCRLFToLF(String &xmlString)
   {
     size_t pos = xmlString.find(u"\x0D\x0A");

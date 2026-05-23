@@ -17,6 +17,9 @@ namespace XML_Lib {
 
 namespace {
 
+/// <summary>
+/// Implementation of parseUint.
+/// </summary>
 uint32_t parseUint(const std::string_view &value, uint32_t defaultValue = 1u)
 {
   if (value.empty()) { return defaultValue; }
@@ -25,6 +28,9 @@ uint32_t parseUint(const std::string_view &value, uint32_t defaultValue = 1u)
   return (ec == std::errc()) ? result : defaultValue;
 }
 
+/// <summary>
+/// Implementation of parseOccurrenceBounds.
+/// </summary>
 void parseOccurrenceBounds(const Node &node, uint32_t &minOccurs, uint32_t &maxOccurs)
 {
   const auto minStr = attrValueView(node, "minOccurs");
@@ -183,6 +189,9 @@ void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
 
 static constexpr std::size_t kMaxXsdContentChildren{ 4096 };
 
+/// <summary>
+/// Implementation of XSD_Impl::parseChildParticleList.
+/// </summary>
 void XSD_Impl::parseChildParticleList(const Node &parentNode, XSD_ComplexType &ct)
 {
   const auto children = childElementViews(parentNode);
@@ -198,6 +207,9 @@ void XSD_Impl::parseChildParticleList(const Node &parentNode, XSD_ComplexType &c
   }
 }
 
+/// <summary>
+/// Implementation of XSD_Impl::parseChildAttributes.
+/// </summary>
 void XSD_Impl::parseChildAttributes(const Node &parentNode, XSD_ComplexType &ct)
 {
   const auto children = childElementViews(parentNode);
@@ -377,6 +389,9 @@ const XSD_ElementDecl *XSD_Impl::findTopLevelElement(const std::string &name) co
   return nullptr;
 }
 
+/// <summary>
+/// Implementation of XSD_Impl::isBuiltinType.
+/// </summary>
 bool XSD_Impl::isBuiltinType(const std::string_view &typeName) const
 {
   static constexpr std::array<std::string_view, 34> builtins{ "xs:ID",

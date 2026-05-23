@@ -66,6 +66,9 @@ XMLValue parseCharacter(ISource &source)
 
 namespace {
 
+/// <summary>
+/// Implementation of parseValueImpl.
+/// </summary>
 XMLValue parseValueImpl(ISource &source, IEntityMapper *entityMapper)
 {
   return parseQuotedValue(source, entityMapper);

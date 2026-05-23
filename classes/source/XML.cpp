@@ -102,6 +102,9 @@ std::vector<const Node *> XML::xpath(const std::string_view expression) const
 /// if a syntax error in the XML is found (not well-formed).
 /// </summary>
 void XML::parse(ISource &source, const ParseOptions &options) const { implementation->parse(source, options); }
+/// <summary>
+/// Parse XML from an rvalue source.
+/// </summary>
 void XML::parse(ISource &&source, const ParseOptions &options) const { implementation->parse(source, options); }
 
 /// <summary>
@@ -117,6 +120,9 @@ void XML::parse(const char *xmlString, const ParseOptions &options) const
   BufferSource source{ std::string_view{ xmlString }, options.maxXmlSize };
   implementation->parse(source, options);
 }
+/// <summary>
+/// Parse XML from a string view.
+/// </summary>
 void XML::parse(const std::string_view &xmlString, const ParseOptions &options) const
 {
   if (xmlString.size() > options.maxXmlSize) {
@@ -139,7 +145,13 @@ void XML::parse(const std::filesystem::path &filePath, const ParseOptions &optio
 /// Create XML text from an XML object.
 /// </summary>
 #if defined(XML_LIB_ENABLE_STRINGIFY)
+/// <summary>
+/// Serialize XML to the provided destination.
+/// </summary>
 void XML::stringify(IDestination &destination) const { implementation->stringify(destination); }
+/// <summary>
+/// Serialize XML to a temporary destination.
+/// </summary>
 void XML::stringify(IDestination &&destination) const { implementation->stringify(destination); }
 
 /// <summary>

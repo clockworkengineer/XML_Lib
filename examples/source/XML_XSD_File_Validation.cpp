@@ -41,6 +41,7 @@ static void validatePair(const fs::path &xmlPath, const fs::path &xsdPath)
 
 // ---- Main ------------------------------------------------------------------
 
+/// <summary>Program entry point.</summary>
 int main()
 {
   std::cout << "XML_XSD_File_Validation started ..." << std::endl;

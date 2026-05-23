@@ -76,6 +76,9 @@ std::string readXMLString(const std::ifstream &xmlFile)
   xmlFileBuffer << xmlFile.rdbuf();
   return xmlFileBuffer.str();
 }
+/// <summary>
+/// Read an XML file into a UTF-16 string using the specified file format.
+/// </summary>
 std::u16string readXMLString(std::ifstream &xmlFile, const XML::Format format)
 {
   std::u16string utf16String;

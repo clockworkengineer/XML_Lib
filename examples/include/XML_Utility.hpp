@@ -7,6 +7,9 @@
 class Utility
 {
 public:
+  /// <summary>
+  /// Create a list of XML files in the sample files directory.
+  /// </summary>
   static std::vector<std::string> createXMLFileList()
   {
     std::vector<std::string> fileList;
@@ -15,6 +18,9 @@ public:
     }
     return (fileList);
   }
+  /// <summary>
+  /// Generate a new file name by replacing the .xml extension.
+  /// </summary>
   static std::string createFileName(const std::string &torrentFileName, const std::string &newExtension)
   {
     std::string newFileName = torrentFileName;

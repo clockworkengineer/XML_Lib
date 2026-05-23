@@ -82,6 +82,9 @@ std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fil
   return getCachedFileMapping(fileName);
 }
 
+/// <summary>
+/// Implementation of XML_EntityMapper::getCachedFileMapping.
+/// </summary>
 std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileName) const
 {
   if (fileName.empty()) {
@@ -140,6 +143,9 @@ XML_EntityMapper::XML_EntityMapper() { resetToDefault(); }
 /// </summary>
 XML_EntityMapper::~XML_EntityMapper() noexcept = default;
 
+/// <summary>
+/// Implementation of XML_EntityMapper::invalidateTranslationCache.
+/// </summary>
 void XML_EntityMapper::invalidateTranslationCache() const
 {
   translationCacheValid = false;
@@ -166,12 +172,18 @@ bool XML_EntityMapper::isPresent(const std::string_view &entityName) const
   return findEntityMapping(entityMappings, entityName) != nullptr;
 }
 
+/// <summary>
+/// Implementation of XML_EntityMapper::setExternalEntityPolicy.
+/// </summary>
 void XML_EntityMapper::setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver)
 {
   allowExternalEntities = allowExternal;
   entityResolver = resolver;
 }
 
+/// <summary>
+/// Implementation of XML_EntityMapper::map.
+/// </summary>
 XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
 {
   if (const auto *entityMapping = findEntityMapping(entityMappings, entityReference.getUnparsed())) {
@@ -257,12 +269,18 @@ bool XML_EntityMapper::isInternal(const std::string_view &entityName)
   return false;
 }
 
+/// <summary>
+/// Implementation of XML_EntityMapper::isExternal.
+/// </summary>
 bool XML_EntityMapper::isExternal(const std::string_view &entityName)
 {
   if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isExternal(); }
   return false;
 }
 
+/// <summary>
+/// Implementation of XML_EntityMapper::isNotation.
+/// </summary>
 bool XML_EntityMapper::isNotation(const std::string_view &entityName)
 {
   if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isNotation(); }
@@ -303,12 +321,18 @@ void XML_EntityMapper::setInternal(const std::string_view &entityName, const std
   invalidateTranslationCache();
 }
 
+/// <summary>
+/// Implementation of XML_EntityMapper::setNotation.
+/// </summary>
 void XML_EntityMapper::setNotation(const std::string_view &entityName, const std::string_view &notation)
 {
   getEntityMapping(entityName).setNotation(notation);
   invalidateTranslationCache();
 }
 
+/// <summary>
+/// Implementation of XML_EntityMapper::setExternal.
+/// </summary>
 void XML_EntityMapper::setExternal(const std::string_view &entityName, const XMLExternalReference &external)
 {
   getEntityMapping(entityName).setExternal(external);
@@ -349,6 +373,9 @@ void XML_EntityMapper::checkRecursiveEntity(const std::string_view &entityName,
   }
 }
 
+/// <summary>
+/// Implementation of XML_EntityMapper::checkForRecursion.
+/// </summary>
 void XML_EntityMapper::checkForRecursion()
 {
   std::set<std::string> currentEntities{};

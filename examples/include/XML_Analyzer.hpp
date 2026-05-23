@@ -80,6 +80,9 @@ public:
     os << "----------------------------------------------------";
     return (os.str());
   }
+  /// <summary>
+  /// Return a formatted string with the sizes of XML_Lib node types.
+  /// </summary>
   static std::string dumpNodeSizes()
   {
     std::stringstream os;
@@ -101,6 +104,9 @@ public:
     os << "XML_Lib::XSelf size " << sizeof(XML_Lib::Self) << " in bytes.\n";
     return (os.str());
   }
+  /// <summary>
+  /// Return a formatted string with the system numeric type sizes.
+  /// </summary>
   static std::string dumpNumericSizes()
   {
     std::stringstream os;

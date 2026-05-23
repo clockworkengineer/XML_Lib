@@ -19,6 +19,9 @@ const std::pmr::vector<XMLAttribute> *nodeAttributes(const Node &node)
   return nullptr;
 }
 
+/// <summary>
+/// Implementation of findAttributeValue.
+/// </summary>
 std::string findAttributeValue(const Node &node, const std::string_view attrName)
 {
   const auto *attrs = nodeAttributes(node);

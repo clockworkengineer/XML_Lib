@@ -27,6 +27,9 @@ XSD_Impl::~XSD_Impl() = default;
 namespace {
 static constexpr std::size_t kMaxXsdSchemaNodeCount = 10000;
 
+/// <summary>
+/// Implementation of countNodesInTree.
+/// </summary>
 static std::size_t countNodesInTree(const Node &node)
 {
   std::size_t count = 1;
@@ -37,6 +40,9 @@ static std::size_t countNodesInTree(const Node &node)
 }
 }
 
+/// <summary>
+/// Implementation of XSD_Impl::parse.
+/// </summary>
 void XSD_Impl::parse(ISource &source)
 {
   // Parse the XSD file as XML using the library itself

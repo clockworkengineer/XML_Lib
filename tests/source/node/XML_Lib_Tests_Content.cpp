@@ -83,6 +83,9 @@ TEST_CASE("Create and use Content Node.", "[Node][Content][API]")
         void add(const char *bytes) override { data += bytes; }
         void add(const std::string_view &bytes) override { data += std::string(bytes); }
         void clear() override { data.clear(); }
+        /// <summary>
+        /// Return the content node text as a string.
+        /// </summary>
         std::string str() const { return data; }
       };
       StringDestination dest;

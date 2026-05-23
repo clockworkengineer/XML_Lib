@@ -45,6 +45,9 @@ void nextFibonacci()
   xml.stringify(xl::FileDestination{ xmlFibonacciFile() });
 }
 
+/// <summary>
+/// Program entry point.
+/// </summary>
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   try {

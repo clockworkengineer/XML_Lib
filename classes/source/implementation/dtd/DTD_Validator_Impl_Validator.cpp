@@ -16,6 +16,9 @@
 namespace XML_Lib {
 
 namespace {
+/// <summary>
+/// Implementation of buildEnumerationSet.
+/// </summary>
 static std::set<std::string> buildEnumerationSet(const std::string &enumStr)
 {
   std::set<std::string> result;

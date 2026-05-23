@@ -47,6 +47,9 @@ std::string trimString(const std::string_view &target)
 }
 
 namespace {
+/// <summary>
+/// Implementation of transformStringCase.
+/// </summary>
 std::string transformStringCase(const std::string_view &target, int (*fn)(int))
 {
   std::string result{ target };

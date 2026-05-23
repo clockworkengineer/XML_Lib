@@ -27,6 +27,9 @@ void processXMLFile(const std::string &fileName)
   std::cout << "Finished " << fileName << "." << std::endl;
 }
 
+/// <summary>
+/// Program entry point.
+/// </summary>
 int main([[maybe_unused]] int argc, [[maybe_unused]] char **argv)
 {
   // Initialise logging.

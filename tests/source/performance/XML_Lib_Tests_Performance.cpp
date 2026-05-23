@@ -2,6 +2,9 @@
 #include "io/XML_BufferSource.hpp"
 #include <string>
 
+/// <summary>
+/// Implementation of makeLargeXML.
+/// </summary>
 static std::string makeLargeXML(const size_t itemCount)
 {
   std::string xml;

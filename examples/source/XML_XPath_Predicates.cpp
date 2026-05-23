@@ -47,6 +47,9 @@ static const std::string kBookstore = R"(<?xml version="1.0" encoding="UTF-8"?>
 
 static xl::XML gXml;
 
+/// <summary>
+/// Implementation of query.
+/// </summary>
 static void query(const std::string &label, const std::string &expr)
 {
   std::cout << "  " << label << std::endl;
@@ -71,6 +74,7 @@ static void query(const std::string &label, const std::string &expr)
 
 // ---- Main ------------------------------------------------------------------
 
+/// <summary>Program entry point.</summary>
 int main()
 {
   std::cout << "XML_XPath_Predicates started ..." << std::endl;

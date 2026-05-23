@@ -28,6 +28,9 @@ void Default_Parser::ensureTextNodeSizeWithinLimit(std::size_t nodeSize)
   }
 }
 
+/// <summary>
+/// Implementation of addContentToElementChildList.
+/// </summary>
 void addContentToElementChildList(Node &xNode, const std::string_view &content)
 {
   Default_Parser::ensureTextNodeSizeWithinLimit(content.size());
@@ -83,6 +86,9 @@ bool Default_Parser::tryParseCommentOrPI(ISource &source, Node &xNode)
   return false;
 }
 
+/// <summary>
+/// Implementation of Default_Parser::parseCommentsPIAndWhiteSpace.
+/// </summary>
 bool Default_Parser::parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog)
 {
   if (tryParseCommentOrPI(source, xProlog)) { return true; }
@@ -458,6 +464,9 @@ void Default_Parser::parseEpilog(ISource &source, Node &xProlog)
 /// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to DTD Node.</returns>
 #if defined(XML_LIB_ENABLE_DTD)
+/// <summary>
+/// Implementation of Default_Parser::parseDTD.
+/// </summary>
 Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 {
   if (validator != nullptr) { XML_LIB_THROW(SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.")); }
@@ -467,6 +476,9 @@ Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
   return xNode;
 }
 #else
+/// <summary>
+/// Implementation of Default_Parser::parseDTD.
+/// </summary>
 Node Default_Parser::parseDTD([[maybe_unused]] ISource &source, [[maybe_unused]] IEntityMapper &entityMapper)
 {
   XML_LIB_THROW(SyntaxError(source.getPosition(), "DTD support disabled in this build."));

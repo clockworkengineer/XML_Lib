@@ -20,6 +20,9 @@ public:
   // Constructors/Destructors
   static constexpr std::size_t kMaxSourceBytes{ XML_LIB_MAX_XML_SIZE };
 
+/// <summary>
+/// Implementation of FileSource.
+/// </summary>
   explicit FileSource(const std::string_view &sourceFileName, std::size_t maxSourceBytes = kMaxSourceBytes) : filename(sourceFileName)
   {
     source.open(sourceFileName.data(), std::ios_base::binary);

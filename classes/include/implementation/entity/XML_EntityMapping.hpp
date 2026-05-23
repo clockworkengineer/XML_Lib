@@ -15,16 +15,25 @@ namespace XML_Lib {
     [[nodiscard]] const std::string &getInternal() const { return internal; }
     [[nodiscard]] const std::string &getNotation() const { return notation; }
     [[nodiscard]] const XMLExternalReference &getExternal() const { return external; }
+/// <summary>
+/// Implementation of setInternal.
+/// </summary>
     void setInternal(const std::string_view &value)
     {
       mappingType = Type::internal;
       internal = value;
     }
+/// <summary>
+/// Implementation of setNotation.
+/// </summary>
     void setNotation(const std::string_view &value)
     {
       mappingType = Type::notation;
       notation = value;
     }
+/// <summary>
+/// Implementation of setExternal.
+/// </summary>
     void setExternal(const XMLExternalReference &value)
     {
       mappingType = Type::external;

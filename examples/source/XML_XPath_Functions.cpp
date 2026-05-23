@@ -49,18 +49,27 @@ static const std::string kBookstore = R"(<?xml version="1.0" encoding="UTF-8"?>
 
 static xl::XML gXml;
 
+/// <summary>
+/// Implementation of evalStr.
+/// </summary>
 static void evalStr(const std::string &label, const std::string &expr, xl::XPath &xp)
 {
   std::cout << "  " << label << std::endl;
   std::cout << "    " << expr << " => " << xp.evaluateString(expr) << std::endl;
 }
 
+/// <summary>
+/// Implementation of evalNum.
+/// </summary>
 static void evalNum(const std::string &label, const std::string &expr, xl::XPath &xp)
 {
   std::cout << "  " << label << std::endl;
   std::cout << "    " << expr << " => " << xp.evaluateNumber(expr) << std::endl;
 }
 
+/// <summary>
+/// Implementation of evalBool.
+/// </summary>
 static void evalBool(const std::string &label, const std::string &expr, xl::XPath &xp)
 {
   std::cout << "  " << label << std::endl;
@@ -69,6 +78,7 @@ static void evalBool(const std::string &label, const std::string &expr, xl::XPat
 
 // ---- Main ------------------------------------------------------------------
 
+/// <summary>Program entry point.</summary>
 int main()
 {
   std::cout << "XML_XPath_Functions started ..." << std::endl;

@@ -7,6 +7,9 @@
 
 namespace XML_Lib {
 
+/// <summary>
+/// Implementation of appendNodeStringValue.
+/// </summary>
 void appendNodeStringValue(const Node &node, std::string &out)
 {
   if (isA<Content>(node)) {
@@ -32,6 +35,9 @@ void appendNodeStringValue(const Node &node, std::string &out)
   }
 }
 
+/// <summary>
+/// Implementation of nodeStringValue.
+/// </summary>
 std::string nodeStringValue(const Node &node)
 {
   std::string result;
@@ -40,6 +46,9 @@ std::string nodeStringValue(const Node &node)
   return result;
 }
 
+/// <summary>
+/// Implementation of nodeNameView.
+/// </summary>
 std::string_view nodeNameView(const Node &node)
 {
   if (isA<Element>(node)) return NRef<Element>(node).name();
@@ -49,6 +58,9 @@ std::string_view nodeNameView(const Node &node)
   return std::string_view{};
 }
 
+/// <summary>
+/// Implementation of nodeLocalNameView.
+/// </summary>
 std::string_view nodeLocalNameView(const Node &node)
 {
   const std::string_view nm = nodeNameView(node);
@@ -56,6 +68,9 @@ std::string_view nodeLocalNameView(const Node &node)
   return (pos != std::string_view::npos) ? nm.substr(pos + 1) : nm;
 }
 
+/// <summary>
+/// Implementation of matchNodeName.
+/// </summary>
 bool matchNodeName(const Node &node, const std::string_view &nameTest)
 {
   const std::string_view name = nodeNameView(node);
@@ -64,6 +79,9 @@ bool matchNodeName(const Node &node, const std::string_view &nameTest)
   return name == nameTest || nodeLocalNameView(node) == nameTest;
 }
 
+/// <summary>
+/// Implementation of stringToNumber.
+/// </summary>
 double stringToNumber(std::string_view s)
 {
   const auto trimStart = s.find_first_not_of(" \t\n\r\f\v");
@@ -78,6 +96,9 @@ double stringToNumber(std::string_view s)
   return std::numeric_limits<double>::quiet_NaN();
 }
 
+/// <summary>
+/// Implementation of resultToString.
+/// </summary>
 std::string resultToString(const XPathResult &r)
 {
   switch (r.type) {
@@ -103,6 +124,9 @@ std::string resultToString(const XPathResult &r)
   return "";
 }
 
+/// <summary>
+/// Implementation of resultToStringView.
+/// </summary>
 std::string_view resultToStringView(const XPathResult &r, std::string &scratch)
 {
   switch (r.type) {
