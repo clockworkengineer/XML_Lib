@@ -17,6 +17,8 @@ Based on the repository sources and `docs/XML_Lib_Standards_Report.md`:
 ### Phase 1 — Verify and close gaps in core XML behavior
 These are the smallest, highest-confidence wins.
 
+A concrete, actionable Phase 1 implementation plan has been created in `docs/XML_Phase1_Plan.md`.
+
 1. Confirm XML 1.0 character and syntax conformance
    - Validate support for allowed XML character ranges and denial of disallowed characters
    - Validate behavior for BOM-handling, XML declarations, and whitespace normalization
