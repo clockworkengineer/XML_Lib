@@ -3,6 +3,10 @@
 ## Overview
 XML_Lib is a C++20 library for parsing, manipulating, and generating XML documents. It aims to provide efficient, modern XML support for C++ projects.
 
+## Phase 1 Status
+- Phase 1 compliance is complete for core XML syntax, declaration handling, encoding/BOM hardening, external DTD subset support, conditional DTD processing, and parser robustness.
+- Regression tests have been added for all Phase 1 edge cases and are passing.
+
 ## Supported XML Standards
 
 ### XML 1.0 Compliance

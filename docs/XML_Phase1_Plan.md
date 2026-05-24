@@ -119,16 +119,20 @@ Phase 1 is complete when:
 
 ## Acceptance checklist
 
-- [ ] XML character range handling verified
-- [ ] XML declaration and encoding behavior verified
-- [ ] BOM handling tests added
-- [ ] External DTD subset parsing supported
-- [ ] DTD conditional sections supported
-- [ ] Parameter entity DTD behavior validated
-- [ ] Parser error handling consistency confirmed
-- [ ] Regression tests added for all new cases
-- [ ] Documentation updated with Phase 1 findings
+- [x] XML character range handling verified
+- [x] XML declaration and encoding behavior verified
+- [x] BOM handling tests added
+- [x] External DTD subset parsing supported
+- [x] DTD conditional sections supported
+- [x] Parameter entity DTD behavior validated
+- [x] Parser error handling consistency confirmed
+- [x] Regression tests added for all new cases
+- [x] Documentation updated with Phase 1 findings
 
 ## Notes
+
+- Phase 1 is complete: all plan items have been validated with regression tests and documentation updates.
+- Parser robustness regression coverage was added and parser state recovery validation has been documented.
+- All relevant XML and DTD unit tests for Phase 1 are passing.
 
 If any Phase 1 item reveals a deeper parser gap, stop and document the gap immediately. The goal is to make the core XML parser reliable before moving to XSD Phase 2.
