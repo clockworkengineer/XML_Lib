@@ -72,8 +72,14 @@ void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entity
 /// <returns>True then items parsed.</returns>
 bool Default_Parser::tryParseCommentOrPI(ISource &source, Node &xNode)
 {
-  if (match(source, "<!--")) { xNode.addChild(parseComment(source)); return true; }
-  if (match(source, "<?"))   { xNode.addChild(parsePI(source));      return true; }
+  if (match(source, "<!--")) {
+    xNode.addChild(parseComment(source));
+    return true;
+  }
+  if (match(source, "<?")) {
+    xNode.addChild(parsePI(source));
+    return true;
+  }
   return false;
 }
 
@@ -134,7 +140,9 @@ Node Default_Parser::parseComment(ISource &source)
     comment += source.current();
     source.next();
   }
-  if (!match(source, ">")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing '>' for comment line.")); }
+  if (!match(source, ">")) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing '>' for comment line."));
+  }
   return Node::make<Comment>(toUtf8(comment));
 }
 
@@ -170,7 +178,7 @@ Node Default_Parser::parseCDATA(ISource &source)
 {
   String cdata;
   cdata.reserve(128);
-  while (source.more() && !match(source, "]]>") ) {
+  while (source.more() && !match(source, "]]>")) {
     if (match(source, "<![CDATA[")) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed."));
     }
@@ -200,7 +208,8 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
     XMLValue attributeValue = parseValue(source, entityMapper);
     ensureTextNodeSizeWithinLimit(attributeValue.getParsed().size());
     if (!validAttributeValue(attributeValue.getParsed(), attributeValue.getQuote())) {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'."));
+      XML_LIB_THROW(
+        SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'."));
     }
     if (XMLAttribute::contains(attributes, attributeName)) {
       XML_LIB_THROW(SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag."));
@@ -210,9 +219,7 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
     if (currentTotalAttributeCount > maxTotalAttributeCount) {
       XML_LIB_THROW(SyntaxError("Maximum total attribute count exceeded."));
     }
-    if (attributes.size() > maxAttributeCount) {
-      XML_LIB_THROW(SyntaxError("Maximum attribute count exceeded."));
-    }
+    if (attributes.size() > maxAttributeCount) { XML_LIB_THROW(SyntaxError("Maximum attribute count exceeded.")); }
   }
   return attributes;
 }
@@ -240,9 +247,7 @@ void Default_Parser::parseWhiteSpaceToContent(ISource &source, Node &xNode)
 static void markTrailingContentNonWhitespace(Node &xNode)
 {
   if (!xNode.getChildren().empty()) {
-    if (isA<Content>(xNode.getChildren().back())) {
-      NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false);
-    }
+    if (isA<Content>(xNode.getChildren().back())) { NRef<Content>(xNode.getChildren().back()).setIsWhiteSpace(false); }
   }
 }
 
@@ -327,7 +332,9 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
     }
   } else {
     if (match(source, "</")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing tag.")); }
-    if (match(source, "]]>")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "']]>' invalid in element content area.")); }
+    if (match(source, "]]>")) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "']]>' invalid in element content area."));
+    }
     parseContent(source, xNode, entityMapper);
   }
 }
@@ -355,9 +362,7 @@ Node Default_Parser::parseElement(ISource &source,
     } else {
       xNode = Node::make<Element>(name, attributes, namespaces);
     }
-    if (++currentElementCount > maxElementCount) {
-      XML_LIB_THROW(SyntaxError("Maximum element count exceeded."));
-    }
+    if (++currentElementCount > maxElementCount) { XML_LIB_THROW(SyntaxError("Maximum element count exceeded.")); }
     xNode.reserveChildren(8);
     if (elementNestingDepth >= maxElementNestingDepth) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Maximum element nesting depth exceeded."));
@@ -368,9 +373,7 @@ Node Default_Parser::parseElement(ISource &source,
     if (match(source, toUtf16(NRef<Element>(xNode).name()) + u">")) { return xNode; }
   } else if (match(source, "/>")) {
     // Self-closing element tag
-    if (++currentElementCount > maxElementCount) {
-      XML_LIB_THROW(SyntaxError("Maximum element count exceeded."));
-    }
+    if (++currentElementCount > maxElementCount) { XML_LIB_THROW(SyntaxError("Maximum element count exceeded.")); }
     return Node::make<Self>(name, attributes, namespaces);
   }
   XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing tag."));
@@ -424,7 +427,8 @@ Node Default_Parser::parseDeclaration(ISource &source)
     static constexpr std::array<std::string_view, 2> kStandalone{ "yes", "no" };
     if (match(source, "standalone")) { standalone = parseDeclarationAttribute(source, "standalone", kStandalone); }
     if (match(source, "encoding")) {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes."));
+      XML_LIB_THROW(
+        SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes."));
     }
     if (!match(source, "?>")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Declaration end tag not found.")); }
   }
@@ -447,9 +451,7 @@ void Default_Parser::parseEpilog(ISource &source, Node &xProlog)
 
 void Default_Parser::ensureTextNodeSizeWithinLimit(std::size_t nodeSize)
 {
-  if (nodeSize > maxTextNodeSize) {
-    XML_LIB_THROW(SyntaxError("Maximum text node size exceeded."));
-  }
+  if (nodeSize > maxTextNodeSize) { XML_LIB_THROW(SyntaxError("Maximum text node size exceeded.")); }
 }
 
 /// <summary>
@@ -496,7 +498,7 @@ Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
       xProlog.addChild(parseDTD(source, entityMapper));
     } else
 #endif
-    if (parseCommentsPIAndWhiteSpace(source, xProlog)) {
+      if (parseCommentsPIAndWhiteSpace(source, xProlog)) {
     } else if (source.current() == '<') {
       break;// --- Break out as potential root element detected ---
     } else {
