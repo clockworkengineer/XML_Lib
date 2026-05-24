@@ -100,7 +100,11 @@ void DTD_Impl::parseExternalContent(ISource &source)
 void DTD_Impl::parseExternalReferenceContent()
 {
   if (xDTD.getExternalReference().getType() == "SYSTEM") {
-    FileSource dtdFile(xDTD.getExternalReference().getSystemID());
+    std::filesystem::path dtdPath{xDTD.getExternalReference().getSystemID()};
+    if (dtdPath.is_relative() && !baseDirectory.empty()) {
+      dtdPath = baseDirectory / dtdPath;
+    }
+    FileSource dtdFile(dtdPath.string());
     parseExternalContent(dtdFile);
   } else if (xDTD.getExternalReference().getType() == XMLExternalReference::kPublicID) {
     // Public external DTD currently not supported (Use system id ?)

@@ -8,4 +8,9 @@ template class ValidatorPimpl<DTD_Impl>;
 DTD_Validator::DTD_Validator(Node &xNode) : ValidatorPimpl<DTD_Impl>(xNode) {}
 DTD_Validator::~DTD_Validator() = default;
 
+void DTD_Validator::setBaseDirectory(const std::filesystem::path &baseDirectory)
+{
+  implementation->setBaseDirectory(baseDirectory);
+}
+
 }// namespace XML_Lib

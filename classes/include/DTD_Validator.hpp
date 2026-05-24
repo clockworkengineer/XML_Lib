@@ -4,6 +4,8 @@
 
 #include "implementation/ValidatorPimpl.hpp"
 
+#include <filesystem>
+
 namespace XML_Lib {
 
 // ====================
@@ -33,6 +35,9 @@ public:
   DTD_Validator &operator=(DTD_Validator &&other) = delete;
   /// @brief Destructor — out-of-line so DTD_Impl can remain an incomplete type in this header.
   ~DTD_Validator() override;
+
+  /// @brief Set the base directory used to resolve relative external references.
+  void setBaseDirectory(const std::filesystem::path &baseDirectory);
 };
 }// namespace XML_Lib
 

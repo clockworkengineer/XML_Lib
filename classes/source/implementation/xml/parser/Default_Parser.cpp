@@ -11,6 +11,8 @@
 #include "Default_Parser.hpp"
 #if defined(XML_LIB_ENABLE_DTD)
 #include "DTD_Validator.hpp"
+#include "implementation/io/XML_FileSource.hpp"
+#include <filesystem>
 #endif
 
 namespace XML_Lib {
@@ -461,6 +463,11 @@ Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
   if (validator != nullptr) { XML_LIB_THROW(SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.")); }
   auto xNode = Node::make<DTD>(entityMapper);
   validator = std::make_unique<DTD_Validator>(xNode);
+  if (auto *fileSource = dynamic_cast<FileSource *>(&source)) {
+    if (auto *dtdValidator = dynamic_cast<DTD_Validator *>(validator.get())) {
+      dtdValidator->setBaseDirectory(std::filesystem::path(fileSource->getFileName()).parent_path());
+    }
+  }
   validator->parse(source);
   return xNode;
 }

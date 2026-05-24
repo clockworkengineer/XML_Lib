@@ -21,6 +21,14 @@ DTD_Impl::DTD_Impl(Node &xNode) : xDTD(NRef<DTD>(xNode)) {}
 DTD_Impl::~DTD_Impl() = default;
 
 /// <summary>
+/// Set the base directory used to resolve relative external references.
+/// </summary>
+void DTD_Impl::setBaseDirectory(const std::filesystem::path &baseDirectory)
+{
+  this->baseDirectory = baseDirectory;
+}
+
+/// <summary>
 /// Parse DTD read from source stream.
 /// </summary>
 /// <param name="source">DTD source stream.</param>

@@ -4,6 +4,8 @@
 #include "XML_Core.hpp"
 #include "DTD_Validator.hpp"
 
+#include <filesystem>
+
 namespace XML_Lib {
 
 class DTD_Impl
@@ -20,6 +22,8 @@ public:
 
   // Parse XML DTD_Validator from source
   void parse(ISource &source);
+  // Set the base directory to resolve relative external references.
+  void setBaseDirectory(const std::filesystem::path &baseDirectory);
   // Stringify XML DTD_Validator to text destination
   void stringify(IDestination &destination) const;
   // Validate XML against DTD_Validator
@@ -77,6 +81,7 @@ private:
   std::set<std::string> assignedIDValues;
   std::set<std::string> assignedIDREFValues;
   long lineNumber = 1;
+  std::filesystem::path baseDirectory;
   DTD &xDTD;
 };
 

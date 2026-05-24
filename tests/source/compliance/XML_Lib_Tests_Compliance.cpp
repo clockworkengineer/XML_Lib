@@ -14,8 +14,8 @@ TEST_CASE("W3C-derived DTD validation compliance", "[Compliance][DTD]")
 {
   SECTION("XML with external DTD subset validates successfully.", "[Compliance][DTD]")
   {
-    const std::string xmlText = XML::fromFile(prefixTestDataPath("w3c/dtd/valid_root.xml"));
-    XML xml(xmlText);
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(FileSource(prefixTestDataPath("w3c/dtd/valid_root.xml"))));
     REQUIRE_NOTHROW(xml.validate());
   }
 }
