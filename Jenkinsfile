@@ -16,5 +16,12 @@ pipeline {
                 sh './scripts/Linux-Run-Tests.sh'
             }
         }
+        stage ('Compliance'){
+            steps {
+                sh 'echo "Running compliance validation..."'
+                sh 'chmod +x ./scripts/Linux-Run-Compliance.sh'
+                sh './scripts/Linux-Run-Compliance.sh'
+            }
+        }
     }
 }

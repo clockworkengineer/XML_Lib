@@ -121,12 +121,22 @@ cd build
 ../build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
 ```
 
+Alternately, use the automation script directly from the repository root:
+
+```bash
+chmod +x ./scripts/Linux-Run-Compliance.sh
+./scripts/Linux-Run-Compliance.sh
+```
+
 If the test binary is not yet built, generate the build tree and compile it first:
 
 ```bash
 cmake -S . -B build
 cmake --build build
 ```
+
+### CI coverage
+The Jenkins pipeline includes a dedicated `Compliance` stage that runs the same command on every merge. This ensures the W3C-derived compliance harness is validated automatically alongside normal build and test stages.
 
 ### Phase 4 — Optional advanced XML compliance
 This is for beyond “true enough for most XML use cases.”
