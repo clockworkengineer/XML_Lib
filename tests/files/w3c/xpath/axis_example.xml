@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+  <item type="book">The Art of XML</item>
+  <item type="book">XML in Practice</item>
+  <item type="article">XPath Basics</item>
+  <item type="article">Namespaces Explained</item>
+</library>
