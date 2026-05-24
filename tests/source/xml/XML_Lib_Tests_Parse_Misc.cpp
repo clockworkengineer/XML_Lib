@@ -127,7 +127,11 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     REQUIRE_THROWS_AS(xml.parse(invalidSource), SyntaxError);
     REQUIRE(NRef<Element>(xml.root()).name() == "root");
 
-    REQUIRE_NOTHROW(xml.parse(validSource));
+    BufferSource validSourceAgain{
+      "<?xml version=\"1.0\"?>"
+      "<root><child/></root>"
+    };
+    REQUIRE_NOTHROW(xml.parse(validSourceAgain));
     REQUIRE(NRef<Element>(xml.root()).name() == "root");
   }
 }
