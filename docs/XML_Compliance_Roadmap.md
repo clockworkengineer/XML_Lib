@@ -149,6 +149,8 @@ This is for beyond “true enough for most XML use cases.”
 2. XPath beyond 1.0
    - optional support for XPath 2.0 features if needed by consumers
 
+See `docs/XML_Phase4_Plan.md` for a concrete Phase 4 roadmap with milestones, tasks, and acceptance criteria.
+
 3. Schema Profile and performance tuning
    - document supported XSD profile
    - optimize large-schema and large-document validation
