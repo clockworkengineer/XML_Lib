@@ -188,8 +188,8 @@ Phase 2 is complete when:
 
 ## Acceptance checklist
 
-- [ ] `XSD_Validator` public API added
-- [ ] XSD schema model defined
+- [x] `XSD_Validator` public API added
+- [x] XSD schema model defined
 - [ ] Core schema constructs parsed
 - [ ] Schema composition supported
 - [ ] XML validation against XSD supported

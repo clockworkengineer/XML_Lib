@@ -8,7 +8,7 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - Regression tests have been added for all Phase 1 edge cases and are passing.
 
 ## Phase 2 Checklist
-- [ ] Add `XSD_Validator` public API and schema model
+- [x] Add `XSD_Validator` public API and schema model
 - [ ] Parse core XSD constructs: `xs:schema`, `xs:element`, `xs:complexType`, `xs:simpleType`
 - [ ] Support `xs:sequence`, `xs:choice`, `xs:all`, and attribute declarations
 - [ ] Implement schema composition via `xs:include` / `xs:import`
