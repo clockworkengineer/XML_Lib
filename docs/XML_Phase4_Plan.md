@@ -156,11 +156,11 @@ Phase 4 is complete when:
 
 ## Acceptance checklist
 
-- [ ] Advanced XML compliance tests added
-- [ ] `document()` and improved XPath axis coverage validated
-- [ ] Advanced XSD constructs tested and documented
-- [ ] CI pipeline enforces advanced compliance stage
-- [ ] Release documentation reflects Phase 4 support and limitations
+- [x] Advanced XML compliance tests added
+- [x] `document()` and improved XPath axis coverage validated
+- [x] Advanced XSD constructs tested and documented
+- [x] CI pipeline enforces advanced compliance stage
+- [x] Release documentation reflects Phase 4 support and limitations
 
 ## Notes
 
