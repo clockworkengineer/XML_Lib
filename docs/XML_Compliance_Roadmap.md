@@ -34,7 +34,7 @@ A concrete, actionable Phase 1 implementation plan has been created in `docs/XML
    - Validate rejection behavior for unsupported encodings with consistent errors
 
 ### Phase 2 — Fully complete XSD 1.0 support
-This is the largest body of work and the main remaining compliance gap.
+This is the largest body of work and the main remaining compliance gap. A concrete implementation plan is available in `docs/XML_Phase2_Plan.md`.
 
 1. Implement XSD type derivation and reuse
    - `xs:extension` and `xs:restriction` within `complexContent`
