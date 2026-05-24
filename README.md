@@ -66,14 +66,29 @@ cmake --build . --target docs
 ctest
 ```
 
-### Compliance validation
+### Compliance and performance validation
 A W3C-derived compliance subset is available through the unit test executable using the Catch2 tag `[Compliance]`:
 
 ```shell script
 ./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
 ```
 
-This runs the XML, DTD, XPath, and XSD compliance fixtures currently maintained under `tests/files/w3c/`.
+A performance regression executable is available once the project is built:
+
+```shell script
+./build/tests/XML_Lib_Performance_Tests
+```
+
+The repository includes automation scripts for release-ready validation:
+
+```shell script
+./scripts/Linux-Build.sh
+./scripts/Linux-Run-Tests.sh
+./scripts/Linux-Run-Compliance.sh
+./scripts/Linux-Run-Performance.sh
+```
+
+These scripts build Release/Debug configurations, run unit tests, execute W3C compliance validation, and exercise performance regression tests.
 
 ## Usage
 To use **XML_Lib** in your project:

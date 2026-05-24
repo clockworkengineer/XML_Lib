@@ -16,6 +16,13 @@ pipeline {
                 sh './scripts/Linux-Run-Tests.sh'
             }
         }
+        stage ('Performance'){
+            steps {
+                sh 'echo "Running performance validation..."'
+                sh 'chmod +x ./scripts/Linux-Run-Performance.sh'
+                sh './scripts/Linux-Run-Performance.sh'
+            }
+        }
         stage ('Compliance'){
             steps {
                 sh 'echo "Running compliance validation..."'

@@ -32,6 +32,16 @@ Run the W3C-derived compliance subset from the built test executable:
 
 This target executes the compliance fixtures and verifies the supported XML, DTD, XPath, and XSD behaviors.
 
+## Release validation
+Release validation is automated using repository scripts and CI gating:
+
+- `scripts/Linux-Build.sh` builds both Release and Debug configurations.
+- `scripts/Linux-Run-Tests.sh` runs the complete unit-test suite in both builds.
+- `scripts/Linux-Run-Compliance.sh` runs the W3C-derived compliance harness.
+- `scripts/Linux-Run-Performance.sh` runs performance regression validation.
+
+A dedicated CI pipeline stage ensures the repository validates build, test, performance, and compliance expectations before release.
+
 ## Supported XML Standards
 
 ### XML 1.0 Compliance

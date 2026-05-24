@@ -136,7 +136,12 @@ cmake --build build
 ```
 
 ### CI coverage
-The Jenkins pipeline includes a dedicated `Compliance` stage that runs the same command on every merge. This ensures the W3C-derived compliance harness is validated automatically alongside normal build and test stages.
+The Jenkins pipeline includes dedicated `Performance` and `Compliance` stages that run the same commands on every merge.
+
+- `scripts/Linux-Run-Performance.sh` executes the performance regression test target.
+- `scripts/Linux-Run-Compliance.sh` executes the W3C-derived compliance harness.
+
+This ensures the repository validates build, unit test, performance, and compliance expectations automatically.
 
 ### Phase 4 — Optional advanced XML compliance
 This is for beyond “true enough for most XML use cases.”
