@@ -349,8 +349,9 @@ void XSD_Impl::parseSchema(const Node &schemaNode)
       XSD_SimpleType st;
       parseSimpleType(child, st);
       if (!st.name.empty()) { simpleTypes.emplace(st.name, std::move(st)); }
+    } else if (childTag == "include" || childTag == "import") {
+      parseExternalSchema(child);
     }
-    // xs:include / xs:import: skipped in Phase 1
   }
 
   // Validate all typeRefs can be resolved

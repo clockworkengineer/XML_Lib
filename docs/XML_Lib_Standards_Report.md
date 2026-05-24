@@ -11,7 +11,7 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - [x] Add `XSD_Validator` public API and schema model
 - [x] Parse core XSD constructs: `xs:schema`, `xs:element`, `xs:complexType`, `xs:simpleType`
 - [x] Support `xs:sequence`, `xs:choice`, `xs:all`, and attribute declarations
-- [ ] Implement schema composition via `xs:include` / `xs:import`
+- [x] Implement schema composition via `xs:include` / `xs:import`
 - [ ] Validate XML documents against XSD schemas
 - [ ] Enforce attribute constraints, simple type facets, and occurrence counts
 - [ ] Add `xs:key`, `xs:keyref`, and `xs:unique` support

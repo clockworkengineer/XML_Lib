@@ -4,6 +4,9 @@
 #include "XML_Core.hpp"
 #include "XSD_Validator.hpp"
 
+#include <filesystem>
+#include <unordered_set>
+
 namespace XML_Lib {
 
 // ============================================================
@@ -70,6 +73,38 @@ struct XSD_Particle
   std::unique_ptr<XSD_ComplexType> inlineComplexType;
   // Inline simple type (anonymous)
   std::unique_ptr<XSD_SimpleType> inlineSimpleType;
+
+  XSD_Particle() = default;
+  XSD_Particle(const XSD_Particle &other)
+    : elementName(other.elementName), minOccurs(other.minOccurs), maxOccurs(other.maxOccurs), typeRef(other.typeRef)
+  {
+    if (other.inlineComplexType) {
+      inlineComplexType = std::make_unique<XSD_ComplexType>(*other.inlineComplexType);
+    }
+    if (other.inlineSimpleType) {
+      inlineSimpleType = std::make_unique<XSD_SimpleType>(*other.inlineSimpleType);
+    }
+  }
+  XSD_Particle &operator=(const XSD_Particle &other)
+  {
+    if (this != &other) {
+      elementName = other.elementName;
+      minOccurs = other.minOccurs;
+      maxOccurs = other.maxOccurs;
+      typeRef = other.typeRef;
+      inlineComplexType.reset();
+      inlineSimpleType.reset();
+      if (other.inlineComplexType) {
+        inlineComplexType = std::make_unique<XSD_ComplexType>(*other.inlineComplexType);
+      }
+      if (other.inlineSimpleType) {
+        inlineSimpleType = std::make_unique<XSD_SimpleType>(*other.inlineSimpleType);
+      }
+    }
+    return *this;
+  }
+  XSD_Particle(XSD_Particle &&) = default;
+  XSD_Particle &operator=(XSD_Particle &&) = default;
 };
 
 struct XSD_ElementDecl
@@ -117,6 +152,8 @@ private:
   void parseChildAttributes(const Node &parentNode, XSD_ComplexType &ct);
   void parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr);
   void parseRestriction(const Node &restrictNode, XSD_SimpleType &st);
+  void parseExternalSchema(const Node &includeNode);
+  void mergeSchema(const XSD_Impl &external);
   // Retrieve attribute value from a schema node, empty string view if absent
   [[nodiscard]] static std::string_view attrValue(const Node &node, const std::string_view &attrName);
   // Resolve a possibly-prefixed xs: type name to a canonical string
@@ -152,6 +189,8 @@ private:
   std::string targetNamespace;
   std::string elementFormDefault{ "unqualified" };
   std::string xsPrefix{ "xs" };// detected from schema namespace declarations
+  std::filesystem::path schemaDirectory;
+  std::unordered_set<std::string> importedSchemas;
 
   // Reference to the XML root node (unused for XSD but required by IValidator constructor pattern)
   Node &xmlRoot;

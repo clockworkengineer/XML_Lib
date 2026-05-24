@@ -1,4 +1,5 @@
 #include "XML_Lib_Tests.hpp"
+#include "implementation/io/XML_FileSource.hpp"
 
 /// <summary>
 /// Validate xmlSource against the given XSD schema string.
@@ -89,6 +90,22 @@ TEST_CASE("Parse and load XSD schemas.", "[XML][XSD][Parse]")
   {
     XML xml{ "<note><to>Alice</to><from>Bob</from><heading>Reminder</heading><body>Call me</body></note>" };
     REQUIRE_NOTHROW(xml.validate(XML::fromFile(prefixTestDataPath("xsd/complex_sequence.xsd"))));
+  }
+  SECTION("Parse schema with xs:include and relative schemaLocation.", "[XML][XSD][Parse][Compose]")
+  {
+    XML xml{ "<address><street>123</street><city>London</city></address>" };
+    XSD_Validator validator(xml.root());
+    FileSource source(prefixTestDataPath("xsd/include_child.xsd"));
+    REQUIRE_NOTHROW(validator.parse(source));
+    REQUIRE_NOTHROW(validator.validate(xml.root()));
+  }
+  SECTION("Parse schema with xs:import and relative schemaLocation.", "[XML][XSD][Parse][Compose]")
+  {
+    XML xml{ "<code>ABC</code>" };
+    XSD_Validator validator(xml.root());
+    FileSource source(prefixTestDataPath("xsd/import_child.xsd"));
+    REQUIRE_NOTHROW(validator.parse(source));
+    REQUIRE_NOTHROW(validator.validate(xml.root()));
   }
 }
 
