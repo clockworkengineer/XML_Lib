@@ -401,7 +401,47 @@ xml.stringify(fileDst);
 
 ---
 
-## 13. Performance
+## 13. Phase 4 Compliance and Consumer Guidance
+
+XML_Lib includes Phase 4 documentation and release readiness guidance for advanced XML, XPath, and XSD support.
+
+- `docs/XML_Phase4_Plan.md` contains the Phase 4 roadmap, goals, and feature status.
+- `docs/XML_Lib_Standards_Report.md` includes an explicit Phase 4 feature matrix and unsupported advanced feature notes.
+- `docs/XML_Compliance_Roadmap.md` documents CI automation and release validation stages.
+
+### Running Phase 4 validation
+Use the repository helper scripts to validate release readiness:
+
+```sh
+./scripts/Linux-Build.sh
+./scripts/Linux-Run-Tests.sh
+./scripts/Linux-Run-Compliance.sh
+./scripts/Linux-Run-Performance.sh
+```
+
+For compliance validation only:
+
+```sh
+./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
+```
+
+For performance regression validation:
+
+```sh
+./build/tests/XML_Lib_Performance_Tests
+```
+
+### Advanced examples
+See the following example programs for advanced XPath and XSD usage:
+
+- `examples/source/XML_XPath_Functions.cpp`
+- `examples/source/XML_XPath_Predicates.cpp`
+- `examples/source/XML_XSD_Basic_Validation.cpp`
+- `examples/source/XML_XSD_Type_Restrictions.cpp`
+
+---
+
+## 14. Performance
 
 ### Memory allocation model
 

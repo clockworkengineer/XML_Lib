@@ -111,6 +111,22 @@ XPath 1.0 query evaluation is supported via the `XPath` class and the `xml.xpath
 | XPath                  | Yes       | XPath 1.0: all 13 axes, 28+ functions, all result types |
 | Error Handling         | Yes       | Detailed errors |
 
+## Phase 4 Feature Matrix
+| Feature | Status | Notes |
+|---|---|---|
+| `xs:nillable` | Supported | Nil handling for nillable elements with `xsi:nil` |
+| `xs:notation` | Not supported | Verified as unsupported advanced XSD feature |
+| `xs:substitutionGroup` | Not supported | Advanced schema feature deferred |
+| `block` / `final` | Not supported | Advanced schema constraints deferred |
+| XPath 2.0/3.x | Not supported | XPath 1.0 remains the supported profile |
+| XML 1.1 optional behavior | Not supported | XML 1.0 compliance is the primary target |
+
+## Unsupported Phase 4 advanced features
+- XPath 2.0/3.x data model and expression features
+- XSD `xs:substitutionGroup`, `xs:redefine`, `block`, `final`, and schema component redefinition
+- Optional XML Schema 1.1 features and expanded XML 1.1 character ranges
+- Advanced `xs:list` and `xs:union` type composition beyond basic simple type support
+
 ## References
 - [W3C XML 1.0 Specification](https://www.w3.org/TR/REC-xml/)
 - [W3C DTD Specification](https://www.w3.org/TR/REC-xml/#dt-doctype)

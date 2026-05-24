@@ -118,6 +118,28 @@ Phase 4 is complete when:
 - clear release notes and standards-report sections describing Phase 4 coverage
 - updated user guide examples for advanced compliance features
 
+#### Documentation status
+- `docs/XML_Phase4_Plan.md` now includes the Phase 4 roadmap, release readiness goals, and a feature matrix reference.
+- `docs/XML_Lib_Standards_Report.md` includes explicit Phase 4 support status and a clear list of unsupported advanced features.
+- `docs/XML_Compliance_Roadmap.md` documents the new CI performance and compliance automation stages.
+- `docs/Guide.md` includes consumer guidance for compliance verification, performance regression validation, and example references.
+
+#### Phase 4 Feature Matrix
+| Feature | Status | Notes |
+|---|---|---|
+| `xs:nillable` | Supported | `xsi:nil="true"` on nillable elements; non-nillable rejects nilled elements |
+| `xs:notation` | Not implemented | Documented as unsupported advanced XSD feature |
+| `xs:substitutionGroup` | Not implemented | Advanced schema feature deferred to later phases |
+| `block` / `final` | Not implemented | Documented as unsupported advanced XSD feature |
+| XPath 2.0/3.x | Not implemented | Phase 4 focuses on XPath 1.0 reliability; future roadmap entry only |
+| XML 1.1 optional features | Not implemented | XML 1.0 support remains the primary target; XML 1.1 is documented as optional and unsupported |
+
+#### Unsupported advanced features
+- XPath 2.0/3.x expressions, typed sequences, and FLWOR-style constructs
+- XSD `xs:substitutionGroup`, `xs:redefine`, `block`, `final`, and full schema component redefinition
+- Optional XML Schema 1.1 semantics and expanded XML 1.1 character ranges
+- Advanced `xs:list` / `xs:union` composite types beyond basic simple type support
+
 ## Milestones
 
 ### Milestone 1 — Advanced parser and XML feature readiness
