@@ -12,6 +12,31 @@ namespace XML_Lib {
 /// immediately after the consumed \"&#\" prefix. Reads digits/letters up to ';',
 /// validates, and returns an XMLValue with the original &#...; unparsed form and
 /// the decoded UTF-8 character as the parsed form.
+namespace {
+
+[[nodiscard]] bool isHighSurrogate(Char c)
+{
+  return c >= 0xD800 && c <= 0xDBFF;
+}
+
+[[nodiscard]] bool isLowSurrogate(Char c)
+{
+  return c >= 0xDC00 && c <= 0xDFFF;
+}
+
+[[nodiscard]] std::u16string toUtf16CodePoint(std::uint32_t codePoint)
+{
+  if (codePoint <= 0xFFFF) {
+    return std::u16string{ static_cast<char16_t>(codePoint) };
+  }
+  codePoint -= 0x10000;
+  const char16_t high = static_cast<char16_t>(0xD800 + ((codePoint >> 10) & 0x3FF));
+  const char16_t low = static_cast<char16_t>(0xDC00 + (codePoint & 0x3FF));
+  return std::u16string{ high, low };
+}
+
+} // namespace
+
 XMLValue decodeCharRef(ISource &source)
 {
   std::string unparsed{"&#"};
@@ -36,10 +61,10 @@ XMLValue decodeCharRef(ISource &source)
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Character reference invalid character."));
   }
   if (ec == std::errc() && ptr == digits.data() + digits.size()) {
-    if (result < 0 || !validChar(static_cast<Char>(result))) {
+    if (result < 0 || !validChar(static_cast<std::uint32_t>(result))) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Character reference invalid character."));
     }
-    return XMLValue{ unparsed, toUtf8(static_cast<Char>(result)) };
+    return XMLValue{ unparsed, toUtf8(toUtf16CodePoint(static_cast<std::uint32_t>(result))) };
   }
   XML_LIB_THROW(SyntaxError(source.getPosition(), "Cannot convert character reference."));
 }
@@ -100,6 +125,23 @@ XMLValue parseCharacterOrReference(ISource &source)
   }
   if (source.current() == '&') {
     return parseEntityReference(source);
+  }
+  if (isHighSurrogate(source.current())) {
+    const Char high = source.current();
+    source.next();
+    if (!source.more() || !isLowSurrogate(source.current())) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character value encountered."));
+    }
+    const Char low = source.current();
+    const std::u16string utf16{ high, low };
+    const std::uint32_t codePoint = 0x10000u + ((static_cast<std::uint32_t>(high) - 0xD800u) << 10)
+                                + (static_cast<std::uint32_t>(low) - 0xDC00u);
+    if (!validChar(codePoint)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character value encountered."));
+    }
+    source.next();
+    const std::string character = toUtf8(utf16);
+    return XMLValue{ character, character };
   }
   if (validChar(source.current())) {
     const std::string character{ toUtf8(source.current()) };

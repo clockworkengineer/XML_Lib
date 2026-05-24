@@ -9,31 +9,19 @@
 //
 
 #include "Default_Parser.hpp"
-#include <array>
 #if defined(XML_LIB_ENABLE_DTD)
 #include "DTD_Validator.hpp"
 #endif
 
 namespace XML_Lib {
 
-/// @brief
+/// <summary>
 /// Add content Node to element's child list.
-
-/// @param xNode Current element Node.
-/// @param content Content to add to new content Node (XMLNodeContent).
-void Default_Parser::ensureTextNodeSizeWithinLimit(std::size_t nodeSize)
-{
-  if (nodeSize > maxTextNodeSize) {
-    XML_LIB_THROW(SyntaxError("Maximum text node size exceeded."));
-  }
-}
-
-/// @brief
-/// Implementation of addContentToElementChildList.
-
+/// </summary>
+/// <param name="xNode">Current element Node.</param>
+/// <param name="content">Content to add to new content Node (XMLNodeContent).</param>
 void addContentToElementChildList(Node &xNode, const std::string_view &content)
 {
-  Default_Parser::ensureTextNodeSizeWithinLimit(content.size());
   // Make sure there is a content Node to receive characters
   if (xNode.getChildren().empty() || !isA<Content>(xNode.getChildren().back())) {
     bool isWhiteSpace = true;
@@ -45,8 +33,8 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
     xNode.addChild(Node::make<Content>("", isWhiteSpace));
   }
   auto &xmlContent = NRef<Content>(xNode.getChildren().back());
-  const std::size_t existingSize = xmlContent.value().size();
-  Default_Parser::ensureTextNodeSizeWithinLimit(existingSize + content.size());
+  const std::size_t newSize = xmlContent.getContents().size() + content.size();
+  Default_Parser::ensureTextNodeSizeWithinLimit(newSize);
   if (xmlContent.isWhiteSpace()) {
     if (std::ranges::all_of(content, [](const char ch) { return std::iswspace(ch); })) {
       xmlContent.setIsWhiteSpace(true);
@@ -57,12 +45,12 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
   xmlContent.addContent(content);
 }
 
-/// @brief
+/// <summary>
 /// Parse entity reference as XML and add Nodes produced to the current Node.
-
-/// @param xNode Current element Node.
-/// @param entityReference Entity reference to be parsed for XML.
-/// @param entityMapper Entity mapper interface object.
+/// </summary>
+/// <param name="xNode">Current element Node.</param>
+/// <param name="entityReference">Entity reference to be parsed for XML.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper &entityMapper)
 {
   auto xElement = Node::make<Element>();
@@ -73,21 +61,18 @@ void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entity
   for (auto &child : xElement.getChildren()) { xNode.addChild(child); }
 }
 
-/// @brief
+/// <summary>
 /// Parse any comments, PI or whitespace in prolog/epilog of the XML file.
-
-/// @param source XML source stream.
-/// @param xProlog XML prolog Node.
-/// @return True then items parsed.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="xProlog">XML prolog Node.</param>
+/// <returns>True then items parsed.</returns>
 bool Default_Parser::tryParseCommentOrPI(ISource &source, Node &xNode)
 {
   if (match(source, "<!--")) { xNode.addChild(parseComment(source)); return true; }
   if (match(source, "<?"))   { xNode.addChild(parsePI(source));      return true; }
   return false;
 }
-
-/// @brief
-/// Implementation of Default_Parser::parseCommentsPIAndWhiteSpace.
 
 bool Default_Parser::parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog)
 {
@@ -99,20 +84,20 @@ bool Default_Parser::parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog
   return false;
 }
 
-/// @brief
+/// <summary>
 /// Parse a element tag name and set its value in current XElement.
-
-/// @param source XML source stream.
-/// @return Element tag name.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Element tag name.</returns>
 std::string Default_Parser::parseTagName(ISource &source) { return parseName(source); }
 
-/// @brief
+/// <summary>
 /// Parse the declaration attribute and validate its value.
-
-/// @param source XML source stream.
-/// @param name Attribute name string.
-/// @param values Set of valid attribute values.
-/// @return Valid attribute value.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="name">Attribute name string.</param>
+/// <param name="values">Set of valid attribute values.</param>
+/// <returns>Valid attribute value.</returns>
 std::string Default_Parser::parseDeclarationAttribute(ISource &source,
   const std::string_view &name,
   std::span<const std::string_view> values)
@@ -132,12 +117,12 @@ std::string Default_Parser::parseDeclarationAttribute(ISource &source,
   return value;
 }
 
-/// @brief
+/// <summary>
 /// Parse a XML comment, create a XComment for it and add to the list
 /// of elements for the current XElement.
-
-/// @param source XML source stream.
-/// @return Pointer to comment Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Pointer to comment Node.</returns>
 Node Default_Parser::parseComment(ISource &source)
 {
   String comment;
@@ -150,12 +135,12 @@ Node Default_Parser::parseComment(ISource &source)
   return Node::make<Comment>(toUtf8(comment));
 }
 
-/// @brief
+/// <summary>
 /// Parse an XML process instruction, create an XPI for it and add it to
 /// the list of elements under the current XElement.
-
-/// @param source XML source stream.
-/// @return Pointer to PI Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Pointer to PI Node.</returns>
 Node Default_Parser::parsePI(ISource &source)
 {
   std::string name{ parseName(source) };
@@ -172,12 +157,12 @@ Node Default_Parser::parsePI(ISource &source)
   return Node::make<PI>(name, toUtf8(parameters));
 }
 
-/// @brief
+/// <summary>
 /// Parse an XML CDATA section, create an XCDATA for it and add it to
 /// the list of elements under the current XElement.
-
-/// @param source XML source stream.
-/// @return Pointer to CDATA Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Pointer to CDATA Node.</returns>
 Node Default_Parser::parseCDATA(ISource &source)
 {
   String cdata;
@@ -192,13 +177,13 @@ Node Default_Parser::parseCDATA(ISource &source)
   return Node::make<CDATA>(toUtf8(cdata));
 }
 
-/// @brief
+/// <summary>
 /// Parse the list of attributes (name/value pairs) that exist in a tag and add them to
 /// the list of attributes associated with the current XElement.
-
-/// @param source XML source stream.
-/// @param entityMapper Entity mapper interface object.
-/// @return XML element attribute list.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
+/// <returns>XML element attribute list.</returns>
 std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEntityMapper &entityMapper)
 {
   std::vector<XMLAttribute> attributes{};
@@ -210,32 +195,30 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
     }
     ignoreWS(source);
     XMLValue attributeValue = parseValue(source, entityMapper);
+    ensureTextNodeSizeWithinLimit(attributeValue.getParsed().size());
     if (!validAttributeValue(attributeValue.getParsed(), attributeValue.getQuote())) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'."));
-    }
-    if (attributeValue.getParsed().size() > maxTextNodeSize) {
-      XML_LIB_THROW(SyntaxError("Maximum text node size exceeded."));
     }
     if (XMLAttribute::contains(attributes, attributeName)) {
       XML_LIB_THROW(SyntaxError("Attribute '" + attributeName + "' defined more than once within start tag."));
     }
     attributes.emplace_back(attributeName, attributeValue);
-    if (attributes.size() > maxAttributeCount) {
-      XML_LIB_THROW(SyntaxError("Maximum attribute count exceeded."));
-    }
     ++currentTotalAttributeCount;
     if (currentTotalAttributeCount > maxTotalAttributeCount) {
       XML_LIB_THROW(SyntaxError("Maximum total attribute count exceeded."));
+    }
+    if (attributes.size() > maxAttributeCount) {
+      XML_LIB_THROW(SyntaxError("Maximum attribute count exceeded."));
     }
   }
   return attributes;
 }
 
-/// @brief
+/// <summary>
 /// Parse white spaces and add to the current Nodes child list.
-
-/// @param source XML source stream.
-/// @param xNode Current Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="xNode">Current Node.</param>
 void Default_Parser::parseWhiteSpaceToContent(ISource &source, Node &xNode)
 {
   String whiteSpace;
@@ -247,10 +230,10 @@ void Default_Parser::parseWhiteSpaceToContent(ISource &source, Node &xNode)
   addContentToElementChildList(xNode, toUtf8(whiteSpace));
 }
 
-/// @brief
+/// <summary>
 /// Mark the trailing Content child of xNode as non-whitespace, if one exists.
-
-/// @param xNode Current element Node.
+/// </summary>
+/// <param name="xNode">Current element Node.</param>
 static void markTrailingContentNonWhitespace(Node &xNode)
 {
   if (!xNode.getChildren().empty()) {
@@ -260,12 +243,12 @@ static void markTrailingContentNonWhitespace(Node &xNode)
   }
 }
 
-/// @brief
+/// <summary>
 /// Append a parsed character value to xNode as entity reference or plain content.
-
-/// @param xNode Current element Node.
-/// @param value Parsed character value.
-/// @param entityMapper Entity mapper interface object.
+/// </summary>
+/// <param name="xNode">Current element Node.</param>
+/// <param name="value">Parsed character value.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, IEntityMapper &entityMapper)
 {
   if (value.isReference()) {
@@ -295,25 +278,25 @@ void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, I
   }
 }
 
-/// @brief
+/// <summary>
 /// Parse any content found inside an element.
-
-/// @param source XML source stream.
-/// @param xNode Current element Node.
-/// @param entityMapper Entity mapper interface object.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="xNode">Current element Node.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper)
 {
   appendEntityOrContent(xNode, parseCharacter(source), entityMapper);
 }
 
-/// @brief
+/// <summary>
 /// Parse element internal area, generating any Node(s) and adding them
 /// to the child list of the current XElement. This can be anything from
 /// comments, program instructions, CDATA, nested elements or even content.
-
-/// @param source XML source stream.
-/// @param xNode Current element Node.
-/// @param entityMapper Entity mapper interface object.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="xNode">Current element Node.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
 void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper)
 {
   if (tryParseCommentOrPI(source, xNode)) {
@@ -346,13 +329,13 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
   }
 }
 
-/// @brief
+/// <summary>
 /// Parse the current XML element found.
-
-/// @param source XML source stream.
-/// @param namespaces Current list of outer namespaces.
-/// @param entityMapper Entity mapper interface object.
-/// @return Pointer to element Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="namespaces">Current list of outer namespaces.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
+/// <returns>Pointer to element Node.</returns>
 Node Default_Parser::parseElement(ISource &source,
   std::span<const XMLAttribute> namespaces,
   IEntityMapper &entityMapper)
@@ -360,10 +343,6 @@ Node Default_Parser::parseElement(ISource &source,
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
   const std::vector attributes{ parseAttributes(source, entityMapper) };
-  ++currentElementCount;
-  if (currentElementCount > maxElementCount) {
-    XML_LIB_THROW(SyntaxError("Maximum element count exceeded."));
-  }
   // Create element Node
   if (Node xNode; match(source, ">")) {
     // Normal element tag
@@ -372,6 +351,9 @@ Node Default_Parser::parseElement(ISource &source,
       hasRoot = true;
     } else {
       xNode = Node::make<Element>(name, attributes, namespaces);
+    }
+    if (++currentElementCount > maxElementCount) {
+      XML_LIB_THROW(SyntaxError("Maximum element count exceeded."));
     }
     xNode.reserveChildren(8);
     if (elementNestingDepth >= maxElementNestingDepth) {
@@ -383,16 +365,19 @@ Node Default_Parser::parseElement(ISource &source,
     if (match(source, toUtf16(NRef<Element>(xNode).name()) + u">")) { return xNode; }
   } else if (match(source, "/>")) {
     // Self-closing element tag
+    if (++currentElementCount > maxElementCount) {
+      XML_LIB_THROW(SyntaxError("Maximum element count exceeded."));
+    }
     return Node::make<Self>(name, attributes, namespaces);
   }
   XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing tag."));
 }
 
-/// @brief
+/// <summary>
 /// Parse XML declaration and return Node for it.
-
-/// @param source XML source stream.
-/// @return Pointer to declaration Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Pointer to declaration Node.</returns>
 Node Default_Parser::parseDeclaration(ISource &source)
 {
   std::string version{ "1.0" };
@@ -443,11 +428,11 @@ Node Default_Parser::parseDeclaration(ISource &source)
   return Node::make<Declaration>(version, encoding, standalone);
 }
 
-/// @brief
+/// <summary>
 /// Parse any XML tail that is present. This can include comments, PI and white space.
-
-/// @param source XML source stream.
-/// @param xProlog Prolog Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="xProlog">Prolog Node.</param>
 void Default_Parser::parseEpilog(ISource &source, Node &xProlog)
 {
   while (source.more()) {
@@ -457,16 +442,20 @@ void Default_Parser::parseEpilog(ISource &source, Node &xProlog)
   }
 }
 
-/// @brief
+void Default_Parser::ensureTextNodeSizeWithinLimit(std::size_t nodeSize)
+{
+  if (nodeSize > maxTextNodeSize) {
+    XML_LIB_THROW(SyntaxError("Maximum text node size exceeded."));
+  }
+}
+
+/// <summary>
 /// Parse XML DTD and return any Node created for it.
-
-/// @param source XML source stream.
-/// @param entityMapper Entity mapper interface object.
-/// @return Pointer to DTD Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
+/// <returns>Pointer to DTD Node.</returns>
 #if defined(XML_LIB_ENABLE_DTD)
-/// @brief
-/// Implementation of Default_Parser::parseDTD.
-
 Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
 {
   if (validator != nullptr) { XML_LIB_THROW(SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.")); }
@@ -476,22 +465,19 @@ Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
   return xNode;
 }
 #else
-/// @brief
-/// Implementation of Default_Parser::parseDTD.
-
 Node Default_Parser::parseDTD([[maybe_unused]] ISource &source, [[maybe_unused]] IEntityMapper &entityMapper)
 {
   XML_LIB_THROW(SyntaxError(source.getPosition(), "DTD support disabled in this build."));
 }
 #endif
-/// @brief
+/// <summary>
 /// Parse XML prolog and create the necessary element Nodes for it. Valid
 /// parts of the prolog include declaration (first line if present),
 /// processing instructions, comments, whitespace and a Document Type Declaration (DTD).
-
-/// @param source XML source stream.
-/// @param entityMapper Entity mapper interface object.
-/// @return Pointer to prolog Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <param name="entityMapper">Entity mapper interface object.</param>
+/// <returns>Pointer to prolog Node.</returns>
 Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
 {
   auto xProlog = Node::make<Prolog>();
@@ -512,12 +498,12 @@ Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
   return xProlog;
 }
 
-/// @brief
+/// <summary>
 /// Parse XML read from source stream into internal object generating an exception
 /// if a syntax error in the XML is found (not well-formed).
-
-/// @param source XML source stream.
-/// @return Prolog Node.
+/// </summary>
+/// <param name="source">XML source stream.</param>
+/// <returns>Prolog Node.</returns>
 Node Default_Parser::parse(ISource &source, const ParseOptions &options)
 {
   parseOptions = options;
@@ -525,11 +511,11 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   maxEntityExpansionDepth = options.maxEntityExpansionDepth;
   elementNestingDepth = 0;
   maxElementNestingDepth = options.maxNestingDepth;
-  currentElementCount = 0;
-  maxElementCount = options.maxElementCount;
-  currentTotalAttributeCount = 0;
-  maxTotalAttributeCount = options.maxTotalAttributeCount;
   maxAttributeCount = options.maxAttributeCount;
+  maxElementCount = options.maxElementCount;
+  currentElementCount = 0;
+  maxTotalAttributeCount = options.maxTotalAttributeCount;
+  currentTotalAttributeCount = 0;
   maxTextNodeSize = options.maxTextNodeSize;
   entityMapper.setExternalEntityPolicy(options.allowExternalEntities, options.entityResolver);
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
@@ -550,10 +536,10 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   parseEpilog(source, xmlRoot);
   return xmlRoot;
 }
-/// @brief
+/// <summary>
 /// Validate XML against parsed DTD.
-
-/// @param xProlog Prolog Node
+/// </summary>
+/// <param name="xProlog">Prolog Node</param>
 void Default_Parser::validate(Node &xProlog)
 {
   if (validator != nullptr) {
@@ -562,9 +548,9 @@ void Default_Parser::validate(Node &xProlog)
     XML_LIB_THROW(Error("No DTD specified for validation."));
   }
 }
-/// @brief
+/// <summary>
 /// Parser can validate XML.
-
-/// @return Returns true if parser can validate XML.
+/// </summary>
+/// <returns>Returns true if parser can validate XML.</returns>
 bool Default_Parser::canValidate() { return validator != nullptr; }
 }// namespace XML_Lib

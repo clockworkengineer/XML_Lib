@@ -23,8 +23,13 @@ XMLValue parseCharacterReference(ISource &source);
 /// <returns>True then valid otherwise false.</returns>
 bool validChar(const Char c)
 {
+  return validChar(static_cast<std::uint32_t>(c));
+}
+
+bool validChar(const std::uint32_t c)
+{
   return c == 0x09 || c == kLineFeed || c == kCarriageReturn || (c >= 0x20 && c <= 0xD7FF)
-         || (c >= 0xE000 && c <= 0xFFFD);
+         || (c >= 0xE000 && c <= 0xFFFD) || (c >= 0x10000 && c <= 0x10FFFF);
 }
 
 /// <summary>

@@ -75,4 +75,37 @@ TEST_CASE("Parse XML with Unicode characters. ", "[XML][Parse][Unicode]")
     REQUIRE_NOTHROW(NRef<Element>(specialXml.root()["cjk"]));
     REQUIRE_NOTHROW(NRef<Element>(specialXml.root()["cyrillic"]));
   }
+
+  SECTION("Parse XML with supplementary Unicode characters", "[XML][Parse][Unicode][Supplementary]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+      "<root>Emoji 😀 is valid</root>\n"
+    };
+    XML emojiXml;
+    REQUIRE_NOTHROW(emojiXml.parse(source));
+    auto &root = NRef<Element>(emojiXml.root());
+    REQUIRE(root.getContents() == "Emoji 😀 is valid");
+  }
+
+  SECTION("Parse numeric character reference for non-BMP character", "[XML][Parse][Unicode][NumericReference]")
+  {
+    BufferSource source{
+      "<?xml version=\"1.0\"?><root>&#x1F600;</root>"
+    };
+    XML xml;
+    REQUIRE_NOTHROW(xml.parse(source));
+    auto &root = NRef<Element>(xml.root());
+    REQUIRE(root.getContents() == "😀");
+  }
+
+  SECTION("Reject invalid XML control characters", "[XML][Parse][Unicode][InvalidChar]")
+  {
+    std::string xmlText = "<?xml version=\"1.0\"?><root>Bad";
+    xmlText.push_back(static_cast<char>(0x1F));
+    xmlText += "</root>";
+    BufferSource source{ xmlText };
+    XML xml;
+    REQUIRE_THROWS_WITH(xml.parse(source), Catch::Matchers::ContainsSubstring("Invalid character value encountered."));
+  }
 }
