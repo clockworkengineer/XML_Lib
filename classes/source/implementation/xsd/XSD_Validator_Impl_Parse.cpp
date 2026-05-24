@@ -211,6 +211,7 @@ void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
     particle.elementName = "*";
   } else {
     particle.elementName = std::string(attrValue(particleNode, "name"));
+    particle.nillable = (attrValue(particleNode, "nillable") == "true");
   }
   parseOccurrenceBounds(particleNode, particle.minOccurs, particle.maxOccurs);
   if (tag != "any") { particle.typeRef = resolveType(attrValue(particleNode, "type")); }
@@ -342,6 +343,7 @@ void XSD_Impl::parseTopLevelElement(const Node &elemNode)
   XSD_ElementDecl decl;
   decl.name = std::string(attrValue(elemNode, "name"));
   decl.typeRef = resolveType(attrValue(elemNode, "type"));
+  decl.nillable = (attrValue(elemNode, "nillable") == "true");
   parseOccurrenceBounds(elemNode, decl.minOccurs, decl.maxOccurs);
   decl.fixedValue = attrValue(elemNode, "fixed");
   decl.defaultValue = attrValue(elemNode, "default");

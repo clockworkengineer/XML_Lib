@@ -162,6 +162,32 @@ TEST_CASE("XSD element validation.", "[XML][XSD][Validate][Elements]")
     REQUIRE(result.find("unexpected") != std::string::npos);
     REQUIRE(result.find("extra") != std::string::npos);
   }
+  SECTION("Nillable element with xsi:nil='true' passes.", "[XML][XSD][Validate][Elements]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"note\" type=\"NoteType\" nillable=\"true\"/>\n"
+      "  <xs:complexType name=\"NoteType\">\n"
+      "    <xs:sequence>\n"
+      "      <xs:element name=\"to\" type=\"xs:string\" minOccurs=\"0\"/>\n"
+      "    </xs:sequence>\n"
+      "  </xs:complexType>\n"
+      "</xs:schema>\n"
+    };
+    REQUIRE(validateXSD("<note xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>", xsd).empty());
+  }
+  SECTION("Non-nillable element with xsi:nil='true' fails.", "[XML][XSD][Validate][Elements]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"note\" type=\"xs:string\"/>\n"
+      "</xs:schema>\n"
+    };
+    const auto result = validateXSD("<note xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:nil=\"true\"/>", xsd);
+    REQUIRE(result.find("xsi:nil='true' is not allowed") != std::string::npos);
+  }
   SECTION("Root element not in schema fails.", "[XML][XSD][Validate][Elements]")
   {
     const std::string xsd{

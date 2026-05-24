@@ -184,13 +184,13 @@ void XSD_Impl::validateSimpleValue(const std::string &value, const std::string &
 // Attribute validation
 // ----------------------------------------------------------------
 
-void XSD_Impl::validateAttributes(const Node &xNode, const XSD_ComplexType &type)
+void XSD_Impl::validateAttributes(const Node &xNode, const XSD_ComplexType &type, bool nillable)
 {
   const auto &elem = NRef<Element>(xNode);
   const std::string &elemName = elem.name();
 
   validateDeclaredAttributes(elem, type, elemName);
-  validateUndeclaredAttributes(elem, type, elemName);
+  validateUndeclaredAttributes(elem, type, elemName, nillable);
 }
 
 void XSD_Impl::validateDeclaredAttributes(const Element &elem,
@@ -231,13 +231,15 @@ void XSD_Impl::validateDeclaredAttribute(const Element &elem,
 
 void XSD_Impl::validateUndeclaredAttributes(const Element &elem,
   const XSD_ComplexType &type,
-  const std::string &elemName)
+  const std::string &elemName,
+  bool nillable)
 {
   if (type.hasAnyAttribute) { return; }
 
   for (const auto &attr : elem.getAttributes()) {
     const auto &attrName = attr.getName();
     if (attrName.starts_with("xmlns")) { continue; }
+    if (nillable && attrName == "xsi:nil") { continue; }
     const bool declared =
       std::ranges::any_of(type.attributes, [&](const XSD_AttributeDecl &d) { return d.name == attrName; });
     if (!declared) { xsdError(elemName, "undeclared attribute '" + attrName + "'."); }
@@ -277,13 +279,37 @@ void XSD_Impl::validateNodeText(const Node &xNode, const std::string &typeRef, c
 // Element validation
 // ----------------------------------------------------------------
 
-void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
+static bool hasXsiNilTrue(const Element &elem)
+{
+  if (!elem.hasAttribute("xsi:nil")) { return false; }
+  const auto value = elem["xsi:nil"].getParsed();
+  return value == "true" || value == "1";
+}
+
+void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type, bool nillable)
 {
   const auto &elem = NRef<Element>(xNode);
   const std::string &elemName = elem.name();
+  const bool nilled = hasXsiNilTrue(elem);
+
+  if (nilled && !nillable) {
+    xsdError(elemName, "xsi:nil='true' is not allowed for non-nillable element.");
+  }
 
   // Validate attributes
-  validateAttributes(xNode, type);
+  validateAttributes(xNode, type, nillable);
+
+  if (nilled) {
+    if (!getTextContent(xNode).empty()) {
+      xsdError(elemName, "xsi:nil='true' element must be empty.");
+    }
+    for (const auto &child : xNode.getChildren()) {
+      if (isElementLikeNode(child)) {
+        xsdError(elemName, "xsi:nil='true' element must not contain child elements.");
+      }
+    }
+    return;
+  }
 
   if (type.compositor == XSD_ComplexType::Compositor::none) {
     // Simple content — validate text against any declared simple content base type
@@ -346,12 +372,22 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
                                                        : particle->typeRef;
 
     if (particle->inlineComplexType) {
-      validateElement(child, *particle->inlineComplexType);
+      validateElement(child, *particle->inlineComplexType, particle->nillable);
     } else if (particle->inlineSimpleType) {
-      validateRestrictions(getTextContent(child), *particle->inlineSimpleType, childName);
+      if (hasXsiNilTrue(childElem)) {
+        if (!particle->nillable) {
+          xsdError(childName, "xsi:nil='true' is not allowed for non-nillable element.");
+        }
+      } else {
+        validateRestrictions(getTextContent(child), *particle->inlineSimpleType, childName);
+      }
     } else if (!typeRef.empty()) {
-      if (const auto *ct = findComplexType(typeRef)) {
-        validateElement(child, *ct);
+      if (hasXsiNilTrue(childElem)) {
+        if (!particle->nillable) {
+          xsdError(childName, "xsi:nil='true' is not allowed for non-nillable element.");
+        }
+      } else if (const auto *ct = findComplexType(typeRef)) {
+        validateElement(child, *ct, particle->nillable);
       } else {
         validateNodeText(child, typeRef, childName);
       }
@@ -397,9 +433,15 @@ void XSD_Impl::validate(const Node &xNode)
   }
 
   if (const auto *ct = findComplexType(decl->typeRef)) {
-    validateElement(xNode, *ct);
+    validateElement(xNode, *ct, decl->nillable);
   } else {
-    validateNodeText(xNode, decl->typeRef, rootName);
+    if (hasXsiNilTrue(rootElem)) {
+      if (!decl->nillable) {
+        xsdError(rootName, "xsi:nil='true' is not allowed for non-nillable element.");
+      }
+    } else {
+      validateNodeText(xNode, decl->typeRef, rootName);
+    }
   }
 
   validateIdentityConstraints(xNode, *decl);

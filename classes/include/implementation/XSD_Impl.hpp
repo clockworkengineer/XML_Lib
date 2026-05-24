@@ -70,6 +70,7 @@ struct XSD_Particle
   std::string elementName;
   uint32_t minOccurs{ 1 };
   uint32_t maxOccurs{ 1 };// 0 = unbounded
+  bool nillable{ false };
   std::string typeRef;
   // Inline complex type (anonymous)
   std::unique_ptr<XSD_ComplexType> inlineComplexType;
@@ -123,6 +124,7 @@ struct XSD_ElementDecl
 {
   std::string name;
   std::string typeRef;
+  bool nillable{ false };
   uint32_t minOccurs{ 1 };
   uint32_t maxOccurs{ 1 };// 0 = unbounded
   std::string fixedValue;
@@ -182,11 +184,11 @@ private:
   // ----------------------------------------------------------------
   // Validation helpers
   // ----------------------------------------------------------------
-  void validateElement(const Node &xNode, const XSD_ComplexType &type);
-  void validateAttributes(const Node &xNode, const XSD_ComplexType &type);
+  void validateElement(const Node &xNode, const XSD_ComplexType &type, bool nillable);
+  void validateAttributes(const Node &xNode, const XSD_ComplexType &type, bool nillable);
   void validateDeclaredAttributes(const Element &elem, const XSD_ComplexType &type, const std::string &elemName);
   void validateDeclaredAttribute(const Element &elem, const XSD_AttributeDecl &declAttr, const std::string &elemName);
-  void validateUndeclaredAttributes(const Element &elem, const XSD_ComplexType &type, const std::string &elemName);
+  void validateUndeclaredAttributes(const Element &elem, const XSD_ComplexType &type, const std::string &elemName, bool nillable);
   void validateSimpleValue(const std::string &value, const std::string &typeRef, const std::string &context);
   void validateNodeText(const Node &xNode, const std::string &typeRef, const std::string &context);
   void validateIdentityConstraints(const Node &xNode, const XSD_ElementDecl &decl);

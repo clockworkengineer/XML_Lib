@@ -63,6 +63,7 @@ XML Schema Definition (XSD) validation is supported via `XML::validate(xsdSource
 - `xs:key`, `xs:keyref`, `xs:unique` identity constraints
 - `minOccurs`/`maxOccurs` on elements (0=optional, unbounded=unlimited)
 - Inline anonymous complex and simple types on element declarations
+- `xs:nillable` elements with `xsi:nil="true"`
 
 ### XPath 1.0
 XPath 1.0 query evaluation is supported via the `XPath` class and the `xml.xpath()` convenience method.
