@@ -177,6 +177,16 @@ TEST_CASE("Check file format API.", "[XML][File][Format]")
     REQUIRE_THROWS_AS(XML::fromFile(badTraversalPath), Error);
     REQUIRE_THROWS_WITH(XML::fromFile(badTraversalPath), ContainsSubstring("'..' path traversal component not allowed."));
   }
+  SECTION("Parse XML with CR-only line endings via BufferSource", "[XML][Parse][Buffer][LineEnding]")
+  {
+    const std::string xmlString = "<?xml version=\"1.0\"?>\r<root><child>value</child></root>";
+    REQUIRE_NOTHROW(xml.parse(BufferSource(xmlString)));
+  }
+  SECTION("Parse XML with CRLF line endings via BufferSource", "[XML][Parse][Buffer][LineEnding]")
+  {
+    const std::string xmlString = "<?xml version=\"1.0\"?>\r\n<root><child>value</child></root>";
+    REQUIRE_NOTHROW(xml.parse(BufferSource(xmlString)));
+  }
   SECTION("XML::toFile rejects invalid file paths", "[XML][File][Error]")
   {
     const std::filesystem::path badTraversalPath = std::filesystem::path("..") / "secret.xml";
