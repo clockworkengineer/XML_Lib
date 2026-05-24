@@ -110,6 +110,26 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
     };
     REQUIRE_NOTHROW(xml.parse(source));
   }
+  SECTION("Parser recovers cleanly after invalid XML input.", "[XML][Parse][Robustness]")
+  {
+    XML xml;
+    BufferSource validSource{
+      "<?xml version=\"1.0\"?>"
+      "<root><child/></root>"
+    };
+    REQUIRE_NOTHROW(xml.parse(validSource));
+    REQUIRE(NRef<Element>(xml.root()).name() == "root");
+
+    BufferSource invalidSource{
+      "<?xml version=\"1.0\"?>"
+      "<root><child></root>"
+    };
+    REQUIRE_THROWS_AS(xml.parse(invalidSource), SyntaxError);
+    REQUIRE(NRef<Element>(xml.root()).name() == "root");
+
+    REQUIRE_NOTHROW(xml.parse(validSource));
+    REQUIRE(NRef<Element>(xml.root()).name() == "root");
+  }
 }
 TEST_CASE("Check R-Value reference parse/stringify.", "[XML][Node][R-Value Reference]")
 {

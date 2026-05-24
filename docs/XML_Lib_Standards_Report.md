@@ -10,6 +10,7 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - **DTD Support**: Internal and external DTDs are parsed and validated. DTD element, attribute, and notation types are supported, including error handling for illegal combinations (e.g., multiple ID attributes).
 - **Encoding**: Supports UTF-8, UTF-8 BOM, UTF-16BE, UTF-16LE, UTF-32BE, UTF-32LE. Throws errors for unsupported encodings (e.g., UTF-32 in declaration).
 - **Error Handling**: Robust error reporting for syntax errors, unsupported values, extra content, and DTD validation issues.
+- **Parser Robustness**: Syntax failures consistently throw `XML_Lib::SyntaxError`, and parser state is reset before each parse attempt so invalid input does not leave the parser in a corrupted state.
 - **Namespaces**: Full support for W3C XML Namespaces (xmlns, prefix handling, QNames, scoping, per-element URI resolution, and attribute prefix validation).
 - **XML Declaration**: Parses version, encoding, and standalone attributes, with strict validation.
 
