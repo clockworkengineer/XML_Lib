@@ -91,6 +91,43 @@ Turn implementation into measurable compliance. See `docs/XML_Phase3_Plan.md` fo
    - add CI coverage for the compliance test suite
    - keep the Phase 3 test command and fixtures up to date
 
+## What was verified
+- Added `tests/source/compliance/XML_Lib_Tests_Compliance.cpp` and W3C-derived fixtures in `tests/files/w3c/`.
+- Verified the compliance harness runs successfully with:
+
+```bash
+./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
+```
+
+- Confirmed DTD external subset resolution and XSD validation scenarios are exercising the intended supported features.
+- Documented supported XML, DTD, XSD, and XPath subsets in the standards report and guide.
+
+## Current compliance profile
+- XML 1.0 syntax and namespaces: supported and tested
+- DTD validation: supported and tested for internal/external DTDs and content models
+- XPath 1.0: supported and tested for axes, predicates, and functions
+- XSD 1.0: supported for the implemented Phase 2 subset; schema composition and identity constraints are covered
+
+## Known unsupported cases
+- XPath 2.0/3.x features and `document()` function
+- XSD advanced constructs such as `xs:redefine`, substitution groups, and conditional type alternatives
+- Full XML Schema 1.1 feature set
+
+## How to run compliance verification
+Run the Catch2 compliance tag on the built test binary:
+
+```bash
+cd build
+../build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
+```
+
+If the test binary is not yet built, generate the build tree and compile it first:
+
+```bash
+cmake -S . -B build
+cmake --build build
+```
+
 ### Phase 4 — Optional advanced XML compliance
 This is for beyond “true enough for most XML use cases.”
 

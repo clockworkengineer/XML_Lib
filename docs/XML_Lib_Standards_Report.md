@@ -17,6 +17,21 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - [x] Add `xs:key`, `xs:keyref`, and `xs:unique` support
 - [x] Update API docs and standards report with Phase 2 coverage
 
+## Phase 3 Status
+- [x] Integrated a W3C-derived compliance harness for XML, DTD, XPath, and XSD fixtures.
+- [x] Added regression coverage in `tests/source/compliance/XML_Lib_Tests_Compliance.cpp`.
+- [x] Added supporting fixture directories under `tests/files/w3c/`.
+- [x] Documented compliance support, verification commands, and remaining gaps.
+
+## Compliance verification
+Run the W3C-derived compliance subset from the built test executable:
+
+```bash
+./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
+```
+
+This target executes the compliance fixtures and verifies the supported XML, DTD, XPath, and XSD behaviors.
+
 ## Supported XML Standards
 
 ### XML 1.0 Compliance

@@ -66,6 +66,15 @@ cmake --build . --target docs
 ctest
 ```
 
+### Compliance validation
+A W3C-derived compliance subset is available through the unit test executable using the Catch2 tag `[Compliance]`:
+
+```shell script
+./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
+```
+
+This runs the XML, DTD, XPath, and XSD compliance fixtures currently maintained under `tests/files/w3c/`.
+
 ## Usage
 To use **XML_Lib** in your project:
 1. Include the appropriate header files in your source code.

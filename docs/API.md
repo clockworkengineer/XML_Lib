@@ -25,6 +25,17 @@ Node &xml.dtd();                                    // DTD Node (throws if none)
 static std::string XML::version();
 ```
 
+### Validation and compliance
+`XML::validate()` supports document validation against:
+- embedded or external DTDs when `XML_LIB_ENABLE_DTD` is enabled
+- W3C XML Schema Definitions (XSD) when `XML_LIB_ENABLE_XSD` is enabled
+
+The compliance suite exercises W3C-derived XML, DTD, XPath, and XSD scenarios.
+
+Exceptions thrown by validation:
+- `IValidator::Error` for DTD or XSD validation failures
+- `XPath::Error` for invalid XPath expressions or evaluation failures
+
 ## ParseOptions
 The `ParseOptions` struct controls parser limits and XML processing policy.
 

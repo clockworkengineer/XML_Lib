@@ -290,7 +290,24 @@ all built-in simple types; named `xs:simpleType` restrictions (`minInclusive`, `
 
 ---
 
-## 10. XPath queries (`XML_LIB_ENABLE_XPATH`)
+## 10. Compliance testing
+XML_Lib includes a W3C-derived compliance test harness for XML, DTD, XPath, and XSD.
+Run the compliance subset from the built test executable:
+
+```bash
+./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
+```
+
+The compliance fixtures are stored under `tests/files/w3c/`.
+This harness exercises the supported implementation profile for:
+- XML 1.0 syntax and namespace parsing
+- internal and external DTD parsing and validation
+- XPath 1.0 axis, predicate, and function evaluation
+- XSD 1.0 validation for built-in types, wildcards, identity constraints, and schema composition
+
+---
+
+## 11. XPath queries (`XML_LIB_ENABLE_XPATH`)
 
 ```cpp
 #include "XML.hpp"
