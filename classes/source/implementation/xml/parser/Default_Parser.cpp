@@ -9,6 +9,7 @@
 //
 
 #include "Default_Parser.hpp"
+#include <array>
 #if defined(XML_LIB_ENABLE_DTD)
 #include "DTD_Validator.hpp"
 #include "implementation/io/XML_FileSource.hpp"
