@@ -67,22 +67,29 @@ This is the largest body of work and the main remaining compliance gap. A concre
    - `block` and `final` semantics (optional advanced compliance)
 
 ### Phase 3 — Output and test validation
-Turn implementation into measurable compliance.
+Turn implementation into measurable compliance. See `docs/XML_Phase3_Plan.md` for the concrete execution plan.
 
-1. Add W3C test coverage
-   - XML 1.0 conformance tests
+1. Add W3C-derived test coverage
+   - XML 1.0 conformance and syntax tests
    - DTD conformance tests
-   - XPath 1.0 conformance tests
-   - XSD 1.0 conformance tests for the implemented feature set
+   - XPath 1.0 evaluation tests
+   - XSD 1.0 feature-subset conformance tests
 
-2. Add regression tests for edge cases
-   - mixed content and `ELEMENT` models
-   - entity reference vs character reference decoding
-   - namespace scoping and prefix collision detection
+2. Add regression tests for real edge cases
+   - mixed content and `ELEMENT` content models
+   - entity reference vs character reference normalization
+   - namespace scoping and prefix collision handling
+   - `xs:any` / `xs:anyAttribute`
+   - schema composition and identity constraints
 
 3. Add documentation and compliance tracking
-   - extend `docs/XML_Lib_Standards_Report.md` with a status checklist
-   - document the exact supported XSD subset and remaining unimplemented features
+   - extend `docs/XML_Lib_Standards_Report.md` with a status matrix
+   - document exact supported XSD/XPath/XSL subsets and remaining gaps
+   - publish the Phase 3 compliance command and expected results
+
+4. Automate compliance validation
+   - add CI coverage for the compliance test suite
+   - keep the Phase 3 test command and fixtures up to date
 
 ### Phase 4 — Optional advanced XML compliance
 This is for beyond “true enough for most XML use cases.”

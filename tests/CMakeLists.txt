@@ -116,6 +116,8 @@ if(NOT XML_LIB_EMBEDDED)
         list(APPEND TEST_CORE_SOURCES source/xpath/XML_Lib_Tests_XPath.cpp)
     endif()
 
+    list(APPEND TEST_CORE_SOURCES source/compliance/XML_Lib_Tests_Compliance.cpp)
+
     target_sources(${TEST_EXECUTABLE}
         PRIVATE
         ${TEST_CORE_SOURCES}
