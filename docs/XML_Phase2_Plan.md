@@ -190,7 +190,7 @@ Phase 2 is complete when:
 
 - [x] `XSD_Validator` public API added
 - [x] XSD schema model defined
-- [ ] Core schema constructs parsed
+- [x] Core schema constructs parsed
 - [ ] Schema composition supported
 - [ ] XML validation against XSD supported
 - [ ] Attribute and simple type facet validation covered
