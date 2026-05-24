@@ -31,6 +31,58 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
     };
     REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error: Unsupported XML encoding value 'UTF-32' specified.");
   }
+  SECTION("Parse XML with UTF-8 BOM in buffer input", "[XML][Parse][Declaration][BOM]")
+  {
+    std::string xmlText = "\xEF\xBB\xBF<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<root></root>\n";
+    BufferSource source{ xmlText };
+    REQUIRE_NOTHROW(xml.parse(source));
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+  }
+  SECTION("Parse XML with UTF-16 BOM in buffer input", "[XML][Parse][Declaration][BOM]")
+  {
+    std::u16string xmlText = u"\uFEFF<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\"?>\n<root></root>\n";
+    BufferSource source{ xmlText };
+    REQUIRE_NOTHROW(xml.parse(source));
+    auto &xDeclaration = NRef<Declaration>(xml.declaration());
+    REQUIRE(xDeclaration.encoding() == "UTF-16");
+  }
+  SECTION("Parse XML file with UTF-8 BOM", "[XML][Parse][Declaration][BOM]")
+  {
+    const std::filesystem::path filePath = generateRandomFileName();
+    XML writerXml;
+    BufferSource writeSource{
+      "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
+      "<root></root>\n"
+    };
+    writerXml.parse(writeSource);
+    writerXml.stringify(filePath, XML::Format::utf8BOM);
+
+    XML fileXml;
+    REQUIRE_NOTHROW(fileXml.parse(filePath));
+    auto &xDeclaration = NRef<Declaration>(fileXml.declaration());
+    REQUIRE(xDeclaration.encoding() == "UTF-8");
+    REQUIRE(NRef<Element>(fileXml.root()).name() == "root");
+    std::filesystem::remove(filePath);
+  }
+  SECTION("Parse XML file with UTF-16 BOM", "[XML][Parse][Declaration][BOM]")
+  {
+    const std::filesystem::path filePath = generateRandomFileName();
+    XML writerXml;
+    BufferSource writeSource{
+      "<?xml version=\"1.0\" encoding=\"UTF-16\" standalone=\"no\"?>\n"
+      "<root></root>\n"
+    };
+    writerXml.parse(writeSource);
+    writerXml.stringify(filePath, XML::Format::utf16LE);
+
+    XML fileXml;
+    REQUIRE_NOTHROW(fileXml.parse(filePath));
+    auto &xDeclaration = NRef<Declaration>(fileXml.declaration());
+    REQUIRE(xDeclaration.encoding() == "UTF-16");
+    REQUIRE(NRef<Element>(fileXml.root()).name() == "root");
+    std::filesystem::remove(filePath);
+  }
   SECTION("Parse XML declaration with invalid standalone value. ", "[XML][Parse][Declaration]")
   {
     BufferSource source{

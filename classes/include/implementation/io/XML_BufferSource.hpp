@@ -39,6 +39,9 @@ public:
         return static_cast<char16_t>(static_cast<uint16_t>(ch) >> kBitsPerByte | static_cast<uint16_t>(ch) << kBitsPerByte);
       });
     }
+    if (!utf16xml.empty() && utf16xml.front() == u'\uFEFF') {
+      utf16xml.erase(utf16xml.begin());
+    }
     buffer = utf16xml;
     convertCRLFToLF(buffer);
   }
@@ -52,6 +55,9 @@ public:
       XML_LIB_THROW(Error("Source buffer exceeds maximum allowed size."));
     }
     buffer = toUtf16(std::string(sourceBuffer));
+    if (!buffer.empty() && buffer.front() == u'\uFEFF') {
+      buffer.erase(buffer.begin());
+    }
     convertCRLFToLF(buffer);
   }
   BufferSource() = default;

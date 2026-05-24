@@ -137,7 +137,15 @@ void XML::parse(const std::string_view &xmlString, const ParseOptions &options) 
 
 void XML::parse(const std::filesystem::path &filePath, const ParseOptions &options) const
 {
-  FileSource source{ filePath.string(), options.maxXmlSize };
+  const auto fileSize = std::filesystem::file_size(filePath);
+  if (static_cast<std::size_t>(fileSize) > options.maxXmlSize) {
+    XML_LIB_THROW(SyntaxError("XML input exceeds maximum allowed size."));
+  }
+  const std::string xmlString = XML_Impl::fromFile(filePath);
+  if (xmlString.size() > options.maxXmlSize) {
+    XML_LIB_THROW(SyntaxError("XML input exceeds maximum allowed size."));
+  }
+  BufferSource source{ xmlString, options.maxXmlSize };
   implementation->parse(source, options);
 }
 
