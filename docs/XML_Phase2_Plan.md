@@ -192,8 +192,8 @@ Phase 2 is complete when:
 - [x] XSD schema model defined
 - [x] Core schema constructs parsed
 - [x] Schema composition supported
-- [ ] XML validation against XSD supported
-- [ ] Attribute and simple type facet validation covered
+- [x] XML validation against XSD supported
+- [x] Attribute and simple type facet validation covered
 - [ ] Identity constraints supported
 - [ ] Public docs updated with XSD support
 - [ ] Phase 2 regression tests added and passing
