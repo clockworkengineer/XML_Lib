@@ -160,6 +160,43 @@ void XSD_Impl::parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr)
   attr.fixedValue = attrValue(attrNode, "fixed");
 }
 
+void XSD_Impl::parseIdentityConstraint(const Node &constraintNode, XSD_ElementDecl &decl)
+{
+  XSD_IdentityConstraint constraint;
+  const auto tag = localTag(constraintNode);
+  if (tag == "key") {
+    constraint.kind = XSD_IdentityConstraint::Kind::key;
+  } else if (tag == "unique") {
+    constraint.kind = XSD_IdentityConstraint::Kind::unique;
+  } else if (tag == "keyref") {
+    constraint.kind = XSD_IdentityConstraint::Kind::keyref;
+    constraint.refer = std::string(attrValue(constraintNode, "refer"));
+  }
+  constraint.name = std::string(attrValue(constraintNode, "name"));
+
+  for (const auto &child : childElements(constraintNode)) {
+    const auto &childNode = child.get();
+    const auto childTag = localTag(childNode);
+    if (childTag == "selector") {
+      constraint.selector = std::string(attrValue(childNode, "xpath"));
+    } else if (childTag == "field") {
+      constraint.fields.emplace_back(attrValue(childNode, "xpath"));
+    }
+  }
+
+  if (constraint.name.empty()) {
+    XML_LIB_THROW(IValidator::Error("XSD identity constraint missing name."));
+  }
+  if (constraint.selector.empty()) {
+    XML_LIB_THROW(IValidator::Error("XSD identity constraint '" + constraint.name + "' missing selector xpath."));
+  }
+  if (constraint.fields.empty()) {
+    XML_LIB_THROW(IValidator::Error("XSD identity constraint '" + constraint.name + "' must declare at least one field."));
+  }
+
+  decl.identityConstraints.push_back(std::move(constraint));
+}
+
 // ----------------------------------------------------------------
 // Particle (element child in content model) parsing
 // ----------------------------------------------------------------
@@ -169,18 +206,23 @@ void XSD_Impl::parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr)
 
 void XSD_Impl::parseParticle(const Node &particleNode, XSD_Particle &particle)
 {
-  particle.elementName = std::string(attrValue(particleNode, "name"));
+  const auto tag = localTag(particleNode);
+  if (tag == "any") {
+    particle.elementName = "*";
+  } else {
+    particle.elementName = std::string(attrValue(particleNode, "name"));
+  }
   parseOccurrenceBounds(particleNode, particle.minOccurs, particle.maxOccurs);
-  particle.typeRef = resolveType(attrValue(particleNode, "type"));
+  if (tag != "any") { particle.typeRef = resolveType(attrValue(particleNode, "type")); }
 
   // Check for inline type declarations
   for (const auto &child : childElementViews(particleNode)) {
     const auto &childNode = child.node.get();
-    const auto tag = child.tag;
-    if (tag == "complexType") {
+    const auto childTag = child.tag;
+    if (childTag == "complexType") {
       particle.inlineComplexType = std::make_unique<XSD_ComplexType>();
       parseComplexType(childNode, *particle.inlineComplexType);
-    } else if (tag == "simpleType") {
+    } else if (childTag == "simpleType") {
       particle.inlineSimpleType = std::make_unique<XSD_SimpleType>();
       parseSimpleType(childNode, *particle.inlineSimpleType);
     }
@@ -199,7 +241,7 @@ void XSD_Impl::parseChildParticleList(const Node &parentNode, XSD_ComplexType &c
     XML_LIB_THROW(std::runtime_error("XSD Error: Schema complexity exceeds maximum allowed."));
   }
   for (const auto &child : children) {
-    if (child.tag == "element") {
+    if (child.tag == "element" || child.tag == "any") {
       XSD_Particle particle;
       parseParticle(child.node, particle);
       ct.particles.push_back(std::move(particle));
@@ -257,12 +299,31 @@ void XSD_Impl::parseComplexType(const Node &ctNode, XSD_ComplexType &ct)
     } else if (tag == "anyAttribute") {
       ct.hasAnyAttribute = true;
     } else if (tag == "simpleContent" || tag == "complexContent") {
-      // Handle extension/restriction of content
       for (const auto &contentChild : childElementViews(childNode)) {
         const auto &contentChildNode = contentChild.node.get();
         const auto contentTag = contentChild.tag;
         if (contentTag == "extension" || contentTag == "restriction") {
-          parseChildAttributes(contentChildNode, ct);
+          ct.baseType = resolveType(attrValue(contentChildNode, "base"));
+          for (const auto &contentGrandChild : childElementViews(contentChildNode)) {
+            const auto &grandChildNode = contentGrandChild.node.get();
+            const auto grandTag = contentGrandChild.tag;
+            if (grandTag == "sequence" || grandTag == "choice" || grandTag == "all") {
+              if (grandTag == "sequence") {
+                ct.compositor = XSD_ComplexType::Compositor::sequence;
+              } else if (grandTag == "choice") {
+                ct.compositor = XSD_ComplexType::Compositor::choice;
+              } else if (grandTag == "all") {
+                ct.compositor = XSD_ComplexType::Compositor::all;
+              }
+              parseChildParticleList(grandChildNode, ct);
+            } else if (grandTag == "attribute") {
+              XSD_AttributeDecl attr;
+              parseAttributeDecl(grandChildNode, attr);
+              ct.attributes.push_back(std::move(attr));
+            } else if (grandTag == "anyAttribute") {
+              ct.hasAnyAttribute = true;
+            }
+          }
         }
       }
     }
@@ -302,6 +363,8 @@ void XSD_Impl::parseTopLevelElement(const Node &elemNode)
       st.name = decl.name + "#inline";
       decl.typeRef = st.name;
       simpleTypes.emplace(st.name, std::move(st));
+    } else if (tag == "key" || tag == "unique" || tag == "keyref") {
+      parseIdentityConstraint(child, decl);
     }
   }
 
@@ -354,6 +417,8 @@ void XSD_Impl::parseSchema(const Node &schemaNode)
     }
   }
 
+  resolveDerivedTypes();
+
   // Validate all typeRefs can be resolved
   for (const auto &decl : rootElements) {
     if (!decl.typeRef.empty()) {
@@ -380,6 +445,49 @@ const XSD_SimpleType *XSD_Impl::findSimpleType(const std::string &name) const
 {
   const auto it = simpleTypes.find(name);
   return it != simpleTypes.end() ? &it->second : nullptr;
+}
+
+void XSD_Impl::resolveDerivedTypes()
+{
+  std::unordered_set<std::string> resolutionStack;
+  for (auto &pair : complexTypes) {
+    resolveBaseTypes(pair.second, resolutionStack);
+  }
+}
+
+void XSD_Impl::resolveBaseTypes(XSD_ComplexType &ct, std::unordered_set<std::string> &resolutionStack)
+{
+  if (ct.baseType.empty() || ct.baseTypeResolved) { return; }
+  if (resolutionStack.contains(ct.name)) {
+    XML_LIB_THROW(IValidator::Error("Circular complexType derivation detected for '" + ct.name + "'."));
+  }
+  resolutionStack.insert(ct.name);
+
+  const auto baseName = ct.baseType;
+  const auto baseIt = complexTypes.find(baseName);
+  if (baseIt != complexTypes.end()) {
+    resolveBaseTypes(baseIt->second, resolutionStack);
+    if (!ct.baseTypeResolved) {
+      if (ct.compositor == XSD_ComplexType::Compositor::none && baseIt->second.compositor != XSD_ComplexType::Compositor::none) {
+        ct.compositor = baseIt->second.compositor;
+      }
+      if (!baseIt->second.particles.empty()) {
+        ct.particles.insert(ct.particles.begin(), baseIt->second.particles.begin(), baseIt->second.particles.end());
+      }
+      if (!baseIt->second.attributes.empty()) {
+        ct.attributes.insert(ct.attributes.begin(), baseIt->second.attributes.begin(), baseIt->second.attributes.end());
+      }
+      ct.hasAnyAttribute = ct.hasAnyAttribute || baseIt->second.hasAnyAttribute;
+      ct.mixed = ct.mixed || baseIt->second.mixed;
+      ct.baseTypeResolved = true;
+    }
+  } else if (findSimpleType(baseName) || isBuiltinType(baseName)) {
+    ct.baseTypeResolved = true;
+  } else {
+    XML_LIB_THROW(IValidator::Error("Unresolvable base type '" + baseName + "' referenced by complexType '" + ct.name + "'."));
+  }
+
+  resolutionStack.erase(ct.name);
 }
 
 const XSD_ElementDecl *XSD_Impl::findTopLevelElement(const std::string &name) const

@@ -9,7 +9,7 @@ Based on the repository sources and `docs/XML_Lib_Standards_Report.md`:
 - Namespaces: supported
 - DTD validation: supported
 - XPath 1.0: largely implemented
-- XSD validation: partial/Phase 1 support
+- XSD validation: Phase 2 support implemented
 - Comment and documentation style: now converted to Doxygen
 
 ## Concrete roadmap

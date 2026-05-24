@@ -14,8 +14,8 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - [x] Implement schema composition via `xs:include` / `xs:import`
 - [x] Validate XML documents against XSD schemas
 - [x] Enforce attribute constraints, simple type facets, and occurrence counts
-- [ ] Add `xs:key`, `xs:keyref`, and `xs:unique` support
-- [ ] Update API docs and standards report with Phase 2 coverage
+- [x] Add `xs:key`, `xs:keyref`, and `xs:unique` support
+- [x] Update API docs and standards report with Phase 2 coverage
 
 ## Supported XML Standards
 
@@ -34,25 +34,20 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - **Notation and External References**: Handles public and system identifiers, validates external references.
 - **Error Cases**: Detects and reports illegal DTD constructs, missing NOTATION attributes, and invalid content specifications.
 
-### XSD Validation (Phase 1)
+### XSD Validation (Phase 2)
 XML Schema Definition (XSD) validation is supported via `XML::validate(xsdSource)`. The implementation parses the XSD as XML using the existing parser, then validates the document against the schema.
 
 **Supported Features:**
 - Named and anonymous `xs:complexType` with `xs:sequence`, `xs:choice`, and `xs:all` compositors
+- `xs:any` wildcard content and `xs:anyAttribute`
 - Named `xs:simpleType` with all restriction facets: `minInclusive`, `maxInclusive`, `minExclusive`, `maxExclusive`, `pattern`, `enumeration`, `minLength`, `maxLength`, `length`, `totalDigits`, `fractionDigits`, `whiteSpace`
 - All builtin types: `xs:string`, `xs:boolean`, `xs:integer` and subtypes (`xs:int`, `xs:long`, `xs:short`, etc.), `xs:decimal`, `xs:float`, `xs:double`, `xs:date`, `xs:time`, `xs:dateTime`, `xs:anyURI`, `xs:base64Binary`, `xs:hexBinary`, `xs:ID`, `xs:IDREF`, `xs:NMTOKEN`, `xs:NCName`, `xs:QName`, `xs:token`, `xs:normalizedString`, `xs:language`
 - Attribute declarations: `use="required"`, `use="optional"`, `use="prohibited"`, `fixed`, `default`
-- `default` attribute values are applied during validation in Phase 1 without mutating the document tree
-- `xs:anyAttribute` wildcard accepts undeclared attributes while still preserving prohibited attribute semantics
+- `default` attribute values are applied during validation without mutating the document tree
+- `xs:include` / `xs:import` schema composition
+- `xs:key`, `xs:keyref`, `xs:unique` identity constraints
 - `minOccurs`/`maxOccurs` on elements (0=optional, unbounded=unlimited)
 - Inline anonymous complex and simple types on element declarations
-- `xs:element` top-level declarations (root element dispatch)
-
-**Not Yet Implemented (Phase 2):**
-- `xs:extension` / `xs:restriction` type inheritance in `complexContent`
-- `xs:include` and `xs:import`
-- `xs:key`, `xs:keyref`, `xs:unique` identity constraints
-- `xs:notation`
 
 ### XPath 1.0
 XPath 1.0 query evaluation is supported via the `XPath` class and the `xml.xpath()` convenience method.
@@ -97,4 +92,4 @@ XPath 1.0 query evaluation is supported via the `XPath` class and the `xml.xpath
 - [W3C DTD Specification](https://www.w3.org/TR/REC-xml/#dt-doctype)
 
 ## Conclusion
-XML_Lib is largely compliant with XML 1.0 and DTD standards, with robust error handling and strict validation. Phase 1 XSD schema validation has been implemented, covering element content models, attributes, all builtin types, and all restriction facets. XPath 1.0 has been fully implemented, covering all 13 axes, 28+ built-in functions, all result types (node-set, string, number, boolean), predicates, abbreviated syntax, and union expressions. Advanced XSD type inheritance and schema composition (include/import) are not yet implemented. For projects requiring DTD or XSD validation, XPath queries, and strict XML syntax, XML_Lib is a suitable choice.
+XML_Lib is largely compliant with XML 1.0 and DTD standards, with robust error handling and strict validation. Phase 2 XSD schema validation has been implemented, covering element content models, attributes, builtin simple types, all standard restriction facets, schema composition, and identity constraints. XPath 1.0 has been fully implemented, covering all 13 axes, 28+ built-in functions, all result types (node-set, string, number, boolean), predicates, abbreviated syntax, and union expressions. For projects requiring DTD or XSD validation, XPath queries, and strict XML syntax, XML_Lib is a suitable choice.

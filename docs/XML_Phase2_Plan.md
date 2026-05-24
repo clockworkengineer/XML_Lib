@@ -194,9 +194,9 @@ Phase 2 is complete when:
 - [x] Schema composition supported
 - [x] XML validation against XSD supported
 - [x] Attribute and simple type facet validation covered
-- [ ] Identity constraints supported
-- [ ] Public docs updated with XSD support
-- [ ] Phase 2 regression tests added and passing
+- [x] Identity constraints supported
+- [x] Public docs updated with XSD support
+- [x] Phase 2 regression tests added and passing
 
 ## Notes
 

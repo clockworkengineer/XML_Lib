@@ -23,7 +23,8 @@ void validateUnexpectedChildren(const std::unordered_map<std::string, uint32_t> 
   const std::string &elemName);
 
 /// Throw if any declared particle has an occurrence count outside [minOccurs, maxOccurs].
-void validateParticleOccurrenceBounds(const std::unordered_map<std::string, uint32_t> &childCounts,
+void validateParticleOccurrenceBounds(const Node &xNode,
+  const std::unordered_map<std::string, uint32_t> &childCounts,
   const XSD_ComplexType &type,
   const std::string &elemName);
 

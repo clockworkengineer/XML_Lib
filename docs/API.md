@@ -174,12 +174,15 @@ validator.validate(xml.root());   // throws IValidator::Error on failure
 
 **Error format**: `"IValidator Error: XSD Validation Error [Element: <name>] <description>."`
 
-**Supported Phase 1 features:**
-- `xs:sequence`, `xs:choice`, `xs:all` content models; `minOccurs`/`maxOccurs`
+**Supported Phase 2 features:**
+- `xs:sequence`, `xs:choice`, `xs:all` content models; `minOccurs`/`maxOccurs`; `xs:any`
 - All builtin simple types (`xs:string`, `xs:boolean`, `xs:integer` family, `xs:decimal`, etc.)
 - Named `xs:simpleType` with restriction facets: `minInclusive`, `maxInclusive`, `minExclusive`, `maxExclusive`, `pattern`, `enumeration`, `minLength`, `maxLength`, `length`
 - Attribute declarations: `use="required"`, `use="optional"`, `use="prohibited"`, `fixed`, `default`, `xs:anyAttribute`
-- `default` attribute values are validated without mutating the XML tree during Phase 1
+- `default` attribute values are validated without mutating the XML tree
+- `xs:key`, `xs:keyref`, `xs:unique`
+- `xs:include` / `xs:import` schema composition
+- Complex type derivation using `xs:extension` / `xs:restriction`
 - Inline anonymous complex and simple types
 
 ### `XPath`

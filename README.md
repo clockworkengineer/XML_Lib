@@ -8,7 +8,7 @@
 - **XML Serialization**: Serialize data structures to XML format.
 - **XML Namespaces**: Full W3C XML Namespace support — `xmlns` declarations, prefix scoping, QName parsing (`getPrefix()`, `getLocalName()`, `getNamespaceURI()`), and well-formedness enforcement.
 - **DTD Validation**: Internal and external DTD parsing and validation.
-- **XSD Validation**: Phase 1 W3C XML Schema (XSD) validation via `XML::validate(xsdSource)` — element content models (sequence/choice/all), attribute constraints (required/optional/prohibited/fixed), all builtin simple types, and all standard restriction facets.
+- **XSD Validation**: Phase 2 W3C XML Schema (XSD) validation via `XML::validate(xsdSource)` — element content models (`xs:sequence`, `xs:choice`, `xs:all`), `xs:any`, `xs:anyAttribute`, attribute constraints (`required`/`optional`/`prohibited`/`fixed`/`default`), schema composition (`xs:include`/`xs:import`), identity constraints (`xs:key`, `xs:keyref`, `xs:unique`), complex type derivation, builtin simple types, and standard restriction facets.
 - **XPath Queries**: Full XPath 1.0 evaluation via the `XPath` class and `xml.xpath(expr)` shorthand — all 13 axes, 28+ built-in functions, predicates, all result types (node-set, string, number, boolean), and abbreviated syntax (`//`, `.`, `..`, `@`).
 - **Memory Efficiency**: Optimized algorithms to minimize memory usage.
 - **Error Handling**: Robust error and exception handling mechanisms, with detailed standard-compliant error messages.
@@ -124,7 +124,7 @@ XML_Lib is fully compliant with XML 1.0, including:
 - Whitespace normalization
 - Detailed error reporting for all non-compliant cases
 - **W3C XML Namespaces** — `xmlns`/`xmlns:prefix` declarations, prefix scoping, QName decomposition (`getPrefix()`, `getLocalName()`, `getNamespaceURI()`), and attribute prefix validation
-- **XSD Schema Validation** (Phase 1) — `XML::validate(xsdSource)` validates element structure, attribute constraints, and simple type restrictions against a W3C XML Schema
+- **XSD Schema Validation** (Phase 2) — `XML::validate(xsdSource)` validates element structure, attribute constraints, simple type restrictions, schema composition, identity constraints, and complex type derivation against a W3C XML Schema
 - **XPath 1.0** — `xml.xpath(expr)` / `XPath::evaluate(expr)` supports all 13 axes, 28+ functions, predicates, and all result types
 
 Unit tests cover all standard and edge cases.

@@ -8,11 +8,13 @@
 
 #include "XSD_Impl.hpp"
 #include "XML_NodeKindHelpers.hpp"
+#include "XPath.hpp"
 #include "xsd/XSD_ValidateHelpers.hpp"
 
 #include <charconv>
 #include <functional>
 #include <regex>
+#include <set>
 
 namespace XML_Lib {
 
@@ -284,9 +286,9 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
   validateAttributes(xNode, type);
 
   if (type.compositor == XSD_ComplexType::Compositor::none) {
-    // Simple content — validate text
+    // Simple content — validate text against any declared simple content base type
     const auto text = getTextContent(xNode);
-    if (!text.empty()) { validateSimpleValue(text, "", elemName); }
+    if (!text.empty()) { validateSimpleValue(text, type.baseType, elemName); }
     return;
   }
 
@@ -295,7 +297,7 @@ void XSD_Impl::validateElement(const Node &xNode, const XSD_ComplexType &type)
 
   if (type.compositor == XSD_ComplexType::Compositor::sequence || type.compositor == XSD_ComplexType::Compositor::all) {
 
-    validateParticleOccurrenceBounds(childCounts, type, elemName);
+    validateParticleOccurrenceBounds(xNode, childCounts, type, elemName);
     validateUnexpectedChildren(childCounts, type, elemName);
 
   } else if (type.compositor == XSD_ComplexType::Compositor::choice) {
@@ -398,6 +400,70 @@ void XSD_Impl::validate(const Node &xNode)
     validateElement(xNode, *ct);
   } else {
     validateNodeText(xNode, decl->typeRef, rootName);
+  }
+
+  validateIdentityConstraints(xNode, *decl);
+}
+
+std::vector<std::string> XSD_Impl::evaluateIdentityConstraintFields(const Node &contextNode,
+  const XSD_IdentityConstraint &constraint) const
+{
+  XPath xpath(contextNode);
+  std::vector<std::string> values;
+  for (const auto &fieldExpr : constraint.fields) {
+    values.push_back(xpath.evaluateString(fieldExpr));
+  }
+  return values;
+}
+
+std::vector<std::vector<std::string>> XSD_Impl::collectIdentityConstraintValues(const Node &xNode,
+  const XSD_IdentityConstraint &constraint) const
+{
+  XPath xpath(xNode);
+  std::vector<std::vector<std::string>> tuples;
+  const auto selected = xpath.evaluate(constraint.selector);
+  for (const auto *node : selected) {
+    tuples.push_back(evaluateIdentityConstraintFields(*node, constraint));
+  }
+  return tuples;
+}
+
+void XSD_Impl::validateIdentityConstraints(const Node &xNode, const XSD_ElementDecl &decl)
+{
+  if (decl.identityConstraints.empty()) { return; }
+
+  std::map<std::string, std::set<std::vector<std::string>>> identityValues;
+
+  for (const auto &constraint : decl.identityConstraints) {
+    if (constraint.kind == XSD_IdentityConstraint::Kind::key
+      || constraint.kind == XSD_IdentityConstraint::Kind::unique) {
+      const auto tuples = collectIdentityConstraintValues(xNode, constraint);
+      for (const auto &tuple : tuples) {
+        auto &values = identityValues[constraint.name];
+        if (values.contains(tuple)) {
+          xsdError(NRef<Element>(xNode).name(),
+            "identity constraint '" + constraint.name + "' requires unique values, but duplicate value was found.");
+        }
+        values.insert(tuple);
+      }
+    }
+  }
+
+  for (const auto &constraint : decl.identityConstraints) {
+    if (constraint.kind != XSD_IdentityConstraint::Kind::keyref) { continue; }
+    const auto it = identityValues.find(constraint.refer);
+    if (it == identityValues.end()) {
+      xsdError(NRef<Element>(xNode).name(),
+        "keyref '" + constraint.name + "' references undefined key '" + constraint.refer + "'.");
+    }
+    const auto &referencedValues = it->second;
+    const auto tuples = collectIdentityConstraintValues(xNode, constraint);
+    for (const auto &tuple : tuples) {
+      if (!referencedValues.contains(tuple)) {
+        xsdError(NRef<Element>(xNode).name(),
+          "keyref '" + constraint.name + "' refers to a missing key value.");
+      }
+    }
   }
 }
 

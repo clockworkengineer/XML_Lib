@@ -204,6 +204,66 @@ TEST_CASE("XSD element validation.", "[XML][XSD][Validate][Elements]")
     };
     REQUIRE(validateXSD("<list><item>a</item><item>b</item><item>c</item><item>d</item></list>", xsd).empty());
   }
+  SECTION("xs:any allows arbitrary child elements.", "[XML][XSD][Validate][Elements]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"root\" type=\"AnyType\"/>\n"
+      "  <xs:complexType name=\"AnyType\">\n"
+      "    <xs:sequence>\n"
+      "      <xs:any minOccurs=\"0\" maxOccurs=\"unbounded\"/>\n"
+      "    </xs:sequence>\n"
+      "  </xs:complexType>\n"
+      "</xs:schema>\n"
+    };
+    REQUIRE(validateXSD("<root><a/><b/><c/></root>", xsd).empty());
+  }
+  SECTION("xs:complexContent extension inherits base content.", "[XML][XSD][Validate][Elements]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:complexType name=\"BaseType\">\n"
+      "    <xs:sequence>\n"
+      "      <xs:element name=\"base\" type=\"xs:string\"/>\n"
+      "    </xs:sequence>\n"
+      "  </xs:complexType>\n"
+      "  <xs:complexType name=\"ExtendedType\">\n"
+      "    <xs:complexContent>\n"
+      "      <xs:extension base=\"BaseType\">\n"
+      "        <xs:sequence>\n"
+      "          <xs:element name=\"extra\" type=\"xs:string\"/>\n"
+      "        </xs:sequence>\n"
+      "      </xs:extension>\n"
+      "    </xs:complexContent>\n"
+      "  </xs:complexType>\n"
+      "  <xs:element name=\"root\" type=\"ExtendedType\"/>\n"
+      "</xs:schema>\n"
+    };
+    REQUIRE(validateXSD("<root><base>1</base><extra>2</extra></root>", xsd).empty());
+    const auto result = validateXSD("<root><base>1</base></root>", xsd);
+    REQUIRE(result.find("extra") != std::string::npos);
+  }
+  SECTION("xs:simpleContent extension validates base text and attributes.", "[XML][XSD][Validate][Elements]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:complexType name=\"LabelType\">\n"
+      "    <xs:simpleContent>\n"
+      "      <xs:extension base=\"xs:string\">\n"
+      "        <xs:attribute name=\"lang\" type=\"xs:string\" use=\"required\"/>\n"
+      "      </xs:extension>\n"
+      "    </xs:simpleContent>\n"
+      "  </xs:complexType>\n"
+      "  <xs:element name=\"label\" type=\"LabelType\"/>\n"
+      "</xs:schema>\n"
+    };
+    REQUIRE(validateXSD("<label lang=\"en\">Hello</label>", xsd).empty());
+    const auto result = validateXSD("<label>Hello</label>", xsd);
+    REQUIRE(result.find("missing required attribute") != std::string::npos);
+  }
   SECTION("xs:choice with single valid branch passes.", "[XML][XSD][Validate][Elements]")
   {
     REQUIRE(
@@ -491,6 +551,74 @@ TEST_CASE("XSD simple type validation.", "[XML][XSD][Validate][SimpleTypes]")
     REQUIRE(validateXSD("<item priority=\"high\"/>", xsd).empty());
     const auto result = validateXSD("<item priority=\"critical\"/>", xsd);
     REQUIRE(result.find("enumeration") != std::string::npos);
+  }
+}
+
+TEST_CASE("XSD identity constraint validation.", "[XML][XSD][Validate][Identity]")
+{
+  SECTION("xs:key enforces unique key values.", "[XML][XSD][Validate][Identity]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"order\">\n"
+      "    <xs:complexType>\n"
+      "      <xs:sequence>\n"
+      "        <xs:element name=\"item\" maxOccurs=\"unbounded\">\n"
+      "          <xs:complexType>\n"
+      "            <xs:attribute name=\"id\" type=\"xs:string\" use=\"required\"/>\n"
+      "          </xs:complexType>\n"
+      "        </xs:element>\n"
+      "      </xs:sequence>\n"
+      "    </xs:complexType>\n"
+      "    <xs:key name=\"itemKey\">\n"
+      "      <xs:selector xpath=\"item\"/>\n"
+      "      <xs:field xpath=\"@id\"/>\n"
+      "    </xs:key>\n"
+      "  </xs:element>\n"
+      "</xs:schema>\n"
+    };
+    REQUIRE(validateXSD("<order><item id=\"a\"/><item id=\"b\"/></order>", xsd).empty());
+    const auto result = validateXSD("<order><item id=\"a\"/><item id=\"a\"/></order>", xsd);
+    REQUIRE(result.find("identity constraint") != std::string::npos);
+    REQUIRE(result.find("itemKey") != std::string::npos);
+  }
+
+  SECTION("xs:keyref requires referenced keys to exist.", "[XML][XSD][Validate][Identity]")
+  {
+    const std::string xsd{
+      "<?xml version=\"1.0\"?>\n"
+      "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+      "  <xs:element name=\"order\">\n"
+      "    <xs:complexType>\n"
+      "      <xs:sequence>\n"
+      "        <xs:element name=\"item\" maxOccurs=\"unbounded\">\n"
+      "          <xs:complexType>\n"
+      "            <xs:attribute name=\"id\" type=\"xs:string\" use=\"required\"/>\n"
+      "          </xs:complexType>\n"
+      "        </xs:element>\n"
+      "        <xs:element name=\"orderItem\" maxOccurs=\"unbounded\">\n"
+      "          <xs:complexType>\n"
+      "            <xs:attribute name=\"ref\" type=\"xs:string\" use=\"required\"/>\n"
+      "          </xs:complexType>\n"
+      "        </xs:element>\n"
+      "      </xs:sequence>\n"
+      "    </xs:complexType>\n"
+      "    <xs:key name=\"itemKey\">\n"
+      "      <xs:selector xpath=\"item\"/>\n"
+      "      <xs:field xpath=\"@id\"/>\n"
+      "    </xs:key>\n"
+      "    <xs:keyref name=\"itemRef\" refer=\"itemKey\">\n"
+      "      <xs:selector xpath=\"orderItem\"/>\n"
+      "      <xs:field xpath=\"@ref\"/>\n"
+      "    </xs:keyref>\n"
+      "  </xs:element>\n"
+      "</xs:schema>\n"
+    };
+    REQUIRE(validateXSD("<order><item id=\"a\"/><orderItem ref=\"a\"/></order>", xsd).empty());
+    const auto result = validateXSD("<order><item id=\"a\"/><orderItem ref=\"b\"/></order>", xsd);
+    REQUIRE(result.find("keyref") != std::string::npos);
+    REQUIRE(result.find("itemRef") != std::string::npos);
   }
 }
 

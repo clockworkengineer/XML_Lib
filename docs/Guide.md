@@ -283,10 +283,10 @@ const std::string xsdText = XML::fromFile("schema.xsd");
 xml.validate(xsdText);
 ```
 
-**Supported XSD features:** `xs:sequence`, `xs:choice`, `xs:all`; `minOccurs`/`maxOccurs`;
+**Supported XSD features:** `xs:sequence`, `xs:choice`, `xs:all`; `minOccurs`/`maxOccurs`; `xs:any`; `xs:anyAttribute`;
 all built-in simple types; named `xs:simpleType` restrictions (`minInclusive`, `maxInclusive`,
-`pattern`, `enumeration`, `length`, `minLength`, `maxLength`); attribute `use` / `fixed`;
-`xs:anyAttribute`; anonymous inline complex and simple types.
+`minExclusive`, `maxExclusive`, `pattern`, `enumeration`, `length`, `minLength`, `maxLength`); attribute `use` / `fixed` / `default`;
+`xs:key`, `xs:keyref`, `xs:unique`; `xs:include` / `xs:import`; anonymous inline complex and simple types.
 
 ---
 

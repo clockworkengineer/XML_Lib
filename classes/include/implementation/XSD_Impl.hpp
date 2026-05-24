@@ -61,6 +61,8 @@ struct XSD_ComplexType
   std::vector<XSD_AttributeDecl> attributes;
   bool mixed{ false };
   bool hasAnyAttribute{ false };
+  std::string baseType;
+  bool baseTypeResolved{ false };
 };
 
 struct XSD_Particle
@@ -107,6 +109,16 @@ struct XSD_Particle
   XSD_Particle &operator=(XSD_Particle &&) = default;
 };
 
+struct XSD_IdentityConstraint
+{
+  enum class Kind : uint8_t { key, unique, keyref };
+  Kind kind{ Kind::key };
+  std::string name;
+  std::string selector;
+  std::vector<std::string> fields;
+  std::string refer; // only used for keyref
+};
+
 struct XSD_ElementDecl
 {
   std::string name;
@@ -115,6 +127,7 @@ struct XSD_ElementDecl
   uint32_t maxOccurs{ 1 };// 0 = unbounded
   std::string fixedValue;
   std::string defaultValue;
+  std::vector<XSD_IdentityConstraint> identityConstraints;
 };
 
 // ============================================================
@@ -152,6 +165,9 @@ private:
   void parseChildAttributes(const Node &parentNode, XSD_ComplexType &ct);
   void parseAttributeDecl(const Node &attrNode, XSD_AttributeDecl &attr);
   void parseRestriction(const Node &restrictNode, XSD_SimpleType &st);
+  void parseIdentityConstraint(const Node &constraintNode, XSD_ElementDecl &decl);
+  void resolveDerivedTypes();
+  void resolveBaseTypes(XSD_ComplexType &ct, std::unordered_set<std::string> &resolutionStack);
   void parseExternalSchema(const Node &includeNode);
   void mergeSchema(const XSD_Impl &external);
   // Retrieve attribute value from a schema node, empty string view if absent
@@ -173,6 +189,11 @@ private:
   void validateUndeclaredAttributes(const Element &elem, const XSD_ComplexType &type, const std::string &elemName);
   void validateSimpleValue(const std::string &value, const std::string &typeRef, const std::string &context);
   void validateNodeText(const Node &xNode, const std::string &typeRef, const std::string &context);
+  void validateIdentityConstraints(const Node &xNode, const XSD_ElementDecl &decl);
+  std::vector<std::vector<std::string>> collectIdentityConstraintValues(const Node &xNode,
+    const XSD_IdentityConstraint &constraint) const;
+  std::vector<std::string> evaluateIdentityConstraintFields(const Node &contextNode,
+    const XSD_IdentityConstraint &constraint) const;
   [[nodiscard]] bool isBuiltinType(const std::string_view &typeName) const;
   void validateBuiltinType(const std::string &value, const std::string &typeName, const std::string &context);
   void validateRestrictions(const std::string &value, const XSD_SimpleType &st, const std::string &context);
