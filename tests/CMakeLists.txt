@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.20)
 project(XML_Lib_Unit_Tests VERSION 1.2.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 
 find_package(Catch2 3 QUIET)
-
 if(NOT Catch2_FOUND)
     message(STATUS "Catch2 not found locally; downloading via FetchContent")
     include(FetchContent)
@@ -71,7 +70,6 @@ if(NOT XML_LIB_EMBEDDED)
         source/xml/XML_Lib_Tests_XML.cpp
         source/xml/XML_Lib_Tests_Helper.cpp
         source/xml/XML_Lib_Tests_Security.cpp
-        source/security/XML_Lib_Tests_Fuzz_Corpus.cpp
         source/entitymapper/XML_Lib_Tests_Entity_Mapper.cpp
         source/data/XML_Lib_Tests_External_Reference.cpp
         source/data/XML_Lib_Tests_Value.cpp
@@ -130,7 +128,6 @@ if(NOT XML_LIB_EMBEDDED)
 
     if(NOT XML_LIB_EMBEDDED)
         target_link_libraries(${TEST_EXECUTABLE} PRIVATE ${XML_LIBRARY_NAME} Catch2::Catch2WithMain)
-
         if(MSVC)
             target_precompile_headers(${TEST_EXECUTABLE} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/stdafx.h)
         endif()

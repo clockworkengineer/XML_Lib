@@ -22,35 +22,9 @@ option(XML_LIB_MINIMAL_FEATURES "Enable minimal embedded feature subset" OFF)
 option(XML_LIB_ENABLE_XPATH "Enable XPath engine" ON)
 option(XML_LIB_ENABLE_XSD "Enable XSD validation support" ON)
 option(XML_LIB_ENABLE_DTD "Enable DTD validation support" ON)
-option(XML_LIB_DISABLE_XPATH "Disable XPath engine for minimal attack surface" OFF)
-option(XML_LIB_DISABLE_XSD "Disable XSD validation support for minimal attack surface" OFF)
-option(XML_LIB_DISABLE_DTD "Disable DTD validation support for minimal attack surface" OFF)
 option(XML_LIB_ENABLE_STRINGIFY "Enable XML stringify support" ON)
 option(XML_LIB_ENABLE_PERFORMANCE_COUNTERS "Enable internal performance counters" OFF)
-option(XML_LIB_ENABLE_SECURITY_HARDENING "Enable default security hardening and minimal attack surface defaults" OFF)
-option(XML_LIB_ENABLE_ASAN "Enable AddressSanitizer for builds" OFF)
-option(XML_LIB_ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer for builds" OFF)
-option(XML_LIB_ENABLE_TSAN "Enable ThreadSanitizer for builds" OFF)
-option(XML_LIB_ENABLE_STATIC_ANALYSIS "Enable additional static analysis warning flags" OFF)
 set(XML_LIB_ARENA_SIZE_KB "256" CACHE STRING "Initial PMR arena size in KB")
-set(XML_LIB_MAX_XML_SIZE "104857600" CACHE STRING "Maximum XML source size in bytes")
-set(XML_LIB_MAX_TOTAL_ATTRIBUTES "1000000" CACHE STRING "Default maximum total attributes across an XML document")
-
-if(XML_LIB_ENABLE_ASAN AND XML_LIB_ENABLE_UBSAN)
-  message(FATAL_ERROR "Only one sanitizer may be enabled at a time.")
-endif()
-
-if(XML_LIB_ENABLE_ASAN AND XML_LIB_ENABLE_TSAN)
-  message(FATAL_ERROR "Only one sanitizer may be enabled at a time.")
-endif()
-
-if(XML_LIB_ENABLE_UBSAN AND XML_LIB_ENABLE_TSAN)
-  message(FATAL_ERROR "Only one sanitizer may be enabled at a time.")
-endif()
-
-if(MSVC AND(XML_LIB_ENABLE_ASAN OR XML_LIB_ENABLE_UBSAN OR XML_LIB_ENABLE_TSAN))
-  message(FATAL_ERROR "Sanitizer support is not configured for MSVC in this build.")
-endif()
 
 if(XML_LIB_EMBEDDED)
   set(XML_LIB_BUILD_SIZE_OPTIMIZED ON CACHE BOOL "Build with size optimization" FORCE)
@@ -75,32 +49,12 @@ if(XML_LIB_MINIMAL_FEATURES)
   set(XML_LIB_ENABLE_STRINGIFY ON CACHE BOOL "Enable XML stringify support" FORCE)
 endif()
 
-if(XML_LIB_ENABLE_SECURITY_HARDENING)
-  set(XML_LIB_DISABLE_XPATH ON CACHE BOOL "Disable XPath engine for minimal attack surface" FORCE)
-  set(XML_LIB_DISABLE_XSD ON CACHE BOOL "Disable XSD validation support for minimal attack surface" FORCE)
-  set(XML_LIB_DISABLE_DTD ON CACHE BOOL "Disable DTD validation support for minimal attack surface" FORCE)
-  set(XML_LIB_ENABLE_STATIC_ANALYSIS ON CACHE BOOL "Enable additional static analysis warning flags" FORCE)
-endif()
-
-if(XML_LIB_DISABLE_XPATH)
-  set(XML_LIB_ENABLE_XPATH OFF CACHE BOOL "Enable XPath engine" FORCE)
-endif()
-
-if(XML_LIB_DISABLE_XSD)
-  set(XML_LIB_ENABLE_XSD OFF CACHE BOOL "Enable XSD validation support" FORCE)
-endif()
-
-if(XML_LIB_DISABLE_DTD)
-  set(XML_LIB_ENABLE_DTD OFF CACHE BOOL "Enable DTD validation support" FORCE)
-endif()
-
 include(CheckCXXSourceCompiles)
 set(CMAKE_REQUIRED_FLAGS "-std=c++17")
 check_cxx_source_compiles("
 #include <memory_resource>
 int main() { auto *r = std::pmr::get_default_resource(); (void)r; }
 " HAS_PMR)
-
 if(NOT HAS_PMR)
   message(FATAL_ERROR "XML_Lib requires std::pmr (C++17). Your toolchain does not provide <memory_resource>.")
 endif()
@@ -220,9 +174,6 @@ target_compile_definitions(${XML_LIBRARY_NAME}
   $<$<BOOL:${XML_LIB_ENABLE_DTD}>:XML_LIB_ENABLE_DTD>
   $<$<BOOL:${XML_LIB_ENABLE_STRINGIFY}>:XML_LIB_ENABLE_STRINGIFY>
   $<$<BOOL:${XML_LIB_ENABLE_PERFORMANCE_COUNTERS}>:XML_LIB_ENABLE_PERFORMANCE_COUNTERS>
-  $<$<BOOL:${XML_LIB_ENABLE_SECURITY_HARDENING}>:XML_LIB_ENABLE_SECURITY_HARDENING>
-  XML_LIB_MAX_XML_SIZE=${XML_LIB_MAX_XML_SIZE}
-  XML_LIB_MAX_TOTAL_ATTRIBUTES=${XML_LIB_MAX_TOTAL_ATTRIBUTES}
 )
 
 if(MSVC)
@@ -240,17 +191,6 @@ if(NOT MSVC)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE
       $<$<CONFIG:Release>:-O3>
       $<$<CONFIG:MinSizeRel>:-Os>
-    )
-  endif()
-
-  if(XML_LIB_ENABLE_STATIC_ANALYSIS)
-    target_compile_options(${XML_LIBRARY_NAME} PRIVATE
-      -Wextra
-      -Wshadow
-      -Wconversion
-      -Wsign-conversion
-      -Wformat-security
-      -Wduplicated-branches
     )
   endif()
 
@@ -272,20 +212,6 @@ if(NOT MSVC)
 
   if(XML_LIB_NO_EXCEPTIONS OR XML_LIB_STRICT_NO_EXCEPTIONS)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fno-exceptions)
-  endif()
-
-  if(XML_LIB_ENABLE_ASAN)
-    target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fsanitize=address -fno-omit-frame-pointer)
-    target_compile_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=address -fno-omit-frame-pointer)
-    target_link_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=address)
-  elseif(XML_LIB_ENABLE_UBSAN)
-    target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fsanitize=undefined -fno-sanitize-recover=undefined)
-    target_compile_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=undefined -fno-sanitize-recover=undefined)
-    target_link_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=undefined)
-  elseif(XML_LIB_ENABLE_TSAN)
-    target_compile_options(${XML_LIBRARY_NAME} PRIVATE -fsanitize=thread -fno-omit-frame-pointer)
-    target_compile_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=thread -fno-omit-frame-pointer)
-    target_link_options(${XML_LIBRARY_NAME} INTERFACE -fsanitize=thread)
   endif()
 
   if(XML_LIB_EMBEDDED)
@@ -366,36 +292,36 @@ endif()
 
 # Library binary + CMake export set
 install(TARGETS ${XML_LIBRARY_NAME}
-  EXPORT XML_LibTargets
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    EXPORT XML_LibTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Public headers only (exclude implementation/ subdirectory)
 install(DIRECTORY classes/include/
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib
-  FILES_MATCHING PATTERN "*.hpp"
-  PATTERN "implementation" EXCLUDE)
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib
+    FILES_MATCHING PATTERN "*.hpp"
+    PATTERN "implementation" EXCLUDE)
 
 # Export targets file (XML_LibTargets.cmake)
 install(EXPORT XML_LibTargets
-  FILE XML_LibTargets.cmake
-  NAMESPACE XML_Lib::
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+    FILE XML_LibTargets.cmake
+    NAMESPACE XML_Lib::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
 
 # Package config file (XML_LibConfig.cmake)
 configure_package_config_file(
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/XML_LibConfig.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/XML_LibConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
 
 # Package version file (XML_LibConfigVersion.cmake)
 write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
-  VERSION ${PROJECT_VERSION}
-  COMPATIBILITY SameMajorVersion)
+    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion)
 
 install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)

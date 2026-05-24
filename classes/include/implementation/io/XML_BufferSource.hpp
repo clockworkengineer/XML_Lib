@@ -1,6 +1,7 @@
 #pragma once
 #include "common/XML_Error.hpp"
 #include "XML_Converter.hpp"
+#include "XML.hpp"
 
 #include "ISource.hpp"
 
