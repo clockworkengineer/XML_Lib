@@ -118,11 +118,6 @@ private:
       xmlString.replace(pos, 2, u"\x0A");
       pos = xmlString.find(u"\x0D\x0A", pos + 1);
     }
-    pos = xmlString.find(u"\x0D");
-    while (pos != std::string::npos) {
-      xmlString.replace(pos, 1, u"\x0A");
-      pos = xmlString.find(u"\x0D", pos + 1);
-    }
   }
 
   long bufferPosition = 0;

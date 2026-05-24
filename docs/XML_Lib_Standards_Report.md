@@ -81,8 +81,6 @@ XPath 1.0 query evaluation is supported via the `XPath` class and the `xml.xpath
 
 **Not Yet Implemented:**
 - XPath 2.0/3.x features (sequences, types, `for` expressions, etc.)
-- `document()` function
-- Full namespace axis enumeration
 
 ### Other Limitations & Deviations
 - **Namespaces**: Supported — W3C XML Namespace declarations, prefix scoping, QName parsing, URI resolution, and well-formedness enforcement are all implemented.

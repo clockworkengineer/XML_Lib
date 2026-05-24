@@ -206,6 +206,37 @@ TEST_CASE("XPath node-set functions", "[XML][XPath][Functions][NodeSet]")
   }
 }
 
+TEST_CASE("XPath advanced features", "[XML][XPath][Advanced]")
+{
+  SECTION("document('') returns the current document root")
+  {
+    XML xml{ kBookstore };
+    XPath xp(xml.root());
+    REQUIRE(xp.evaluateString("name(document(''))") == "bookstore");
+  }
+
+  SECTION("document('nonexistent') returns empty node-set for unsupported URIs")
+  {
+    XML xml{ kBookstore };
+    XPath xp(xml.root());
+    REQUIRE(xp.evaluate("document('missing.xml')").empty());
+  }
+
+  SECTION("namespace::* exposes namespace prefixes for an element")
+  {
+    const std::string xmlWithNS =
+      "<?xml version=\"1.0\"?>"
+      "<root xmlns:ex=\"http://example.com/ex\">"
+      "<child/>"
+      "</root>";
+    XML xml{ xmlWithNS };
+    XPath xp(xml.root());
+    REQUIRE(xp.evaluateBool("boolean(/*/namespace::*)"));
+    REQUIRE(xp.evaluateString("name(/*/namespace::*)") == "ex");
+    REQUIRE(xp.evaluateString("namespace-uri(/*/namespace::*)") == "http://example.com/ex");
+  }
+}
+
 TEST_CASE("XPath string functions", "[XML][XPath][Functions][String]")
 {
   SECTION("string(//book[1]/title) returns text content")

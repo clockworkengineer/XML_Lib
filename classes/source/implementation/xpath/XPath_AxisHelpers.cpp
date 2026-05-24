@@ -19,6 +19,14 @@ const std::pmr::vector<XMLAttribute> *nodeAttributes(const Node &node)
   return nullptr;
 }
 
+const std::pmr::vector<XMLAttribute> *nodeNameSpaces(const Node &node)
+{
+  if (isA<Element>(node)) return &NRef<Element>(node).getNameSpaces();
+  if (isA<Root>(node)) return &NRef<Root>(node).getNameSpaces();
+  if (isA<Self>(node)) return &NRef<Self>(node).getNameSpaces();
+  return nullptr;
+}
+
 /// @brief
 /// Implementation of findAttributeValue.
 

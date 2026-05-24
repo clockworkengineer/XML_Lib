@@ -16,6 +16,10 @@ namespace XML_Lib {
 /// if the node is not element-like.
 [[nodiscard]] const std::pmr::vector<XMLAttribute> *nodeAttributes(const Node &node);
 
+/// Returns a pointer to the namespace list for an element-like node, or nullptr
+/// if the node is not element-like.
+[[nodiscard]] const std::pmr::vector<XMLAttribute> *nodeNameSpaces(const Node &node);
+
 /// Returns the parsed value of the named attribute on an element-like node, or
 /// an empty string if the attribute is not present.
 [[nodiscard]] std::string findAttributeValue(const Node &node, std::string_view attrName);

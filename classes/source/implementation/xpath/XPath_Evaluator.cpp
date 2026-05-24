@@ -125,11 +125,15 @@ static XPathResult makeBool(bool b)
   return r;
 }
 static XPathResult makeNodeSet(std::vector<const Node *> ns = {},
-  std::unordered_map<const Node *, std::string> attrs = {})
+  std::unordered_map<const Node *, std::string> attrs = {},
+  std::unordered_set<const Node *> namespaceNodes = {},
+  std::unordered_map<const Node *, std::string> nodeNames = {})
 {
   XPathResult r;
   r.nodeSet = std::move(ns);
   r.attrValues = std::move(attrs);
+  r.namespaceNodes = std::move(namespaceNodes);
+  r.nodeNames = std::move(nodeNames);
   return r;
 }
 
@@ -201,12 +205,24 @@ static bool evalPredicate(const XPathPredicate &pred,
 }
 
 // ========================================================================
+// Path proxies for attribute and namespace axis results
+// ========================================================================
+static std::vector<std::unique_ptr<Node>> s_xpathSyntheticNodes;
+
+static const Node *makeSyntheticXPathNode(const std::string &name)
+{
+  s_xpathSyntheticNodes.push_back(std::make_unique<Node>(Node::make<Element>(name)));
+  return s_xpathSyntheticNodes.back().get();
+}
+
+// ========================================================================
 // Axis traversal: returns candidate (node, attrname) pairs
 // ========================================================================
 struct CandidateNode
 {
   const Node *node{ nullptr };
-  std::string attrName;// non-empty only for attribute axis
+  std::string attrName;// non-empty only for attribute / namespace axis proxies
+  std::string attrValue;// parsed attribute or namespace URI
   bool isAttr{ false };
 };
 
@@ -221,40 +237,40 @@ static std::vector<CandidateNode> axisNodes(XPathAxis axis,
 
   switch (axis) {
   case XPathAxis::Child:
-    for (const auto &child : contextNode.getChildren()) { result.push_back({ &child, "", false }); }
+    for (const auto &child : contextNode.getChildren()) { result.push_back(CandidateNode{ &child, "", "", false }); }
     break;
 
   case XPathAxis::Self:
-    result.push_back({ &contextNode, "", false });
+    result.push_back(CandidateNode{ &contextNode, "", "", false });
     break;
 
   case XPathAxis::Parent:
-    if (!ancestorStack.empty()) { result.push_back({ ancestorStack.back(), "", false }); }
+    if (!ancestorStack.empty()) { result.push_back(CandidateNode{ ancestorStack.back(), "", "", false }); }
     break;
 
   case XPathAxis::Ancestor:
-    for (auto it = ancestorStack.rbegin(); it != ancestorStack.rend(); ++it) { result.push_back({ *it, "", false }); }
+    for (auto it = ancestorStack.rbegin(); it != ancestorStack.rend(); ++it) { result.push_back(CandidateNode{ *it, "", "", false }); }
     break;
 
   case XPathAxis::AncestorOrSelf:
-    result.push_back({ &contextNode, "", false });
-    for (auto it = ancestorStack.rbegin(); it != ancestorStack.rend(); ++it) { result.push_back({ *it, "", false }); }
+    result.push_back(CandidateNode{ &contextNode, "", "", false });
+    for (auto it = ancestorStack.rbegin(); it != ancestorStack.rend(); ++it) { result.push_back(CandidateNode{ *it, "", "", false }); }
     break;
 
   case XPathAxis::Descendant: {
     std::vector<const Node *> tmp;
     tmp.reserve(16);
     collectDescendants(contextNode, tmp);
-    for (const auto *n : tmp) result.push_back({ n, "", false });
+    for (const auto *n : tmp) result.push_back(CandidateNode{ n, "", "", false });
     break;
   }
 
   case XPathAxis::DescendantOrSelf: {
-    result.push_back({ &contextNode, "", false });
+    result.push_back(CandidateNode{ &contextNode, "", "", false });
     std::vector<const Node *> tmp;
     tmp.reserve(16);
     collectDescendants(contextNode, tmp);
-    for (const auto *n : tmp) result.push_back({ n, "", false });
+    for (const auto *n : tmp) result.push_back(CandidateNode{ n, "", "", false });
     break;
   }
 
@@ -263,7 +279,17 @@ static std::vector<CandidateNode> axisNodes(XPathAxis axis,
       for (const auto &attr : *attrs) {
         // Skip namespace declarations — they are on the namespace axis
         if (attr.getName().starts_with("xmlns")) continue;
-        result.push_back({ &contextNode, attr.getName(), true });
+        result.push_back({ &contextNode, attr.getName(), attr.getParsed(), true });
+      }
+    }
+    break;
+
+  case XPathAxis::Namespace:
+    if (const auto *namespaces = nodeNameSpaces(contextNode); namespaces != nullptr) {
+      for (const auto &ns : *namespaces) {
+        std::string prefix = ns.getName();
+        if (prefix == ":") { prefix.clear(); }
+        result.push_back({ makeSyntheticXPathNode(prefix), prefix, ns.getParsed(), true });
       }
     }
     break;
@@ -283,22 +309,17 @@ static std::vector<CandidateNode> axisNodes(XPathAxis axis,
           found = true;
           continue;
         }
-        if (found) result.push_back({ &sib, "", false });
+        if (found) result.push_back(CandidateNode{ &sib, "", "", false });
       }
     } else {
       for (const auto &sib : siblings) {
         if (&sib == &contextNode) break;
-        result.push_back({ &sib, "", false });
+        result.push_back(CandidateNode{ &sib, "", "", false });
       }
       std::reverse(result.begin(), result.end());
     }
     break;
   }
-
-  case XPathAxis::Namespace:
-    // Namespace axis: expose namespace declarations as pseudo-nodes
-    // For simplicity, we skip this — return empty set for now
-    break;
   }
 
   return result;
@@ -316,6 +337,8 @@ static XPathResult evalStepResult(const XPathStep &step,
   std::vector<const Node *> output;
   output.reserve(inputNodeSet.size());
   std::unordered_map<const Node *, std::string> outAttrValues;
+  std::unordered_set<const Node *> outNamespaceNodes;
+  std::unordered_map<const Node *, std::string> outNodeNames;
   std::vector<CandidateNode> passing;
   std::vector<CandidateNode> surviving;
   passing.reserve(16);
@@ -352,13 +375,17 @@ static XPathResult evalStepResult(const XPathStep &step,
       if (std::find(output.begin(), output.end(), c.node) == output.end()) {
         output.push_back(c.node);
         if (c.isAttr) {
-          outAttrValues[c.node] = findAttributeValue(*c.node, c.attrName);
+          outAttrValues[c.node] = c.attrValue;
+          if (step.axis == XPathAxis::Namespace) {
+            outNamespaceNodes.insert(c.node);
+            outNodeNames[c.node] = c.attrName;
+          }
         }
       }
     }
   }
 
-  return makeNodeSet(output, outAttrValues);
+  return makeNodeSet(output, outAttrValues, outNamespaceNodes, outNodeNames);
 }
 
 // ========================================================================
@@ -371,6 +398,8 @@ static XPathResult evalPathExpr(const XPathPathExpr &pathExpr,
 {
   std::vector<const Node *> current;
   std::unordered_map<const Node *, std::string> currentAttrs;
+  std::unordered_set<const Node *> currentNamespaceNodes;
+  std::unordered_map<const Node *, std::string> currentNodeNames;
 
   if (pathExpr.absolute) {
     if (pathExpr.steps.empty()) {
@@ -399,6 +428,8 @@ static XPathResult evalPathExpr(const XPathPathExpr &pathExpr,
         auto sr = evalStepResult(pathExpr.steps[i], current, currentAttrs, docRoot, {});
         current = std::move(sr.nodeSet);
         currentAttrs = std::move(sr.attrValues);
+        currentNamespaceNodes = std::move(sr.namespaceNodes);
+        currentNodeNames = std::move(sr.nodeNames);
       }
     } else {
       current.push_back(&docRoot);
@@ -414,10 +445,12 @@ static XPathResult evalPathExpr(const XPathPathExpr &pathExpr,
         }
         current = std::move(nextSet);
         currentAttrs = std::move(sr.attrValues);
+        currentNamespaceNodes = std::move(sr.namespaceNodes);
+        currentNodeNames = std::move(sr.nodeNames);
       }
     }
 
-    return makeNodeSet(current, currentAttrs);
+    return makeNodeSet(current, currentAttrs, currentNamespaceNodes, currentNodeNames);
   }
 
   // Relative path
@@ -426,9 +459,11 @@ static XPathResult evalPathExpr(const XPathPathExpr &pathExpr,
     auto sr = evalStepResult(step, current, currentAttrs, docRoot, ancestorStack);
     current = std::move(sr.nodeSet);
     currentAttrs = std::move(sr.attrValues);
+    currentNamespaceNodes = std::move(sr.namespaceNodes);
+    currentNodeNames = std::move(sr.nodeNames);
   }
 
-  return makeNodeSet(current, currentAttrs);
+  return makeNodeSet(current, currentAttrs, currentNamespaceNodes, currentNodeNames);
 }
 
 // ========================================================================
@@ -495,6 +530,29 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     }
     return &contextNode;
   };
+  auto nodeNameFromOptArg = [&]() -> std::string {
+    auto args = evalArgs();
+    if (!args.empty() && args[0].type == XPathResultType::NodeSet && !args[0].nodeSet.empty()) {
+      const auto *n = args[0].nodeSet.front();
+      if (const auto it = args[0].nodeNames.find(n); it != args[0].nodeNames.end()) {
+        return it->second;
+      }
+      return std::string(nodeNameView(*n));
+    }
+    return std::string(nodeNameView(contextNode));
+  };
+  auto nodeNamespaceURIFn = [&]() -> std::string {
+    auto args = evalArgs();
+    if (!args.empty() && args[0].type == XPathResultType::NodeSet && !args[0].nodeSet.empty()) {
+      const auto *n = args[0].nodeSet.front();
+      if (args[0].namespaceNodes.find(n) != args[0].namespaceNodes.end()) {
+        if (const auto it = args[0].attrValues.find(n); it != args[0].attrValues.end()) {
+          return it->second;
+        }
+      }
+    }
+    return nodeNamespaceURI(*nodeFromOptArg());
+  };
 
   // --- Node-set functions ---
   if (name == "position") {
@@ -510,12 +568,25 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     }
     return makeNumber(static_cast<double>(args[0].nodeSet.size()));
   }
+  if (name == "document") {
+    auto args = evalArgs();
+    if (args.empty()) { return makeNodeSet(); }
+    const std::string uri = resultToString(args[0]);
+    if (uri.empty()) {
+      return makeNodeSet({ &docRoot });
+    }
+    return makeNodeSet();
+  }
   if (name == "name" || name == "local-name") {
-    const Node *n = nodeFromOptArg();
-    return makeString((name == "local-name") ? std::string(nodeLocalNameView(*n)) : std::string(nodeNameView(*n)));
+    const auto nodeName = nodeNameFromOptArg();
+    if (name == "local-name") {
+      const auto pos = nodeName.find(':');
+      return makeString((pos == std::string::npos) ? nodeName : nodeName.substr(pos + 1));
+    }
+    return makeString(nodeName);
   }
   if (name == "namespace-uri") {
-    return makeString(nodeNamespaceURI(*nodeFromOptArg()));
+    return makeString(nodeNamespaceURIFn());
   }
 
   // --- Boolean functions ---

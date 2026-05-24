@@ -4,6 +4,9 @@
 #include "XML_Core.hpp"
 #include "XPath_AST.hpp"
 
+#include <unordered_map>
+#include <unordered_set>
+
 namespace XML_Lib {
 
 // -------------------------------------------------------
@@ -15,10 +18,12 @@ struct XPathResult
 {
   XPathResultType type{ XPathResultType::NodeSet };
   std::vector<const Node *> nodeSet;
-  // For attribute-axis results: maps node ptr → attribute value.
-  // When non-empty, nodeSet members are "attribute proxy" nodes whose string-value
-  // must be looked up here rather than from nodeStringValue().
+  // For attribute-axis and namespace-axis results: maps proxy node ptr → value.
+  // When non-empty, nodeSet members are "proxy" nodes whose string-value
+  // is looked up here rather than from nodeStringValue().
   std::unordered_map<const Node *, std::string> attrValues;
+  std::unordered_set<const Node *> namespaceNodes;
+  std::unordered_map<const Node *, std::string> nodeNames;
   std::string stringValue;
   double numberValue{ 0.0 };
   bool boolValue{ false };
