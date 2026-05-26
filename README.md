@@ -98,6 +98,7 @@ To use **XML_Lib** in your project:
 ### Example
 ```cpp
 #include "XML.hpp"
+#include "XML_Node.hpp"
 using namespace XML_Lib;
 
 int main() {
