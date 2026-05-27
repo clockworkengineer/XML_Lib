@@ -10,6 +10,8 @@
   ~TypeName() override = default
 
 #include <memory_resource>
+#include <string>
+#include <vector>
 
 namespace XML_Lib {
 
