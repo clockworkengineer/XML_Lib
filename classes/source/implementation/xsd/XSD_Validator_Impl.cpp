@@ -49,7 +49,11 @@ static std::size_t countNodesInTree(const Node &node)
 void XSD_Impl::parse(ISource &source)
 {
   // Determine base directory for schema imports/includes.
-  schemaDirectory = std::filesystem::current_path();
+  std::error_code ec;
+  schemaDirectory = std::filesystem::current_path(ec);
+  if (ec) {
+    schemaDirectory.clear();
+  }
   if (auto *fileSource = dynamic_cast<FileSource *>(&source)) {
     schemaDirectory = std::filesystem::path(fileSource->getFileName()).parent_path();
     const auto canonicalPath = std::filesystem::weakly_canonical(std::filesystem::path(fileSource->getFileName()));
