@@ -4,6 +4,7 @@
 #include "XML_Core.hpp"
 #include "DTD_Validator.hpp"
 
+#include <functional>
 #include <filesystem>
 
 namespace XML_Lib {
