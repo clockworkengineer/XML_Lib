@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-cd ./build/tests/
+ cd ./Release/tests/
 if [ ! -x ./XML_Lib_Performance_Tests ]; then
   echo "Performance test binary not found: ./build/tests/XML_Lib_Performance_Tests"
   exit 1
