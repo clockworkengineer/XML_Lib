@@ -3,6 +3,7 @@
 #include "XML_ExternalReference.hpp"
 #include "entity/XML_EntityMapping.hpp"
 
+#include <algorithm>
 #include <optional>
 #include <string>
 #include <string_view>
