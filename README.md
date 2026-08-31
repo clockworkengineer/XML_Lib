@@ -14,6 +14,23 @@
 - **Error Handling**: Robust error and exception handling mechanisms, with detailed standard-compliant error messages.
 - **Cross-platform Compatibility**: Designed to run seamlessly on Linux, Windows, and macOS environments.
 - **C++20 Standard**: Uses C++20 features (`std::ranges`, `std::string_view`, `starts_with`/`ends_with`) and C++17 `std::pmr` (Polymorphic Memory Resources) for efficient node allocation. No C++23 features are required.
+- **100% SOLID Architecture**: Fully refactored across all 6 subsystems adhering strictly to Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion principles.
+
+## 100% SOLID Architecture
+
+**XML_Lib** is built on a clean, role-segregated **SOLID** object-oriented architecture:
+
+| Subsystem | SOLID Principles | Key Abstractions & Interfaces | Architectural Benefits |
+| :--- | :--- | :--- | :--- |
+| **Input Stream I/O** | **ISP, DIP, SRP** | `ICharStream`, `ILocationTracker`, `IRangeReader`, `IResettableStream`, `SourceFactoryImpl` | Narrow stream role interfaces; isolated stream normalization |
+| **Output Destination I/O** | **ISP, SRP** | `ICharWriter`, `IStringWriter`, `IResettableDestination`, `IDestination` | Role-segregated output targets with zero name-lookup ambiguity |
+| **Entity & Security** | **ISP, SRP, DIP** | [`IEntityRegistry`](file:///home/robt/projects/XML_Lib/classes/include/interface/IEntityRegistry.hpp), [`IEntityExpander`](file:///home/robt/projects/XML_Lib/classes/include/interface/IEntityExpander.hpp), [`ISecurityPolicyManager`](file:///home/robt/projects/XML_Lib/classes/include/interface/ISecurityPolicyManager.hpp) | Modular storage, expansion engine, recursion cycle detector, and XXE security enforcement |
+| **Parser & Serializer** | **LSP, OCP, DIP** | `IValidatingParser`, `IIndentedStringify`, [`INodeSerializer`](file:///home/robt/projects/XML_Lib/classes/include/implementation/stringify/INodeSerializer.hpp), [`IXMLParseStage`](file:///home/robt/projects/XML_Lib/classes/include/implementation/parser/IXMLParseStage.hpp) | Strategy-based node formatting maps; segregated validation contracts |
+| **Validator Pipeline** | **OCP, DIP, SRP** | [`ISchemaParser`](file:///home/robt/projects/XML_Lib/classes/include/interface/ISchemaParser.hpp), [`ISchemaValidator`](file:///home/robt/projects/XML_Lib/classes/include/interface/ISchemaValidator.hpp), [`IValidatorRegistry`](file:///home/robt/projects/XML_Lib/classes/include/implementation/ValidatorRegistry.hpp) | Pluggable dynamic schema validation engine (DTD, XSD, RNG, Schematron) |
+| **Visitor & Traversal** | **ISP, OCP** | [`IVisitorRoles.hpp`](file:///home/robt/projects/XML_Lib/classes/include/interface/IVisitorRoles.hpp), [`NodeVisitorAdapter`](file:///home/robt/projects/XML_Lib/classes/include/implementation/NodeVisitorAdapter.hpp) | Narrow node visitor callbacks (`IElementVisitor`, `ICommentVisitor`, etc.) |
+| **XPath & Facade** | **SRP, DIP, OCP** | [`IXPathNodeAdapter`](file:///home/robt/projects/XML_Lib/classes/include/implementation/xpath/IXPathNodeAdapter.hpp), [`XML_FileIO`](file:///home/robt/projects/XML_Lib/classes/include/implementation/io/XML_FileIO.hpp) | Decoupled XPath node navigation; isolated static file I/O service |
+
+For deep architectural design docs, see [`docs/SOLID_Master_Refactoring_Plan.md`](file:///home/robt/projects/XML_Lib/docs/SOLID_Master_Refactoring_Plan.md) and [`docs/SOLID_Architecture_Guide.md`](file:///home/robt/projects/XML_Lib/docs/SOLID_Architecture_Guide.md).
 
 ## Installation
 

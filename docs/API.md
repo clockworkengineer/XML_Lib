@@ -229,6 +229,50 @@ auto nodes = xml.xpath("//book");  // equivalent to XPath(xml.root()).evaluate(e
 
 **Error type**: `XPath::Error` (derives from `std::runtime_error`), message prefix `"XPath Error: "`.
 
+## SOLID Role Interfaces & Services
+
+`XML_Lib` provides a complete set of role-segregated interfaces adhering to the **Interface Segregation Principle (ISP)** and **Dependency Inversion Principle (DIP)**:
+
+### Input Stream Role Interfaces (`ISource.hpp`)
+- `ICharStream`: Character stream navigation (`current()`, `next()`, `more()`, `backup()`).
+- `ILocationTracker`: Stream offset and line/column location reporting (`position()`, `getPosition()`, `getSystemId()`).
+- `IRangeReader`: Substring extraction (`getRange(start, end)`).
+- `IResettableStream`: Stream reset control (`reset()`).
+- `ISource`: Composite interface inheriting all four input role interfaces.
+
+### Output Destination Role Interfaces (`IDestination.hpp`)
+- `ICharWriter`: Single-character output (`add(Char)`).
+- `IStringWriter`: String/block output (`add(const std::string&)`, `add(const char*)`, `add(const std::string_view&)`).
+- `IResettableDestination`: Output clearing control (`clear()`).
+- `IDestination`: Composite interface inheriting output role interfaces with C++ `using` overload declarations.
+
+### Entity & Security Role Interfaces (`IEntityRegistry.hpp`, `IEntityExpander.hpp`, `ISecurityPolicyManager.hpp`)
+- `IEntityRegistry`: Entity registration and lookup (`setInternal`, `getExternal`, `isPresent`).
+- `IEntityExpander`: Entity substitution and translation (`translate`, `map`, `checkForRecursion`).
+- `ISecurityPolicyManager`: External entity resolution policy and XXE security configuration (`setExternalEntityPolicy`).
+- `IEntityMapper`: Composite interface inheriting `IEntityRegistry`, `IEntityExpander`, and `ISecurityPolicyManager`.
+
+### Parser & Serializer Role Interfaces (`IParser.hpp`, `IStringify.hpp`)
+- `IParser`: Abstract document parsing producing `Node` (`parse`).
+- `IValidatingParser`: Role interface for parsers supporting validation (`canValidate`, `validate`).
+- `IStringify`: Abstract XML serialization interface (`stringify`).
+- `IIndentedStringify`: Role interface for formatters supporting indentation settings (`getIndent`, `setIndent`).
+- [`INodeSerializer`](file:///home/robt/projects/XML_Lib/classes/include/implementation/stringify/INodeSerializer.hpp): Strategy interface for node-specific formatting (`serialize`).
+- [`IXMLParseStage`](file:///home/robt/projects/XML_Lib/classes/include/implementation/parser/IXMLParseStage.hpp): Strategy interface for modular parse stages.
+
+### Validator Role Interfaces (`ISchemaParser.hpp`, `ISchemaValidator.hpp`, `IValidatorRegistry.hpp`)
+- `ISchemaParser<SchemaT>`: Template role interface for schema parsing.
+- `ISchemaValidator`: Role interface for document validation execution (`validateDocument`).
+- [`ValidatorRegistry`](file:///home/robt/projects/XML_Lib/classes/include/implementation/ValidatorRegistry.hpp): Pluggable validator registry allowing custom schema validators to be registered dynamically.
+
+### Visitor Role Interfaces & Adapter (`IVisitorRoles.hpp`, `NodeVisitorAdapter.hpp`)
+- Role Visitors: `IElementVisitor`, `ICommentVisitor`, `IContentVisitor`, `ICDATAVisitor`, `IDeclarationVisitor`, `IDTDVisitor`, `IEntityReferenceVisitor`, `IPIVisitor`, `IPrologVisitor`, `IRootVisitor`, `ISelfVisitor`, `INodeVisitor`.
+- [`NodeVisitorAdapter`](file:///home/robt/projects/XML_Lib/classes/include/implementation/NodeVisitorAdapter.hpp): Static dispatcher delegating DOM tree traversal directly to narrow role visitors (`NodeVisitorAdapter::dispatchVisit`).
+
+### XPath & File Services (`IXPathNodeAdapter.hpp`, `XML_FileIO.hpp`)
+- [`IXPathNodeAdapter`](file:///home/robt/projects/XML_Lib/classes/include/implementation/xpath/IXPathNodeAdapter.hpp): Strategy interface for XPath node navigation abstraction.
+- [`XML_FileIO`](file:///home/robt/projects/XML_Lib/classes/include/implementation/io/XML_FileIO.hpp): Dedicated service class for static file I/O operations (`fromFile`, `toFile`, `getFileFormat`).
+
 ## Error Handling
 All errors throw exceptions derived from `std::runtime_error`:
 - `SyntaxError` — malformed XML or namespace violations.

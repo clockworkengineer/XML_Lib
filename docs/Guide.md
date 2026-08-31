@@ -21,6 +21,7 @@ All public symbols live in the `XML_Lib` namespace.
 10. [XPath queries](#10-xpath-queries-xml_lib_enable_xpath)
 11. [XML Namespaces](#11-xml-namespaces)
 12. [Advanced I/O (ISource / IDestination)](#12-advanced-io-isource--idestination)
+13. [Role Visitors & SOLID Extensions](#13-role-visitors--solid-extensions)
 
 ---
 
@@ -488,6 +489,76 @@ single string) is memoised: the result is cached on first access and reused on
 subsequent calls as long as the child count has not changed.  For parse-once /
 read-many workloads this reduces repeated content access from O(n) per call to
 O(1).
+
+---
+
+## 13. Role Visitors & SOLID Extensions
+
+### 13.1 Narrow Role Visitors with `NodeVisitorAdapter`
+
+Rather than implementing all 24 methods of `IAction`, `XML_Lib` allows creating focused role visitors that inherit only narrow role interfaces (such as `IElementVisitor`, `ICommentVisitor`, or `IContentVisitor`):
+
+```cpp
+#include "XML.hpp"
+#include "interface/IVisitorRoles.hpp"
+#include "implementation/NodeVisitorAdapter.hpp"
+#include <iostream>
+
+using namespace XML_Lib;
+
+// Focus only on element nodes
+struct ElementPrinter : public IElementVisitor
+{
+  void onElement(const Node &node) override
+  {
+    const auto &element = NRef<Element>(node);
+    std::cout << "Element: " << element.name() << "\n";
+  }
+};
+
+// Traversal via NodeVisitorAdapter
+XML xml{"<root><item id=\"1\"/><item id=\"2\"/></root>"};
+ElementPrinter visitor;
+xml.traverse(visitor);
+```
+
+### 13.2 Custom Node Serializers with `INodeSerializer`
+
+`Default_Stringify` uses a strategy map mapping node variant types to [`INodeSerializer`](file:///home/robt/projects/XML_Lib/classes/include/implementation/stringify/INodeSerializer.hpp) strategies (OCP compliant):
+
+```cpp
+#include "implementation/stringify/Default_Stringify.hpp"
+using namespace XML_Lib;
+
+struct CustomElementSerializer final : public INodeSerializer
+{
+  void serialize(
+    const Node &xNode,
+    IDestination &destination,
+    unsigned long indent,
+    const std::function<void(const Node &, IDestination &, unsigned long)> &recurse) const override
+  {
+    const auto &xElement = NRef<Element>(xNode);
+    destination.add("[" + xElement.name() + "]");
+  }
+};
+
+Default_Stringify stringifier;
+stringifier.registerSerializer<Element>(std::make_unique<CustomElementSerializer>());
+```
+
+### 13.3 Dynamic Schema Validator Registration
+
+Register custom schema validators at runtime using [`ValidatorRegistry`](file:///home/robt/projects/XML_Lib/classes/include/implementation/ValidatorRegistry.hpp):
+
+```cpp
+#include "implementation/ValidatorRegistry.hpp"
+using namespace XML_Lib;
+
+ValidatorRegistry registry;
+// Register custom validator for "RELAX_NG" or custom schemas
+registry.registerValidator("DTD", std::make_unique<DTD_Validator>(xml.dtd()));
+```
 
 ---
 
