@@ -3,6 +3,7 @@
 
 #include "XML.hpp"
 #include "XML_Core.hpp"
+#include "NodeVisitorAdapter.hpp"
 
 namespace XML_Lib {
 
@@ -56,44 +57,19 @@ private:
   // Root Node (children allocated in xmlParser's arena; must be destroyed before xmlParser)
   Node xmlRoot;
   // Traverse XML tree
-  template<typename T> static void traverseNodes(T &xNode, IAction &action);
+  template<typename T, typename VisitorT> static void traverseNodes(T &xNode, VisitorT &action);
 };
+
 /// <summary>
-/// Recursively traverse Node tree calling IAction methods and possibly
-/// modifying the tree contents or even structure.
+/// Recursively traverse Node tree calling visitor methods via NodeVisitorAdapter (ISP compliant).
 /// </summary>
-/// <param name="xNode">Node tree to be traversed.</param>
-/// <param name="action">Action methods to call during traversal.</param>
-template<typename T> void XML_Impl::traverseNodes(T &xNode, IAction &action)
+template<typename T, typename VisitorT>
+void XML_Impl::traverseNodes(T &xNode, VisitorT &action)
 {
-  action.onNode(xNode);
-  if (isA<Prolog>(xNode)) {
-    action.onProlog(xNode);
-  } else if (isA<Declaration>(xNode)) {
-    action.onDeclaration(xNode);
-  } else if (isA<Root>(xNode)) {
-    action.onRoot(xNode);
-  } else if (isA<Self>(xNode)) {
-    action.onSelf(xNode);
-  } else if (isA<Element>(xNode)) {
-    action.onElement(xNode);
-  } else if (isA<Content>(xNode)) {
-    action.onContent(xNode);
-  } else if (isA<EntityReference>(xNode)) {
-    action.onEntityReference(xNode);
-  } else if (isA<Comment>(xNode)) {
-    action.onComment(xNode);
-  } else if (isA<CDATA>(xNode)) {
-    action.onCDATA(xNode);
-  } else if (isA<PI>(xNode)) {
-    action.onPI(xNode);
-  } else if (isA<DTD>(xNode)) {
-    action.onDTD(xNode);
-  } else {
-    XML_LIB_THROW(Error("Unknown Node type encountered during tree traversal."));
-  }
+  NodeVisitorAdapter::dispatchVisit(xNode, action);
   if (!xNode.getChildren().empty()) {
     for (auto &child : xNode.getChildren()) { traverseNodes(child, action); }
   }
 }
-}// namespace XML_Lib
+
+} // namespace XML_Lib
