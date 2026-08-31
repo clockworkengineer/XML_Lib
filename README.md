@@ -224,5 +224,9 @@ This project is licensed under the [MIT License](./LICENSE). Feel free to use, m
 ## Support
 If you encounter issues or have questions, please submit an issue on the [GitHub repository](https://github.com/clockworkengineer/XML_Lib).
 
+If you find **XML_Lib** helpful and would like to support its development, feel free to [Buy Me a Coffee](https://buymeacoffee.com/roberttizz1)!
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-orange.svg?logo=buy-me-a-coffee)](https://buymeacoffee.com/roberttizz1)
+
 ## Acknowledgements
 Special thanks to contributors and testers who helped refine and improve **XML_Lib**.
