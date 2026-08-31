@@ -1,12 +1,13 @@
 //
-// Class: XML_EntityMapper
+// Class: XML_EntityMapper & Sub-components
 //
-// Description: XML entity reference mapper.
+// Description: XML entity reference mapper with SOLID modular sub-components.
 //
 // Dependencies: C++20 - Language standard features used.
 //
 
 #include "XML_Core.hpp"
+#include "entity/XML_EntityMapper.hpp"
 #include "entity/XML_EntityMapperHelpers.hpp"
 #include "interface/IEntityResolver.hpp"
 #include <algorithm>
@@ -16,12 +17,21 @@
 
 namespace XML_Lib {
 
-/// @brief
-/// Initialise entity mapping table with defaults.
+static constexpr std::size_t kMaxExternalEntityFileSize{ 5ULL * 1024ULL * 1024ULL }; // 5 MB
 
-void  XML_EntityMapper::resetToDefault()
+// ==========================================
+// EntityStorage Implementation
+// ==========================================
+
+EntityStorage::EntityStorage()
 {
-  entityMappings.clear();  invalidateTranslationCache();  entityMappings.reserve(16);
+  resetToDefault();
+}
+
+void EntityStorage::resetToDefault()
+{
+  entityMappings.clear();
+  entityMappings.reserve(16);
   entityMappings.emplace("&amp;", XML_EntityMapping{ "&#x26;" });
   entityMappings.emplace("&quot;", XML_EntityMapping{ "&#x22;" });
   entityMappings.emplace("&apos;", XML_EntityMapping{ "&#x27;" });
@@ -29,63 +39,84 @@ void  XML_EntityMapper::resetToDefault()
   entityMappings.emplace("&gt;", XML_EntityMapping{ "&#x3E;" });
 }
 
-/// @brief
-/// Take an entity reference mapping and make sure it is not recursive by calling
-/// recurseOverEntityReference() repeatedly on any mapping found at the next level.
-/// Until no more are found it or the entity reference repeats, in which case
-/// it will cause and infinite loop when decoding and is an error.
-
-/// @param entityName Entity mapping name.
-/// @param type Entity mapping type.
-/// @param currentEntities Currently, defined entities.
-void XML_EntityMapper::recurseOverEntityReference(const std::string_view &entityName,
-  const Char type,
-  std::set<std::string> &currentEntities)
+bool EntityStorage::isPresent(const std::string_view &entityName) const
 {
-  static constexpr std::size_t kMaxRecursiveEntityResolutionDepth{ 512 };
-  if (currentEntities.size() > kMaxRecursiveEntityResolutionDepth) {
-    XML_LIB_THROW(SyntaxError("Entity resolution depth exceeds maximum allowed."));
-  }
-
-  BufferSource entitySource { std::string(entityName) };
-  while (entitySource.more()) {
-    if (entitySource.current() == type) {
-      std::string mappedEntityName = toUtf8(entitySource.current());
-      entitySource.next();
-      while (entitySource.more() && entitySource.current() != ';') {
-        mappedEntityName += toUtf8(entitySource.current());
-        entitySource.next();
-      }
-      mappedEntityName += toUtf8(entitySource.current());
-      if (currentEntities.contains(mappedEntityName)) {
-        XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
-      }
-      if (auto nextMappedName = getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
-        currentEntities.emplace(mappedEntityName);
-        recurseOverEntityReference(nextMappedName, type, currentEntities);
-        currentEntities.erase(mappedEntityName);
-      }
-    }
-    entitySource.next();
-  }
+  return findEntityMapping(entityMappings, entityName) != nullptr;
 }
 
-static constexpr std::size_t kMaxExternalEntityFileSize{ 5ULL * 1024ULL * 1024ULL }; // 5 MB
-
-/// @brief
-/// Grab an entity reference mapping from an external file.
-
-/// @param fileName 
-/// @return String containing the contents of entity reference mapping file.
-std::string XML_EntityMapper::getFileMappingContents(const std::string_view &fileName) const
+bool EntityStorage::isInternal(const std::string_view &entityName) const
 {
-  return getCachedFileMapping(fileName);
+  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isInternal(); }
+  return false;
 }
 
-/// @brief
-/// Implementation of XML_EntityMapper::getCachedFileMapping.
+bool EntityStorage::isExternal(const std::string_view &entityName) const
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isExternal(); }
+  return false;
+}
 
-std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileName) const
+bool EntityStorage::isNotation(const std::string_view &entityName) const
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isNotation(); }
+  return false;
+}
+
+const std::string &EntityStorage::getInternal(const std::string_view &entityName) const
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isInternal()) {
+    return entity->getInternal();
+  }
+  XML_LIB_THROW(XML_EntityMapper::Error(std::string("Internal entity reference not found for '").append(entityName) + "'."));
+}
+
+const std::string &EntityStorage::getNotation(const std::string_view &entityName) const
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isNotation()) {
+    return entity->getNotation();
+  }
+  XML_LIB_THROW(XML_EntityMapper::Error(std::string("Notation entity reference not found for '").append(entityName) + "'."));
+}
+
+const XMLExternalReference &EntityStorage::getExternal(const std::string_view &entityName) const
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isExternal()) {
+    return entity->getExternal();
+  }
+  XML_LIB_THROW(XML_EntityMapper::Error(std::string("External entity reference not found for '").append(entityName) + "'."));
+}
+
+void EntityStorage::setInternal(const std::string_view &entityName, const std::string_view &internal)
+{
+  getEntityMapping(entityName).setInternal(internal);
+}
+
+void EntityStorage::setNotation(const std::string_view &entityName, const std::string_view &notation)
+{
+  getEntityMapping(entityName).setNotation(notation);
+}
+
+void EntityStorage::setExternal(const std::string_view &entityName, const XMLExternalReference &external)
+{
+  getEntityMapping(entityName).setExternal(external);
+}
+
+XML_EntityMapping &EntityStorage::getEntityMapping(const std::string_view &entityName)
+{
+  return ensureEntityMapping(entityMappings, entityName);
+}
+
+// ==========================================
+// XXESecurityPolicy Implementation
+// ==========================================
+
+void XXESecurityPolicy::setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver)
+{
+  allowExternalEntities = allowExternal;
+  entityResolver = resolver;
+}
+
+std::string XXESecurityPolicy::getCachedFileMapping(const std::string_view &fileName) const
 {
   if (fileName.empty()) {
     XML_LIB_THROW(SyntaxError("External entity file name is empty."));
@@ -120,94 +151,121 @@ std::string XML_EntityMapper::getCachedFileMapping(const std::string_view &fileN
   return externalFileCache.at(key);
 }
 
-XML_EntityMapping &XML_EntityMapper::getEntityMapping(const std::string_view &entityName)
+// ==========================================
+// EntityRecursionChecker Implementation
+// ==========================================
+
+void EntityRecursionChecker::recurseOverEntityReference(const std::string_view &entityName,
+  const Char type,
+  std::set<std::string> &currentEntities)
 {
-  return ensureEntityMapping(entityMappings, entityName);
+  static constexpr std::size_t kMaxRecursiveEntityResolutionDepth{ 512 };
+  if (currentEntities.size() > kMaxRecursiveEntityResolutionDepth) {
+    XML_LIB_THROW(SyntaxError("Entity resolution depth exceeds maximum allowed."));
+  }
+
+  BufferSource entitySource{ std::string(entityName) };
+  while (entitySource.more()) {
+    if (entitySource.current() == type) {
+      std::string mappedEntityName = toUtf8(entitySource.current());
+      entitySource.next();
+      while (entitySource.more() && entitySource.current() != ';') {
+        mappedEntityName += toUtf8(entitySource.current());
+        entitySource.next();
+      }
+      mappedEntityName += toUtf8(entitySource.current());
+      if (currentEntities.contains(mappedEntityName)) {
+        XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
+      }
+      if (auto nextMappedName = storage.getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
+        currentEntities.emplace(mappedEntityName);
+        recurseOverEntityReference(nextMappedName, type, currentEntities);
+        currentEntities.erase(mappedEntityName);
+      }
+    }
+    entitySource.next();
+  }
 }
 
-/// @brief
-/// Initialise entity mapping table with defaults.
-
-void XML_EntityMapper::reset()
+void EntityRecursionChecker::checkRecursiveEntity(const std::string_view &entityName,
+  const std::string &expanded,
+  std::set<std::string> &currentEntities)
 {
-  resetToDefault();
+  BufferSource expandedSource{ expanded };
+  while (expandedSource.more()) {
+    if (expandedSource.current() == entityName[0]) {
+      std::string mappedEntityName{ toUtf8(expandedSource.current()) };
+      expandedSource.next();
+      while (expandedSource.more() && expandedSource.current() != ';') {
+        mappedEntityName += toUtf8(expandedSource.current());
+        expandedSource.next();
+      }
+      mappedEntityName += toUtf8(expandedSource.current());
+      if (currentEntities.contains(mappedEntityName)) {
+        XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
+      }
+      if (auto nextMappedName = storage.getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
+        currentEntities.emplace(mappedEntityName);
+        recurseOverEntityReference(nextMappedName, entityName[0], currentEntities);
+        currentEntities.erase(mappedEntityName);
+      }
+    }
+    expandedSource.next();
+  }
 }
 
-/// @brief
-/// Entity mapper constructor.
+void EntityRecursionChecker::checkForRecursion()
+{
+  std::set<std::string> currentEntities{};
+  for (const auto &[fst, snd] : storage.getMappings()) {
+    recurseOverEntityReference(fst, fst[0], currentEntities);
+  }
+}
 
-XML_EntityMapper::XML_EntityMapper() { resetToDefault(); }
+// ==========================================
+// EntityExpanderEngine Implementation
+// ==========================================
 
-/// @brief
-/// Entity mapper destructor.
-
-XML_EntityMapper::~XML_EntityMapper() noexcept = default;
-
-/// @brief
-/// Implementation of XML_EntityMapper::invalidateTranslationCache.
-
-void XML_EntityMapper::invalidateTranslationCache() const
+void EntityExpanderEngine::invalidateTranslationCache() const
 {
   translationCacheValid = false;
   translationCandidates.clear();
 }
 
-const std::vector<std::pair<std::string_view, const XML_EntityMapping *>> &XML_EntityMapper::getTranslationCandidates(char type) const
+const std::vector<std::pair<std::string_view, const XML_EntityMapping *>> &EntityExpanderEngine::getTranslationCandidates(char type) const
 {
   if (!translationCacheValid || translationType != type) {
-    translationCandidates = buildTranslationCandidates(entityMappings, type);
+    translationCandidates = buildTranslationCandidates(storage.getMappings(), type);
     translationType = type;
     translationCacheValid = true;
   }
   return translationCandidates;
 }
 
-/// @brief
-/// Is an entry for an entity reference present in the map?
-
-/// @param entityName .
-/// @return 
-bool XML_EntityMapper::isPresent(const std::string_view &entityName) const
+XMLValue EntityExpanderEngine::map(const XMLValue &entityReference)
 {
-  return findEntityMapping(entityMappings, entityName) != nullptr;
-}
-
-/// @brief
-/// Implementation of XML_EntityMapper::setExternalEntityPolicy.
-
-void XML_EntityMapper::setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver)
-{
-  allowExternalEntities = allowExternal;
-  entityResolver = resolver;
-}
-
-/// @brief
-/// Implementation of XML_EntityMapper::map.
-
-XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
-{
-  if (const auto *entityMapping = findEntityMapping(entityMappings, entityReference.getUnparsed())) {
+  if (const auto *entityMapping = findEntityMapping(storage.getMappings(), entityReference.getUnparsed())) {
     std::string parsed{ entityReference.getUnparsed() };
     if (!entityMapping->getInternal().empty()) {
       parsed = entityMapping->getInternal();
     } else if (entityMapping->isExternal()) {
       const auto &extRef = entityMapping->getExternal();
       const auto &systemID = extRef.getSystemID();
-      if (!allowExternalEntities && entityResolver == nullptr) {
+      if (!security.allowExternal() && security.getResolver() == nullptr) {
         XML_LIB_THROW(SyntaxError("External entity resolution is disabled. "
           "Set ParseOptions::allowExternalEntities = true or supply an IEntityResolver."));
       }
       bool resolved = false;
-      if (entityResolver != nullptr) {
+      if (security.getResolver() != nullptr) {
         const std::string publicID = extRef.isPublic() ? extRef.getPublicID() : "";
-        if (auto result = entityResolver->resolve(systemID, publicID)) {
+        if (auto result = security.getResolver()->resolve(systemID, publicID)) {
           parsed = std::move(*result);
           resolved = true;
         }
       }
       if (!resolved) {
         if (std::filesystem::exists(systemID)) {
-          parsed = getFileMappingContents(systemID);
+          parsed = security.getCachedFileMapping(systemID);
         } else {
           XML_LIB_THROW(SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
                             + systemID + "' does not exist."));
@@ -218,13 +276,8 @@ XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
   }
   XML_LIB_THROW(SyntaxError("Entity '" + entityReference.getUnparsed() + "' does not exist."));
 }
-/// @brief
-/// Translate any entity reference to be found in a string.
 
-/// @param toTranslate Source string containing references to be translated.
-/// @param type Entity reference type.
-/// @return Translated string.
-std::string XML_EntityMapper::translate(const std::string_view &toTranslate, const char type) const
+std::string EntityExpanderEngine::translate(const std::string_view &toTranslate, const char type) const
 {
   if (toTranslate.empty()) { return std::string{}; }
 
@@ -246,7 +299,7 @@ std::string XML_EntityMapper::translate(const std::string_view &toTranslate, con
       if (mapping->isInternal()) {
         translated.append(mapping->getInternal());
       } else if (mapping->isExternal()) {
-        translated.append(getFileMappingContents(mapping->getExternal().getSystemID()));
+        translated.append(security.getCachedFileMapping(mapping->getExternal().getSystemID()));
       } else {
         translated.append(key);
       }
@@ -260,127 +313,99 @@ std::string XML_EntityMapper::translate(const std::string_view &toTranslate, con
   return translated;
 }
 
-/// @brief
-/// Determine entity type
+// ==========================================
+// Composite XML_EntityMapper Implementation
+// ==========================================
+
+XML_EntityMapper::XML_EntityMapper()
+  : storage(), security(), recursionChecker(storage), expanderEngine(storage, security)
+{
+}
+
+XML_EntityMapper::~XML_EntityMapper() noexcept = default;
+
+bool XML_EntityMapper::isPresent(const std::string_view &entityName) const
+{
+  return storage.isPresent(entityName);
+}
 
 bool XML_EntityMapper::isInternal(const std::string_view &entityName)
 {
-  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isInternal(); }
-  return false;
+  return storage.isInternal(entityName);
 }
-
-/// @brief
-/// Implementation of XML_EntityMapper::isExternal.
 
 bool XML_EntityMapper::isExternal(const std::string_view &entityName)
 {
-  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isExternal(); }
-  return false;
+  return storage.isExternal(entityName);
 }
-
-/// @brief
-/// Implementation of XML_EntityMapper::isNotation.
 
 bool XML_EntityMapper::isNotation(const std::string_view &entityName)
 {
-  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isNotation(); }
-  return false;
+  return storage.isNotation(entityName);
 }
-
-/// @brief
-/// Get entity mapping values.
 
 const std::string &XML_EntityMapper::getInternal(const std::string_view &entityName)
 {
-  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isInternal()) {
-    return entity->getInternal();
-  }
-  XML_LIB_THROW(Error(std::string("Internal entity reference not found for '").append(entityName)+"'."));
-}
-const std::string &XML_EntityMapper::getNotation(const std::string_view &entityName)
-{
-  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isNotation()) {
-    return entity->getNotation();
-  }
-  XML_LIB_THROW(Error(std::string("Notation entity reference not found for '").append(entityName)+"'."));
-}
-const XMLExternalReference &XML_EntityMapper::getExternal(const std::string_view &entityName)
-{
-  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isExternal()) {
-    return entity->getExternal();
-  }
-  XML_LIB_THROW(Error(std::string("External entity reference not found for '").append(entityName)+"'."));
+  return storage.getInternal(entityName);
 }
 
-/// @brief
-/// Set entity mapping values.
+const std::string &XML_EntityMapper::getNotation(const std::string_view &entityName)
+{
+  return storage.getNotation(entityName);
+}
+
+const XMLExternalReference &XML_EntityMapper::getExternal(const std::string_view &entityName)
+{
+  return storage.getExternal(entityName);
+}
 
 void XML_EntityMapper::setInternal(const std::string_view &entityName, const std::string_view &internal)
 {
-  getEntityMapping(entityName).setInternal(internal);
-  invalidateTranslationCache();
+  storage.setInternal(entityName, internal);
+  expanderEngine.invalidateTranslationCache();
 }
-
-/// @brief
-/// Implementation of XML_EntityMapper::setNotation.
 
 void XML_EntityMapper::setNotation(const std::string_view &entityName, const std::string_view &notation)
 {
-  getEntityMapping(entityName).setNotation(notation);
-  invalidateTranslationCache();
+  storage.setNotation(entityName, notation);
+  expanderEngine.invalidateTranslationCache();
 }
-
-/// @brief
-/// Implementation of XML_EntityMapper::setExternal.
 
 void XML_EntityMapper::setExternal(const std::string_view &entityName, const XMLExternalReference &external)
 {
-  getEntityMapping(entityName).setExternal(external);
-  invalidateTranslationCache();
+  storage.setExternal(entityName, external);
+  expanderEngine.invalidateTranslationCache();
 }
 
-/// @brief
-/// Take an entity reference string, check whether it contains any infinitely
-/// recursive definition and throw an exception if so. This is done by
-/// recursively parsing any entities found in an entity mapping and adding it to
-/// a current set of used entities; throwing an exception if it is already
-/// being used.
-
-void XML_EntityMapper::checkRecursiveEntity(const std::string_view &entityName,
-  const std::string &expanded,
-  std::set<std::string> &currentEntities)
+void XML_EntityMapper::reset()
 {
-  BufferSource expandedSource{ expanded };
-  while (expandedSource.more()) {
-    if (expandedSource.current() == entityName[0]) {
-      std::string mappedEntityName{ toUtf8(expandedSource.current()) };
-      expandedSource.next();
-      while (expandedSource.more() && expandedSource.current() != ';') {
-        mappedEntityName += toUtf8(expandedSource.current());
-        expandedSource.next();
-      }
-      mappedEntityName += toUtf8(expandedSource.current());
-      if (currentEntities.contains(mappedEntityName)) {
-        XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
-      }
-      if (auto nextMappedName = getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
-        currentEntities.emplace(mappedEntityName);
-        recurseOverEntityReference(nextMappedName, entityName[0], currentEntities);
-        currentEntities.erase(mappedEntityName);
-      }
-    }
-    expandedSource.next();
-  }
+  storage.resetToDefault();
+  expanderEngine.invalidateTranslationCache();
 }
 
-/// @brief
-/// Implementation of XML_EntityMapper::checkForRecursion.
+XMLValue XML_EntityMapper::map(const XMLValue &entityReference)
+{
+  return expanderEngine.map(entityReference);
+}
+
+std::string XML_EntityMapper::translate(const std::string_view &toTranslate, const char type) const
+{
+  return expanderEngine.translate(toTranslate, type);
+}
+
+void XML_EntityMapper::checkRecursiveEntity(const std::string_view &entityName, const std::string &expanded, std::set<std::string> &currentEntities)
+{
+  recursionChecker.checkRecursiveEntity(entityName, expanded, currentEntities);
+}
 
 void XML_EntityMapper::checkForRecursion()
 {
-  std::set<std::string> currentEntities{};
-  for (const auto &[fst, snd] : entityMappings) {
-    recurseOverEntityReference(fst, fst[0], currentEntities);
-  }
+  recursionChecker.checkForRecursion();
 }
-}// namespace XML_Lib
+
+void XML_EntityMapper::setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver)
+{
+  security.setExternalEntityPolicy(allowExternal, resolver);
+}
+
+} // namespace XML_Lib
