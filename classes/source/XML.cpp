@@ -10,6 +10,7 @@
 //
 
 #include "XML_Impl.hpp"
+#include "implementation/io/XML_FileIO.hpp"
 
 namespace XML_Lib {
 
@@ -199,22 +200,12 @@ void XML::traverse(IAction &action) const { std::as_const(*implementation).trave
 
 /// @param fileName XML file name
 /// @return XML string.
-std::string XML::fromFile(const std::filesystem::path &filePath) { return XML_Impl::fromFile(filePath); }
+std::string XML::fromFile(const std::filesystem::path &filePath) { return XML_FileIO::fromFile(filePath); }
 
-/// @brief
-/// Create an XML file and write XML string to it.
-
-/// @param filePath XML file path
-/// @param xmlString XML string
-/// @param format XML file format
 void XML::toFile(const std::filesystem::path &filePath, const std::string_view &xmlString, const Format format)
 {
-  XML_Impl::toFile(filePath, xmlString, format);
+  XML_FileIO::toFile(filePath, xmlString, format);
 }
-/// @brief
-/// Return format of the XML file.
 
-/// @param fileName XML file name
-/// @return XML file format.
-XML::Format XML::getFileFormat(const std::string_view &fileName) { return XML_Impl::getFileFormat(fileName); }
-}// namespace XML_Lib
+XML::Format XML::getFileFormat(const std::string_view &fileName) { return XML_FileIO::getFileFormat(fileName); }
+} // namespace XML_Lib

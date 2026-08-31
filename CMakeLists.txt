@@ -75,6 +75,7 @@ set(XML_LIBRARY_SOURCES
   classes/source/XML.cpp
   classes/source/implementation/xml/XML_Impl.cpp
   classes/source/implementation/xml/file/XML_File.cpp
+  classes/source/implementation/io/XML_FileIO.cpp
   classes/source/implementation/xml/parser/Default_Parser.cpp
   classes/source/implementation/variant/XML_Variant.cpp
   classes/source/implementation/common/XML_Character.cpp
