@@ -466,9 +466,9 @@ Node Default_Parser::parseDTD(ISource &source, IEntityMapper &entityMapper)
   if (validator != nullptr) { XML_LIB_THROW(SyntaxError(source.getPosition(), "More than one DOCTYPE declaration.")); }
   auto xNode = Node::make<DTD>(entityMapper);
   validator = std::make_unique<DTD_Validator>(xNode);
-  if (auto *fileSource = dynamic_cast<FileSource *>(&source)) {
+  if (!source.getSystemId().empty() && source.getSystemId() != "<buffer>") {
     if (auto *dtdValidator = dynamic_cast<DTD_Validator *>(validator.get())) {
-      dtdValidator->setBaseDirectory(std::filesystem::path(fileSource->getFileName()).parent_path());
+      dtdValidator->setBaseDirectory(std::filesystem::path(source.getSystemId()).parent_path());
     }
   }
   validator->parse(source);

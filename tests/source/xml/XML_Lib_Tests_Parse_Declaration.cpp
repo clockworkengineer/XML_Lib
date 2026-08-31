@@ -98,7 +98,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>extra content.\n"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 2 Column: 18] Extra content at the end of document.");
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 15] Extra content at the end of document.");
   }
   SECTION("Parse version 1.0, encoding == UTF-8, standalone == yes XML declaration. ", "[XML][Parse][Declaration]")
   {
@@ -150,7 +150,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<root></root>"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 3 Column: 4] Extra content at the end of document.");
+      xml.parse(source), "XML Syntax Error [Line: 3 Column: 2] Extra content at the end of document.");
   }
   SECTION("Parse empty XML declaration with content before root element.", "[XML][Parse][Declaration]")
   {
@@ -175,7 +175,7 @@ TEST_CASE("Use XML object to parse XML declaration", "[XML][Parse][Declaration]"
       "<?xml version=\"1.0\"?>\n"
       "<root><child></root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 24] Missing closing tag.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 17] Missing closing tag.");
   }
   SECTION("Parse wrongly ordered attributes in XML declaration. ", "[XML][Parse][Declaration]")
   {

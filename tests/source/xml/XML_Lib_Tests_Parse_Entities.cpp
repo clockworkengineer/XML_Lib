@@ -54,7 +54,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<?xml version=\"1.0\"?>\n"
       " <root> &#x00As; </root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 21] Cannot convert character reference.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 18] Cannot convert character reference.");
   }
   SECTION("Parse reference &#16A; (invalid decimal value) in contents area", "[XML][Parse][Entities]")
   {
@@ -62,7 +62,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<?xml version=\"1.0\"?>\n"
       "<root> &#16A; </root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 18] Cannot convert character reference.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 15] Cannot convert character reference.");
   }
   SECTION("Parse entity &amp;&quot;&apos;&gt;&lt; in attribute value", "[XML][Parse][Entities]")
   {
@@ -107,7 +107,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<?xml version=\"1.0\"?>\n"
       "<root> &; </root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 14] Invalid name '' encountered.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 10] Invalid name '' encountered.");
   }
   SECTION("Parse entity &; (null entity in attribute.", "[XML][Parse][Entities]")
   {
@@ -115,7 +115,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<?xml version=\"1.0\"?>\n"
       "<root attr1=\" &; \"> </root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 21] Invalid name '' encountered.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 17] Invalid name '' encountered.");
   }
   SECTION("Parse character entity &#; (null entity) in contents area", "[XML][Parse][Entities]")
   {
@@ -124,7 +124,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<root> &#; </root>\n"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 2 Column: 15] Character reference invalid character.");
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 12] Character reference invalid character.");
   }
   SECTION("Parse character entity &#; (null entity in attribute", "[XML][Parse][Entities]")
   {
@@ -133,7 +133,7 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
       "<root attr1=\" &#; \"> </root>\n"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 2 Column: 22] Character reference invalid character.");
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 19] Character reference invalid character.");
   }
   SECTION("Parse entity &amp; with extra whitespace", "[XML][Parse][Entities]")
   {

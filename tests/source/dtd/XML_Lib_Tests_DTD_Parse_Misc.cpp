@@ -313,8 +313,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "<root>\n"
       "</root>"
     };
-    REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 1 Column: 19] Conditional value not INCLUDE or IGNORE.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 1 Column: 5] Conditional value not INCLUDE or IGNORE.");
   }
   SECTION("XML with a DTD with missing opening '[' from conditional.", "[XML][DTD][Parse][Conditional]")
   {
@@ -324,8 +323,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "<root>\n"
       "</root>"
     };
-    REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Missing opening '[' from conditional.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 1 Column: 13] Missing opening '[' from conditional.");
   }
   SECTION(
     "XML with a DTD with conditional controlled with a entity reference value (INCLUDE) containing an entity "
@@ -464,8 +462,7 @@ TEST_CASE("XML with a DTD conditional INCLUDE/IGNORE tags", "[XML][DTD][Parse][C
       "<root>\n"
       "</root>"
     };
-    REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 1 Column: 23] Conditional value not INCLUDE or IGNORE.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 1 Column: 13] Conditional value not INCLUDE or IGNORE.");
   }
   SECTION(
     "XML with a DTD with nested conditionals controlled from internally defined DTD that is parsed first (value).",

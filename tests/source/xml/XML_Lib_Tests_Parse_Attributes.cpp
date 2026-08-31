@@ -85,7 +85,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<AddressBook number=>\n"
       "</AddressBook>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 25] Invalid attribute value.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 22] Invalid attribute value.");
   }
   SECTION("Element that has an invalid attribute name.", "[XML][Parse][[Attributes]")
   {
@@ -94,7 +94,7 @@ TEST_CASE("Parse XML elements with attached attributes", "[XML][Parse][Attribute
       "<AddressBook 1number='15'>\n"
       "</AddressBook>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 25] Invalid name '1number' encountered.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 22] Invalid name '1number' encountered.");
   }
   SECTION("Element that has an attribute that uses double quotes for value.", "[XML][Parse][[Attributes]")
   {

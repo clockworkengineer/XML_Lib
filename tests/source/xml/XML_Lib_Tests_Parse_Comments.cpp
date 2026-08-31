@@ -103,7 +103,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "<root></root>\n"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 2 Column: 32] Missing closing '>' for comment line.");
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 30] Missing closing '>' for comment line.");
   }
   SECTION("A simple single line comment ending with -- is illegal", "[XML][Parse][Comments]")
   {
@@ -113,7 +113,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "<root></root>\n"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 2 Column: 33] Missing closing '>' for comment line.");
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 31] Missing closing '>' for comment line.");
   }
   SECTION("A comment before declaration.", "[XML][Parse][Comments]")
   {
@@ -123,7 +123,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "<root></root>\n"
     };
     REQUIRE_THROWS_WITH(xml.parse(source),
-      "XML Syntax Error [Line: 2 Column: 10] Declaration allowed only at the start of the document.");
+      "XML Syntax Error [Line: 2 Column: 8] Declaration allowed only at the start of the document.");
   }
   SECTION("A comment at start with no declaration.", "[XML][Parse][Comments]")
   {
@@ -140,7 +140,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "<root attr1=\"66<!-- A single line comment -->\"</root>\n"
     };
     REQUIRE_THROWS_WITH(xml.parse(source),
-      "XML Syntax Error [Line: 2 Column: 51] Attribute value contains invalid character '<', '\"', ''' or '&'.");
+      "XML Syntax Error [Line: 2 Column: 48] Attribute value contains invalid character '<', '\"', ''' or '&'.");
   }
   SECTION("Empty comment is allowed", "[XML][Parse][Comments]")
   {

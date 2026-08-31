@@ -1,8 +1,9 @@
 #pragma once
-#include "common/XML_Error.hpp"
 #include "XML.hpp"
+#include "common/XML_Error.hpp"
+#include "common/XML_LineColumnTracker.hpp"
 
-#include "ISource.hpp"
+#include "interface/ISource.hpp"
 
 #include <fstream>
 #include <stdexcept>
@@ -14,17 +15,13 @@ namespace XML_Lib {
 class FileSource final : public ISource
 {
 public:
-  // FileSource Error
 #ifndef XML_LIB_NO_EXCEPTIONS
   XML_LIB_DEFINE_ERROR("FileSource");
 #endif
-  // Constructors/Destructors
   static constexpr std::size_t kMaxSourceBytes{ XML_LIB_MAX_XML_SIZE };
 
-/// @brief
-/// Implementation of FileSource.
-
-  explicit FileSource(const std::string_view &sourceFileName, std::size_t maxSourceBytes = kMaxSourceBytes) : filename(sourceFileName)
+  explicit FileSource(const std::string_view &sourceFileName, std::size_t maxSourceBytes = kMaxSourceBytes)
+    : filename(sourceFileName)
   {
     source.open(sourceFileName.data(), std::ios_base::binary);
     if (!source.is_open()) { XML_LIB_THROW(Error("File input stream failed to open or does not exist.")); }
@@ -41,6 +38,7 @@ public:
       if (current_character() != kLineFeed) { source.unget(); }
     }
   }
+
   FileSource() = default;
   FileSource(const FileSource &other) = delete;
   FileSource &operator=(const FileSource &other) = delete;
@@ -49,6 +47,7 @@ public:
   ~FileSource() noexcept override = default;
 
   [[nodiscard]] Char current() const override { return current_character(); }
+
   void next() override
   {
     if (!more()) { XML_LIB_THROW(Error("Parse buffer empty before parse complete.")); }
@@ -57,13 +56,12 @@ public:
       source.get();
       if (current() != kLineFeed) { source.unget(); }
     }
-    columnNo++;
-    if (current() == kLineFeed) {
-      lineNo++;
-      columnNo = 1;
-    }
+    long pos = static_cast<long>(source.tellg());
+    tracker.advance(current(), pos);
   }
+
   [[nodiscard]] bool more() const override { return source.peek() != EOF; }
+
   void backup(const long length) override
   {
     if (static_cast<long>(source.tellg()) - length >= 0 || current() == static_cast<Char>(EOF)) {
@@ -72,15 +70,22 @@ public:
     } else {
       source.seekg(0, std::ios_base::beg);
     }
+    tracker.rewindTo(static_cast<long>(source.tellg()));
   }
+
   [[nodiscard]] long position() const override { return static_cast<long>(source.tellg()); }
+
+  [[nodiscard]] std::pair<long, long> getPosition() const override { return tracker.getPosition(); }
+
+  [[nodiscard]] std::string getSystemId() const override { return filename; }
+
   void reset() override
   {
-    lineNo = 1;
-    columnNo = 1;
     source.clear();
     source.seekg(0, std::ios_base::beg);
+    tracker.reset();
   }
+
   [[nodiscard]] std::string getRange(const long start, const long end) override
   {
     if (start < 0 || end < 0 || end < start) {
@@ -127,12 +132,15 @@ public:
 
     return rangeBuffer;
   }
-  std::string getFileName() { return filename; }
+
+  std::string getFileName() const { return filename; }
   void close() { source.close(); }
 
 private:
   [[nodiscard]] Char current_character() const { return static_cast<Char>(source.peek()); }
   mutable std::ifstream source;
   std::string filename;
+  LineColumnTracker tracker;
 };
+
 }// namespace XML_Lib

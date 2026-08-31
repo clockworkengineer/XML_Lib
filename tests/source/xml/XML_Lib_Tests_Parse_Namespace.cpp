@@ -70,7 +70,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
       "<g:name>African Coffee Table</g:name><g:width>80</g:width>\n"
       "<g:length>120</g:length></g:table></root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 43] Namespace used but not defined.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 39] Namespace used but not defined.");
   }
   SECTION("A root document with a default namespace", "[XML][Parse][Namespace]")
   {
@@ -135,7 +135,7 @@ TEST_CASE("Parse XML with defined namespaces.", "[XML][Parse][Namespace]")
       "</x:table>\n"
       "</root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 35] Namespace used but not defined.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 27] Namespace used but not defined.");
   }
   SECTION("Element with empty namespace URI", "[XML][Parse][Namespace]")
   {

@@ -24,7 +24,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "<person><firstName>Jane</firstName><lastName>Smith</lastName><nationality>english</nationality></person>\n"
       "</queue>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 7 Column: 36] Invalid name '' encountered.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 7 Column: 32] Invalid name '' encountered.");
   }
   SECTION("Parse XML with DTD that contains a enumeration with a syntax error (missing end bracket).",
     "[XML][DTD][Parse][Error][Attributes]")
@@ -48,7 +48,7 @@ TEST_CASE("Parse XML DTD that contains enumeration attributes with various error
       "</queue>\n"
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 7 Column: 39] Missing closing ')' on enumeration attribute type.");
+      xml.parse(source), "XML Syntax Error [Line: 7 Column: 35] Missing closing ')' on enumeration attribute type.");
   }
   SECTION("Parse XML with DTD that contains a enumeration with a default value not in enumeration.",
     "[XML][DTD][Parse][Error][Attributes]")

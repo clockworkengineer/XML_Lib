@@ -106,7 +106,7 @@ TEST_CASE("Parse declaration, root element and check parsed information ", "[XML
       "<root1></root1>\n"
       "<root2></root2>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 4] Extra content at the end of document.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 3 Column: 2] Extra content at the end of document.");
   }
   SECTION("Root element with only whitespace", "[XML][Parse][Root]")
   {

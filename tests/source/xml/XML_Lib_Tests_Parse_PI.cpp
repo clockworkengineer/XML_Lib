@@ -74,7 +74,7 @@ TEST_CASE("Check the parsing of XML containing program instructions", "[XML][Par
       "<? ?>\n"
       "<root></root>\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 7] Invalid name '' encountered.");
+    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 5] Invalid name '' encountered.");
   }
   SECTION("Parse PI with special characters in name and parameters", "[XML][Parse][PI]")
   {

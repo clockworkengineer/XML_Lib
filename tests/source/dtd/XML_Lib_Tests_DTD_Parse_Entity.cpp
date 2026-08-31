@@ -115,8 +115,8 @@ TEST_CASE("Parse XML with internal DTD that contains entity definitions and uses
       "<foo attr=\"&x;\"/>\n"
     };
 
-    REQUIRE_THROWS_WITH(xml.parse(source),
-      "XML Syntax Error [Line: 5 Column: 21] Attribute value contains invalid character '<', '\"', ''' or '&'.");
+    REQUIRE_THROWS_WITH(
+      xml.parse(source), "XML Syntax Error [Line: 5 Column: 17] Attribute value contains invalid character '<', '\"', ''' or '&'.");
   }
   SECTION("XML DTD with entity used within an entity.", "[XML][DTD][Parse][Entity]")
   {

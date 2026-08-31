@@ -99,7 +99,8 @@ TEST_CASE("Make sure whitespace is whitespace.", "[XML][Access][ByName]")
       "<root></root>\n"
       "<!-- End comment -->\n"
     };
-    REQUIRE_THROWS_WITH(xml.parse(source), "XML Syntax Error [Line: 2 Column: 10] Declaration allowed only at the start of the document.");
+    REQUIRE_THROWS_WITH(
+      xml.parse(source), "XML Syntax Error [Line: 2 Column: 8] Declaration allowed only at the start of the document.");
   }
   SECTION("Parse unusual encoding scenario.", "[XML][Parse][Encoding]")
   {

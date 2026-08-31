@@ -34,7 +34,7 @@ TEST_CASE("Parse CDATA section.", "[XML][Parse][CDATA]")
       "   </root>\n "
     };
     REQUIRE_THROWS_WITH(
-      xml.parse(source), "XML Syntax Error [Line: 3 Column: 40] Nesting of CDATA sections is not allowed.");
+      xml.parse(source), "XML Syntax Error [Line: 3 Column: 35] Nesting of CDATA sections is not allowed.");
   }
   SECTION("Parse XML root containing CDATA containing ]]> ", "[XML][Parse][CDATA]")
   {

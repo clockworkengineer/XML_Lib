@@ -1,4 +1,5 @@
 #include "XML_Lib_Tests.hpp"
+#include "interface/XML_SourceFactory.hpp"
 
 TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
 {
@@ -492,4 +493,38 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
     source.close();
     std::filesystem::remove(generatedFileName);
   }
+
+  SECTION("Check that getSystemId() and SourceFactory work correctly.", "[XML][ISource][SOLID]")
+  {
+    xmlString = "<test>data</test>";
+    auto bufferSource = SourceFactory::createBufferSource(xmlString, XML_LIB_MAX_XML_SIZE, "customBufferID");
+    REQUIRE(bufferSource->getSystemId() == "customBufferID");
+
+    std::string generatedFileName{ generateRandomFileName() };
+    XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
+    auto fileSource = SourceFactory::createFileSource(generatedFileName);
+    REQUIRE(fileSource->getSystemId() == generatedFileName);
+    std::filesystem::remove(generatedFileName);
+  }
+
+  SECTION("Check line/column tracking and backup rewind accuracy.", "[XML][ISource][SOLID]")
+  {
+    xmlString = "line1\nline2\nline3";
+    BufferSource source{ xmlString };
+    REQUIRE(source.getPosition().first == 1L);
+    REQUIRE(source.getPosition().second == 1L);
+    // Advance to '\n' at end of line 1 (5 steps)
+    for (int i = 0; i < 5; ++i) { source.next(); }
+    REQUIRE(source.getPosition().first == 2L);
+    REQUIRE(source.getPosition().second == 1L);
+    // Advance 4 chars into line 2 ('line')
+    for (int i = 0; i < 4; ++i) { source.next(); }
+    REQUIRE(source.getPosition().first == 2L);
+    REQUIRE(source.getPosition().second == 5L);
+    // Backup 4 chars (cross line boundary back to index 5, which is '\n' at start of line 2)
+    source.backup(4);
+    REQUIRE(source.getPosition().first == 2L);
+    REQUIRE(source.getPosition().second == 1L);
+  }
 }
+

@@ -54,9 +54,9 @@ void XSD_Impl::parse(ISource &source)
   if (ec) {
     schemaDirectory.clear();
   }
-  if (auto *fileSource = dynamic_cast<FileSource *>(&source)) {
-    schemaDirectory = std::filesystem::path(fileSource->getFileName()).parent_path();
-    const auto canonicalPath = std::filesystem::weakly_canonical(std::filesystem::path(fileSource->getFileName()));
+  if (!source.getSystemId().empty() && source.getSystemId() != "<buffer>") {
+    schemaDirectory = std::filesystem::path(source.getSystemId()).parent_path();
+    const auto canonicalPath = std::filesystem::weakly_canonical(std::filesystem::path(source.getSystemId()));
     importedSchemas.insert(canonicalPath.string());
   }
 
