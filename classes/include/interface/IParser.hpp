@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include <stdexcept>
@@ -9,7 +8,6 @@ namespace XML_Lib {
 // ====================
 // Forward declarations
 // ====================
-
 class ISource;
 struct Node;
 struct ParseOptions;
@@ -33,9 +31,20 @@ public:
   virtual Node parse(ISource &source, const ParseOptions &options) = 0;
 
   /// @brief Return `true` if this parser supports validation (DTD/XSD).
-  virtual bool canValidate() = 0;
+  virtual bool canValidate() { return false; }
 
   /// @brief Validate the document rooted at @p prolog.
-  virtual void validate(Node &prolog) = 0;
+  virtual void validate([[maybe_unused]] Node &prolog) {}
 };
-}// namespace XML_Lib
+
+/// @brief Segregated role interface for parsers capable of validation (DTD/XSD).
+class IValidatingParser : public IParser
+{
+public:
+  ~IValidatingParser() noexcept override = default;
+
+  bool canValidate() override { return true; }
+  void validate(Node &prolog) override = 0;
+};
+
+} // namespace XML_Lib

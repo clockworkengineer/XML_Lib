@@ -1,76 +1,24 @@
 #pragma once
 
-#include <set>
+#include "IEntityRegistry.hpp"
+#include "IEntityExpander.hpp"
+#include "ISecurityPolicyManager.hpp"
 #include <stdexcept>
-#include <string>
 #include <string_view>
 
 namespace XML_Lib {
 
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
-struct XMLExternalReference;
-struct  XMLValue;
-class IEntityResolver;
-
-// ===========================
-// XML Entity mapper interface
-// ===========================
-class IEntityMapper
+/// @brief Composite interface for XML entity mapping, translation, cycle checking, and security enforcement.
+class IEntityMapper : public IEntityRegistry, public IEntityExpander, public ISecurityPolicyManager
 {
 public:
-  // ==================
-  // IEntityMapper Error
-  // ==================
+  /// @brief Exception thrown when an entity mapping error occurs.
   struct Error final : std::runtime_error
   {
     explicit Error(const std::string_view &message) : std::runtime_error(std::string("IEntityMapper Error: ").append(message)) {}
   };
-  // ========================
-  // Constructors/destructors
-  // ========================
-  virtual ~IEntityMapper() = default;
-  // ================================
-  // Entity reference get/set details
-  // ================================
-  virtual bool isInternal(const std::string_view &entityName) = 0;
-  virtual bool isExternal(const std::string_view &entityName) = 0;
-  virtual bool isNotation(const std::string_view &entityName) = 0;
-  virtual const std::string &getInternal(const std::string_view &entityName) = 0;
-  virtual const std::string &getNotation(const std::string_view &entityName) = 0;
-  virtual const XMLExternalReference &getExternal(const std::string_view &entityName) = 0;
-  virtual void setInternal(const std::string_view &entityName, const std::string_view &internal) = 0;
-  virtual void setNotation(const std::string_view &entityName, const std::string_view &notation) = 0;
-  virtual void setExternal(const std::string_view &entityName, const XMLExternalReference &external) = 0;
-  // ===========================================
-  // Is entity reference mapping entry present ?
-  // ===========================================
-  [[nodiscard]] virtual bool isPresent(const std::string_view &entityName) const = 0;
-  // ===================================
-  // Get mapping for an entity reference
-  // ===================================
-  virtual XMLValue map(const XMLValue &entityReference) = 0;
-  // ==========================================
-  // Translate any entity reference in a string
-  // ==========================================
-  [[nodiscard]] virtual std::string translate(const std::string_view &toTranslate, char type = '%') const = 0;
-  // ==============================================
-  // Check a specific entity mapping for recursive definitions
-  // ==============================================
-  virtual void checkRecursiveEntity(const std::string_view &entityName, const std::string &expanded, std::set<std::string> &currentEntities) = 0;
-  // ==============================================
-  // Check for a recursive entity reference mapping
-  // ==============================================
-  virtual void checkForRecursion() = 0;
-  // ====================================
-  // Reset entity mapper to default state
-  // ====================================
-  virtual void reset() = 0;
-  // =============================================
-  // Set external entity resolution policy (XXE)
-  // =============================================
-  virtual void setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver) = 0;
+
+  ~IEntityMapper() noexcept override = default;
 };
-//
-}// namespace XML_Lib
+
+} // namespace XML_Lib

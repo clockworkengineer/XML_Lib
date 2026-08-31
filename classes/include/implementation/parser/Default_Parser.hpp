@@ -6,7 +6,7 @@
 
 namespace XML_Lib {
 
-class Default_Parser final : public IParser
+class Default_Parser final : public IValidatingParser
 {
 public:
   // Constructors/Destructors

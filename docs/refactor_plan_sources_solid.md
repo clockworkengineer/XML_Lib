@@ -1,134 +1,154 @@
-# Refactoring Plan: Sources Architecture (SOLID Principles)
+# Refactoring Plan: Sources Subsystem (Total SOLID Architecture)
 
 ## 1. Executive Summary
 
-This document provides a detailed architectural analysis of the XML source input subsystem (`ISource`, `BufferSource`, `FileSource`, `XML_SourceHelpers.hpp`) in `XML_Lib`. It details current violations of the SOLID design principles and establishes a concrete, step-by-step refactoring plan to achieve total SOLID compliance.
+This document presents a comprehensive analysis of the XML source input subsystem (`ISource`, `BufferSource`, `FileSource`, `SourceFactory`, `XML_SourceHelpers`) in `XML_Lib`. It details current SOLID principle violations and outlines a concrete, phased refactoring plan to bring the source subsystem into complete alignment with SOLID software design principles.
 
 ---
 
-## 2. SOLID Violations Analysis
+## 2. SOLID Architectural Analysis & Current Deficiencies
 
 ### 2.1 Single Responsibility Principle (SRP)
-* **`ISource` interface bloat**: Combines stream navigation, coordinate tracking (`lineNo`, `columnNo`), substring slicing (`getRange`), stream resetting, and error exception definitions.
-* **`BufferSource` overloaded responsibilities**:
-  1. Byte-order detection & UTF-16 swapping magic.
-  2. UTF-8 to UTF-16 encoding conversion.
-  3. CRLF normalization (`convertCRLFToLF`).
-  4. Memory bounds & buffer index management.
-  5. Position tracking and range slicing.
-* **`FileSource` overloaded responsibilities**:
-  1. Standard file handle (`std::ifstream`) opening & lifecycle management.
-  2. Dynamic line ending (`\r\n` vs `\n`) translation during streaming.
-  3. Disk seeking/tellg operations.
-  4. Raw disk range extraction.
-  5. Position tracking.
+* **Overloaded Concrete Sources (`BufferSource` & `FileSource`)**:
+  - `BufferSource` currently manages raw memory access, BOM detection, UTF-16 byte order swapping, UTF-8 to UTF-16 encoding conversion, CRLF-to-LF line ending normalization, position tracking, and range slice extraction.
+  - `FileSource` combines file system `std::ifstream` lifecycle management, disk seeking, CRLF normalization on-the-fly during character iteration, position tracking, and raw disk range reading.
+* **Inline Implementation Bloat**: Both `BufferSource` and `FileSource` have complete implementations defined directly inside `.hpp` headers (`classes/include/implementation/io/`), mixing interface declaration with low-level execution logic.
 
 ### 2.2 Open/Closed Principle (OCP)
-* Encoding transformations and line-ending normalizations are hardcoded inside `BufferSource` and `FileSource`. Adding support for new encodings, custom streams (e.g., `std::istream`, memory mapped files, network streams), or stream filters requires modifying existing source headers.
-* High-level components (`Default_Parser`, `XSD_Validator_Impl`) perform explicit type checking via `dynamic_cast<FileSource*>` to retrieve system ID / file path metadata. Adding new source types breaks these callers unless modified.
+* **Hardcoded Input Normalization**: Encoding detection/conversion and line-ending translations are embedded directly within concrete source classes. Supporting new input sources (e.g., `std::istream`, memory-mapped files, network streams, socket readers) or custom filters (e.g., decryption, decompression) currently requires duplicating or altering normalization logic.
+* **Non-Extensible Factory Design**: `SourceFactory` provides static creation methods, preventing clients from extending or mocking factory creation without modifying `SourceFactory` code.
 
 ### 2.3 Liskov Substitution Principle (LSP)
-* **Inconsistent `getRange()` semantics**: `BufferSource::getRange` converts UTF-16 slices to UTF-8 using `toUtf8(...)`, whereas `FileSource::getRange` returns raw bytes read directly from `std::ifstream` without decoding. Passing different `ISource` implementations produces inconsistent behavior for range extraction.
-* **Corrupted position on `backup()`**: Calling `backup(length)` rewinds character cursor / disk position in both `BufferSource` and `FileSource`, but leaves `lineNo` and `columnNo` unchanged. Subsequent `getPosition()` queries yield invalid line/column numbers.
-* **Subtype specific querying**: Callers downcasting `ISource*` to `FileSource*` rely on subclass-specific methods (`getFileName()`) not present on `ISource`.
+* **Inconsistent `getRange()` Behavioral Contracts**:
+  - `BufferSource::getRange(start, end)` expects character offsets within the normalized UTF-16 buffer and returns a decoded UTF-8 `std::string`.
+  - `FileSource::getRange(start, end)` treats `start` and `end` as raw byte offsets in `std::ifstream` and returns raw file bytes without UTF-8 encoding guarantee or normalization.
+  - Calling `getRange()` through an `ISource` abstraction yields divergent results depending on the underlying runtime type.
+* **Boundary & State Guarantee Variances**: `BufferSource::backup()` clamps position to index `0` when underflowing, whereas `FileSource::backup()` seeks relative to current position with stream error state clear logic, leading to subtle behavioral mismatches.
 
 ### 2.4 Interface Segregation Principle (ISP)
-* `ISource` forces all clients to depend on a monolithic interface.
-* Parsers requiring basic character iteration (`current()`, `next()`, `more()`) are forced to depend on methods for range extraction (`getRange`), absolute seek position (`position`), and resetting (`reset`).
+* **Monolithic Parameter Passing in Parsing Subsystems**:
+  - Helper functions in `XML_SourceHelpers.hpp` (`isWS`, `ignoreWS`, `match`) and parser modules (`XML_ParseHelpers.cpp`, `XML_Parse.cpp`, `DTD_Impl`) take monolithic `ISource &` parameters, even though many only require `ICharStream &` (for character navigation) or `ILocationTracker &` (for location reporting).
+  - Callers are tightly bound to the complete `ISource` interface rather than narrow, task-specific role interfaces (`ICharStream`, `ILocationTracker`, `IRangeReader`, `IResettableStream`).
 
 ### 2.5 Dependency Inversion Principle (DIP)
-* `ISource` contains mutable member variables (`lineNo`, `columnNo`), violating pure abstract interface design.
-* Client modules directly instantiate concrete `BufferSource` or `FileSource` instances rather than relying on abstract factories or dependency injection.
+* **Interface Layer Pollution**:
+  - `classes/include/interface/XML_SourceFactory.hpp` is located in the public `interface/` directory, yet directly `#include`s low-level implementation headers: `"implementation/io/XML_BufferSource.hpp"` and `"implementation/io/XML_FileSource.hpp"`.
+  - High-level interface headers depend directly on concrete implementation details, breaking Dependency Inversion.
 
 ---
 
 ## 3. Target SOLID Architecture
 
 ```
-                      +-------------------+
-                      |   ICharStream     |
-                      +-------------------+
-                      | +current(): Char  |
-                      | +next(): void     |
-                      | +more(): bool     |
-                      | +backup(long): void|
-                      +---------+---------+
-                                |
-                                |
-                      +---------v---------+
-                      |     ISource       | <--- Pure Interface (Zero member variables)
-                      +-------------------+
-                      | +getSystemId()    |
-                      +---------+---------+
-                                |
-          +---------------------+---------------------+
-          |                                           |
-+---------v---------+                       +---------v---------+
-|   BufferSource    |                       |    FileSource     |
-+-------------------+                       +-------------------+
-| -buffer: String   |                       | -source: ifstream |
-| -tracker: Tracker |                       | -tracker: Tracker |
-+-------------------+                       +-------------------+
-          |                                           |
-          +---------------------+---------------------+
-                                |
-                       +--------v---------+
-                       | LineColumnTracker|
-                       +------------------+
-                       | +advance(ch)     |
-                       | +retreat(len)    |
-                       +------------------+
+                                  +-------------------+
+                                  |    ICharStream    |
+                                  +-------------------+
+                                  | +current(): Char  |
+                                  | +next(): void     |
+                                  | +more(): bool     |
+                                  | +backup(long): void|
+                                  +---------+---------+
+                                            |
+         +----------------------------------+----------------------------------+
+         |                                  |                                  |
++--------v----------+              +--------v----------+              +--------v----------+
+| ILocationTracker  |              |   IRangeReader    |              | IResettableStream |
++-------------------+              +-------------------+              +-------------------+
+| +position(): long |              | +getRange(): str  |              | +reset(): void    |
+| +getPosition()    |              +--------+----------+              +--------+----------+
+| +getSystemId()    |                       |                                  |
++--------+----------+                       |                                  |
+         |                                  |                                  |
+         +----------------------------------+----------------------------------+
+                                            |
+                                  +---------v---------+
+                                  |      ISource      |  <--- Pure Abstract Interface
+                                  +-------------------+
+                                            |
+                  +-------------------------+-------------------------+
+                  |                                                   |
+        +---------v---------+                               +---------v---------+
+        |   BufferSource    |                               |    FileSource     |
+        +-------------------+                               +-------------------+
+        | - buffer: String  |                               | - source: ifstream|
+        | - tracker: Tracker|                               | - tracker: Tracker|
+        +-------------------+                               +-------------------+
+                  |                                                   |
+                  +-------------------------+-------------------------+
+                                            |
+                                  +---------v---------+
+                                  | LineColumnTracker |
+                                  +-------------------+
+                                  | +advance(ch, pos) |
+                                  | +rewindTo(pos)    |
+                                  +-------------------+
+
+                                  +-------------------+
+                                  |  ISourceFactory   |  <--- Interface in interface/
+                                  +-------------------+
+                                  | +createBufferSource|
+                                  | +createFileSource |
+                                  +---------+---------+
+                                            |
+                                  +---------v---------+
+                                  | SourceFactoryImpl |  <--- Implementation in implementation/
+                                  +-------------------+
 ```
-
-### 3.1 Interface Segregation & Abstraction
-1. **`ICharStream`**: Core character navigation contract (`current`, `next`, `more`, `backup`).
-2. **`ILocationTracker`**: Position query contract (`position`, `getPosition`, `getSystemId`).
-3. **`IRangeReader`**: Range extraction contract (`getRange`).
-4. **`IResettableStream`**: Stream reset contract (`reset`).
-5. **`ISource`**: Pure composite interface inheriting from the segregated contracts. No member variables.
-
-### 3.2 Extracted Helper Components (Single Responsibility)
-1. **`LineColumnTracker`**: Dedicated component handling line/column numbers, including accurate stack-based or rewind-aware tracking for `backup()`.
-2. **`StreamNormalizer`**: Standalone helper for BOM detection, UTF-16 byte order swapping, and CRLF to LF normalization.
-
-### 3.3 System Identification & Elimination of RTTI
-* Add `virtual std::string getSystemId() const = 0` to `ISource`.
-* `BufferSource::getSystemId()` returns `"<buffer>"` or a specified buffer label.
-* `FileSource::getSystemId()` returns `filename`.
-* Replace all `dynamic_cast<FileSource*>` in `Default_Parser.cpp` and `XSD_Validator_Impl.cpp` with virtual call `source.getSystemId()`.
-
-### 3.4 Dependency Inversion via Source Factory
-* Introduce `SourceFactory` with creation helpers:
-  * `createBufferSource(...) -> std::unique_ptr<ISource>`
-  * `createFileSource(...) -> std::unique_ptr<ISource>`
 
 ---
 
-## 4. Implementation Steps
+## 4. Step-by-Step Refactoring Plan
 
-| Step | Scope | Description |
-| :--- | :--- | :--- |
-| **Step 1** | `LineColumnTracker` | Create `XML_LineColumnTracker.hpp` to manage line/column state and support position unwinding on `backup()`. |
-| **Step 2** | `StreamNormalizer` | Create `XML_StreamNormalizer.hpp` to isolate BOM stripping, byte-swapping, and CRLF normalization. |
-| **Step 3** | `ISource` Header | Split `ISource.hpp` into segregated interfaces (`ICharStream`, `ILocationTracker`, `IRangeReader`, `IResettableStream`), add `getSystemId()`, remove member fields. |
-| **Step 4** | Concrete Sources | Update `BufferSource` and `FileSource` to utilize `LineColumnTracker` and `StreamNormalizer`, implement `getSystemId()`, and standardize `getRange()` encoding semantics. |
-| **Step 5** | Call Sites | Replace RTTI `dynamic_cast<FileSource *>` in `Default_Parser.cpp` and `XSD_Validator_Impl.cpp` with `source.getSystemId()`. |
-| **Step 6** | `SourceFactory` | Add `XML_SourceFactory.hpp` to enable clean dependency injection. |
-| **Step 7** | Verification | Execute full Catch2 unit test suite and add dedicated tests for new interfaces and tracker. |
+### Phase 1: Dependency Inversion Fix (DIP & Interface Hygiene)
+1. **Decouple `XML_SourceFactory.hpp`**:
+   - Refactor `XML_SourceFactory.hpp` into a pure abstract interface class `ISourceFactory` in `classes/include/interface/XML_SourceFactory.hpp`. Remove includes of `XML_BufferSource.hpp` and `XML_FileSource.hpp`.
+   - Create concrete implementation `SourceFactoryImpl` in `classes/include/implementation/io/XML_SourceFactoryImpl.hpp` and `classes/source/implementation/io/XML_SourceFactoryImpl.cpp`.
+   - Provide a default factory accessor or static creation methods on `SourceFactoryImpl` while keeping the interface abstract.
+
+### Phase 2: Concrete Source Declaration & Implementation Separation (SRP & Maintainability)
+1. **Separate Headers and CPP Implementation Files**:
+   - Split `XML_BufferSource.hpp` into clean declaration in `classes/include/implementation/io/XML_BufferSource.hpp` and implementation in `classes/source/implementation/io/XML_BufferSource.cpp`.
+   - Split `XML_FileSource.hpp` into clean declaration in `classes/include/implementation/io/XML_FileSource.hpp` and implementation in `classes/source/implementation/io/XML_FileSource.cpp`.
+2. **Isolate Stream Normalization**:
+   - Ensure CRLF normalization and encoding adjustments are handled cleanly via `StreamNormalizer` without duplicating code in `FileSource` or `BufferSource`.
+
+### Phase 3: Liskov Substitution & Contract Alignment (LSP)
+1. **Standardize `getRange()` Semantics**:
+   - Ensure both `BufferSource::getRange` and `FileSource::getRange` accept consistent index semantics (character/byte positions) and return normalized UTF-8 string output.
+   - Verify boundary conditions (`start < 0`, `end > size`, `end < start`) throw identical `ISource::Error` exception types with descriptive messages.
+2. **Standardize Boundary Behaviors (`backup`, `reset`, EOF)**:
+   - Align position tracking and rewind semantics across `FileSource` and `BufferSource` using `LineColumnTracker`.
+
+### Phase 4: Interface Segregation in Consumers (ISP)
+1. **Refactor Helper Signatures**:
+   - Update `XML_SourceHelpers.hpp` functions (`isWS`, `ignoreWS`, `match`) to accept `ICharStream &` instead of `ISource &`.
+   - Update `getPosition` helper to accept `ILocationTracker &`.
+2. **Refactor Parser / Lexer Functions**:
+   - Audit `XML_ParseHelpers`, `XML_Parse`, and `DTD_Impl` functions and narrow parameters to `ICharStream &` or `ILocationTracker &` where full `ISource` access is not required.
+
+### Phase 5: Build System, Verification & Tests
+1. **Update `CMakeLists.txt`**:
+   - Add new source files (`XML_BufferSource.cpp`, `XML_FileSource.cpp`, `XML_SourceFactoryImpl.cpp`) to the CMake target definitions.
+2. **Expand Unit Test Suite**:
+   - Update and execute Catch2 unit tests in `tests/source/io/XML_Lib_Tests_ISource.cpp` to verify all 4 segregated interfaces, factory creation, range extraction invariants, and LSP compliance.
 
 ---
 
 ## 5. Verification Plan
 
-* **Build Verification**:
-  ```bash
-  cmake -B build -S .
-  cmake --build build
-  ```
-* **Test Verification**:
-  ```bash
-  cd build && ctest --output-on-failure
-  ./tests/XML_Lib_Tests "[XML][ISource]"
-  ./tests/XML_Lib_Tests "[XML][FileSource]"
-  ./tests/XML_Lib_Tests "[XML][BufferSource]"
-  ```
+### Automated Build & Test Execution
+1. **Clean Rebuild**:
+   ```bash
+   cmake -B build -S .
+   cmake --build build --config Debug
+   ```
+2. **Execute Full Test Suite**:
+   ```bash
+   cd build && ctest --output-on-failure
+   ```
+3. **Execute Targeted ISource Tests**:
+   ```bash
+   ./tests/XML_Lib_Tests "[XML][ISource]"
+   ./tests/XML_Lib_Tests "[XML][FileSource]"
+   ./tests/XML_Lib_Tests "[XML][BufferSource]"
+   ```

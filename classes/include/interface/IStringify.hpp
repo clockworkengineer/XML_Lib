@@ -38,7 +38,17 @@ public:
   [[nodiscard]] virtual long getIndent() const { return 0; }
 
   /// @brief Set the number of spaces per indentation level.
-  virtual void setIndent([[maybe_unused]] long indent)  {}
+  virtual void setIndent([[maybe_unused]] long indent) {}
+};
+
+/// @brief Segregated role interface for stringifiers supporting indentation configuration.
+class IIndentedStringify : public IStringify
+{
+public:
+  ~IIndentedStringify() noexcept override = default;
+
+  [[nodiscard]] virtual long getIndent() const override = 0;
+  virtual void setIndent(long indent) override = 0;
 };
 
 /// @brief Factory helper — allocates a concrete `IStringify` implementation on the heap.
@@ -48,4 +58,5 @@ public:
 template <typename T> IStringify *makeStringify() {
   return std::make_unique<T>().release();
 }
-}// namespace XML_Lib
+
+} // namespace XML_Lib
