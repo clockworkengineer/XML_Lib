@@ -1,44 +1,38 @@
 #pragma once
 
+#include "ISchemaValidator.hpp"
 #include <stdexcept>
 #include <string_view>
 
 namespace XML_Lib {
 
-// ===================================================
-// Forward declarations for interfaces/classes/structs
-// ===================================================
+class ISource;
+class IDestination;
 struct Node;
 
-// =========================================
-// Interface for DTD_Validator XML validator
-// =========================================
-class IValidator
+/// @brief Composite interface for XML schema validators (DTD, XSD, RNG, etc.).
+class IValidator : public ISchemaValidator
 {
 public:
-  // ==================
-  // IValidator Error
-  // ==================
+  /// @brief Exception thrown when validation or schema parsing fails.
   struct Error final : std::runtime_error
   {
     explicit Error(const std::string_view &message) : std::runtime_error(std::string("IValidator Error: ").append(message)) {}
   };
-  // ========================
-  // Constructors/destructors
-  // ========================
-  virtual ~IValidator() = default;
-  // =========================
-  // Parse XML DTD_Validator from source
-  // =========================
+
+  ~IValidator() noexcept override = default;
+
+  /// @brief Parse schema grammar from source input.
   virtual void parse(ISource &source) = 0;
-  // =====================================
-  // Stringify XML DTD_Validator to text destination
-  // =====================================
+
+  /// @brief Stringify schema definition to text destination.
   virtual void stringify(IDestination &destination) = 0;
-  // =========================
-  // Validate XML against DTD_Validator
-  // =========================
+
+  /// @brief Validate XML document tree against schema rules.
   virtual void validate(const Node &xNode) = 0;
+
+  /// @brief ISchemaValidator role interface implementation.
+  void validateDocument(const Node &rootNode) override { validate(rootNode); }
 };
 
-}// namespace XML_Lib
+} // namespace XML_Lib
