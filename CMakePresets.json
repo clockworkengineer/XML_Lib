@@ -1,0 +1,104 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "displayName": "Release",
+      "description": "Optimized release build with tests and examples",
+      "binaryDir": "${sourceDir}/build/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "XML_LIB_BUILD_TESTS": "ON",
+        "XML_LIB_BUILD_EXAMPLES": "ON"
+      }
+    },
+    {
+      "name": "debug",
+      "displayName": "Debug",
+      "description": "Debug build with symbols and warnings enabled",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "XML_LIB_BUILD_TESTS": "ON",
+        "XML_LIB_BUILD_EXAMPLES": "ON",
+        "XML_LIB_WARNINGS_AS_ERRORS": "ON"
+      }
+    },
+    {
+      "name": "asan-ubsan",
+      "displayName": "ASan + UBSan",
+      "description": "Debug build with AddressSanitizer and UndefinedBehaviorSanitizer",
+      "binaryDir": "${sourceDir}/build/asan-ubsan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "XML_LIB_ENABLE_ASAN": "ON",
+        "XML_LIB_ENABLE_UBSAN": "ON",
+        "XML_LIB_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "embedded",
+      "displayName": "Embedded",
+      "description": "Size-optimized minimal build with -fno-exceptions and -fno-rtti",
+      "binaryDir": "${sourceDir}/build/embedded",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "MinSizeRel",
+        "XML_LIB_EMBEDDED": "ON",
+        "XML_LIB_BUILD_TESTS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release",
+      "configurePreset": "default"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    },
+    {
+      "name": "asan-ubsan",
+      "configurePreset": "asan-ubsan"
+    },
+    {
+      "name": "embedded",
+      "configurePreset": "embedded"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "unit-tests",
+      "configurePreset": "default",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "debug-tests",
+      "configurePreset": "debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "asan-tests",
+      "configurePreset": "asan-ubsan",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "embedded-tests",
+      "configurePreset": "embedded",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

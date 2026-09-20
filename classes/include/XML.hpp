@@ -60,6 +60,9 @@ public:
   /// @param parser    Custom parser;      pass `nullptr` to use the default.
   explicit XML(IStringify *stringify = nullptr, IParser *parser = nullptr);
 
+  /// @brief Construct an XML document with custom stringifier and parser (owning unique_ptr overload).
+  explicit XML(std::unique_ptr<IStringify> stringify, std::unique_ptr<IParser> parser = nullptr);
+
   /// @brief Construct and immediately parse @p xmlString.
   /// @param xmlString UTF-8 XML text to parse.
   explicit XML(const std::string_view &xmlString);
@@ -70,8 +73,8 @@ public:
   /// @brief Assign (parse) a new XML string, replacing the current document.
   XML &operator=(const std::string_view &xmlString);
 
-  XML(XML &&other) = delete;
-  XML &operator=(XML &&other) = delete;
+  XML(XML &&other) noexcept;
+  XML &operator=(XML &&other) noexcept;
 
   ~XML() noexcept;
 
@@ -165,6 +168,6 @@ public:
   [[nodiscard]] static Format getFileFormat(const std::string_view &fileName);
 
 private:
-  const std::unique_ptr<XML_Impl> implementation;
+  std::unique_ptr<XML_Impl> implementation;
 };
 }// namespace XML_Lib

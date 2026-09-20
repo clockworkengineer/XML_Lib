@@ -325,4 +325,28 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     // Change does not get passed through to cache at present
     REQUIRE(NRef<Element>(xml.root()).getNameSpace("f").getUnparsed() == "http://www.w3.org/TR/html4/");
   }
+  SECTION("XML move constructor transfers parsed document tree.", "[XML][Move]")
+  {
+    XML original("<root><item id='1'>Test</item></root>");
+    REQUIRE(!original.root().getChildren().empty());
+
+    XML moved(std::move(original));
+    REQUIRE(!moved.root().getChildren().empty());
+    REQUIRE(NRef<Element>(moved.root()).name() == "root");
+  }
+  SECTION("XML move assignment transfers parsed document tree.", "[XML][Move]")
+  {
+    XML original("<root><item id='2'>Test2</item></root>");
+    XML target;
+    target = std::move(original);
+
+    REQUIRE(!target.root().getChildren().empty());
+    REQUIRE(NRef<Element>(target.root()).name() == "root");
+  }
+  SECTION("XML unique_ptr constructor accepts nullptr or custom services.", "[XML][Constructor]")
+  {
+    XML custom(std::unique_ptr<IStringify>{}, std::unique_ptr<IParser>{});
+    custom.parse("<root><item>Hello</item></root>");
+    REQUIRE(NRef<Element>(custom.root()).name() == "root");
+  }
 }

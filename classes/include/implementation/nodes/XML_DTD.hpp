@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/XML_Error.hpp"
+#include "interface/IEntityMapper.hpp"
 
 #include <cstdint>
 #include <string>

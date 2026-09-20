@@ -20,6 +20,23 @@
 // ===========================================================================
 
 #include "XML.hpp"
-// XML_Core.hpp is reachable via the implementation/ include path added by
-// CMake and brings in all variant types plus the isA<T>/NRef<T> helpers.
-#include "XML_Core.hpp"
+#include "data/XML_Value.hpp"
+#include "data/XML_Attribute.hpp"
+#include "data/XML_ExternalReference.hpp"
+#include "nodes/XML_Variant.hpp"
+#include "node/XML_Node.hpp"
+#include "nodes/XML_Element.hpp"
+#include "nodes/XML_Root.hpp"
+#include "nodes/XML_Self.hpp"
+#include "nodes/XML_Content.hpp"
+#include "nodes/XML_Comment.hpp"
+#include "nodes/XML_CDATA.hpp"
+#include "nodes/XML_PI.hpp"
+#include "nodes/XML_Prolog.hpp"
+#include "nodes/XML_Declaration.hpp"
+#include "nodes/XML_DTD.hpp"
+#include "nodes/XML_EntityReference.hpp"
+#include "node/XML_Node_Reference.hpp"
+#include "node/XML_Node_Contents.hpp"
+#include "node/XML_Node_Index.hpp"
+#include "node/XML_Node_Creation.hpp"

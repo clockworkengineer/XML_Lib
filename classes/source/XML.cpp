@@ -19,6 +19,10 @@ namespace XML_Lib {
 
 XML::XML(IStringify *stringify, IParser *parser) : implementation(std::make_unique<XML_Impl>(stringify, parser)) {}
 
+XML::XML(std::unique_ptr<IStringify> stringify, std::unique_ptr<IParser> parser)
+  : implementation(std::make_unique<XML_Impl>(stringify.release(), parser.release()))
+{}
+
 /// @brief
 /// XML constructor (parse in a default XML string).
 
@@ -32,6 +36,9 @@ XML &XML::operator=(const std::string_view &xmlString)
   parse(BufferSource{ xmlString });
   return *this;
 }
+
+XML::XML(XML &&other) noexcept = default;
+XML &XML::operator=(XML &&other) noexcept = default;
 
 /// @brief
 /// XML destructor.
@@ -189,9 +196,9 @@ void XML::stringify(const std::filesystem::path &filePath, const Format format) 
 ///  or to change the XML tree node directly.
 
 /// @param action Action methods to call during traversal.
-/// Traverse using non-const JSON so can change JSON tree
+/// Traverse using non-const XML so can change XML tree
 void XML::traverse(IAction &action) { implementation->traverse(action); }
-// Traverse using const JSON so cannot change JSON tree
+// Traverse using const XML so cannot change XML tree
 void XML::traverse(IAction &action) const { std::as_const(*implementation).traverse(action); }
 
 /// @brief

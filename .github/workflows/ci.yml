@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Linux GCC (Release)"
+            os: ubuntu-24.04
+            cxx: g++-14
+            cc: gcc-14
+            build_type: Release
+            extra_cmake_args: "-DXML_LIB_BUILD_EXAMPLES=ON"
+
+          - name: "Linux Clang (Debug + ASan/UBSan)"
+            os: ubuntu-24.04
+            cxx: clang++-18
+            cc: clang-18
+            build_type: Debug
+            extra_cmake_args: "-DXML_LIB_ENABLE_ASAN=ON -DXML_LIB_ENABLE_UBSAN=ON"
+
+          - name: "Linux Embedded Profile"
+            os: ubuntu-24.04
+            cxx: g++-14
+            cc: gcc-14
+            build_type: MinSizeRel
+            extra_cmake_args: "-DXML_LIB_EMBEDDED=ON"
+
+          - name: "macOS AppleClang (Release)"
+            os: macos-14
+            cxx: clang++
+            cc: clang
+            build_type: Release
+            extra_cmake_args: "-DXML_LIB_BUILD_EXAMPLES=ON"
+
+          - name: "Windows MSVC (Release)"
+            os: windows-2022
+            cxx: cl
+            cc: cl
+            build_type: Release
+            extra_cmake_args: "-DXML_LIB_BUILD_EXAMPLES=ON"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
+        run: >
+          cmake -B build -S .
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DXML_LIB_BUILD_TESTS=ON
+          -DXML_LIB_WARNINGS_AS_ERRORS=ON
+          ${{ matrix.extra_cmake_args }}
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.build_type }} -j 4
+
+      - name: Run Tests
+        run: ctest --test-dir build -C ${{ matrix.build_type }} --output-on-failure -E "XML_Lib_Performance_Tests"
+
+      - name: Run Compliance Suite
+        if: "!contains(matrix.name, 'Embedded')"
+        shell: bash
+        run: |
+          if [ -f "./build/tests/XML_Lib_Unit_Tests" ]; then
+            ./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
+          elif [ -f "./build/tests/${{ matrix.build_type }}/XML_Lib_Unit_Tests.exe" ]; then
+            ./build/tests/${{ matrix.build_type }}/XML_Lib_Unit_Tests.exe -c "[Compliance]"
+          fi
+
+      - name: Test Installation & Downstream find_package Consumer
+        shell: bash
+        run: |
+          cmake --install build --config ${{ matrix.build_type }} --prefix ./install_test
+          mkdir -p consumer_test
+          cat << 'EOF' > consumer_test/CMakeLists.txt
+          cmake_minimum_required(VERSION 3.20)
+          project(ConsumerTest CXX)
+          set(CMAKE_CXX_STANDARD 20)
+          set(CMAKE_CXX_STANDARD_REQUIRED ON)
+          find_package(XML_Lib REQUIRED PATHS ../install_test NO_DEFAULT_PATH)
+          add_executable(consumer_app main.cpp)
+          target_link_libraries(consumer_app PRIVATE XML_Lib::XML_Lib)
+          EOF
+          cat << 'EOF' > consumer_test/main.cpp
+          #include <XML_Lib/XML.hpp>
+          #include <XML_Lib/XML_Sources.hpp>
+          #include <iostream>
+          int main() {
+              XML_Lib::XML xml;
+              xml.parse("<root><item>Hello</item></root>");
+              std::cout << "XML Version: " << XML_Lib::XML::version() << std::endl;
+              return 0;
+          }
+          EOF
+          cmake -B consumer_test/build -S consumer_test -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          cmake --build consumer_test/build --config ${{ matrix.build_type }}

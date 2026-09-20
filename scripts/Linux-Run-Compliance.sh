@@ -1,6 +1,5 @@
 #!/bin/bash
-
 set -euo pipefail
 
-cd ./Release/tests/
-./XML_Lib_Unit_Tests -c "[Compliance]"
+echo "=== Running Compliance Suite ==="
+./Release/tests/XML_Lib_Unit_Tests -c "[Compliance]"

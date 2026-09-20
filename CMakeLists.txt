@@ -14,6 +14,9 @@ option(XML_LIB_ENABLE_LTO "Enable link-time optimization" ON)
 option(XML_LIB_BUILD_SIZE_OPTIMIZED "Build with size optimization" OFF)
 option(XML_LIB_BUILD_TESTS "Build unit tests" ON)
 option(XML_LIB_BUILD_EXAMPLES "Build example programs" OFF)
+option(XML_LIB_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
+option(XML_LIB_ENABLE_ASAN "Enable AddressSanitizer" OFF)
+option(XML_LIB_ENABLE_UBSAN "Enable UndefinedBehaviorSanitizer" OFF)
 option(XML_LIB_EMBEDDED "Enable embedded-friendly build defaults" OFF)
 option(XML_LIB_NO_EXCEPTIONS "Disable exception support for embedded targets" OFF)
 option(XML_LIB_STRICT_NO_EXCEPTIONS "Compile with -fno-exceptions only when the codebase supports it" OFF)
@@ -149,16 +152,29 @@ target_include_directories(${XML_LIBRARY_NAME}
 
   # XML_Core.hpp (in implementation/) includes headers from common/ by bare name
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/common>
-  PRIVATE
-  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/node>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/nodes>
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/data>
+  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
+
+  # Install interface paths for downstream consumers
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib/interface>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib/implementation>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib/implementation/io>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib/implementation/converter>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib/implementation/common>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib/implementation/node>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib/implementation/nodes>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib/implementation/data>
+
+  PRIVATE
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/entity>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/parser>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/validator>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/stringify>
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/classes/include/implementation/xpath>
-  $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
 )
 
 target_compile_definitions(${XML_LIBRARY_NAME}
@@ -179,8 +195,30 @@ target_compile_definitions(${XML_LIBRARY_NAME}
 
 if(MSVC)
   target_compile_options(${XML_LIBRARY_NAME} PRIVATE /W4)
+  if(XML_LIB_WARNINGS_AS_ERRORS)
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE /WX)
+  endif()
 else()
-  target_compile_options(${XML_LIBRARY_NAME} PRIVATE -Wall -Werror -pedantic -fvisibility=hidden)
+  target_compile_options(${XML_LIBRARY_NAME} PRIVATE -Wall -Wextra -pedantic -fvisibility=hidden)
+  if(XML_LIB_WARNINGS_AS_ERRORS)
+    target_compile_options(${XML_LIBRARY_NAME} PRIVATE -Werror)
+  endif()
+endif()
+
+if(XML_LIB_ENABLE_ASAN)
+  if(MSVC)
+    target_compile_options(${XML_LIBRARY_NAME} PUBLIC /fsanitize=address)
+  else()
+    target_compile_options(${XML_LIBRARY_NAME} PUBLIC -fsanitize=address -fno-omit-frame-pointer)
+    target_link_options(${XML_LIBRARY_NAME} PUBLIC -fsanitize=address)
+  endif()
+endif()
+
+if(XML_LIB_ENABLE_UBSAN)
+  if(NOT MSVC)
+    target_compile_options(${XML_LIBRARY_NAME} PUBLIC -fsanitize=undefined -fno-omit-frame-pointer)
+    target_link_options(${XML_LIBRARY_NAME} PUBLIC -fsanitize=undefined)
+  endif()
 endif()
 
 if(NOT MSVC)
@@ -248,6 +286,7 @@ if(XML_LIB_ENABLE_XSD)
 endif()
 
 if(XML_LIB_BUILD_TESTS)
+  enable_testing()
   add_subdirectory(tests)
 endif()
 
@@ -298,11 +337,22 @@ install(TARGETS ${XML_LIBRARY_NAME}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-# Public headers only (exclude implementation/ subdirectory)
+# Public and supporting core headers (exclude private engine implementations)
 install(DIRECTORY classes/include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib
-    FILES_MATCHING PATTERN "*.hpp"
-    PATTERN "implementation" EXCLUDE)
+    FILES_MATCHING
+    PATTERN "*.hpp"
+    PATTERN "*.tpp"
+    PATTERN "implementation/parser" EXCLUDE
+    PATTERN "implementation/stringify" EXCLUDE
+    PATTERN "implementation/xpath" EXCLUDE
+    PATTERN "implementation/xsd" EXCLUDE
+    PATTERN "implementation/entity" EXCLUDE
+    PATTERN "implementation/*Impl.hpp" EXCLUDE)
+
+# Generated configuration header
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/XML_Config.hpp
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/XML_Lib)
 
 # Export targets file (XML_LibTargets.cmake)
 install(EXPORT XML_LibTargets
@@ -326,3 +376,16 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/XML_LibConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/XML_Lib)
+
+# ============================================================
+# CPack Packaging
+# ============================================================
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VENDOR "Clockwork Engineer")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Modern C++20 XML Library")
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt")
+set(CPACK_GENERATOR "TGZ;ZIP")
+include(CPack)

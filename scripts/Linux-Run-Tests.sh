@@ -1,15 +1,8 @@
- #!/bin/bash
- cd ./Release/tests/
- ./XML_Lib_Unit_Tests
-if [ $? -eq 0 ]; then
-  cd ../../
-else
-  exit $?
-fi
- cd ./Debug/tests/
- ./XML_Lib_Unit_Tests
-if [ $? -eq 0 ]; then
-  cd ../../
-else
-  exit $?
-fi
+#!/bin/bash
+set -euo pipefail
+
+echo "=== Running Release Unit Tests ==="
+ctest --test-dir Release --output-on-failure -R XML_Lib_Unit_Tests
+
+echo "=== Running Debug Unit Tests ==="
+ctest --test-dir Debug --output-on-failure -R XML_Lib_Unit_Tests
