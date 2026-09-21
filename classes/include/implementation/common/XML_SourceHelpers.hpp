@@ -12,9 +12,9 @@
 
 namespace XML_Lib {
 
-/// @brief Return `true` if the character is ASCII whitespace.
-[[nodiscard]] inline bool isWS(Char c) { return std::iswspace(c) != 0; }
-[[nodiscard]] inline bool isWS(char c) { return std::iswspace(static_cast<unsigned char>(c)) != 0; }
+/// @brief Return `true` if the character is XML 1.0 whitespace (space, tab, LF, CR).
+[[nodiscard]] inline bool isWS(Char c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
+[[nodiscard]] inline bool isWS(char c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
 
 /// @brief Return `true` if the current source character is ASCII whitespace.
 [[nodiscard]] inline bool isWS(const ICharStream &source) { return isWS(source.current()); }

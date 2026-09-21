@@ -70,6 +70,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
   source.next();
   ignoreWS(source);
   enumerationType += parseName(source);
+  ignoreWS(source);
   parseDelimitedList(source, '|',
     [&](ISource &src) {
       enumerationType += toUtf8(src.current());
@@ -78,6 +79,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
     },
     [&](ISource &) {
       enumerationType += parseName(source);
+      ignoreWS(source);
     }
   );
   if (source.current() != ')') {
@@ -85,6 +87,9 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
   }
   enumerationType += toUtf8(source.current());
   source.next();
+  if (source.more() && !isWS(source) && source.current() != '>') {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after enumeration attribute type."));
+  }
   ignoreWS(source);
   return enumerationType;
 }
@@ -150,7 +155,12 @@ void DTD_Impl::parseAttributeValue(ISource &source, DTD::Attribute &attribute) c
     attribute.type |= DTD::AttributeType::implied;
   } else {
     const bool isFixed = match(source, "#FIXED");
-    ignoreWS(source);
+    if (isFixed) {
+      if (!isWS(source)) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after #FIXED."));
+      }
+      ignoreWS(source);
+    }
     attribute.value = parseValue(source, xDTD.getEntityMapper());
     attribute.type |= isFixed ? DTD::AttributeType::fixed : DTD::AttributeType::normal;
   }
@@ -162,9 +172,17 @@ void DTD_Impl::parseAttributeValue(ISource &source, DTD::Attribute &attribute) c
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseAttributeList(ISource &source) const
 {
+  if (!isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required after '<!ATTLIST'."));
+  }
   ignoreWS(source);
   const std::string elementName = parseName(source);
-  while (source.more() && validNameStartChar(source.current())) {
+  while (source.more() && source.current() != '>' && source.current() != '<') {
+    if (!isWS(source)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace between attribute definitions."));
+    }
+    ignoreWS(source);
+    if (source.current() == '>' || source.current() == '<') { break; }
     DTD::Attribute dtdAttribute;
     dtdAttribute.name = toUtf8(readName(source));
     if (!validName(toUtf16(dtdAttribute.name))) {
@@ -178,7 +196,6 @@ void DTD_Impl::parseAttributeList(ISource &source) const
     parseAttributeValue(source, dtdAttribute);
     parseValidateAttribute(elementName, dtdAttribute);
     xDTD.getOrCreateElement(elementName).attributes.emplace_back(dtdAttribute);
-    ignoreWS(source);
   }
 }
 
@@ -188,9 +205,16 @@ void DTD_Impl::parseAttributeList(ISource &source) const
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseNotation(ISource &source) const
 {
+  if (!isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required after '<!NOTATION'."));
+  }
   ignoreWS(source);
   const std::string name = parseName(source);
-  xDTD.addNotation(name, parseExternalReference(source));
+  if (!source.more() || !isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after notation name."));
+  }
+  ignoreWS(source);
+  xDTD.addNotation(name, parseExternalReference(source, false));
   ignoreWS(source);
 }
 
@@ -200,6 +224,9 @@ void DTD_Impl::parseNotation(ISource &source) const
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseEntity(ISource &source) const
 {
+  if (!isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required after '<!ENTITY'."));
+  }
   std::string entityName = "&";
   ignoreWS(source);
   bool isPE = false;
@@ -237,18 +264,24 @@ void DTD_Impl::parseEntity(ISource &source) const
     }
     xDTD.getEntityMapper().setInternal(entityName, expanded);
   } else {
-    xDTD.getEntityMapper().setExternal(entityName, parseExternalReference(source));
-    if (match(source, "NDATA")) {
-      if (isPE) {
-        XML_LIB_THROW(SyntaxError(source.getPosition(), "Parameter entities cannot declare NDATA."));
-      }
-      if (!source.more() || !isWS(source.current())) {
-        XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after NDATA."));
-      }
+    xDTD.getEntityMapper().setExternal(entityName, parseExternalReference(source, true));
+    if (source.more() && isWS(source)) {
       ignoreWS(source);
-      xDTD.getEntityMapper().setNotation(entityName, parseName(source));
+      if (match(source, "NDATA")) {
+        if (isPE) {
+          XML_LIB_THROW(SyntaxError(source.getPosition(), "Parameter entities cannot declare NDATA."));
+        }
+        if (!source.more() || !isWS(source)) {
+          XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after NDATA."));
+        }
+        ignoreWS(source);
+        xDTD.getEntityMapper().setNotation(entityName, parseName(source));
+      }
+    } else if (match(source, "NDATA")) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace before NDATA."));
     }
   }
+  ignoreWS(source);
 }
 
 /// <summary>
@@ -257,8 +290,15 @@ void DTD_Impl::parseEntity(ISource &source) const
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseElement(ISource &source)
 {
+  if (!isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required after '<!ELEMENT'."));
+  }
   ignoreWS(source);
   const std::string elementName = parseName(source);
+  if (!source.more() || !isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after element name."));
+  }
+  ignoreWS(source);
   if (match(source, "EMPTY")) {
     xDTD.addElement(elementName, DTD::Element(elementName, XMLValue{ "EMPTY", "EMPTY" }));
   } else if (match(source, "ANY")) {
@@ -295,11 +335,22 @@ void DTD_Impl::parseComment(ISource &source)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parsePI(ISource &source)
 {
-  while (source.more() && !match(source, "?>")) {
-    if (!validChar(source.current())) {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in processing instruction."));
+  const std::string name = parseName(source);
+  std::string lowerName = name;
+  for (char &c : lowerName) { c = static_cast<char>(std::tolower(static_cast<unsigned char>(c))); }
+  if (lowerName == "xml") {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "XML declaration not allowed in DTD."));
+  }
+  if (!match(source, "?>")) {
+    if (!isWS(source)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after PI target."));
     }
-    source.next();
+    while (source.more() && !match(source, "?>")) {
+      if (!validChar(source.current())) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in processing instruction."));
+      }
+      source.next();
+    }
   }
 }
 
@@ -346,6 +397,7 @@ void DTD_Impl::parseInternal(ISource &source)
     } else {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid DTD tag."));
     }
+    ignoreWS(source);
     if (source.current() != '>') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '>' terminator.")); }
     source.next();
     ignoreWS(source);
@@ -365,10 +417,17 @@ void DTD_Impl::parseDTD(ISource &source)
   // and keeping the correct order for its components by storing it
   // in its raw unparsed form.
   const long start = source.position();
+  if (!isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required after '<!DOCTYPE'."));
+  }
   ignoreWS(source);
   xDTD.setRootName(parseName(source));
+  ignoreWS(source);
   // Parse in external DTD reference
-  if (source.current() != '[') { xDTD.setExternalReference(parseExternalReference(source)); }
+  if (source.current() != '[') {
+    xDTD.setExternalReference(parseExternalReference(source, true));
+    ignoreWS(source);
+  }
   // We have internal DTD so parse that first
   if (source.current() == '[') {
     source.next();

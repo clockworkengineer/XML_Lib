@@ -112,7 +112,7 @@ public:
     [[maybe_unused]] const std::function<void(const Node &, IDestination &, unsigned long)> &recurse) const override
   {
     const PI &xNodePI = NRef<PI>(xNode);
-    destination.add("<?" + xNodePI.name() + " " + xNodePI.parameters() + "?>");
+    destination.add("<?" + xNodePI.name() + (xNodePI.parameters().empty() ? "" : " " + xNodePI.parameters()) + "?>");
   }
 };
 

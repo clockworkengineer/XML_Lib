@@ -122,7 +122,7 @@ TEST_CASE("ISource (File) interface.", "[XML][FileSource]")
   }
   SECTION("Check that FileSource is ignoring whitespace correctly.", "[XML][FileSource]")
   {
-    xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
+    xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\n       Test       Test   \r\r\r\r</root>";
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
     FileSource source{ generatedFileName };
@@ -354,7 +354,7 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
   }
   SECTION("Check that BufferSource is ignoring whitespace correctly.", "[XML][BufferSource]")
   {
-    xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\f\n       Test       Test   \r\r\r\r</root>";
+    xmlString = "<root>   Test\t\t\t\r\r\r\r\r\r\r\n       Test       Test   \r\r\r\r</root>";
     BufferSource source{ xmlString };
     String xmlResult;
     while (source.more()) {

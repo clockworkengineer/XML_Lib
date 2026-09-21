@@ -123,7 +123,7 @@ TEST_CASE("Parse XML elements with comments", "[XML][Parse][Comments]")
       "<root></root>\n"
     };
     REQUIRE_THROWS_WITH(xml.parse(source),
-      "XML Syntax Error [Line: 2 Column: 8] Declaration allowed only at the start of the document.");
+      "XML Syntax Error [Line: 2 Column: 7] Declaration allowed only at the start of the document.");
   }
   SECTION("A comment at start with no declaration.", "[XML][Parse][Comments]")
   {

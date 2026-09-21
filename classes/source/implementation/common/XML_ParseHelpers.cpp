@@ -157,9 +157,34 @@ void appendTextSegment(std::string &unparsed,
                        IEntityMapper *entityMapper)
 {
   if (entityMapper != nullptr && character.isEntityReference()) {
+    const std::string entName = character.getUnparsed();
+    if (entityMapper->isExternal(entName)) {
+      XML_LIB_THROW(SyntaxError("Attribute values must not contain references to external entities."));
+    }
     const XMLValue mapped = entityMapper->map(character);
+    std::string expandedText = mapped.getParsed();
+    size_t depth = 0;
+    while (expandedText.find('&') != std::string::npos && depth < 64) {
+      ++depth;
+      const size_t ampPos = expandedText.find('&');
+      const size_t semiPos = expandedText.find(';', ampPos);
+      if (semiPos == std::string::npos) break;
+      const std::string ref = expandedText.substr(ampPos, semiPos - ampPos + 1);
+      if (ref == "&amp;" || ref == "&lt;" || ref == "&gt;" || ref == "&quot;" || ref == "&apos;") {
+        break;
+      }
+      if (entityMapper->isExternal(ref)) {
+        XML_LIB_THROW(SyntaxError("Attribute values must not contain references to external entities."));
+      }
+      if (entityMapper->isPresent(ref)) {
+        const XMLValue subMapped = entityMapper->map(XMLValue{ ref, ref });
+        expandedText.replace(ampPos, semiPos - ampPos + 1, subMapped.getParsed());
+      } else {
+        break;
+      }
+    }
     unparsed += mapped.getUnparsed();
-    parsed += mapped.getParsed();
+    parsed += (expandedText.find('<') != std::string::npos ? expandedText : mapped.getParsed());
     return;
   }
   unparsed += character.getUnparsed();
@@ -191,7 +216,6 @@ XMLValue parseQuotedValue(ISource &source, IEntityMapper *entityMapper)
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid attribute value."));
   }
   source.next();
-  ignoreWS(source);
 
   return XMLValue{ unparsed, parsed, static_cast<char>(quote) };
 }

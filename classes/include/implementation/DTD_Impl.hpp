@@ -52,7 +52,7 @@ private:
   void parseNotation(ISource &source) const;
   void parseEntity(ISource &source) const;
   void parseElement(ISource &source);
-  [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source) const;
+  [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source, bool systemIdRequired = true) const;
   void parseAttributeType(ISource &source, DTD::Attribute &attribute) const;
   void parseAttributeValue(ISource &source, DTD::Attribute &attribute) const;
   static void parseComment(ISource &source);

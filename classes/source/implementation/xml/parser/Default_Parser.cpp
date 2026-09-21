@@ -9,6 +9,7 @@
 //
 
 #include "Default_Parser.hpp"
+#include "common/XML_ParseHelpers.hpp"
 #include <array>
 #if defined(XML_LIB_ENABLE_DTD)
 #include "DTD_Validator.hpp"
@@ -105,7 +106,14 @@ bool Default_Parser::parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog
 /// </summary>
 /// <param name="source">XML source stream.</param>
 /// <returns>Element tag name.</returns>
-std::string Default_Parser::parseTagName(ISource &source) { return parseName(source); }
+std::string Default_Parser::parseTagName(ISource &source)
+{
+  const String name = readName(source);
+  if (!validName(name)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered."));
+  }
+  return toUtf8(name);
+}
 
 /// <summary>
 /// Parse the declaration attribute and validate its value.
@@ -173,12 +181,27 @@ Node Default_Parser::parsePI(ISource &source)
   }
   String parameters;
   parameters.reserve(64);
-  while (source.more() && !match(source, "?>")) {
-    if (!validChar(source.current())) {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in processing instruction."));
-    }
-    parameters += source.current();
+  bool closed = false;
+  if (match(source, "?>")) {
+    closed = true;
+  } else if (!isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after processing instruction target."));
+  } else {
     source.next();
+    while (source.more()) {
+      if (match(source, "?>")) {
+        closed = true;
+        break;
+      }
+      if (!validChar(source.current())) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in processing instruction."));
+      }
+      parameters += source.current();
+      source.next();
+    }
+  }
+  if (!closed) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Unclosed processing instruction."));
   }
   return Node::make<PI>(name, toUtf8(parameters));
 }
@@ -193,7 +216,12 @@ Node Default_Parser::parseCDATA(ISource &source)
 {
   String cdata;
   cdata.reserve(128);
-  while (source.more() && !match(source, "]]>")) {
+  bool closed = false;
+  while (source.more()) {
+    if (match(source, "]]>")) {
+      closed = true;
+      break;
+    }
     if (match(source, "<![CDATA[")) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed."));
     }
@@ -202,6 +230,9 @@ Node Default_Parser::parseCDATA(ISource &source)
     }
     cdata += source.current();
     source.next();
+  }
+  if (!closed) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Unclosed CDATA section."));
   }
   return Node::make<CDATA>(toUtf8(cdata));
 }
@@ -219,6 +250,7 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
   attributes.reserve(8);
   while (source.more() && source.current() != '/' && source.current() != '>') {
     std::string attributeName{ parseName(source) };
+    ignoreWS(source);
     if (!match(source, "=")) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '=' between attribute name and value."));
     }
@@ -238,6 +270,12 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
       XML_LIB_THROW(SyntaxError("Maximum total attribute count exceeded."));
     }
     if (attributes.size() > maxAttributeCount) { XML_LIB_THROW(SyntaxError("Maximum attribute count exceeded.")); }
+    if (source.more() && source.current() != '/' && source.current() != '>') {
+      if (!isWS(source)) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after attribute value."));
+      }
+      ignoreWS(source);
+    }
   }
   return attributes;
 }
@@ -376,6 +414,12 @@ Node Default_Parser::parseElement(ISource &source,
 {
   // Parse tag and attributes
   const std::string name{ parseTagName(source) };
+  if (source.more() && source.current() != '/' && source.current() != '>') {
+    if (!isWS(source)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after element name."));
+    }
+    ignoreWS(source);
+  }
   const std::vector attributes{ parseAttributes(source, entityMapper) };
   // Create element Node
   if (Node xNode; match(source, ">")) {
@@ -421,6 +465,9 @@ Node Default_Parser::parseDeclaration(ISource &source)
   std::string standalone{ "no" };
   ignoreWS(source);
   if (match(source, "<?xml")) {
+    if (!isWS(source)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Version missing from declaration."));
+    }
     ignoreWS(source);
     if (match(source, "version")) {
       static constexpr std::array<std::string_view, 2> kVersions{ "1.0", "1.1" };
@@ -428,7 +475,15 @@ Node Default_Parser::parseDeclaration(ISource &source)
     } else {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Version missing from declaration."));
     }
+    bool hadWS = false;
+    if (isWS(source)) {
+      hadWS = true;
+      ignoreWS(source);
+    }
     if (match(source, "encoding")) {
+      if (!hadWS) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required before encoding attribute."));
+      }
       // XML 1.0 allows a wide range of encodings, not just UTF-8 and UTF-16
       static constexpr std::array<std::string_view, 22> kEncodings{ "UTF-8",
         "UTF-16",
@@ -453,13 +508,26 @@ Node Default_Parser::parseDeclaration(ISource &source)
         "SHIFT_JIS",
         "US-ASCII" };
       encoding = parseDeclarationAttribute(source, "encoding", kEncodings);
+      hadWS = false;
     }
-    static constexpr std::array<std::string_view, 2> kStandalone{ "yes", "no" };
-    if (match(source, "standalone")) { standalone = parseDeclarationAttribute(source, "standalone", kStandalone); }
+    if (isWS(source)) {
+      hadWS = true;
+      ignoreWS(source);
+    }
+    if (match(source, "standalone")) {
+      if (!hadWS) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required before standalone attribute."));
+      }
+      static constexpr std::array<std::string_view, 2> kStandalone{ "yes", "no" };
+      standalone = parseDeclarationAttribute(source, "standalone", kStandalone);
+      hadWS = false;
+    }
+    ignoreWS(source);
     if (match(source, "encoding")) {
       XML_LIB_THROW(
         SyntaxError(source.getPosition(), "Incorrect order for version, encoding and standalone attributes."));
     }
+    ignoreWS(source);
     if (!match(source, "?>")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Declaration end tag not found.")); }
   }
   return Node::make<Declaration>(version, encoding, standalone);

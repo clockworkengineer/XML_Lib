@@ -171,12 +171,19 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
     if (contentSpecSource.current() == '*') {
       contentSpecDestination.add(contentSpecSource.current());
       contentSpecSource.next();
-    }
-    if (contentSpecSource.more() && !isWS(contentSpecSource)) {
+      ignoreWS(contentSpecSource);
+    } else {
       XML_LIB_THROW(SyntaxError("Invalid element content specification."));
     }
   } else if (contentSpecSource.current() == ')') {
     contentSpecDestination.add(")");
+    contentSpecSource.next();
+    ignoreWS(contentSpecSource);
+    if (contentSpecSource.current() == '*') {
+      contentSpecDestination.add(contentSpecSource.current());
+      contentSpecSource.next();
+      ignoreWS(contentSpecSource);
+    }
   } else {
     XML_LIB_THROW(SyntaxError("Invalid element content specification."));
   }
@@ -203,6 +210,10 @@ XMLValue DTD_Impl::parseElementInternalSpecification(const std::string_view &ele
         parseElementChildren(contentSpecSource, contentSpecDestination);
       }
     } else {
+      XML_LIB_THROW(SyntaxError("Invalid element content specification."));
+    }
+    ignoreWS(contentSpecSource);
+    if (contentSpecSource.more()) {
       XML_LIB_THROW(SyntaxError("Invalid element content specification."));
     }
     return XMLValue{ contentSpec.getUnparsed(), contentSpecDestination.toString() };

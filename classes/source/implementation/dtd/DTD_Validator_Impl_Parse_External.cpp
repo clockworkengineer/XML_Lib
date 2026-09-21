@@ -154,7 +154,7 @@ bool isValidPubid(const std::string_view &pubid)
 }
 } // namespace
 
-XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
+XMLExternalReference DTD_Impl::parseExternalReference(ISource &source, bool systemIdRequired) const
 {
   if (match(source, "SYSTEM")) {
     if (!source.more() || !isWS(source.current())) {
@@ -192,6 +192,9 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
     std::string systemID;
     if (source.more() && (source.current() == '\'' || source.current() == '"')) {
       systemID = parseValue(source, xDTD.getEntityMapper()).getParsed();
+    }
+    if (systemIdRequired && systemID.empty()) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing system identifier after public identifier."));
     }
     return XMLExternalReference{ XMLExternalReference::kPublicID, systemID, publicID };
   }

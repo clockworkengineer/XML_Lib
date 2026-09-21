@@ -23,7 +23,6 @@ namespace XML_Lib {
 std::string parseName(ISource &source)
 {
   const String name = readName(source);
-  ignoreWS(source);
   if (!validName(name)) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered."));
   }
@@ -104,7 +103,6 @@ XMLValue parseValue(ISource &source)
 /// @return Body of tag.
 std::string parseTagBody(ISource &source)
 {
-  ignoreWS(source);
   std::string body;
   Char inQuote = 0;
   while (source.more()) {
