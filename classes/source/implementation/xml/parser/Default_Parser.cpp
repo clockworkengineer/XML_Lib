@@ -56,12 +56,19 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
 /// <param name="entityMapper">Entity mapper interface object.</param>
 void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper &entityMapper)
 {
-  auto xElement = Node::make<Element>();
+  if (entityReference.getParsed().empty()) {
+    return;
+  }
   BufferSource entitySource(entityReference.getParsed());
+  // External parsed entities (extParsedEnt ::= TextDecl? content) can have a TextDecl at the start: <?xml ... ?>
+  if (match(entitySource, "<?xml") && isWS(entitySource)) {
+    while (entitySource.more() && !match(entitySource, "?>")) {
+      entitySource.next();
+    }
+    ignoreWS(entitySource);
+  }
   // Parse entity XML
   while (entitySource.more()) { parseElementInternal(entitySource, xNode, entityMapper); }
-  // Place into Node (element) child list
-  for (auto &child : xElement.getChildren()) { xNode.addChild(child); }
 }
 
 /// <summary>
@@ -137,6 +144,9 @@ Node Default_Parser::parseComment(ISource &source)
   String comment;
   comment.reserve(64);
   while (source.more() && !match(source, "--")) {
+    if (!validChar(source.current())) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in comment."));
+    }
     comment += source.current();
     source.next();
   }
@@ -155,13 +165,18 @@ Node Default_Parser::parseComment(ISource &source)
 Node Default_Parser::parsePI(ISource &source)
 {
   std::string name{ parseName(source) };
-  // Check not a declaration
-  if (name == "xml") {
+  // Check not a declaration (xml in any case combination)
+  std::string lowerName = name;
+  for (char &c : lowerName) { c = static_cast<char>(std::tolower(static_cast<unsigned char>(c))); }
+  if (lowerName == "xml") {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Declaration allowed only at the start of the document."));
   }
   String parameters;
   parameters.reserve(64);
   while (source.more() && !match(source, "?>")) {
+    if (!validChar(source.current())) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in processing instruction."));
+    }
     parameters += source.current();
     source.next();
   }
@@ -181,6 +196,9 @@ Node Default_Parser::parseCDATA(ISource &source)
   while (source.more() && !match(source, "]]>")) {
     if (match(source, "<![CDATA[")) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Nesting of CDATA sections is not allowed."));
+    }
+    if (!validChar(source.current())) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in CDATA section."));
     }
     cdata += source.current();
     source.next();
@@ -267,17 +285,19 @@ void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, I
       if (entityExpansionDepth >= maxEntityExpansionDepth) {
         XML_LIB_THROW(SyntaxError("Entity expansion depth limit exceeded."));
       }
+      struct DepthGuard {
+        size_t &depth;
+        ~DepthGuard() { --depth; }
+      } guard{entityExpansionDepth};
       ++entityExpansionDepth;
       // Does entity contain start tag ?
       // YES then XML into current element list
       if (content.getParsed().starts_with("<")) {
         parseEntityReferenceXML(xNode, content, entityMapper);
-        --entityExpansionDepth;
         return;
       }
       // NO XML into entity elements list.
       parseEntityReferenceXML(xEntityReference, content, entityMapper);
-      --entityExpansionDepth;
       markTrailingContentNonWhitespace(xNode);
     }
     xNode.addChild(std::move(xEntityReference));
@@ -315,14 +335,18 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
   } else if (match(source, "<")) {
     xNode.addChild(parseElement(source, NRef<Element>(xNode).getNameSpaces(), entityMapper));
     const Element &xNodeChildElement = NRef<Element>(xNode.getChildren().back());
-    if (const auto pos = xNodeChildElement.name().find(':'); pos != std::string::npos) {
+    if (const auto pos = xNodeChildElement.name().find(':');
+        pos != std::string::npos && pos > 0 && pos + 1 < xNodeChildElement.name().size() &&
+        xNodeChildElement.name().find(':', pos + 1) == std::string::npos) {
       if (!xNodeChildElement.hasNameSpace(xNodeChildElement.name().substr(0, pos))) {
         XML_LIB_THROW(SyntaxError(source.getPosition(), "Namespace used but not defined."));
       }
     }
     for (const auto &attr : xNodeChildElement.getAttributes()) {
       if (!attr.getName().starts_with("xmlns")) {
-        if (const auto attrPos = attr.getName().find(':'); attrPos != std::string::npos) {
+        if (const auto attrPos = attr.getName().find(':');
+            attrPos != std::string::npos && attrPos > 0 && attrPos + 1 < attr.getName().size() &&
+            attr.getName().find(':', attrPos + 1) == std::string::npos) {
           if (!xNodeChildElement.hasNameSpace(attr.getName().substr(0, attrPos))) {
             XML_LIB_THROW(SyntaxError(
               source.getPosition(), "Namespace used but not defined in attribute '" + attr.getName() + "'."));
@@ -370,7 +394,13 @@ Node Default_Parser::parseElement(ISource &source,
     ++elementNestingDepth;
     while (source.more() && !match(source, "</")) { parseElementInternal(source, xNode, entityMapper); }
     --elementNestingDepth;
-    if (match(source, toUtf16(NRef<Element>(xNode).name()) + u">")) { return xNode; }
+    if (match(source, toUtf16(NRef<Element>(xNode).name()))) {
+      ignoreWS(source);
+      if (source.more() && source.current() == '>') {
+        source.next();
+        return xNode;
+      }
+    }
   } else if (match(source, "/>")) {
     // Self-closing element tag
     if (++currentElementCount > maxElementCount) { XML_LIB_THROW(SyntaxError("Maximum element count exceeded.")); }
@@ -528,6 +558,9 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   currentTotalAttributeCount = 0;
   maxTextNodeSize = options.maxTextNodeSize;
   entityMapper.setExternalEntityPolicy(options.allowExternalEntities, options.entityResolver);
+  if (!source.getSystemId().empty()) {
+    entityMapper.setBaseDirectory(std::filesystem::path(source.getSystemId()).parent_path());
+  }
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
   XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
   // Reset XML before next parse

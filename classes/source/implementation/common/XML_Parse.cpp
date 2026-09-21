@@ -105,6 +105,28 @@ XMLValue parseValue(ISource &source)
 std::string parseTagBody(ISource &source)
 {
   ignoreWS(source);
-  return readUntil(source, '>');
+  std::string body;
+  Char inQuote = 0;
+  while (source.more()) {
+    if (inQuote != 0) {
+      if (source.current() == inQuote) {
+        inQuote = 0;
+      }
+      body += toUtf8(source.current());
+      source.next();
+    } else {
+      if (source.current() == '"' || source.current() == '\'') {
+        inQuote = source.current();
+        body += toUtf8(source.current());
+        source.next();
+      } else if (source.current() == '>') {
+        break;
+      } else {
+        body += toUtf8(source.current());
+        source.next();
+      }
+    }
+  }
+  return body;
 }
-}// namespace  XML_Lib
+} // namespace XML_Lib

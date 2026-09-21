@@ -242,6 +242,23 @@ ctest --test-dir build --output-on-failure
 ./build/tests/XML_Lib_Performance_Tests
 ```
 
+### Official W3C XML Conformance Test Suite
+
+`XML_Lib` integrates the official [W3C XML Conformance Test Suite](https://www.w3.org/XML/Test/) (`xmlconf`) directly into its Catch2 test runner:
+- If the test suite files are not present on disk, the test case gracefully skips without failing.
+- If present, the test harness parses the `xmlconf.xml` catalog, executes tests across valid and non-well-formed fixtures, and strictly fails if any official test produces an unexpected outcome.
+
+To download the official test suite and run it:
+```bash
+# Download W3C test suite files into tests/files/xmlconf
+./scripts/Download-W3C-Suite.sh
+# Or via CMake:
+cmake --build build --target download_w3c_xmlconf
+
+# Run official conformance tests
+./build/tests/XML_Lib_Unit_Tests "Official W3C XML Conformance Test Suite"
+```
+
 ### Installation
 
 ```bash

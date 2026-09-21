@@ -7,6 +7,7 @@
 //
 
 #include "DTD_Impl.hpp"
+#include "implementation/io/XML_FileIO.hpp"
 
 namespace XML_Lib {
 
@@ -44,8 +45,10 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
         source.next();
       }
     }
-    BufferSource conditionalDTDSource(conditionalDTD);
-    parseExternalContent(conditionalDTDSource);
+    if (conditionalDTD.find_first_not_of(" \t\r\n") != std::string::npos) {
+      BufferSource conditionalDTDSource(conditionalDTD);
+      parseExternalContent(conditionalDTDSource);
+    }
   } else if (conditionalValue == "IGNORE") {
     while (source.more() && !match(source, "]]")) {
       if (match(source, "<![")) {
@@ -68,17 +71,34 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseExternalContent(ISource &source)
 {
+  ignoreWS(source);
+  // Optional TextDecl at start of external entity: <?xml ... ?>
+  if (match(source, "<?xml")) {
+    while (source.more() && !match(source, "?>")) {
+      source.next();
+    }
+    ignoreWS(source);
+  }
+
   const auto dispatch = [&](auto &&parseFn) {
     BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
     parseFn(dtdTranslatedSource);
   };
   while (source.more()) {
+    ignoreWS(source);
+    if (!source.more()) {
+      break;
+    }
     if      (match(source, "<!ENTITY"))   { dispatch([&](ISource &s) { parseEntity(s);        }); }
     else if (match(source, "<!ELEMENT"))  { dispatch([&](ISource &s) { parseElement(s);       }); }
     else if (match(source, "<!ATTLIST"))  { dispatch([&](ISource &s) { parseAttributeList(s); }); }
     else if (match(source, "<!NOTATION")) { dispatch([&](ISource &s) { parseNotation(s);      }); }
     else if (match(source, "<!--")) {
       parseComment(source);
+    } else if (match(source, "<?")) {
+      parsePI(source);
+      ignoreWS(source);
+      continue;
     } else if (source.current() == '%') {
       parseParameterEntityReference(source);
       continue;
@@ -99,15 +119,20 @@ void DTD_Impl::parseExternalContent(ISource &source)
 /// </summary>
 void DTD_Impl::parseExternalReferenceContent()
 {
-  if (xDTD.getExternalReference().getType() == "SYSTEM") {
-    std::filesystem::path dtdPath{xDTD.getExternalReference().getSystemID()};
+  if (xDTD.getExternalReference().getType() == "SYSTEM" ||
+      (xDTD.getExternalReference().getType() == XMLExternalReference::kPublicID &&
+       !xDTD.getExternalReference().getSystemID().empty())) {
+    std::filesystem::path dtdPath{ xDTD.getExternalReference().getSystemID() };
     if (dtdPath.is_relative() && !baseDirectory.empty()) {
       dtdPath = baseDirectory / dtdPath;
     }
-    FileSource dtdFile(dtdPath.string());
-    parseExternalContent(dtdFile);
-  } else if (xDTD.getExternalReference().getType() == XMLExternalReference::kPublicID) {
-    // Public external DTD currently not supported (Use system id ?)
+    if (std::filesystem::exists(dtdPath)) {
+      const std::string dtdString = XML_FileIO::fromFile(dtdPath);
+      if (!dtdString.empty() && dtdString.find_first_not_of(" \t\r\n") != std::string::npos) {
+        BufferSource dtdFile(dtdString, BufferSource::kMaxSourceBytes, dtdPath.string());
+        parseExternalContent(dtdFile);
+      }
+    }
   }
 }
 
@@ -116,16 +141,58 @@ void DTD_Impl::parseExternalReferenceContent()
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 /// <returns>External reference.</returns>
+namespace {
+bool isValidPubid(const std::string_view &pubid)
+{
+  for (char c : pubid) {
+    if (std::isalnum(static_cast<unsigned char>(c))) continue;
+    if (c == ' ' || c == '\r' || c == '\n') continue;
+    if (std::string_view("-'()+,./:=?;!*#@$_%").find(c) != std::string_view::npos) continue;
+    return false;
+  }
+  return true;
+}
+} // namespace
+
 XMLExternalReference DTD_Impl::parseExternalReference(ISource &source) const
 {
   if (match(source, "SYSTEM")) {
+    if (!source.more() || !isWS(source.current())) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after SYSTEM."));
+    }
     ignoreWS(source);
     return XMLExternalReference{ "SYSTEM", parseValue(source, xDTD.getEntityMapper()).getParsed(), "" };
   }
   if (match(source, XMLExternalReference::kPublicID)) {
+    if (!source.more() || !isWS(source)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after PUBLIC."));
+    }
     ignoreWS(source);
-    const std::string publicID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
-    const std::string systemID{ parseValue(source, xDTD.getEntityMapper()).getParsed() };
+    const Char quote = source.current();
+    if (quote != '\'' && quote != '"') {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid public identifier quote."));
+    }
+    source.next();
+    std::string publicID;
+    while (source.more() && source.current() != quote) {
+      publicID += source.current();
+      source.next();
+    }
+    if (source.current() != quote) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing quote on public identifier."));
+    }
+    source.next();
+    if (!isValidPubid(publicID)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in public identifier."));
+    }
+    if (source.more() && (source.current() == '\'' || source.current() == '"')) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace between public identifier and system identifier."));
+    }
+    ignoreWS(source);
+    std::string systemID;
+    if (source.more() && (source.current() == '\'' || source.current() == '"')) {
+      systemID = parseValue(source, xDTD.getEntityMapper()).getParsed();
+    }
     return XMLExternalReference{ XMLExternalReference::kPublicID, systemID, publicID };
   }
   XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid external DTD specifier."));

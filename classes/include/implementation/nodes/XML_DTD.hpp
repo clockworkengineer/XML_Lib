@@ -90,17 +90,40 @@ struct DTD final : Variant
   }
   [[nodiscard]] Element &getElement(const std::string_view &elementName)
   {
-    if (const auto element = elements.find(std::string(elementName)); element != elements.end()) {
-      return element->second;
+    auto it = elements.find(std::string(elementName));
+    if (it == elements.end()) {
+      XML_LIB_THROW(Error("Could not find element name."));
     }
-    XML_LIB_THROW(Error("Could not find notation name."));
+    return it->second;
+  }
+  [[nodiscard]] const Element &getElement(const std::string_view &elementName) const
+  {
+    auto it = elements.find(std::string(elementName));
+    if (it == elements.end()) {
+      XML_LIB_THROW(Error("Could not find element name."));
+    }
+    return it->second;
+  }
+  [[nodiscard]] Element &getOrCreateElement(const std::string_view &elementName)
+  {
+    auto it = elements.find(std::string(elementName));
+    if (it == elements.end()) {
+      it = elements.emplace(std::string(elementName), Element(elementName, XMLValue("", ""))).first;
+    }
+    return it->second;
   }
 /// @brief
 /// Implementation of addElement.
 
   void addElement(const std::string_view &elementName, const Element &element)
   {
-    elements.emplace(elementName, element);
+    auto it = elements.find(std::string(elementName));
+    if (it != elements.end()) {
+      it->second.name = element.name;
+      it->second.content = element.content;
+    } else {
+      elements.emplace(elementName, element);
+    }
   }
   [[nodiscard]] std::size_t getElementCount() const { return elements.size(); }
   [[nodiscard]] XMLExternalReference &getNotation(const std::string_view &notationName)

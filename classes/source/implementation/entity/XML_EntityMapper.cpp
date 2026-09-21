@@ -10,6 +10,7 @@
 #include "entity/XML_EntityMapper.hpp"
 #include "entity/XML_EntityMapperHelpers.hpp"
 #include "interface/IEntityResolver.hpp"
+#include "implementation/io/XML_FileIO.hpp"
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
@@ -127,7 +128,18 @@ std::string XXESecurityPolicy::getCachedFileMapping(const std::string_view &file
     return it->second;
   }
 
-  std::ifstream file(key, std::ios::binary);
+  std::filesystem::path filePath{ fileName };
+  if (filePath.is_relative() && !baseDirectory.empty()) {
+    const auto resolved = baseDirectory / filePath;
+    if (std::filesystem::exists(resolved)) {
+      filePath = resolved;
+    }
+  }
+  if (std::filesystem::exists(filePath)) {
+    filePath = std::filesystem::weakly_canonical(filePath);
+  }
+
+  std::ifstream file(filePath, std::ios::binary);
   if (!file) {
     XML_LIB_THROW(SyntaxError(std::string("Entity '") + key + "' source file does not exist."));
   }
@@ -141,12 +153,11 @@ std::string XXESecurityPolicy::getCachedFileMapping(const std::string_view &file
     XML_LIB_THROW(SyntaxError("External entity file size exceeds maximum allowed."));
   }
 
+  file.close();
   std::string content;
   if (size > 0) {
-    content.reserve(static_cast<size_t>(size));
-    file.seekg(0, std::ios::beg);
+    content = XML_FileIO::fromFile(filePath);
   }
-  content.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
   externalFileCache.emplace(key, content);
   return externalFileCache.at(key);
 }
@@ -245,8 +256,11 @@ const std::vector<std::pair<std::string_view, const XML_EntityMapping *>> &Entit
 XMLValue EntityExpanderEngine::map(const XMLValue &entityReference)
 {
   if (const auto *entityMapping = findEntityMapping(storage.getMappings(), entityReference.getUnparsed())) {
+    if (entityMapping->isNotation()) {
+      XML_LIB_THROW(SyntaxError("Reference to unparsed entity '" + entityReference.getUnparsed() + "' is not allowed."));
+    }
     std::string parsed{ entityReference.getUnparsed() };
-    if (!entityMapping->getInternal().empty()) {
+    if (entityMapping->isInternal()) {
       parsed = entityMapping->getInternal();
     } else if (entityMapping->isExternal()) {
       const auto &extRef = entityMapping->getExternal();
@@ -264,8 +278,16 @@ XMLValue EntityExpanderEngine::map(const XMLValue &entityReference)
         }
       }
       if (!resolved) {
-        if (std::filesystem::exists(systemID)) {
-          parsed = security.getCachedFileMapping(systemID);
+        std::filesystem::path filePath{ systemID };
+        if (filePath.is_relative() && !security.getBaseDirectory().empty()) {
+          const auto resolvedPath = security.getBaseDirectory() / filePath;
+          if (std::filesystem::exists(resolvedPath)) {
+            filePath = resolvedPath;
+          }
+        }
+        if (std::filesystem::exists(filePath)) {
+          filePath = std::filesystem::weakly_canonical(filePath);
+          parsed = security.getCachedFileMapping(filePath.string());
         } else {
           XML_LIB_THROW(SyntaxError("Entity '" + entityReference.getUnparsed() + "' source file '"
                             + systemID + "' does not exist."));

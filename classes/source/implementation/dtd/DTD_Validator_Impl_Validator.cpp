@@ -147,32 +147,62 @@ void DTD_Impl::checkAttributeType(const Node &xNode, const DTD::Attribute &attri
     {
       elementError(xElement, "attribute '" + attribute.name + "' does not contain character data.");
     }
-  } else if ((attribute.type & DTD::AttributeType::id) != 0) {
-    if (!checkIsIDOK(elementAttribute.getParsed())) {
+    return;
+  }
+
+  // XML 1.0 §3.3.3: Normalize non-CDATA attribute value (strip leading/trailing WS, collapse inner WS)
+  std::string normalizedValue;
+  {
+    const auto &raw = elementAttribute.getParsed();
+    size_t start = 0;
+    while (start < raw.size() && (raw[start] == ' ' || raw[start] == '\t' || raw[start] == '\r' || raw[start] == '\n')) {
+      ++start;
+    }
+    size_t end = raw.size();
+    while (end > start && (raw[end - 1] == ' ' || raw[end - 1] == '\t' || raw[end - 1] == '\r' || raw[end - 1] == '\n')) {
+      --end;
+    }
+    bool inWhitespace = false;
+    for (size_t i = start; i < end; ++i) {
+      char c = raw[i];
+      if (c == ' ' || c == '\t' || c == '\r' || c == '\n') {
+        if (!inWhitespace) {
+          normalizedValue.push_back(' ');
+          inWhitespace = true;
+        }
+      } else {
+        normalizedValue.push_back(c);
+        inWhitespace = false;
+      }
+    }
+  }
+
+  if ((attribute.type & DTD::AttributeType::id) != 0) {
+    if (!checkIsIDOK(normalizedValue)) {
       elementError(xElement, "ID attribute '" + attribute.name + "' is invalid.");
     }
-    if (assignedIDValues.contains(elementAttribute.getParsed())) {
+    if (assignedIDValues.contains(normalizedValue)) {
       elementError(xElement, "ID attribute '" + attribute.name + "' is not unique.");
     }
-    assignedIDValues.insert(elementAttribute.getParsed());
+    assignedIDValues.insert(normalizedValue);
   } else if ((attribute.type & DTD::AttributeType::idref) != 0) {
-    if (!checkIsIDOK(elementAttribute.getParsed())) {
+    if (!checkIsIDOK(normalizedValue)) {
       elementError(xElement, "IDREF attribute '" + attribute.name + "' is invalid.");
     }
-    assignedIDREFValues.insert(elementAttribute.getParsed());
+    assignedIDREFValues.insert(normalizedValue);
   } else if ((attribute.type & DTD::AttributeType::idrefs) != 0) {
-    for (const auto &id : splitString(elementAttribute.getParsed(), ' ')) {
+    for (const auto &id : splitString(normalizedValue, ' ')) {
       if (!checkIsIDOK(id)) {
         elementError(xElement, "IDREFS attribute '" + attribute.name + "' contains an invalid IDREF.");
       }
       assignedIDREFValues.insert(id);
     }
   } else if ((attribute.type & DTD::AttributeType::nmtoken) != 0) {
-    if (!checkIsNMTOKENOK(elementAttribute.getParsed())) {
+    if (!checkIsNMTOKENOK(normalizedValue)) {
       elementError(xElement, "NMTOKEN attribute '" + attribute.name + "' is invalid.");
     }
   } else if ((attribute.type & DTD::AttributeType::nmtokens) != 0) {
-    for (auto &nmtoken : splitString(elementAttribute.getParsed(), ' ')) {
+    for (auto &nmtoken : splitString(normalizedValue, ' ')) {
       if (!checkIsNMTOKENOK(nmtoken)) {
         elementError(xElement, "NMTOKEN attribute '" + attribute.name + "' contains an invalid NMTOKEN.");
       }
@@ -188,19 +218,19 @@ void DTD_Impl::checkAttributeType(const Node &xNode, const DTD::Attribute &attri
       }
     };
     if (isEntities) {
-      for (const auto &entity : splitString(elementAttribute.getParsed(), ' ')) { checkEntity(entity); }
+      for (const auto &entity : splitString(normalizedValue, ' ')) { checkEntity(entity); }
     } else {
-      checkEntity(elementAttribute.getParsed());
+      checkEntity(normalizedValue);
     }
   } else if ((attribute.type & DTD::AttributeType::notation) != 0) {
-    if (!buildEnumerationSet(attribute.enumeration).contains(elementAttribute.getParsed())) {
+    if (!buildEnumerationSet(attribute.enumeration).contains(normalizedValue)) {
       elementError(xElement,
-        "NOTATION attribute '" + attribute.name + "' value '" + elementAttribute.getParsed() + "' is not defined.");
+        "NOTATION attribute '" + attribute.name + "' value '" + normalizedValue + "' is not defined.");
     }
   } else if ((attribute.type & DTD::AttributeType::enumeration) != 0) {
-    if (!buildEnumerationSet(attribute.enumeration).contains(elementAttribute.getParsed())) {
+    if (!buildEnumerationSet(attribute.enumeration).contains(normalizedValue)) {
       elementError(xElement,
-        "attribute '" + attribute.name + "' contains invalid enumeration value '" + elementAttribute.getParsed()
+        "attribute '" + attribute.name + "' contains invalid enumeration value '" + normalizedValue
           + "'.");
     }
   }

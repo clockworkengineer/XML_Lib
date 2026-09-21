@@ -14,9 +14,12 @@ using Char = String::value_type;
 // XML character validation
 // ========================
 [[nodiscard]] bool validChar(Char c);
+[[nodiscard]] bool validChar(char c);
 [[nodiscard]] bool validChar(std::uint32_t c);
 [[nodiscard]] bool validNameStartChar(Char c);
+[[nodiscard]] bool validNameStartChar(char c);
 [[nodiscard]] bool validNameChar(Char c);
+[[nodiscard]] bool validNameChar(char c);
 [[nodiscard]] bool validName(const String &name);
 [[nodiscard]] bool validAttributeValue(const std::string_view &value, char quote);
 }// namespace XML_Lib

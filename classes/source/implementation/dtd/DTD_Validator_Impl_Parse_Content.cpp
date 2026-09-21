@@ -34,10 +34,22 @@ bool DTD_Impl::parseIsChoiceOrSequence(ISource &contentSpecSource)
 {
   bool choice = false;
   const long start = contentSpecSource.position();
-  while (contentSpecSource.more() && contentSpecSource.current() != '|' && contentSpecSource.current() != ',') {
+  int depth = 0;
+  while (contentSpecSource.more()) {
+    Char c = contentSpecSource.current();
+    if (c == '(') {
+      depth++;
+    } else if (c == ')') {
+      depth--;
+      if (depth == 0) {
+        break;
+      }
+    } else if (depth == 1 && c == '|') {
+      choice = true;
+      break;
+    }
     contentSpecSource.next();
   }
-  if (contentSpecSource.more() && contentSpecSource.current() == '|') { choice = true; }
   contentSpecSource.backup(contentSpecSource.position() - start);
   return choice;
 }

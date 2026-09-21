@@ -23,7 +23,13 @@ XMLValue parseCharacterReference(ISource &source);
 /// <returns>True then valid otherwise false.</returns>
 bool validChar(const Char c)
 {
+  if (c >= 0xD800 && c <= 0xDFFF) { return true; }
   return validChar(static_cast<std::uint32_t>(c));
+}
+
+bool validChar(const char c)
+{
+  return validChar(static_cast<std::uint32_t>(static_cast<unsigned char>(c)));
 }
 
 bool validChar(const std::uint32_t c)
@@ -46,6 +52,11 @@ bool validNameStartChar(const Char c)
          || (c >= 0xFDF0 && c <= 0xFFFD);
 }
 
+bool validNameStartChar(const char c)
+{
+  return validNameStartChar(static_cast<Char>(static_cast<unsigned char>(c)));
+}
+
 /// <summary>
 /// Check whether a character is valid for an XML name.
 /// </summary>
@@ -57,6 +68,11 @@ bool validNameChar(const Char c)
          || (c >= 0x0300 && c <= 0x036F) || (c >= 0x203F && c <= 0x2040);
 }
 
+bool validNameChar(const char c)
+{
+  return validNameChar(static_cast<Char>(static_cast<unsigned char>(c)));
+}
+
 /// <summary>
 /// Check name that starts with xml is a valid reserved name.
 /// </summary>
@@ -64,7 +80,7 @@ bool validNameChar(const Char c)
 /// <returns>true then valid otherwise false.</returns>
 bool validReservedName(const String &name)
 {
-  return name.find(u"xmlns") == 0 || name.find(u"xml-stylesheet") == 0 || name == u"xml";
+  return name.find(u"xmlns") == 0 || name.find(u"xml-stylesheet") == 0 || name == u"xml" || name.find(u"xml:") == 0;
 }
 
 /// <summary>

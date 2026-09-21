@@ -192,4 +192,11 @@ if(NOT XML_LIB_EMBEDDED)
         add_custom_command(TARGET ${TEST_EXECUTABLE} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/files files)
     endif()
+
+    add_custom_target(download_w3c_xmlconf
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_SOURCE_DIR}/files/xmlconf
+        COMMAND curl -A "Mozilla/5.0" -fL https://www.w3.org/XML/Test/xmlts20130923.tar.gz | tar -xz --strip-components=1 -C ${CMAKE_CURRENT_SOURCE_DIR}/files/xmlconf
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMENT "Downloading official W3C XML Conformance Test Suite..."
+    )
 endif() # NOT XML_LIB_EMBEDDED (performance test target)

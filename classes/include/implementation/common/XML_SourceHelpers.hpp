@@ -12,8 +12,12 @@
 
 namespace XML_Lib {
 
+/// @brief Return `true` if the character is ASCII whitespace.
+[[nodiscard]] inline bool isWS(Char c) { return std::iswspace(c) != 0; }
+[[nodiscard]] inline bool isWS(char c) { return std::iswspace(static_cast<unsigned char>(c)) != 0; }
+
 /// @brief Return `true` if the current source character is ASCII whitespace.
-[[nodiscard]] inline bool isWS(const ICharStream &source) { return std::iswspace(source.current()) != 0; }
+[[nodiscard]] inline bool isWS(const ICharStream &source) { return isWS(source.current()); }
 
 /// @brief Advance @p source past all leading whitespace characters.
 inline void ignoreWS(ICharStream &source)

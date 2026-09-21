@@ -55,6 +55,8 @@ class XXESecurityPolicy
 public:
   XXESecurityPolicy() = default;
   void setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver);
+  void setBaseDirectory(const std::filesystem::path &baseDir) { baseDirectory = baseDir; }
+  [[nodiscard]] const std::filesystem::path &getBaseDirectory() const { return baseDirectory; }
   [[nodiscard]] bool allowExternal() const { return allowExternalEntities; }
   [[nodiscard]] IEntityResolver *getResolver() const { return entityResolver; }
   [[nodiscard]] std::string getCachedFileMapping(const std::string_view &fileName) const;
@@ -62,6 +64,7 @@ public:
 private:
   bool allowExternalEntities{ false };
   IEntityResolver *entityResolver{ nullptr };
+  std::filesystem::path baseDirectory;
   mutable std::unordered_map<std::string, std::string> externalFileCache;
 };
 
@@ -136,6 +139,7 @@ struct XML_EntityMapper final : IEntityMapper
 
   // ISecurityPolicyManager interface
   void setExternalEntityPolicy(bool allowExternal, IEntityResolver *resolver) override;
+  void setBaseDirectory(const std::filesystem::path &baseDir) override { security.setBaseDirectory(baseDir); }
 
 private:
   EntityStorage storage;

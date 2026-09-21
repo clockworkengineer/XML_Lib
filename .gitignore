@@ -8,3 +8,6 @@
 .cache/clangd/index/
 /.idea/.gitignore
 /cmake-build-debug/*
+tests/files/xmlconf/
+files/xmlconf/
+scratch_cat.py

@@ -56,6 +56,7 @@ private:
   void parseAttributeType(ISource &source, DTD::Attribute &attribute) const;
   void parseAttributeValue(ISource &source, DTD::Attribute &attribute) const;
   static void parseComment(ISource &source);
+  static void parsePI(ISource &source);
   void parseParameterEntityReference(ISource &source);
   void parseExternal(ISource &source);
   void parseInternal(ISource &source);
