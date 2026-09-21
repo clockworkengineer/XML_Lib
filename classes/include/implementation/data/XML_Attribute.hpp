@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/XML_Error.hpp"
+#include "data/XML_Value.hpp"
 #include <algorithm>
 #include <span>
 #include <string>

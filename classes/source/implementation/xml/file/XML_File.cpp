@@ -146,6 +146,7 @@ std::string XML_Impl::fromFile(const std::filesystem::path &filePath)
   switch (format) {
   case XML::Format::utf8BOM:
     xmlFile.seekg(3);// Move past the byte order mark
+    [[fallthrough]];
   case XML::Format::utf8:
     translated = readXMLString(xmlFile);
     break;
@@ -181,6 +182,7 @@ void XML_Impl::toFile(const std::filesystem::path &filePath, const std::string_v
   switch (format) {
   case XML::Format::utf8BOM:
     xmlFile << static_cast<unsigned char>(0xEF) << static_cast<unsigned char>(0xBB) << static_cast<unsigned char>(0xBF);
+    [[fallthrough]];
   case XML::Format::utf8:
     writeXMLString(xmlFile, xmlString.data());
     break;
