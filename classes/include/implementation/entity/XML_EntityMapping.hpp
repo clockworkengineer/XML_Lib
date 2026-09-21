@@ -42,11 +42,14 @@ namespace XML_Lib {
     [[nodiscard]] bool isInternal() const { return mappingType == Type::internal; }
     [[nodiscard]] bool isExternal() const { return mappingType == Type ::external; }
     [[nodiscard]] bool isNotation() const { return mappingType == Type::notation; }
+    [[nodiscard]] bool isFromExternalSubset() const { return fromExternalSubset; }
+    void setFromExternalSubset(const bool val) { fromExternalSubset = val; }
 
   private:
     Type mappingType{ Type::base };
     std::string internal{};
     XMLExternalReference external{ "" };
     std::string notation{};
+    bool fromExternalSubset{ false };
   };
 }// namespace XML_Lib

@@ -210,6 +210,9 @@ void DTD_Impl::parseNotation(ISource &source) const
   }
   ignoreWS(source);
   const std::string name = parseName(source);
+  if (name.find(':') != std::string::npos) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in notation names under XML Namespaces."));
+  }
   if (!source.more() || !isWS(source)) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after notation name."));
   }
@@ -222,7 +225,7 @@ void DTD_Impl::parseNotation(ISource &source) const
 /// Parse DTD entity.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
-void DTD_Impl::parseEntity(ISource &source) const
+void DTD_Impl::parseEntity(ISource &source, bool isInternalSubset) const
 {
   if (!isWS(source)) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required after '<!ENTITY'."));
@@ -240,6 +243,9 @@ void DTD_Impl::parseEntity(ISource &source) const
     ignoreWS(source);
   }
   const std::string rawName = toUtf8(readName(source));
+  if (rawName.find(':') != std::string::npos) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in entity names under XML Namespaces."));
+  }
   const String u16Name = toUtf16(rawName);
   if (u16Name.empty() || !validNameStartChar(u16Name[0])) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid name '" + rawName + "' encountered."));
@@ -256,15 +262,40 @@ void DTD_Impl::parseEntity(ISource &source) const
   entityName += rawName + ";";
   if (source.current() == '\'' || source.current() == '"') {
     const XMLValue entityValue = parseValue(source);
+    if (isInternalSubset && entityValue.getUnparsed().find('%') != std::string::npos) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Parameter entity references must not occur within markup declarations in the internal subset."));
+    }
+    const std::string &unp = entityValue.getUnparsed();
+    for (size_t i = 0; i < unp.size(); ++i) {
+      if (unp[i] == '%') {
+        size_t semi = unp.find(';', i + 1);
+        if (semi == std::string::npos) {
+          XML_LIB_THROW(SyntaxError(source.getPosition(), "Character '%' in entity value must be a parameter entity reference."));
+        }
+      }
+    }
     // Force expansion to trigger recursion detection
     std::string expanded = entityValue.getParsed();
     if (expanded.find('&') != std::string::npos) {
       std::set<std::string> currentEntities;
       xDTD.getEntityMapper().checkRecursiveEntity(entityName, expanded, currentEntities);
     }
-    xDTD.getEntityMapper().setInternal(entityName, expanded);
+    const bool alreadyDeclared = !isInternalSubset && xDTD.getEntityMapper().isPresent(entityName);
+    if (!alreadyDeclared) {
+      xDTD.getEntityMapper().setInternal(entityName, expanded);
+      if (!isInternalSubset) {
+        xDTD.getEntityMapper().setFromExternalSubset(entityName, true);
+      }
+    }
   } else {
-    xDTD.getEntityMapper().setExternal(entityName, parseExternalReference(source, true));
+    const auto extRef = parseExternalReference(source, true);
+    const bool alreadyDeclared = !isInternalSubset && xDTD.getEntityMapper().isPresent(entityName);
+    if (!alreadyDeclared) {
+      xDTD.getEntityMapper().setExternal(entityName, extRef);
+      if (!isInternalSubset) {
+        xDTD.getEntityMapper().setFromExternalSubset(entityName, true);
+      }
+    }
     if (source.more() && isWS(source)) {
       ignoreWS(source);
       if (match(source, "NDATA")) {
@@ -275,7 +306,11 @@ void DTD_Impl::parseEntity(ISource &source) const
           XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after NDATA."));
         }
         ignoreWS(source);
-        xDTD.getEntityMapper().setNotation(entityName, parseName(source));
+        if (!alreadyDeclared) {
+          xDTD.getEntityMapper().setNotation(entityName, parseName(source));
+        } else {
+          static_cast<void>(parseName(source));
+        }
       }
     } else if (match(source, "NDATA")) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace before NDATA."));
@@ -378,7 +413,7 @@ void DTD_Impl::parseInternal(ISource &source)
       break;
     }
     if (match(source, "<!ENTITY")) {
-      parseEntity(source);
+      parseEntity(source, true);
     } else if (match(source, "<!ELEMENT")) {
       parseElement(source);
     } else if (match(source, "<!ATTLIST")) {

@@ -42,7 +42,8 @@ void EntityStorage::resetToDefault()
 
 bool EntityStorage::isPresent(const std::string_view &entityName) const
 {
-  return findEntityMapping(entityMappings, entityName) != nullptr;
+  const auto *entity = findEntityMapping(entityMappings, entityName);
+  return entity != nullptr && (entity->isInternal() || entity->isExternal() || entity->isNotation());
 }
 
 bool EntityStorage::isInternal(const std::string_view &entityName) const
@@ -61,6 +62,17 @@ bool EntityStorage::isNotation(const std::string_view &entityName) const
 {
   if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isNotation(); }
   return false;
+}
+
+bool EntityStorage::isFromExternalSubset(const std::string_view &entityName) const
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName)) { return entity->isFromExternalSubset(); }
+  return false;
+}
+
+void EntityStorage::setFromExternalSubset(const std::string_view &entityName, const bool val)
+{
+  getEntityMapping(entityName).setFromExternalSubset(val);
 }
 
 const std::string &EntityStorage::getInternal(const std::string_view &entityName) const
@@ -188,10 +200,12 @@ void EntityRecursionChecker::recurseOverEntityReference(const std::string_view &
       if (currentEntities.contains(mappedEntityName)) {
         XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
       }
-      if (auto nextMappedName = storage.getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
-        currentEntities.emplace(mappedEntityName);
-        recurseOverEntityReference(nextMappedName, type, currentEntities);
-        currentEntities.erase(mappedEntityName);
+      if (storage.isInternal(mappedEntityName)) {
+        if (const auto &nextMappedName = storage.getInternal(mappedEntityName); !nextMappedName.empty()) {
+          currentEntities.emplace(mappedEntityName);
+          recurseOverEntityReference(nextMappedName, type, currentEntities);
+          currentEntities.erase(mappedEntityName);
+        }
       }
     }
     entitySource.next();
@@ -215,10 +229,12 @@ void EntityRecursionChecker::checkRecursiveEntity(const std::string_view &entity
       if (currentEntities.contains(mappedEntityName)) {
         XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
       }
-      if (auto nextMappedName = storage.getEntityMapping(mappedEntityName).getInternal(); !nextMappedName.empty()) {
-        currentEntities.emplace(mappedEntityName);
-        recurseOverEntityReference(nextMappedName, entityName[0], currentEntities);
-        currentEntities.erase(mappedEntityName);
+      if (storage.isInternal(mappedEntityName)) {
+        if (const auto &nextMappedName = storage.getInternal(mappedEntityName); !nextMappedName.empty()) {
+          currentEntities.emplace(mappedEntityName);
+          recurseOverEntityReference(nextMappedName, entityName[0], currentEntities);
+          currentEntities.erase(mappedEntityName);
+        }
       }
     }
     expandedSource.next();
@@ -255,7 +271,8 @@ const std::vector<std::pair<std::string_view, const XML_EntityMapping *>> &Entit
 
 XMLValue EntityExpanderEngine::map(const XMLValue &entityReference)
 {
-  if (const auto *entityMapping = findEntityMapping(storage.getMappings(), entityReference.getUnparsed())) {
+  if (const auto *entityMapping = findEntityMapping(storage.getMappings(), entityReference.getUnparsed());
+      entityMapping != nullptr && (entityMapping->isInternal() || entityMapping->isExternal() || entityMapping->isNotation())) {
     if (entityMapping->isNotation()) {
       XML_LIB_THROW(SyntaxError("Reference to unparsed entity '" + entityReference.getUnparsed() + "' is not allowed."));
     }
@@ -364,6 +381,16 @@ bool XML_EntityMapper::isExternal(const std::string_view &entityName)
 bool XML_EntityMapper::isNotation(const std::string_view &entityName)
 {
   return storage.isNotation(entityName);
+}
+
+bool XML_EntityMapper::isFromExternalSubset(const std::string_view &entityName) const
+{
+  return storage.isFromExternalSubset(entityName);
+}
+
+void XML_EntityMapper::setFromExternalSubset(const std::string_view &entityName, const bool val)
+{
+  storage.setFromExternalSubset(entityName, val);
 }
 
 const std::string &XML_EntityMapper::getInternal(const std::string_view &entityName)

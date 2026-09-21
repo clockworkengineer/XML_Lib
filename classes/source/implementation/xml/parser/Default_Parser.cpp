@@ -10,11 +10,13 @@
 
 #include "Default_Parser.hpp"
 #include "common/XML_ParseHelpers.hpp"
+#include "implementation/io/XML_FileIO.hpp"
 #include <array>
+#include <filesystem>
+#include <set>
 #if defined(XML_LIB_ENABLE_DTD)
 #include "DTD_Validator.hpp"
 #include "implementation/io/XML_FileSource.hpp"
-#include <filesystem>
 #endif
 
 namespace XML_Lib {
@@ -55,18 +57,14 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
 /// <param name="xNode">Current element Node.</param>
 /// <param name="entityReference">Entity reference to be parsed for XML.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper &entityMapper)
+void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper &entityMapper, bool isExternal)
 {
   if (entityReference.getParsed().empty()) {
     return;
   }
   BufferSource entitySource(entityReference.getParsed());
-  // External parsed entities (extParsedEnt ::= TextDecl? content) can have a TextDecl at the start: <?xml ... ?>
-  if (match(entitySource, "<?xml") && isWS(entitySource)) {
-    while (entitySource.more() && !match(entitySource, "?>")) {
-      entitySource.next();
-    }
-    ignoreWS(entitySource);
+  if (isExternal) {
+    parseTextDecl(entitySource);
   }
   // Parse entity XML
   while (entitySource.more()) { parseElementInternal(entitySource, xNode, entityMapper); }
@@ -173,6 +171,9 @@ Node Default_Parser::parseComment(ISource &source)
 Node Default_Parser::parsePI(ISource &source)
 {
   std::string name{ parseName(source) };
+  if (name.find(':') != std::string::npos) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in processing instruction targets under XML Namespaces."));
+  }
   // Check not a declaration (xml in any case combination)
   std::string lowerName = name;
   for (char &c : lowerName) { c = static_cast<char>(std::tolower(static_cast<unsigned char>(c))); }
@@ -257,7 +258,8 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
     ignoreWS(source);
     XMLValue attributeValue = parseValue(source, entityMapper);
     ensureTextNodeSizeWithinLimit(attributeValue.getParsed().size());
-    if (!validAttributeValue(attributeValue.getParsed(), attributeValue.getQuote())) {
+    if (!validAttributeValue(attributeValue.getUnparsed(), attributeValue.getQuote()) ||
+        attributeValue.getParsed().find('<') != std::string::npos) {
       XML_LIB_THROW(
         SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'."));
     }
@@ -317,7 +319,12 @@ void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, I
 {
   if (value.isReference()) {
     XMLValue content = value;
-    if (content.isEntityReference()) { content = entityMapper.map(content); }
+    if (content.isEntityReference()) {
+      if (isStandaloneDocument && entityMapper.isFromExternalSubset(value.getUnparsed())) {
+        XML_LIB_THROW(SyntaxError("Standalone document must not reference entity '" + value.getUnparsed() + "' declared in external subset."));
+      }
+      content = entityMapper.map(content);
+    }
     auto xEntityReference = Node::make<EntityReference>(content);
     if (content.isEntityReference()) {
       if (entityExpansionDepth >= maxEntityExpansionDepth) {
@@ -328,14 +335,15 @@ void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, I
         ~DepthGuard() { --depth; }
       } guard{entityExpansionDepth};
       ++entityExpansionDepth;
+      const bool isExt = entityMapper.isExternal(value.getUnparsed());
       // Does entity contain start tag ?
       // YES then XML into current element list
       if (content.getParsed().starts_with("<")) {
-        parseEntityReferenceXML(xNode, content, entityMapper);
+        parseEntityReferenceXML(xNode, content, entityMapper, isExt);
         return;
       }
       // NO XML into entity elements list.
-      parseEntityReferenceXML(xEntityReference, content, entityMapper);
+      parseEntityReferenceXML(xEntityReference, content, entityMapper, isExt);
       markTrailingContentNonWhitespace(xNode);
     }
     xNode.addChild(std::move(xEntityReference));
@@ -355,6 +363,94 @@ void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &e
   appendEntityOrContent(xNode, parseCharacter(source), entityMapper);
 }
 
+static void validateElementNamespaces(const Element &element, const ISource &source)
+{
+  const std::string &elemName = element.name();
+  if (const auto pos = elemName.find(':'); pos != std::string::npos) {
+    if (pos == 0 || pos + 1 >= elemName.size() || elemName.find(':', pos + 1) != std::string::npos) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid QName in element: '" + elemName + "'."));
+    }
+    const std::string prefix = elemName.substr(0, pos);
+    if (prefix == "xmlns") {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "The prefix 'xmlns' must not be used as the prefix of an element."));
+    }
+    if (prefix != "xml" && !element.hasNameSpace(prefix)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Namespace used but not defined."));
+    }
+  }
+
+  // Validate namespace declarations
+  for (const auto &attr : element.getAttributes()) {
+    const std::string &attrName = attr.getName();
+    if (attrName == "xmlns") {
+      const std::string &uri = attr.getParsed();
+      if (uri == "http://www.w3.org/XML/1998/namespace") {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "The xml namespace must not be declared as the default namespace."));
+      }
+      if (uri == "http://www.w3.org/2000/xmlns/") {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "The xmlns namespace must not be declared as the default namespace."));
+      }
+    } else if (attrName == "xmlns:") {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Empty prefix in namespace declaration."));
+    } else if (attrName.starts_with("xmlns:")) {
+      const std::string prefix = attrName.substr(6);
+      if (prefix.empty() || prefix.find(':') != std::string::npos) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid prefix in namespace declaration."));
+      }
+      if (prefix == "xmlns") {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "The prefix 'xmlns' must not be declared."));
+      }
+      const std::string &uri = attr.getParsed();
+      if (Default_Parser::isStrictNamespaces() && uri.empty()) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Empty namespace URI in prefix declaration is not allowed in XML Namespaces 1.0."));
+      }
+      if (prefix == "xml") {
+        if (uri != "http://www.w3.org/XML/1998/namespace") {
+          XML_LIB_THROW(SyntaxError(source.getPosition(), "The prefix 'xml' must only be bound to 'http://www.w3.org/XML/1998/namespace'."));
+        }
+      } else {
+        if (uri == "http://www.w3.org/XML/1998/namespace") {
+          XML_LIB_THROW(SyntaxError(source.getPosition(), "The xml namespace can only be bound to prefix 'xml'."));
+        }
+        if (uri == "http://www.w3.org/2000/xmlns/") {
+          XML_LIB_THROW(SyntaxError(source.getPosition(), "The xmlns namespace must not be bound to any prefix."));
+        }
+      }
+    }
+  }
+
+  // Validate regular attributes and attribute uniqueness under namespaces
+  std::set<std::pair<std::string, std::string>> resolvedAttrs;
+  for (const auto &attr : element.getAttributes()) {
+    const std::string &attrName = attr.getName();
+    if (attrName == "xmlns" || attrName.starts_with("xmlns:")) {
+      continue;
+    }
+    std::string nsUri;
+    std::string localPart = attrName;
+    if (const auto pos = attrName.find(':'); pos != std::string::npos) {
+      if (pos == 0 || pos + 1 >= attrName.size() || attrName.find(':', pos + 1) != std::string::npos) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid QName in attribute: '" + attrName + "'."));
+      }
+      const std::string prefix = attrName.substr(0, pos);
+      localPart = attrName.substr(pos + 1);
+      if (prefix == "xmlns") {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "The prefix 'xmlns' must not be used as the prefix of an attribute."));
+      }
+      if (prefix == "xml") {
+        nsUri = "http://www.w3.org/XML/1998/namespace";
+      } else if (element.hasNameSpace(prefix)) {
+        nsUri = element.getNameSpace(prefix).getParsed();
+      } else {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Namespace used but not defined in attribute '" + attrName + "'."));
+      }
+    }
+    if (!resolvedAttrs.insert({ nsUri, localPart }).second) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Attribute '" + attrName + "' defined more than once after namespace resolution."));
+    }
+  }
+}
+
 /// <summary>
 /// Parse element internal area, generating any Node(s) and adding them
 /// to the child list of the current XElement. This can be anything from
@@ -372,26 +468,7 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
     xNode.addChild(parseCDATA(source));
   } else if (match(source, "<")) {
     xNode.addChild(parseElement(source, NRef<Element>(xNode).getNameSpaces(), entityMapper));
-    const Element &xNodeChildElement = NRef<Element>(xNode.getChildren().back());
-    if (const auto pos = xNodeChildElement.name().find(':');
-        pos != std::string::npos && pos > 0 && pos + 1 < xNodeChildElement.name().size() &&
-        xNodeChildElement.name().find(':', pos + 1) == std::string::npos) {
-      if (!xNodeChildElement.hasNameSpace(xNodeChildElement.name().substr(0, pos))) {
-        XML_LIB_THROW(SyntaxError(source.getPosition(), "Namespace used but not defined."));
-      }
-    }
-    for (const auto &attr : xNodeChildElement.getAttributes()) {
-      if (!attr.getName().starts_with("xmlns")) {
-        if (const auto attrPos = attr.getName().find(':');
-            attrPos != std::string::npos && attrPos > 0 && attrPos + 1 < attr.getName().size() &&
-            attr.getName().find(':', attrPos + 1) == std::string::npos) {
-          if (!xNodeChildElement.hasNameSpace(attr.getName().substr(0, attrPos))) {
-            XML_LIB_THROW(SyntaxError(
-              source.getPosition(), "Namespace used but not defined in attribute '" + attr.getName() + "'."));
-          }
-        }
-      }
-    }
+    validateElementNamespaces(NRef<Element>(xNode.getChildren().back()), source);
   } else {
     if (match(source, "</")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing tag.")); }
     if (match(source, "]]>")) {
@@ -463,7 +540,6 @@ Node Default_Parser::parseDeclaration(ISource &source)
   std::string version{ "1.0" };
   std::string encoding{ "UTF-8" };
   std::string standalone{ "no" };
-  ignoreWS(source);
   if (match(source, "<?xml")) {
     if (!isWS(source)) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Version missing from declaration."));
@@ -508,6 +584,17 @@ Node Default_Parser::parseDeclaration(ISource &source)
         "SHIFT_JIS",
         "US-ASCII" };
       encoding = parseDeclarationAttribute(source, "encoding", kEncodings);
+      if (encoding == "UTF-16" || encoding == "ISO-10646-UCS-2" || encoding == "ISO-10646-UCS-4") {
+        if (!source.getSystemId().empty() && source.getSystemId() != "<buffer>") {
+          std::error_code ec;
+          if (std::filesystem::exists(source.getSystemId(), ec)) {
+            const auto fmt = XML_FileIO::getFileFormat(source.getSystemId());
+            if (fmt != XML::Format::utf16BE && fmt != XML::Format::utf16LE) {
+              XML_LIB_THROW(SyntaxError(source.getPosition(), "Document declared as " + encoding + " but does not match declared encoding (missing UTF-16 BOM)."));
+            }
+          }
+        }
+      }
       hadWS = false;
     }
     if (isWS(source)) {
@@ -634,12 +721,18 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   // Reset XML before next parse
   entityMapper.reset();
   hasRoot = false;
+  isStandaloneDocument = false;
+  strictNamespacesMode = options.strictNamespaces;
   validator.reset();
   // Handle prolog
   Node xmlRoot = parseProlog(source, entityMapper);
+  if (!xmlRoot.getChildren().empty() && isA<Declaration>(xmlRoot.getChildren()[0])) {
+    isStandaloneDocument = NRef<Declaration>(xmlRoot.getChildren()[0]).standalone() == "yes";
+  }
   // Handle main body
   if (match(source, "<")) {
     xmlRoot.addChild(parseElement(source, {}, entityMapper));
+    validateElementNamespaces(NRef<Element>(xmlRoot.getChildren().back()), source);
   } else {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing root element."));
   }

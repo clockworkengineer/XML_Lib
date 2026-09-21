@@ -17,5 +17,6 @@ void appendTextSegment(std::string &unparsed,
                        const XMLValue &character,
                        IEntityMapper *entityMapper);
 XMLValue parseQuotedValue(ISource &source, IEntityMapper *entityMapper);
+void parseTextDecl(ISource &source);
 
 } // namespace XML_Lib

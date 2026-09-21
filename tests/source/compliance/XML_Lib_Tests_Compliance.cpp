@@ -1,6 +1,8 @@
 #include "XML_Lib_Tests.hpp"
 #include <cstdlib>
+#include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <map>
 #include <regex>
 #include <sstream>
@@ -62,6 +64,7 @@ struct W3CTestCase {
   std::string version;    // "1.0", "1.1"
   std::string recommendation;
   std::string entities;
+  std::string edition;
   std::string description;
 };
 
@@ -175,6 +178,7 @@ static std::vector<W3CTestCase> loadW3CCatalog(const std::filesystem::path &xmlc
         tc.version = attrs.count("VERSION") ? attrs["VERSION"] : "1.0";
         tc.recommendation = attrs.count("RECOMMENDATION") ? attrs["RECOMMENDATION"] : "XML1.0";
         tc.entities = attrs.count("ENTITIES") ? attrs["ENTITIES"] : "none";
+        tc.edition = attrs.count("EDITION") ? attrs["EDITION"] : "";
         tc.description = desc;
         tc.fullPath = xmlconfDir / xmlBase / tc.uri;
 
@@ -203,8 +207,12 @@ TEST_CASE("Official W3C XML Conformance Test Suite", "[Compliance][W3C][XMLConf]
   size_t failedCount = 0;
 
   for (const auto &tc : testCases) {
-    // Only XML 1.0 tests (XML_Lib is an XML 1.0 processor)
+    // Only XML 1.0 Fifth Edition tests (XML_Lib is an XML 1.0 Fifth Edition processor)
     if (tc.version == "1.1") {
+      continue;
+    }
+    // Skip tests for editions not supported (per testcases.dtd: "Parsers should not run tests for editions they do not support")
+    if (!tc.edition.empty() && tc.edition.find('5') == std::string::npos) {
       continue;
     }
     // Parsers are not required to report errors for TYPE="error" per W3C spec
@@ -222,6 +230,7 @@ TEST_CASE("Official W3C XML Conformance Test Suite", "[Compliance][W3C][XMLConf]
       ParseOptions options;
       options.allowExternalEntities = true;
       options.maxEntityExpansionDepth = 4096;
+      options.strictNamespaces = true;
       xml.parse(tc.fullPath, options);
 
       // If parsing succeeded without error:

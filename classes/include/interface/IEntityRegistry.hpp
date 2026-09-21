@@ -45,6 +45,12 @@ public:
   /// @brief Check if an entity is registered.
   [[nodiscard]] virtual bool isPresent(const std::string_view &entityName) const = 0;
 
+  /// @brief Check if entity was declared in external DTD subset.
+  [[nodiscard]] virtual bool isFromExternalSubset(const std::string_view &entityName) const = 0;
+
+  /// @brief Mark whether entity was declared in external DTD subset.
+  virtual void setFromExternalSubset(const std::string_view &entityName, bool val) = 0;
+
   /// @brief Reset the entity registry to default state.
   virtual void reset() = 0;
 };

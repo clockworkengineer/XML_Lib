@@ -180,4 +180,14 @@ TEST_CASE("Check the parsing of character entities/reference.", "[XML][Parse][En
     };
     REQUIRE_THROWS(xml.parse(source));
   }
+  SECTION("Parse entity referencing undeclared entity in attribute", "[XML][Parse][Entities]")
+  {
+    BufferSource source{
+      "<!DOCTYPE doc [\n"
+      "<!ENTITY foo \"&bar;\">\n"
+      "]>\n"
+      "<doc a=\"&foo;\"></doc>\n"
+    };
+    REQUIRE_THROWS_AS(xml.parse(source), XML_Lib::SyntaxError);
+  }
 }

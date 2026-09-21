@@ -21,10 +21,12 @@ public:
   [[nodiscard]] bool canValidate() override;
   void validate(Node &xProlog) override;
   static void ensureTextNodeSizeWithinLimit(std::size_t nodeSize);
+  [[nodiscard]] static bool isStandalone() { return isStandaloneDocument; }
+  [[nodiscard]] static bool isStrictNamespaces() { return strictNamespacesMode; }
 
 private:
   // XML Parser
-  static void parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper);
+  static void parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper, bool isExternal = false);
   [[nodiscard]] static std::string
     parseDeclarationAttribute(ISource &source, const std::string_view &name, std::span<const std::string_view> values);
   [[nodiscard]] static bool tryParseCommentOrPI(ISource &source, Node &xNode);
@@ -45,6 +47,9 @@ private:
   static void parseEpilog(ISource &source, Node &xProlog);
   // XML tree has root
   inline static bool hasRoot{ false };
+  // Document declared standalone="yes"
+  inline static bool isStandaloneDocument{ false };
+  inline static bool strictNamespacesMode{ false };
   // Parser validator
   inline static std::unique_ptr<IValidator> validator;
   // Current entity expansion depth (reset at the start of each parse)

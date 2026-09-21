@@ -4,6 +4,7 @@
 #include "XML_Converter.hpp"
 #include "XML_Error.hpp"
 #include "XML_Utility.hpp"
+#include "implementation/parser/Default_Parser.hpp"
 #include <charconv>
 
 namespace XML_Lib {
@@ -158,33 +159,42 @@ void appendTextSegment(std::string &unparsed,
 {
   if (entityMapper != nullptr && character.isEntityReference()) {
     const std::string entName = character.getUnparsed();
+    if (Default_Parser::isStandalone() && entityMapper->isFromExternalSubset(entName)) {
+      XML_LIB_THROW(SyntaxError("Standalone document must not reference entity '" + entName + "' declared in external subset."));
+    }
     if (entityMapper->isExternal(entName)) {
       XML_LIB_THROW(SyntaxError("Attribute values must not contain references to external entities."));
     }
     const XMLValue mapped = entityMapper->map(character);
     std::string expandedText = mapped.getParsed();
     size_t depth = 0;
-    while (expandedText.find('&') != std::string::npos && depth < 64) {
-      ++depth;
-      const size_t ampPos = expandedText.find('&');
+    size_t searchPos = 0;
+    while (searchPos < expandedText.size() && depth < 64) {
+      const size_t ampPos = expandedText.find('&', searchPos);
+      if (ampPos == std::string::npos) break;
       const size_t semiPos = expandedText.find(';', ampPos);
       if (semiPos == std::string::npos) break;
       const std::string ref = expandedText.substr(ampPos, semiPos - ampPos + 1);
-      if (ref == "&amp;" || ref == "&lt;" || ref == "&gt;" || ref == "&quot;" || ref == "&apos;") {
-        break;
+      if (ref.starts_with("&#") || ref == "&amp;" || ref == "&lt;" || ref == "&gt;" || ref == "&quot;" || ref == "&apos;") {
+        searchPos = semiPos + 1;
+        continue;
+      }
+      if (Default_Parser::isStandalone() && entityMapper->isFromExternalSubset(ref)) {
+        XML_LIB_THROW(SyntaxError("Standalone document must not reference entity '" + ref + "' declared in external subset."));
       }
       if (entityMapper->isExternal(ref)) {
         XML_LIB_THROW(SyntaxError("Attribute values must not contain references to external entities."));
       }
       if (entityMapper->isPresent(ref)) {
+        ++depth;
         const XMLValue subMapped = entityMapper->map(XMLValue{ ref, ref });
         expandedText.replace(ampPos, semiPos - ampPos + 1, subMapped.getParsed());
       } else {
-        break;
+        XML_LIB_THROW(SyntaxError("Entity '" + ref + "' does not exist."));
       }
     }
     unparsed += mapped.getUnparsed();
-    parsed += (expandedText.find('<') != std::string::npos ? expandedText : mapped.getParsed());
+    parsed += expandedText;
     return;
   }
   unparsed += character.getUnparsed();
@@ -218,6 +228,46 @@ XMLValue parseQuotedValue(ISource &source, IEntityMapper *entityMapper)
   source.next();
 
   return XMLValue{ unparsed, parsed, static_cast<char>(quote) };
+}
+
+void parseTextDecl(ISource &source)
+{
+  if (!match(source, "<?xml")) { return; }
+  if (!isWS(source)) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required after '<?xml' in text declaration."));
+  }
+  ignoreWS(source);
+  if (match(source, "version")) {
+    ignoreWS(source);
+    if (!match(source, "=")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '=' after version in text declaration.")); }
+    ignoreWS(source);
+    const std::string ver = parseQuotedValue(source, nullptr).getParsed();
+    if (ver == "1.1") {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "XML 1.0 document cannot reference an XML 1.1 entity."));
+    }
+    if (ver != "1.0") {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Unsupported XML version '" + ver + "' in text declaration."));
+    }
+    if (!isWS(source)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Whitespace required after version in text declaration."));
+    }
+    ignoreWS(source);
+  }
+  if (!match(source, "encoding")) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Text declaration must contain an encoding declaration."));
+  }
+  ignoreWS(source);
+  if (!match(source, "=")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '=' after encoding in text declaration.")); }
+  ignoreWS(source);
+  parseQuotedValue(source, nullptr);
+  ignoreWS(source);
+  if (match(source, "standalone")) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Standalone declaration not allowed in text declaration."));
+  }
+  if (!match(source, "?>")) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Unclosed text declaration."));
+  }
+  ignoreWS(source);
 }
 
 } // namespace XML_Lib

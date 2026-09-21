@@ -6,6 +6,7 @@
 #include <string_view>
 #include <stdexcept>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "interface/IEntityMapper.hpp"
@@ -36,6 +37,8 @@ public:
   [[nodiscard]] bool isInternal(const std::string_view &entityName) const;
   [[nodiscard]] bool isExternal(const std::string_view &entityName) const;
   [[nodiscard]] bool isNotation(const std::string_view &entityName) const;
+  [[nodiscard]] bool isFromExternalSubset(const std::string_view &entityName) const;
+  void setFromExternalSubset(const std::string_view &entityName, bool val);
   [[nodiscard]] const std::string &getInternal(const std::string_view &entityName) const;
   [[nodiscard]] const std::string &getNotation(const std::string_view &entityName) const;
   [[nodiscard]] const XMLExternalReference &getExternal(const std::string_view &entityName) const;
@@ -123,6 +126,8 @@ struct XML_EntityMapper final : IEntityMapper
   [[nodiscard]] bool isInternal(const std::string_view &entityName) override;
   [[nodiscard]] bool isExternal(const std::string_view &entityName) override;
   [[nodiscard]] bool isNotation(const std::string_view &entityName) override;
+  [[nodiscard]] bool isFromExternalSubset(const std::string_view &entityName) const override;
+  void setFromExternalSubset(const std::string_view &entityName, bool val) override;
   [[nodiscard]] const std::string &getInternal(const std::string_view &entityName) override;
   [[nodiscard]] const std::string &getNotation(const std::string_view &entityName) override;
   [[nodiscard]] const XMLExternalReference &getExternal(const std::string_view &entityName) override;

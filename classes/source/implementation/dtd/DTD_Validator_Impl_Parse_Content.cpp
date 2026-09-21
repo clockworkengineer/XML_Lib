@@ -22,7 +22,6 @@ void DTD_Impl::parseGroupBody(ISource &src,
   if (src.current() != ')') { XML_LIB_THROW(SyntaxError("Invalid element content specification.")); }
   dst.add(")");
   src.next();
-  ignoreWS(src);
 }
 
 /// <summary>
@@ -73,8 +72,8 @@ void DTD_Impl::parseElementCP(ISource &contentSpecSource, IDestination &contentS
   if (contentSpecSource.current() == '*' || contentSpecSource.current() == '+' || contentSpecSource.current() == '?') {
     contentSpecDestination.add(contentSpecSource.current());
     contentSpecSource.next();
-    ignoreWS(contentSpecSource);
   }
+  ignoreWS(contentSpecSource);
 }
 
 /// <summary>
@@ -113,7 +112,6 @@ void DTD_Impl::parseElementName(ISource &contentSpecSource, IDestination &conten
     contentSpecSource.next();
   }
   contentSpecDestination.add(">)");
-  ignoreWS(contentSpecSource);
 }
 
 /// <summary>
@@ -159,6 +157,7 @@ void DTD_Impl::parseElementMixedContent(ISource &contentSpecSource, IDestination
       [&](ISource &) {
         if (validNameStartChar(contentSpecSource.current())) {
           parseElementName(contentSpecSource, contentSpecDestination);
+          ignoreWS(contentSpecSource);
         } else {
           XML_LIB_THROW(SyntaxError("Invalid element content specification."));
         }

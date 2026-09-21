@@ -50,7 +50,7 @@ private:
   void parseExternalReferenceContent();
   void parseAttributeList(ISource &source) const;
   void parseNotation(ISource &source) const;
-  void parseEntity(ISource &source) const;
+  void parseEntity(ISource &source, bool isInternalSubset = false) const;
   void parseElement(ISource &source);
   [[nodiscard]] XMLExternalReference parseExternalReference(ISource &source, bool systemIdRequired = true) const;
   void parseAttributeType(ISource &source, DTD::Attribute &attribute) const;

@@ -7,6 +7,7 @@
 //
 
 #include "DTD_Impl.hpp"
+#include "XML_ParseHelpers.hpp"
 #include "implementation/io/XML_FileIO.hpp"
 
 namespace XML_Lib {
@@ -50,13 +51,23 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
       parseExternalContent(conditionalDTDSource);
     }
   } else if (conditionalValue == "IGNORE") {
-    while (source.more() && !match(source, "]]")) {
+    if (source.current() != '[') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing opening '[' from conditional.")); }
+    source.next();
+    int depth = 1;
+    while (source.more() && depth > 0) {
       if (match(source, "<![")) {
-        parseConditional(source, false);
+        ++depth;
+      } else if (match(source, "]]>")) {
+        --depth;
       } else {
         source.next();
       }
     }
+    if (depth != 0) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Unclosed IGNORE conditional section."));
+    }
+    ignoreWS(source);
+    return;
   } else {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Conditional value not INCLUDE or IGNORE."));
   }
@@ -73,12 +84,7 @@ void DTD_Impl::parseExternalContent(ISource &source)
 {
   ignoreWS(source);
   // Optional TextDecl at start of external entity: <?xml ... ?>
-  if (match(source, "<?xml")) {
-    while (source.more() && !match(source, "?>")) {
-      source.next();
-    }
-    ignoreWS(source);
-  }
+  parseTextDecl(source);
 
   const auto dispatch = [&](auto &&parseFn) {
     BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));

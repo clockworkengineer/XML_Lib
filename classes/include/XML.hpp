@@ -40,6 +40,7 @@ struct ParseOptions {
   std::size_t     maxTextNodeSize         = 1024 * 1024; ///< Maximum size of a single text or content node in bytes.
   bool            allowExternalEntities   = false;  ///< When false and no entityResolver set, external entities throw SyntaxError (XXE defence).
   IEntityResolver *entityResolver         = nullptr;///< Optional custom resolver; overrides allowExternalEntities when non-null.
+  bool            strictNamespaces        = false;  ///< When true, enforces XML Namespaces 1.0 (forbids prefix unbinding xmlns:prefix="").
 };
 
 /// @brief Top-level XML document class.

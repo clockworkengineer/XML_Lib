@@ -23,8 +23,15 @@ struct Element : Variant
   {
     for (const auto &attribute : attributes) {
       if (attribute.getName().starts_with("xmlns")) {
+        std::string_view uri = attribute.getParsed();
+        while (!uri.empty() && (uri.front() == ' ' || uri.front() == '\t' || uri.front() == '\r' || uri.front() == '\n')) {
+          uri.remove_prefix(1);
+        }
+        while (!uri.empty() && (uri.back() == ' ' || uri.back() == '\t' || uri.back() == '\r' || uri.back() == '\n')) {
+          uri.remove_suffix(1);
+        }
         this->namespaces.emplace_back(attribute.getName().size() > 5 ? attribute.getName().substr(6) : ":",
-          XMLValue{ attribute.getUnparsed(), attribute.getParsed() });
+          XMLValue{ attribute.getUnparsed(), std::string(uri) });
       }
     }
   }
