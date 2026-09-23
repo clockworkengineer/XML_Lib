@@ -58,6 +58,8 @@ private:
   static void parseComment(ISource &source);
   static void parsePI(ISource &source);
   void parseParameterEntityReference(ISource &source);
+  enum class DTDSubsetKind { Internal, External };
+  void parseSubsetDeclarations(ISource &source, DTDSubsetKind kind);
   void parseExternal(ISource &source);
   void parseInternal(ISource &source);
   void parseDTD(ISource &source);

@@ -272,4 +272,67 @@ void parseTextDecl(ISource &source)
   ignoreWS(source);
 }
 
+std::string parseCommentBody(ISource &source)
+{
+  String comment;
+  comment.reserve(64);
+  while (source.more() && !match(source, "--")) {
+    if (!validChar(source.current())) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in comment."));
+    }
+    comment += source.current();
+    source.next();
+  }
+  if (!match(source, ">")) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing '>' for comment line."));
+  }
+  return toUtf8(comment);
+}
+
+std::pair<std::string, std::string> parsePIBody(ISource &source,
+                                                bool isDTD,
+                                                bool checkColons)
+{
+  const std::string name = parseName(source);
+  if (checkColons && name.find(':') != std::string::npos) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in processing instruction targets under XML Namespaces."));
+  }
+  const std::string lowerName = toLowerString(name);
+  if (lowerName == "xml") {
+    if (isDTD) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "XML declaration not allowed in DTD."));
+    }
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Declaration allowed only at the start of the document."));
+  }
+
+  String parameters;
+  parameters.reserve(64);
+  bool closed = false;
+  if (match(source, "?>")) {
+    closed = true;
+  } else if (!isWS(source)) {
+    if (isDTD) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after PI target."));
+    }
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after processing instruction target."));
+  } else {
+    source.next();
+    while (source.more()) {
+      if (match(source, "?>")) {
+        closed = true;
+        break;
+      }
+      if (!validChar(source.current())) {
+        XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in processing instruction."));
+      }
+      parameters += source.current();
+      source.next();
+    }
+  }
+  if (!closed) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "Unclosed processing instruction."));
+  }
+  return { name, toUtf8(parameters) };
+}
+
 } // namespace XML_Lib

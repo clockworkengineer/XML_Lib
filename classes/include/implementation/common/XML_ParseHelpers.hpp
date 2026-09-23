@@ -18,5 +18,9 @@ void appendTextSegment(std::string &unparsed,
                        IEntityMapper *entityMapper);
 XMLValue parseQuotedValue(ISource &source, IEntityMapper *entityMapper);
 void parseTextDecl(ISource &source);
+std::string parseCommentBody(ISource &source);
+std::pair<std::string, std::string> parsePIBody(ISource &source,
+                                                bool isDTD = false,
+                                                bool checkColons = false);
 
 } // namespace XML_Lib

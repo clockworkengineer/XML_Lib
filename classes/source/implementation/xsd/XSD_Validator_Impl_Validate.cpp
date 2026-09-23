@@ -10,6 +10,7 @@
 #include "XML_NodeKindHelpers.hpp"
 #include "XPath.hpp"
 #include "xsd/XSD_ValidateHelpers.hpp"
+#include "common/XML_QName.hpp"
 
 #include <charconv>
 #include <functional>
@@ -409,7 +410,7 @@ void XSD_Impl::validate(const Node &xNode)
   const auto *decl = findTopLevelElement(rootName);
   if (!decl) {
     // Check local name only (in case of namespace prefix)
-    const auto localName = rootName.find(':') != std::string::npos ? rootName.substr(rootName.find(':') + 1) : rootName;
+    const auto localName = getLocalName(rootName);
     for (const auto &d : rootElements) {
       if (d.name == localName) {
         decl = &d;

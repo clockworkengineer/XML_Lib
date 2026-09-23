@@ -29,10 +29,6 @@ int BytesToWideChar(const char *bytes, const int length, wchar_t *sideString = n
 }
 
 /// @brief
-/// Convert to UTF-8 strings.
-
-std::string toUtf8(const char16_t utf16) { return toUtf8(std::u16string(1, utf16)); }
-/// @brief
 /// Implementation of toUtf8.
 
 std::string toUtf8(const std::u16string &utf16)

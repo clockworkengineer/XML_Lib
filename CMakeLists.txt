@@ -64,10 +64,8 @@ endif()
 
 if(MSVC)
   set(PLATFORM "windows")
-elseif(APPLE)
-  set(PLATFORM "macos")
 else()
-  set(PLATFORM "linux")
+  set(PLATFORM "posix")
 endif()
 
 configure_file(XML_Config.h.in XML_Config.hpp)
@@ -83,6 +81,7 @@ set(XML_LIBRARY_SOURCES
   classes/source/implementation/variant/XML_Variant.cpp
   classes/source/implementation/common/XML_Character.cpp
   classes/source/implementation/common/XML_NodeKindHelpers.cpp
+  classes/source/implementation/common/XML_QName.cpp
   classes/source/implementation/common/XML_Parse.cpp
   classes/source/implementation/common/XML_ParseHelpers.cpp
   classes/source/implementation/common/XML_Utility.cpp

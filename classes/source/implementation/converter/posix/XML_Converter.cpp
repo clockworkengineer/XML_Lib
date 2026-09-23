@@ -1,16 +1,9 @@
 //
 // Class: Converter
 //
-// Description: Convert characters to/from UTF8/UTF16.
+// Description: Convert characters to/from UTF8/UTF16 for POSIX/Standard platforms.
 //
 // Dependencies: C++20 - Language standard features used.
-//
-// Note: The macOS UTF-8/UTF-16 conversion uses the same std::codecvt_utf8_utf16
-// implementation as the Linux converter.  Both platforms ship a compatible
-// libc++ / libstdc++ providing <codecvt> and <locale>, so a shared
-// implementation is correct.  If a future macOS release requires a
-// platform-specific approach (e.g., CFString / ICU), this file is the
-// single place to update.
 //
 
 #include "XML_Converter.hpp"
@@ -24,13 +17,10 @@ namespace XML_Lib {
 static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> utf16Convert;
 
 /// @brief
-/// Convert to UTF-8 strings.
-
-std::string toUtf8(const char16_t utf16) { return toUtf8(std::u16string(1, utf16)); }
-/// @brief
 /// Convert a UTF-16 string to UTF-8.
 
 std::string toUtf8(const std::u16string &utf16) { return utf16Convert.to_bytes(utf16); }
+
 /// @brief
 /// Convert to UTF-16 strings.
 

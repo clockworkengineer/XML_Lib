@@ -375,12 +375,7 @@ void DTD_Impl::parseElement(ISource &source)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseComment(ISource &source)
 {
-  while (source.more() && !match(source, "--")) {
-    if (!validChar(source.current())) {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in comment."));
-    }
-    source.next();
-  }
+  (void)parseCommentBody(source);
 }
 
 /// <summary>
@@ -389,23 +384,7 @@ void DTD_Impl::parseComment(ISource &source)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parsePI(ISource &source)
 {
-  const std::string name = parseName(source);
-  std::string lowerName = name;
-  for (char &c : lowerName) { c = static_cast<char>(std::tolower(static_cast<unsigned char>(c))); }
-  if (lowerName == "xml") {
-    XML_LIB_THROW(SyntaxError(source.getPosition(), "XML declaration not allowed in DTD."));
-  }
-  if (!match(source, "?>")) {
-    if (!isWS(source)) {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace after PI target."));
-    }
-    while (source.more() && !match(source, "?>")) {
-      if (!validChar(source.current())) {
-        XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character in processing instruction."));
-      }
-      source.next();
-    }
-  }
+  (void)parsePIBody(source, true, false);
 }
 
 /// <summary>
@@ -443,36 +422,7 @@ void DTD_Impl::parseParameterEntityReference(ISource &source)
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseInternal(ISource &source)
 {
-  while (source.more()) {
-    ignoreWS(source);
-    if (!source.more() || match(source, "]")) {
-      break;
-    }
-    if (match(source, "<!ENTITY")) {
-      parseEntity(source, true);
-    } else if (match(source, "<!ELEMENT")) {
-      parseElement(source);
-    } else if (match(source, "<!ATTLIST")) {
-      parseAttributeList(source);
-    } else if (match(source, "<!NOTATION")) {
-      parseNotation(source);
-    } else if (match(source, "<!--")) {
-      parseComment(source);
-    } else if (match(source, "<?")) {
-      parsePI(source);
-      ignoreWS(source);
-      continue;
-    } else if (source.current() == '%') {
-      parseParameterEntityReference(source);
-      continue;
-    } else {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid DTD tag."));
-    }
-    ignoreWS(source);
-    if (source.current() != '>') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '>' terminator.")); }
-    source.next();
-    ignoreWS(source);
-  }
+  parseSubsetDeclarations(source, DTDSubsetKind::Internal);
 }
 
 /// <summary>

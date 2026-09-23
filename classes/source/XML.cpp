@@ -121,12 +121,7 @@ void XML::parse(ISource &&source, const ParseOptions &options) const { implement
 void XML::parse(const char *xmlString, const ParseOptions &options) const
 {
   if (!xmlString) { XML_LIB_THROW(SyntaxError("Null XML string passed to parse().")); }
-  const std::size_t length = std::strlen(xmlString);
-  if (length > options.maxXmlSize) {
-    XML_LIB_THROW(SyntaxError("XML input exceeds maximum allowed size."));
-  }
-  BufferSource source{ std::string_view{ xmlString }, options.maxXmlSize };
-  implementation->parse(source, options);
+  parse(std::string_view{ xmlString }, options);
 }
 /// @brief
 /// Parse XML from a string view.

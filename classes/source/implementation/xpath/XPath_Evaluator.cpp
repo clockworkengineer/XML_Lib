@@ -14,6 +14,7 @@
 #include "XPath_Lexer.hpp"
 #include "XPath_Parser.hpp"
 #include "XPath.hpp"
+#include "common/XML_QName.hpp"
 
 #include <algorithm>
 #include <charconv>
@@ -580,8 +581,7 @@ static XPathResult evalBuiltinFunction(const std::string &name,
   if (name == "name" || name == "local-name") {
     const auto nodeName = nodeNameFromOptArg();
     if (name == "local-name") {
-      const auto pos = nodeName.find(':');
-      return makeString((pos == std::string::npos) ? nodeName : nodeName.substr(pos + 1));
+      return makeString(std::string(getLocalName(nodeName)));
     }
     return makeString(nodeName);
   }

@@ -1,6 +1,7 @@
 #include "xsd/XSD_NodeHelpers.hpp"
 #include "XML_Core.hpp"
 #include "common/XML_NodeKindHelpers.hpp"
+#include "common/XML_QName.hpp"
 
 namespace XML_Lib {
 
@@ -9,10 +10,7 @@ namespace XML_Lib {
 
 std::string_view localTagView(const Node &node)
 {
-  const auto &name = NRef<Element>(node).name();
-  const auto pos = name.find(':');
-  const auto view = std::string_view(name);
-  return pos != std::string::npos ? view.substr(pos + 1) : view;
+  return getLocalName(NRef<Element>(node).name());
 }
 
 /// @brief

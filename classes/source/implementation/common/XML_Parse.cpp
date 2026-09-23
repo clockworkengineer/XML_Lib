@@ -63,18 +63,6 @@ XMLValue parseCharacter(ISource &source)
   return parseCharacterOrReference(source);
 }
 
-namespace {
-
-/// @brief
-/// Implementation of parseValueImpl.
-
-XMLValue parseValueImpl(ISource &source, IEntityMapper *entityMapper)
-{
-  return parseQuotedValue(source, entityMapper);
-}
-
-} // namespace
-
 /// @brief
 /// Parse a literal string value and return it.
 
@@ -83,7 +71,7 @@ XMLValue parseValueImpl(ISource &source, IEntityMapper *entityMapper)
 /// @return Literal string value.
 XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 {
-  return parseValueImpl(source, &entityMapper);
+  return parseQuotedValue(source, &entityMapper);
 }
 
 /// @brief
@@ -93,7 +81,7 @@ XMLValue parseValue(ISource &source, IEntityMapper &entityMapper)
 /// @return Literal string value.
 XMLValue parseValue(ISource &source)
 {
-  return parseValueImpl(source, nullptr);
+  return parseQuotedValue(source, nullptr);
 }
 
 /// @brief

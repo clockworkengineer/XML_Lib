@@ -133,31 +133,38 @@ static std::string translateOutsideQuotes(IEntityMapper &mapper, const std::stri
 /// Parse external DTD.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
-void DTD_Impl::parseExternalContent(ISource &source)
+void DTD_Impl::parseSubsetDeclarations(ISource &source, DTDSubsetKind kind)
 {
-  // Optional TextDecl at start of external entity: <?xml ... ?>
-  parseTextDecl(source);
-  ignoreWS(source);
-
   const auto dispatch = [&](auto &&parseFn, bool expandInQuotes = true) {
-    const std::string rawBody = parseTagBody(source);
-    const std::string translated = expandInQuotes
-      ? xDTD.getEntityMapper().translate(rawBody)
-      : translateOutsideQuotes(xDTD.getEntityMapper(), rawBody);
-    BufferSource dtdTranslatedSource(translated);
-    parseFn(dtdTranslatedSource);
+    if (kind == DTDSubsetKind::External) {
+      const std::string rawBody = parseTagBody(source);
+      const std::string translated = expandInQuotes
+        ? xDTD.getEntityMapper().translate(rawBody)
+        : translateOutsideQuotes(xDTD.getEntityMapper(), rawBody);
+      BufferSource dtdTranslatedSource(translated);
+      parseFn(dtdTranslatedSource);
+    } else {
+      parseFn(source);
+    }
   };
+
   while (source.more()) {
     ignoreWS(source);
-    if (!source.more()) {
+    if (!source.more() || (kind == DTDSubsetKind::Internal && match(source, "]"))) {
       break;
     }
-    if      (match(source, "<!ENTITY"))   { dispatch([&](ISource &s) { parseEntity(s);        }, false); }
-    else if (match(source, "<!ELEMENT"))  { dispatch([&](ISource &s) { parseElement(s);       }, false); }
-    else if (match(source, "<!ATTLIST"))  { dispatch([&](ISource &s) { parseAttributeList(s); }, false); }
-    else if (match(source, "<!NOTATION")) { dispatch([&](ISource &s) { parseNotation(s);      }, false); }
-    else if (match(source, "<!--")) {
+    if (match(source, "<!ENTITY")) {
+      dispatch([&](ISource &s) { parseEntity(s, kind == DTDSubsetKind::Internal); }, false);
+    } else if (match(source, "<!ELEMENT")) {
+      dispatch([&](ISource &s) { parseElement(s); }, false);
+    } else if (match(source, "<!ATTLIST")) {
+      dispatch([&](ISource &s) { parseAttributeList(s); }, false);
+    } else if (match(source, "<!NOTATION")) {
+      dispatch([&](ISource &s) { parseNotation(s); }, false);
+    } else if (match(source, "<!--")) {
       parseComment(source);
+      ignoreWS(source);
+      continue;
     } else if (match(source, "<?")) {
       parsePI(source);
       ignoreWS(source);
@@ -165,16 +172,29 @@ void DTD_Impl::parseExternalContent(ISource &source)
     } else if (source.current() == '%') {
       parseParameterEntityReference(source);
       continue;
-    } else if (match(source, "<![")) {
+    } else if (kind == DTDSubsetKind::External && match(source, "<![")) {
       parseConditional(source);
       continue;
     } else {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid DTD tag."));
     }
+    ignoreWS(source);
     if (source.current() != '>') { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing '>' terminator.")); }
     source.next();
     ignoreWS(source);
   }
+}
+
+/// <summary>
+/// Parse external DTD content.
+/// </summary>
+/// <param name="source">DTD source stream.</param>
+void DTD_Impl::parseExternalContent(ISource &source)
+{
+  // Optional TextDecl at start of external entity: <?xml ... ?>
+  parseTextDecl(source);
+  ignoreWS(source);
+  parseSubsetDeclarations(source, DTDSubsetKind::External);
 }
 
 /// <summary>

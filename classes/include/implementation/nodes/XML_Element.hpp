@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/XML_QName.hpp"
 #include <limits>
 #include <memory_resource>
 #include <span>
@@ -67,14 +68,12 @@ struct Element : Variant
   // QName support: get namespace prefix (empty string if no prefix)
   [[nodiscard]] std::string getPrefix() const
   {
-    const auto pos = elementName.find(':');
-    return pos != std::string::npos ? elementName.substr(0, pos) : "";
+    return std::string(XML_Lib::getPrefix(elementName));
   }
   // QName support: get local name (without prefix)
   [[nodiscard]] std::string getLocalName() const
   {
-    const auto pos = elementName.find(':');
-    return pos != std::string::npos ? elementName.substr(pos + 1) : elementName;
+    return std::string(XML_Lib::getLocalName(elementName));
   }
   // QName support: get namespace URI for this element (based on prefix and in-scope namespaces)
   [[nodiscard]] std::string getNamespaceURI() const

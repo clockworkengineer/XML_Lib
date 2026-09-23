@@ -75,28 +75,46 @@ void EntityStorage::setFromExternalSubset(const std::string_view &entityName, co
   getEntityMapping(entityName).setFromExternalSubset(val);
 }
 
+namespace {
+
+template<typename Mappings, typename Predicate, typename Getter>
+decltype(auto) getEntityPropertyOrThrow(
+  const Mappings &entityMappings,
+  const std::string_view &entityName,
+  Predicate &&predicate,
+  Getter &&getter,
+  const char *kind)
+{
+  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && predicate(*entity)) {
+    return getter(*entity);
+  }
+  XML_LIB_THROW(XML_EntityMapper::Error(std::string(kind) + " entity reference not found for '" + std::string(entityName) + "'."));
+}
+
+} // namespace
+
 const std::string &EntityStorage::getInternal(const std::string_view &entityName) const
 {
-  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isInternal()) {
-    return entity->getInternal();
-  }
-  XML_LIB_THROW(XML_EntityMapper::Error(std::string("Internal entity reference not found for '").append(entityName) + "'."));
+  return getEntityPropertyOrThrow(entityMappings, entityName,
+    [](const auto &e) { return e.isInternal(); },
+    [](const auto &e) -> const std::string & { return e.getInternal(); },
+    "Internal");
 }
 
 const std::string &EntityStorage::getNotation(const std::string_view &entityName) const
 {
-  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isNotation()) {
-    return entity->getNotation();
-  }
-  XML_LIB_THROW(XML_EntityMapper::Error(std::string("Notation entity reference not found for '").append(entityName) + "'."));
+  return getEntityPropertyOrThrow(entityMappings, entityName,
+    [](const auto &e) { return e.isNotation(); },
+    [](const auto &e) -> const std::string & { return e.getNotation(); },
+    "Notation");
 }
 
 const XMLExternalReference &EntityStorage::getExternal(const std::string_view &entityName) const
 {
-  if (const auto *entity = findEntityMapping(entityMappings, entityName); entity && entity->isExternal()) {
-    return entity->getExternal();
-  }
-  XML_LIB_THROW(XML_EntityMapper::Error(std::string("External entity reference not found for '").append(entityName) + "'."));
+  return getEntityPropertyOrThrow(entityMappings, entityName,
+    [](const auto &e) { return e.isExternal(); },
+    [](const auto &e) -> const XMLExternalReference & { return e.getExternal(); },
+    "External");
 }
 
 void EntityStorage::setInternal(const std::string_view &entityName, const std::string_view &internal)

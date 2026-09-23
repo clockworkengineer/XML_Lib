@@ -1,4 +1,6 @@
 #include "XPath_EvalHelpers.hpp"
+#include "common/XML_QName.hpp"
+#include "common/XML_NodeKindHelpers.hpp"
 
 #include <charconv>
 #include <cmath>
@@ -51,9 +53,7 @@ std::string nodeStringValue(const Node &node)
 
 std::string_view nodeNameView(const Node &node)
 {
-  if (isA<Element>(node)) return NRef<Element>(node).name();
-  if (isA<Root>(node)) return NRef<Root>(node).name();
-  if (isA<Self>(node)) return NRef<Self>(node).name();
+  if (const auto *elem = asElementLike(node)) return elem->name();
   if (isA<PI>(node)) return NRef<PI>(node).name();
   return std::string_view{};
 }
@@ -63,9 +63,7 @@ std::string_view nodeNameView(const Node &node)
 
 std::string_view nodeLocalNameView(const Node &node)
 {
-  const std::string_view nm = nodeNameView(node);
-  const auto pos = nm.find(':');
-  return (pos != std::string_view::npos) ? nm.substr(pos + 1) : nm;
+  return getLocalName(nodeNameView(node));
 }
 
 /// @brief

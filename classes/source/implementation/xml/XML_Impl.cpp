@@ -8,6 +8,7 @@
 
 #include "XML_Impl.hpp"
 #include <sstream>
+#include <utility>
 #if defined(XML_LIB_ENABLE_XSD)
 #include "XSD_Validator.hpp"
 #endif
@@ -161,8 +162,7 @@ void XML_Impl::stringify(IDestination &destination) { xmlStringifier->stringify(
 
 void XML_Impl::traverse(IAction &action)
 {
-  if (xmlRoot.isEmpty()) { XML_LIB_THROW(Error("No XML to traverse.")); }
-  traverseNodes(xmlRoot, action);
+  std::as_const(*this).traverse(action);
 }
 
 /// @brief

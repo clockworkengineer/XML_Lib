@@ -8,23 +8,18 @@
 //
 
 #include "XPath_AxisHelpers.hpp"
+#include "common/XML_NodeKindHelpers.hpp"
 
 namespace XML_Lib {
 
 const std::pmr::vector<XMLAttribute> *nodeAttributes(const Node &node)
 {
-  if (isA<Element>(node)) return &NRef<Element>(node).getAttributes();
-  if (isA<Root>(node)) return &NRef<Root>(node).getAttributes();
-  if (isA<Self>(node)) return &NRef<Self>(node).getAttributes();
-  return nullptr;
+  return getNodeAttributes(node);
 }
 
 const std::pmr::vector<XMLAttribute> *nodeNameSpaces(const Node &node)
 {
-  if (isA<Element>(node)) return &NRef<Element>(node).getNameSpaces();
-  if (isA<Root>(node)) return &NRef<Root>(node).getNameSpaces();
-  if (isA<Self>(node)) return &NRef<Self>(node).getNameSpaces();
-  return nullptr;
+  return getNodeNamespaces(node);
 }
 
 /// @brief

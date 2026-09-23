@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <string>
 #include <string_view>
+#include <utility>
 
 namespace XML_Lib {
 // ====================
@@ -46,16 +47,7 @@ inline const Element &Element::operator[](const int index) const
 }
 inline Element &Element::operator[](const int index)
 {
-  if (index >= 0 && index < static_cast<int>(getChildren().size())) {
-    int number = 0;
-    for (auto &child : getChildren()) {
-      if (child.isIndexable()) {
-        if (number == index) { return NRef<Element>(child); }
-        number++;
-      }
-    }
-  }
-  XML_LIB_THROW(Node::Error("Invalid index used to access Node array."));
+  return const_cast<Element &>(std::as_const(*this)[index]);
 }
 // =========================
 // XElement attribute access
