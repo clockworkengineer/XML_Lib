@@ -267,9 +267,15 @@ void EntityRecursionChecker::checkRecursiveEntity(const std::string_view &entity
 
 void EntityRecursionChecker::checkForRecursion()
 {
-  std::set<std::string> currentEntities{};
+  std::vector<std::string_view> keys;
+  keys.reserve(storage.getMappings().size());
   for (const auto &[fst, snd] : storage.getMappings()) {
-    recurseOverEntityReference(fst, fst[0], currentEntities);
+    keys.push_back(fst);
+  }
+  std::sort(keys.begin(), keys.end());
+  std::set<std::string> currentEntities{};
+  for (const auto &key : keys) {
+    recurseOverEntityReference(key, key[0], currentEntities);
   }
 }
 
