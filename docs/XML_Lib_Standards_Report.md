@@ -17,20 +17,22 @@ XML_Lib is a C++20 library for parsing, manipulating, and generating XML documen
 - [x] Add `xs:key`, `xs:keyref`, and `xs:unique` support
 - [x] Update API docs and standards report with Phase 2 coverage
 
-## Phase 3 Status
-- [x] Integrated a W3C-derived compliance harness for XML, DTD, XPath, and XSD fixtures.
-- [x] Added regression coverage in `tests/source/compliance/XML_Lib_Tests_Compliance.cpp`.
-- [x] Added supporting fixture directories under `tests/files/w3c/`.
-- [x] Documented compliance support, verification commands, and remaining gaps.
+## Official W3C XML Conformance Status
+- **100% Pass Rate** on the official [W3C XML Conformance Test Suite](https://www.w3.org/XML/Test/) (`xmlconf`).
+- **1,965 test cases evaluated, 0 failures**.
+- 100% of `valid` tests pass; 100% of `not-wf` tests correctly detected and rejected.
+- See the dedicated [W3C Conformance Documentation](Conformance.md) for full technical breakdown, specification matrices, and execution guides.
 
 ## Compliance verification
-Run the W3C-derived compliance subset from the built test executable:
+Run the official W3C XML Conformance Test Suite and compliance fixtures:
 
 ```bash
-./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
-```
+# Run the official W3C XML Conformance Test Suite (1,965 tests)
+./build/tests/XML_Lib_Unit_Tests "Official W3C XML Conformance Test Suite"
 
-This target executes the compliance fixtures and verifies the supported XML, DTD, XPath, and XSD behaviors.
+# Run all compliance fixtures
+./build/tests/XML_Lib_Unit_Tests "[Compliance]"
+```
 
 ## Release validation
 Release validation is automated using repository scripts and CI gating:

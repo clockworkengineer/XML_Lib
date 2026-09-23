@@ -276,6 +276,7 @@ cmake --install build --prefix /opt/xml_lib
 - [User Guide](docs/Guide.md) — Comprehensive guide covering parsing, tree navigation, validation, and serialization.
 - [API Reference](docs/API.md) — Complete class and method API documentation.
 - [SOLID Architecture Guide](docs/SOLID_Architecture_Guide.md) — Architectural overview and design principles.
+- [W3C Conformance Documentation](docs/Conformance.md) — Official W3C XML Conformance Test Suite verification, pass rates, and standards breakdown.
 - [Standards Compliance Report](docs/XML_Lib_Standards_Report.md) — Detailed breakdown of XML 1.0, DTD, XSD, and XPath 1.0 compliance.
 - [Changelog](CHANGELOG.md) — Detailed release and version history.
 - [Contributing Guidelines](CONTRIBUTING.md) — Guidelines for submitting issues and pull requests.
