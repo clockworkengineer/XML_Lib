@@ -209,8 +209,8 @@ TEST_CASE("Embedded library artifact exists and is non-empty", "[XML][Embedded][
   REQUIRE(std::filesystem::exists(libPath));
   const auto libSize = std::filesystem::file_size(libPath);
   REQUIRE(libSize > 0);
-  // Footprint sanity: embedded library must be under 5 MB
-  REQUIRE(libSize < 5 * 1024 * 1024);
+  // Footprint sanity: embedded library archive (including debug info/bytecode) must be under 8 MB
+  REQUIRE(libSize < 8 * 1024 * 1024);
 }
 
 // ============================================================

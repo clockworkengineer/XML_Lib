@@ -4,6 +4,7 @@
 #include "implementation/io/XML_FileSource.hpp"
 #include "interface/ISource.hpp"
 #include <memory>
+#include <string>
 #include <string_view>
 
 namespace XML_Lib {

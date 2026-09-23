@@ -2,6 +2,7 @@
 
 #include "IVisitorRoles.hpp"
 #include <stdexcept>
+#include <string>
 #include <string_view>
 
 namespace XML_Lib {

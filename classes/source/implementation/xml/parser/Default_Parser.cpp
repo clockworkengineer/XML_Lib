@@ -559,7 +559,7 @@ Node Default_Parser::parseDTD([[maybe_unused]] ISource &source, [[maybe_unused]]
 /// <param name="source">XML source stream.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
 /// <returns>Pointer to prolog Node.</returns>
-Node Default_Parser::parseProlog(ISource &source, IEntityMapper &entityMapper)
+Node Default_Parser::parseProlog(ISource &source, [[maybe_unused]] IEntityMapper &entityMapper)
 {
   auto xProlog = Node::make<Prolog>();
   xProlog.addChild(parseDeclaration(source));

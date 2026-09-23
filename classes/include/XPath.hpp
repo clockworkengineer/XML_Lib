@@ -1,6 +1,12 @@
 #pragma once
 
 #if defined(XML_LIB_ENABLE_XPATH)
+ 
+#include <memory>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <vector>
 
 namespace XML_Lib {
 

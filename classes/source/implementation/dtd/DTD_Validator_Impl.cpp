@@ -23,10 +23,10 @@ DTD_Impl::~DTD_Impl() = default;
 /// <summary>
 /// Set the base directory used to resolve relative external references.
 /// </summary>
-void DTD_Impl::setBaseDirectory(const std::filesystem::path &baseDirectory)
+void DTD_Impl::setBaseDirectory(const std::filesystem::path &baseDirPath)
 {
-  this->baseDirectory = baseDirectory;
-  xDTD.getEntityMapper().setBaseDirectory(baseDirectory);
+  this->baseDirectory = baseDirPath;
+  xDTD.getEntityMapper().setBaseDirectory(baseDirPath);
 }
 
 /// <summary>

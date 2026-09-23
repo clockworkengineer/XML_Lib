@@ -81,6 +81,9 @@ jobs:
           fi
 
       - name: Test Installation & Downstream find_package Consumer
+        env:
+          CC: ${{ matrix.cc }}
+          CXX: ${{ matrix.cxx }}
         shell: bash
         run: |
           cmake --install build --config ${{ matrix.build_type }} --prefix ./install_test

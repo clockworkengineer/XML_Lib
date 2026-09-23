@@ -258,7 +258,7 @@ XMLExternalReference DTD_Impl::parseExternalReference(ISource &source, bool syst
     source.next();
     std::string publicID;
     while (source.more() && source.current() != quote) {
-      publicID += source.current();
+      publicID += toUtf8(source.current());
       source.next();
     }
     if (source.current() != quote) {
