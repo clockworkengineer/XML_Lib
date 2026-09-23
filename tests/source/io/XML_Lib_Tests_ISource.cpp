@@ -502,8 +502,10 @@ TEST_CASE("ISource (Buffer) interface (buffer contains file testfile001.xml).", 
 
     std::string generatedFileName{ generateRandomFileName() };
     XML::toFile(generatedFileName, xmlString, XML::Format::utf8);
-    auto fileSource = SourceFactory::createFileSource(generatedFileName);
-    REQUIRE(fileSource->getSystemId() == generatedFileName);
+    {
+      auto fileSource = SourceFactory::createFileSource(generatedFileName);
+      REQUIRE(fileSource->getSystemId() == generatedFileName);
+    }
     std::filesystem::remove(generatedFileName);
   }
 
