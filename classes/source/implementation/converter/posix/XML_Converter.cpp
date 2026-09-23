@@ -14,6 +14,11 @@
 
 namespace XML_Lib {
 
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+
 static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> utf16Convert;
 
 /// @brief
@@ -25,5 +30,9 @@ std::string toUtf8(const std::u16string &utf16) { return utf16Convert.to_bytes(u
 /// Convert to UTF-16 strings.
 
 std::u16string toUtf16(const std::string &utf8) { return utf16Convert.from_bytes(utf8); }
+
+#if defined(__GNUC__) || defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 }// namespace XML_Lib
