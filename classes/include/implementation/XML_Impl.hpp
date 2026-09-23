@@ -33,10 +33,13 @@ public:
 #if defined(XML_LIB_ENABLE_DTD)
   void validate();
 #endif
+  void registerValidator(const std::string_view &schemaType, std::unique_ptr<IValidator> validator);
+  void validate(const std::string_view &schemaType, const std::string_view &schemaSource);
 #if defined(XML_LIB_ENABLE_XSD)
   void validate(const std::string_view &xsdSource);
 #endif
 #if defined(XML_LIB_ENABLE_XPATH)
+  void setXPathEngine(std::unique_ptr<IXPathEngine> engine);
   [[nodiscard]] std::vector<const Node *> xpath(std::string_view expression);
 #endif
   [[nodiscard]] static std::string version();
@@ -54,6 +57,12 @@ private:
   std::unique_ptr<IStringify> xmlStringifier;
   // XML parser (owns Default_Parser::arena; must outlive xmlRoot)
   std::unique_ptr<IParser> xmlParser;
+  // Validator registry
+  std::unique_ptr<IValidatorRegistry> validatorRegistry;
+#if defined(XML_LIB_ENABLE_XPATH)
+  // XPath engine
+  std::unique_ptr<IXPathEngine> xpathEngine;
+#endif
   // Root Node (children allocated in xmlParser's arena; must be destroyed before xmlParser)
   Node xmlRoot;
   // Traverse XML tree

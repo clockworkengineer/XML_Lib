@@ -93,7 +93,22 @@ void XML::validate() const { implementation->validate(); }
 void XML::validate(const std::string_view &xsdSource) const { implementation->validate(xsdSource); }
 #endif
 
+void XML::registerValidator(const std::string_view &schemaType, std::unique_ptr<IValidator> validator) const
+{
+  implementation->registerValidator(schemaType, std::move(validator));
+}
+
+void XML::validate(const std::string_view &schemaType, const std::string_view &schemaSource) const
+{
+  implementation->validate(schemaType, schemaSource);
+}
+
 #if defined(XML_LIB_ENABLE_XPATH)
+void XML::setXPathEngine(std::unique_ptr<IXPathEngine> engine) const
+{
+  implementation->setXPathEngine(std::move(engine));
+}
+
 /// @brief
 /// Evaluate an XPath 1.0 expression against the parsed document.
 

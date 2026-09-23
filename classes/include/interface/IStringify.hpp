@@ -33,12 +33,6 @@ public:
   /// @param destination Output stream to write to.
   /// @param indent      Current indentation depth (in spaces).
   virtual void stringify(const Node &xNode, IDestination &destination, unsigned long indent) const = 0;
-
-  /// @brief Return the number of spaces per indentation level (default: 0, i.e., compact output).
-  [[nodiscard]] virtual long getIndent() const { return 0; }
-
-  /// @brief Set the number of spaces per indentation level.
-  virtual void setIndent([[maybe_unused]] long indent) {}
 };
 
 /// @brief Segregated role interface for stringifiers supporting indentation configuration.
@@ -47,8 +41,8 @@ class IIndentedStringify : public IStringify
 public:
   ~IIndentedStringify() noexcept override = default;
 
-  [[nodiscard]] virtual long getIndent() const override = 0;
-  virtual void setIndent(long indent) override = 0;
+  [[nodiscard]] virtual long getIndent() const = 0;
+  virtual void setIndent(long indent) = 0;
 };
 
 /// @brief Factory helper — allocates a concrete `IStringify` implementation on the heap.

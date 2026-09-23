@@ -13,7 +13,7 @@ namespace XML_Lib {
 ///
 /// By default `parse()` returns a default-constructed Node and records that it
 /// was called.  Supply `parseImpl` to override the behaviour for a specific test.
-struct Mock_IParser : IParser
+struct Mock_IParser : IValidatingParser
 {
   /// Replace with a lambda to customise parse behaviour per test.
   std::function<Node(ISource &, const ParseOptions &)> parseImpl;

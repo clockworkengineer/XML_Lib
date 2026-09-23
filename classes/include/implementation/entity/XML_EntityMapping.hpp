@@ -1,5 +1,9 @@
 #pragma once
 
+#include "data/XML_ExternalReference.hpp"
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
   struct XML_EntityMapping

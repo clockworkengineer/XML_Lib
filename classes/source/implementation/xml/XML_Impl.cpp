@@ -7,13 +7,11 @@
 //
 
 #include "XML_Impl.hpp"
+#include "XML_Factories.hpp"
 #include <sstream>
 #include <utility>
 #if defined(XML_LIB_ENABLE_XSD)
 #include "XSD_Validator.hpp"
-#endif
-#if defined(XML_LIB_ENABLE_XPATH)
-#include "XPath.hpp"
 #endif
 
 namespace XML_Lib {
@@ -38,20 +36,24 @@ static Node *findFirstChild(Node &xNode, Predicate &&predicate)
 
 XML_Impl::XML_Impl(IStringify *stringify, IParser *parser)
 {
-  entityMapper = std::make_unique<XML_EntityMapper>();
+  entityMapper = createDefaultEntityMapper();
   if (parser == nullptr) {
-    xmlParser = std::make_unique<Default_Parser>(*entityMapper);
+    xmlParser = createDefaultParser(*entityMapper);
   } else {
     xmlParser.reset(parser);
   }
 #if defined(XML_LIB_ENABLE_STRINGIFY)
   if (stringify == nullptr) {
-    xmlStringifier = std::make_unique<Default_Stringify>();
+    xmlStringifier = createDefaultStringify();
   } else {
     xmlStringifier.reset(stringify);
   }
 #else
   (void)stringify;
+#endif
+  validatorRegistry = createDefaultValidatorRegistry();
+#if defined(XML_LIB_ENABLE_XPATH)
+  xpathEngine = createDefaultXPathEngine();
 #endif
 }
 
@@ -76,9 +78,11 @@ std::string XML_Impl::version()
 
 Node &XML_Impl::dtd()
 {
-  if (xmlParser->canValidate()) {
-    if (Node *found = findFirstChild(prolog(), [](const Node &n) { return isA<DTD>(n); })) {
-      return *found;
+  if (auto *validatingParser = dynamic_cast<IValidatingParser *>(xmlParser.get())) {
+    if (validatingParser->canValidate()) {
+      if (Node *found = findFirstChild(prolog(), [](const Node &n) { return isA<DTD>(n); })) {
+        return *found;
+      }
     }
   }
   XML_LIB_THROW(Error("No DTD found."));
@@ -114,8 +118,40 @@ Node &XML_Impl::root()
 /// @brief
 /// Validate the parsed XML against the attached DTD.
 
-void XML_Impl::validate() { xmlParser->validate(prolog()); }
+void XML_Impl::validate()
+{
+  if (auto *validatingParser = dynamic_cast<IValidatingParser *>(xmlParser.get())) {
+    validatingParser->validate(prolog());
+  } else {
+    XML_LIB_THROW(Error("Parser does not support validation."));
+  }
+}
 #endif
+
+void XML_Impl::registerValidator(const std::string_view &schemaType, std::unique_ptr<IValidator> validator)
+{
+  validatorRegistry->registerValidator(schemaType, std::move(validator));
+}
+
+void XML_Impl::validate(const std::string_view &schemaType, const std::string_view &schemaSource)
+{
+  if (auto *registeredValidator = validatorRegistry->getValidator(schemaType)) {
+    BufferSource source(schemaSource);
+    registeredValidator->parse(source);
+    registeredValidator->validate(root());
+    return;
+  }
+#if defined(XML_LIB_ENABLE_XSD)
+  if (schemaType == "xsd" || schemaType == "XSD") {
+    XSD_Validator xsdValidator(root());
+    BufferSource source(schemaSource);
+    xsdValidator.parse(source);
+    xsdValidator.validate(root());
+    return;
+  }
+#endif
+  XML_LIB_THROW(Error("No validator registered for schema type '" + std::string(schemaType) + "'."));
+}
 
 #if defined(XML_LIB_ENABLE_XSD)
 /// @brief
@@ -123,21 +159,25 @@ void XML_Impl::validate() { xmlParser->validate(prolog()); }
 
 void XML_Impl::validate(const std::string_view &xsdSource)
 {
-  XSD_Validator xsdValidator(root());
-  BufferSource source(xsdSource);
-  xsdValidator.parse(source);
-  xsdValidator.validate(root());
+  validate("XSD", xsdSource);
 }
 #endif
 
 #if defined(XML_LIB_ENABLE_XPATH)
+void XML_Impl::setXPathEngine(std::unique_ptr<IXPathEngine> engine)
+{
+  xpathEngine = std::move(engine);
+}
+
 /// @brief
 /// Evaluate an XPath expression against the current document.
 
 std::vector<const Node *> XML_Impl::xpath(const std::string_view expression)
 {
-  XPath xp(root());
-  return xp.evaluate(expression);
+  if (!xpathEngine) {
+    xpathEngine = createDefaultXPathEngine();
+  }
+  return xpathEngine->evaluate(root(), expression);
 }
 #endif
 

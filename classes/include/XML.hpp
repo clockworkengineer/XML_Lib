@@ -23,6 +23,8 @@ namespace XML_Lib {
 // ========================
 class IStringify;
 class IParser;
+class IValidator;
+class IXPathEngine;
 class ISource;
 class IDestination;
 class IAction;
@@ -107,7 +109,16 @@ public:
   void validate(const std::string_view &xsdSource) const;
 #endif
 
+  /// @brief Register a custom schema validator for open schema extensibility (OCP).
+  void registerValidator(const std::string_view &schemaType, std::unique_ptr<IValidator> validator) const;
+
+  /// @brief Validate the document against a schema of the specified type.
+  void validate(const std::string_view &schemaType, const std::string_view &schemaSource) const;
+
 #if defined(XML_LIB_ENABLE_XPATH)
+  /// @brief Set a custom query/path engine (OCP).
+  void setXPathEngine(std::unique_ptr<IXPathEngine> engine) const;
+
   /// @brief Evaluate an XPath 1.0 expression and return matching nodes.
   /// @param expression XPath expression string.
   /// @return Pointers into the document tree — do not store beyond the XML object's lifetime.

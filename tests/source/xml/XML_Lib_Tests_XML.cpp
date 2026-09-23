@@ -1,4 +1,6 @@
 #include "XML_Lib_Tests.hpp"
+#include "XML_Factories.hpp"
+#include "implementation/parser/NamespaceValidator.hpp"
 
 TEST_CASE("Check XML top level apis.", "[XML][Top Level][API]")
 {
@@ -348,5 +350,82 @@ TEST_CASE("Check XML creation/read apis.", "[XML][Creation][API]")
     XML custom(std::unique_ptr<IStringify>{}, std::unique_ptr<IParser>{});
     custom.parse("<root><item>Hello</item></root>");
     REQUIRE(NRef<Element>(custom.root()).name() == "root");
+  }
+  SECTION("XML register custom validator and validate with schema type (OCP).", "[XML][Validator][OCP]")
+  {
+    struct MockCustomValidator : public IValidator
+    {
+      bool parsed{ false };
+      bool validated{ false };
+      void parse(ISource &) override { parsed = true; }
+      void stringify(IDestination &) override {}
+      void validate(const Node &) override { validated = true; }
+    };
+
+    XML customXml("<root><item>test</item></root>");
+    auto mockValidator = std::make_unique<MockCustomValidator>();
+    auto *rawMock = mockValidator.get();
+    customXml.registerValidator("custom", std::move(mockValidator));
+
+    customXml.validate("custom", "<schema/>");
+    REQUIRE(rawMock->parsed);
+    REQUIRE(rawMock->validated);
+
+    REQUIRE_THROWS_WITH(customXml.validate("unknown", "<schema/>"),
+                        Catch::Matchers::ContainsSubstring("No validator registered for schema type 'unknown'"));
+  }
+#if defined(XML_LIB_ENABLE_XPATH)
+  SECTION("XML set custom XPath engine (OCP).", "[XML][XPath][OCP]")
+  {
+    struct MockXPathEngine : public IXPathEngine
+    {
+      mutable bool evaluated{ false };
+      [[nodiscard]] std::vector<const Node *> evaluate(const Node &contextNode, std::string_view) const override
+      {
+        evaluated = true;
+        return { &contextNode };
+      }
+    };
+
+    XML customXml("<root><child/></root>");
+    auto mockEngine = std::make_unique<MockXPathEngine>();
+    auto *rawEngine = mockEngine.get();
+    customXml.setXPathEngine(std::move(mockEngine));
+
+    auto results = customXml.xpath("//child");
+    REQUIRE(rawEngine->evaluated);
+    REQUIRE(results.size() == 1);
+  }
+#endif
+  SECTION("Component factories return valid abstractions (DIP).", "[XML][Factories][DIP]")
+  {
+    auto mapper = createDefaultEntityMapper();
+    REQUIRE(mapper != nullptr);
+
+    auto parser = createDefaultParser(*mapper);
+    REQUIRE(parser != nullptr);
+    REQUIRE(parser->canValidate() == false);
+
+#if defined(XML_LIB_ENABLE_STRINGIFY)
+    auto stringifier = createDefaultStringify();
+    REQUIRE(stringifier != nullptr);
+#endif
+
+    auto registry = createDefaultValidatorRegistry();
+    REQUIRE(registry != nullptr);
+
+#if defined(XML_LIB_ENABLE_XPATH)
+    auto xpathEng = createDefaultXPathEngine();
+    REQUIRE(xpathEng != nullptr);
+#endif
+  }
+  SECTION("NamespaceValidator validates isolated from parsing (SRP).", "[XML][Namespace][SRP]")
+  {
+    BufferSource src("<dummy/>");
+    Element elem("ns:tag");
+    REQUIRE_THROWS_AS(NamespaceValidator::validate(elem, src, true, true), SyntaxError);
+
+    Element badXmlnsElem("xmlns:tag");
+    REQUIRE_THROWS_AS(NamespaceValidator::validate(badXmlnsElem, src, true, true), SyntaxError);
   }
 }

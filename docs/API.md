@@ -259,17 +259,16 @@ auto nodes = xml.xpath("//book");  // equivalent to XPath(xml.root()).evaluate(e
 - `IIndentedStringify`: Role interface for formatters supporting indentation settings (`getIndent`, `setIndent`).
 - [`INodeSerializer`](file:///home/robt/projects/XML_Lib/classes/include/implementation/stringify/INodeSerializer.hpp): Strategy interface for node-specific formatting (`serialize`).
 - [`IXMLParseStage`](file:///home/robt/projects/XML_Lib/classes/include/implementation/parser/IXMLParseStage.hpp): Strategy interface for modular parse stages.
+- [`NamespaceValidator`](file:///home/robt/projects/XML_Lib/classes/include/implementation/parser/NamespaceValidator.hpp): Dedicated validator for W3C XML Namespaces (SRP).
 
 ### Validator Role Interfaces (`ISchemaParser.hpp`, `ISchemaValidator.hpp`, `IValidatorRegistry.hpp`)
 - `ISchemaParser<SchemaT>`: Template role interface for schema parsing.
 - `ISchemaValidator`: Role interface for document validation execution (`validateDocument`).
-- [`ValidatorRegistry`](file:///home/robt/projects/XML_Lib/classes/include/implementation/ValidatorRegistry.hpp): Pluggable validator registry allowing custom schema validators to be registered dynamically.
+- [`ValidatorRegistry`](file:///home/robt/projects/XML_Lib/classes/include/implementation/ValidatorRegistry.hpp): Pluggable validator registry allowing custom schema validators to be registered dynamically (`registerValidator`, `getValidator`).
 
-### Visitor Role Interfaces & Adapter (`IVisitorRoles.hpp`, `NodeVisitorAdapter.hpp`)
-- Role Visitors: `IElementVisitor`, `ICommentVisitor`, `IContentVisitor`, `ICDATAVisitor`, `IDeclarationVisitor`, `IDTDVisitor`, `IEntityReferenceVisitor`, `IPIVisitor`, `IPrologVisitor`, `IRootVisitor`, `ISelfVisitor`, `INodeVisitor`.
-- [`NodeVisitorAdapter`](file:///home/robt/projects/XML_Lib/classes/include/implementation/NodeVisitorAdapter.hpp): Static dispatcher delegating DOM tree traversal directly to narrow role visitors (`NodeVisitorAdapter::dispatchVisit`).
-
-### XPath & File Services (`IXPathNodeAdapter.hpp`, `XML_FileIO.hpp`)
+### XPath, Factories & File Services (`IXPathEngine.hpp`, `XML_Factories.hpp`, `XML_FileIO.hpp`)
+- `IXPathEngine`: Abstract query and navigation engine interface (`evaluate`).
+- [`XML_Factories`](file:///home/robt/projects/XML_Lib/classes/include/XML_Factories.hpp): Component factory functions for DIP decoupling (`createDefaultParser`, `createDefaultStringify`, `createDefaultEntityMapper`, `createDefaultValidatorRegistry`, `createDefaultXPathEngine`).
 - [`IXPathNodeAdapter`](file:///home/robt/projects/XML_Lib/classes/include/implementation/xpath/IXPathNodeAdapter.hpp): Strategy interface for XPath node navigation abstraction.
 - [`XML_FileIO`](file:///home/robt/projects/XML_Lib/classes/include/implementation/io/XML_FileIO.hpp): Dedicated service class for static file I/O operations (`fromFile`, `toFile`, `getFileFormat`).
 

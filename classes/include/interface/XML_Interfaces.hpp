@@ -29,3 +29,4 @@
 #include "IStringify.hpp"
 #include "IVisitorRoles.hpp"
 #include "IAction.hpp"
+#include "IXPathEngine.hpp"

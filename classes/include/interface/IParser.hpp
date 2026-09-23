@@ -29,12 +29,6 @@ public:
 
   /// @brief Parse @p source and return the document root `Node`.
   virtual Node parse(ISource &source, const ParseOptions &options) = 0;
-
-  /// @brief Return `true` if this parser supports validation (DTD/XSD).
-  virtual bool canValidate() { return false; }
-
-  /// @brief Validate the document rooted at @p prolog.
-  virtual void validate([[maybe_unused]] Node &prolog) {}
 };
 
 /// @brief Segregated role interface for parsers capable of validation (DTD/XSD).
@@ -43,8 +37,8 @@ class IValidatingParser : public IParser
 public:
   ~IValidatingParser() noexcept override = default;
 
-  bool canValidate() override { return true; }
-  void validate(Node &prolog) override = 0;
+  [[nodiscard]] virtual bool canValidate() = 0;
+  virtual void validate(Node &prolog) = 0;
 };
 
 } // namespace XML_Lib
