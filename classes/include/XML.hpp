@@ -41,6 +41,9 @@ struct ParseOptions {
   bool            allowExternalEntities   = false;  ///< When false and no entityResolver set, external entities throw SyntaxError (XXE defence).
   IEntityResolver *entityResolver         = nullptr;///< Optional custom resolver; overrides allowExternalEntities when non-null.
   bool            strictNamespaces        = false;  ///< When true, enforces XML Namespaces 1.0 (forbids prefix unbinding xmlns:prefix="").
+  bool            enableNamespaces        = true;   ///< When false, XML Namespaces processing is disabled (pure XML 1.0 mode).
+  bool            allowFuture1xVersions   = false;  ///< When true, accepts XML 1.x version numbers where x >= 0 (XML 1.0 Fifth Edition).
+  bool            firstEntityDeclarationBinding = false; ///< When true, first entity declaration is binding; subsequent declarations are ignored (XML 1.0 Section 4.2).
 };
 
 /// @brief Top-level XML document class.

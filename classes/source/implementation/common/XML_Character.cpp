@@ -74,31 +74,15 @@ bool validNameChar(const char c)
 }
 
 /// <summary>
-/// Check name that starts with xml is a valid reserved name.
-/// </summary>
-/// <param name="name">XML name to check.</param>
-/// <returns>true then valid otherwise false.</returns>
-bool validReservedName(const String &name)
-{
-  return name.find(u"xmlns") == 0 || name.find(u"xml-stylesheet") == 0 || name == u"xml" || name.find(u"xml:") == 0;
-}
-
-/// <summary>
 /// Validate XML tag/attribute names.
 /// </summary>
 /// <param name="name">XML name to check.</param>
 /// <returns>true then valid otherwise false.</returns>
 bool validName(const String &name)
 {
-  String localName{ name };
-  if (localName.empty()) { return false; }
-  std::ranges::transform(
-    localName, localName.begin(), [](const Char c) {
-    return static_cast<Char>(std::tolower(c));
-  });
-  if (localName.find(u"xml") == 0 && !validReservedName(localName)) { return false; }
-  if (!validNameStartChar(localName[0])) { return false; }
-  for (auto it = localName.begin() + 1; it != localName.end(); ++it) {
+  if (name.empty()) { return false; }
+  if (!validNameStartChar(name[0])) { return false; }
+  for (auto it = name.begin() + 1; it != name.end(); ++it) {
     if (!validNameChar(*it)) { return false; }
   }
   return true;

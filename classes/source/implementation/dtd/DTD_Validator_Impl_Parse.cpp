@@ -8,6 +8,7 @@
 
 #include "DTD_Impl.hpp"
 #include "common/XML_ParseHelpers.hpp"
+#include "implementation/parser/Default_Parser.hpp"
 
 namespace XML_Lib {
 
@@ -66,10 +67,22 @@ void DTD_Impl::parseValidateAttribute(const std::string_view &elementName, const
 /// <returns>Enumeration string.</returns>
 std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
 {
+  const auto readEnumerationToken = [](ISource &src) -> std::string {
+    String token;
+    token.reserve(16);
+    while (src.more() && validNameChar(src.current())) {
+      token += src.current();
+      src.next();
+    }
+    if (token.empty()) {
+      XML_LIB_THROW(SyntaxError(src.getPosition(), "Invalid name '' encountered."));
+    }
+    return toUtf8(token);
+  };
   std::string enumerationType(toUtf8(source.current()));
   source.next();
   ignoreWS(source);
-  enumerationType += parseName(source);
+  enumerationType += readEnumerationToken(source);
   ignoreWS(source);
   parseDelimitedList(source, '|',
     [&](ISource &src) {
@@ -78,7 +91,7 @@ std::string DTD_Impl::parseAttributeEnumerationType(ISource &source)
       ignoreWS(src);
     },
     [&](ISource &) {
-      enumerationType += parseName(source);
+      enumerationType += readEnumerationToken(source);
       ignoreWS(source);
     }
   );
@@ -132,9 +145,7 @@ void DTD_Impl::parseAttributeType(ISource &source, DTD::Attribute &attribute) co
   }
   if (source.current() == '(') {
     attribute.enumeration = parseAttributeEnumerationType(source);
-    if (attribute.type == DTD::AttributeType::notation) {
-      parseValidNotations(attribute.enumeration);
-    } else {
+    if (attribute.type != DTD::AttributeType::notation) {
       attribute.type = DTD::AttributeType::enumeration;
     }
     return;
@@ -182,7 +193,7 @@ void DTD_Impl::parseAttributeList(ISource &source) const
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing whitespace between attribute definitions."));
     }
     ignoreWS(source);
-    if (source.current() == '>' || source.current() == '<') { break; }
+    if (!source.more() || source.current() == '>' || source.current() == '<') { break; }
     DTD::Attribute dtdAttribute;
     dtdAttribute.name = toUtf8(readName(source));
     if (!validName(toUtf16(dtdAttribute.name))) {
@@ -210,7 +221,7 @@ void DTD_Impl::parseNotation(ISource &source) const
   }
   ignoreWS(source);
   const std::string name = parseName(source);
-  if (name.find(':') != std::string::npos) {
+  if (Default_Parser::isNamespacesEnabled() && name.find(':') != std::string::npos) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in notation names under XML Namespaces."));
   }
   if (!source.more() || !isWS(source)) {
@@ -243,7 +254,7 @@ void DTD_Impl::parseEntity(ISource &source, bool isInternalSubset) const
     ignoreWS(source);
   }
   const std::string rawName = toUtf8(readName(source));
-  if (rawName.find(':') != std::string::npos) {
+  if (Default_Parser::isNamespacesEnabled() && rawName.find(':') != std::string::npos) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in entity names under XML Namespaces."));
   }
   const String u16Name = toUtf16(rawName);
@@ -276,11 +287,19 @@ void DTD_Impl::parseEntity(ISource &source, bool isInternalSubset) const
     }
     // Force expansion to trigger recursion detection
     std::string expanded = entityValue.getParsed();
+    if (!isInternalSubset) {
+      size_t depth = 0;
+      while (expanded.find('%') != std::string::npos && depth++ < 32) {
+        std::string next = xDTD.getEntityMapper().translate(expanded);
+        if (next == expanded) break;
+        expanded = std::move(next);
+      }
+    }
     if (expanded.find('&') != std::string::npos) {
       std::set<std::string> currentEntities;
       xDTD.getEntityMapper().checkRecursiveEntity(entityName, expanded, currentEntities);
     }
-    const bool alreadyDeclared = !isInternalSubset && xDTD.getEntityMapper().isPresent(entityName);
+    const bool alreadyDeclared = Default_Parser::isFirstEntityDeclarationBinding() && xDTD.getEntityMapper().isPresent(entityName);
     if (!alreadyDeclared) {
       xDTD.getEntityMapper().setInternal(entityName, expanded);
       if (!isInternalSubset) {
@@ -289,7 +308,7 @@ void DTD_Impl::parseEntity(ISource &source, bool isInternalSubset) const
     }
   } else {
     const auto extRef = parseExternalReference(source, true);
-    const bool alreadyDeclared = !isInternalSubset && xDTD.getEntityMapper().isPresent(entityName);
+    const bool alreadyDeclared = Default_Parser::isFirstEntityDeclarationBinding() && xDTD.getEntityMapper().isPresent(entityName);
     if (!alreadyDeclared) {
       xDTD.getEntityMapper().setExternal(entityName, extRef);
       if (!isInternalSubset) {
@@ -396,8 +415,25 @@ void DTD_Impl::parsePI(ISource &source)
 void DTD_Impl::parseParameterEntityReference(ISource &source)
 {
   const XMLValue parameterEntity = parseEntityReference(source);
-  BufferSource entitySource(xDTD.getEntityMapper().translate(parameterEntity.getUnparsed()));
-  parseInternal(entitySource);
+  const bool isExt = xDTD.getEntityMapper().isExternal(parameterEntity.getUnparsed());
+  if (isExt) {
+    BufferSource entitySource(xDTD.getEntityMapper().translate(parameterEntity.getUnparsed()) + " ");
+    std::filesystem::path oldDir = baseDirectory;
+    std::filesystem::path entityPath{ xDTD.getEntityMapper().getExternal(parameterEntity.getUnparsed()).getSystemID() };
+    if (entityPath.is_relative() && !baseDirectory.empty()) {
+      entityPath = (baseDirectory / entityPath).lexically_normal();
+    }
+    if (entityPath.has_parent_path()) {
+      setBaseDirectory(entityPath.parent_path());
+      xDTD.getEntityMapper().setBaseDirectory(entityPath.parent_path());
+    }
+    parseExternalContent(entitySource);
+    setBaseDirectory(oldDir);
+    xDTD.getEntityMapper().setBaseDirectory(oldDir);
+  } else {
+    BufferSource entitySource(" " + xDTD.getEntityMapper().translate(parameterEntity.getUnparsed()) + " ");
+    parseInternal(entitySource);
+  }
   ignoreWS(source);
 }
 
@@ -494,6 +530,18 @@ void DTD_Impl::parseDTD(ISource &source)
   xDTD.setUnparsed(std::string("<!DOCTYPE") + source.getRange(start, source.position()));
   // Make sure no defined entity contains recursion
   xDTD.getEntityMapper().checkForRecursion();
+  // Validate all NOTATION attribute types reference declared notations
+  for (const auto &[elemName, elem] : xDTD.getElements()) {
+    for (const auto &attr : elem.attributes) {
+      if ((attr.type & DTD::AttributeType::notation) != 0) {
+        for (const auto &notName : splitString(attr.enumeration.substr(1, attr.enumeration.size() - 2), '|')) {
+          if (xDTD.getNotationCount(notName) == 0) {
+            XML_LIB_THROW(SyntaxError("NOTATION " + notName + " is not defined."));
+          }
+        }
+      }
+    }
+  }
   // Count lines in DTD
   std::string unparsedDTD = xDTD.unparsed();
   xDTD.setLineCount(std::ranges::count(unparsedDTD, kLineFeed) + 1);

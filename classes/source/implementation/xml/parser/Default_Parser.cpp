@@ -57,7 +57,7 @@ void addContentToElementChildList(Node &xNode, const std::string_view &content)
 /// <param name="xNode">Current element Node.</param>
 /// <param name="entityReference">Entity reference to be parsed for XML.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper &entityMapper, bool isExternal)
+void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper &entityMapper, bool isExternal, std::span<const XMLAttribute> inheritedNamespaces)
 {
   if (entityReference.getParsed().empty()) {
     return;
@@ -67,7 +67,7 @@ void Default_Parser::parseEntityReferenceXML(Node &xNode, const XMLValue &entity
     parseTextDecl(entitySource);
   }
   // Parse entity XML
-  while (entitySource.more()) { parseElementInternal(entitySource, xNode, entityMapper); }
+  while (entitySource.more()) { parseElementInternal(entitySource, xNode, entityMapper, inheritedNamespaces); }
 }
 
 /// <summary>
@@ -110,6 +110,12 @@ std::string Default_Parser::parseTagName(ISource &source)
   if (!validName(name)) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered."));
   }
+  const std::string lower = toLowerString(toUtf8(name));
+  if (lower.starts_with("xml")) {
+    if (!lower.starts_with("xmlns") && !lower.starts_with("xml-") && lower != "xml" && !lower.starts_with("xml:")) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid name '" + toUtf8(name) + "' encountered."));
+    }
+  }
   return toUtf8(name);
 }
 
@@ -130,7 +136,12 @@ std::string Default_Parser::parseDeclarationAttribute(ISource &source,
     ignoreWS(source);
     value = parseValue(source).getParsed();
     if (name == "encoding") { value = toUpperString(value); }
-    if (!std::ranges::any_of(values, [&](const std::string_view sv) { return sv == value; })) {
+    bool valid = std::ranges::any_of(values, [&](const std::string_view sv) { return sv == value; });
+    if (!valid && allowFuture1xVersionsMode && name == "version" && value.starts_with("1.") && value.size() > 2
+        && std::all_of(value.begin() + 2, value.end(), [](char c) { return std::isdigit(static_cast<unsigned char>(c)); })) {
+      valid = true;
+    }
+    if (!valid) {
       XML_LIB_THROW(SyntaxError("Unsupported XML " + std::string(name) + " value '" + value + "' specified."));
     }
   } else {
@@ -171,7 +182,7 @@ Node Default_Parser::parseComment(ISource &source)
 Node Default_Parser::parsePI(ISource &source)
 {
   std::string name{ parseName(source) };
-  if (name.find(':') != std::string::npos) {
+  if (Default_Parser::isNamespacesEnabled() && name.find(':') != std::string::npos) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in processing instruction targets under XML Namespaces."));
   }
   // Check not a declaration (xml in any case combination)
@@ -315,7 +326,7 @@ static void markTrailingContentNonWhitespace(Node &xNode)
 /// <param name="xNode">Current element Node.</param>
 /// <param name="value">Parsed character value.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, IEntityMapper &entityMapper)
+void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, IEntityMapper &entityMapper, std::span<const XMLAttribute> inheritedNamespaces)
 {
   if (value.isReference()) {
     XMLValue content = value;
@@ -336,14 +347,17 @@ void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, I
       } guard{entityExpansionDepth};
       ++entityExpansionDepth;
       const bool isExt = entityMapper.isExternal(value.getUnparsed());
+      const auto namespaces = (isA<Root>(xNode) || isA<Element>(xNode) || isA<Self>(xNode))
+        ? NRef<Element>(xNode).getNameSpaces()
+        : inheritedNamespaces;
       // Does entity contain start tag ?
       // YES then XML into current element list
       if (content.getParsed().starts_with("<")) {
-        parseEntityReferenceXML(xNode, content, entityMapper, isExt);
+        parseEntityReferenceXML(xNode, content, entityMapper, isExt, namespaces);
         return;
       }
       // NO XML into entity elements list.
-      parseEntityReferenceXML(xEntityReference, content, entityMapper, isExt);
+      parseEntityReferenceXML(xEntityReference, content, entityMapper, isExt, namespaces);
       markTrailingContentNonWhitespace(xNode);
     }
     xNode.addChild(std::move(xEntityReference));
@@ -358,13 +372,16 @@ void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, I
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element Node.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper)
+void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper, std::span<const XMLAttribute> inheritedNamespaces)
 {
-  appendEntityOrContent(xNode, parseCharacter(source), entityMapper);
+  appendEntityOrContent(xNode, parseCharacter(source), entityMapper, inheritedNamespaces);
 }
 
 static void validateElementNamespaces(const Element &element, const ISource &source)
 {
+  if (!Default_Parser::isNamespacesEnabled()) {
+    return;
+  }
   const std::string &elemName = element.name();
   if (const auto pos = elemName.find(':'); pos != std::string::npos) {
     if (pos == 0 || pos + 1 >= elemName.size() || elemName.find(':', pos + 1) != std::string::npos) {
@@ -459,7 +476,7 @@ static void validateElementNamespaces(const Element &element, const ISource &sou
 /// <param name="source">XML source stream.</param>
 /// <param name="xNode">Current element Node.</param>
 /// <param name="entityMapper">Entity mapper interface object.</param>
-void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper)
+void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper, std::span<const XMLAttribute> inheritedNamespaces)
 {
   if (tryParseCommentOrPI(source, xNode)) {
     // comment or PI handled
@@ -467,14 +484,17 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
     markTrailingContentNonWhitespace(xNode);
     xNode.addChild(parseCDATA(source));
   } else if (match(source, "<")) {
-    xNode.addChild(parseElement(source, NRef<Element>(xNode).getNameSpaces(), entityMapper));
+    const auto outerNamespaces = (isA<Root>(xNode) || isA<Element>(xNode) || isA<Self>(xNode))
+      ? NRef<Element>(xNode).getNameSpaces()
+      : inheritedNamespaces;
+    xNode.addChild(parseElement(source, outerNamespaces, entityMapper));
     validateElementNamespaces(NRef<Element>(xNode.getChildren().back()), source);
   } else {
     if (match(source, "</")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing tag.")); }
     if (match(source, "]]>")) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "']]>' invalid in element content area."));
     }
-    parseContent(source, xNode, entityMapper);
+    parseContent(source, xNode, entityMapper, inheritedNamespaces);
   }
 }
 
@@ -723,6 +743,9 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
   hasRoot = false;
   isStandaloneDocument = false;
   strictNamespacesMode = options.strictNamespaces;
+  enableNamespacesMode = options.enableNamespaces;
+  allowFuture1xVersionsMode = options.allowFuture1xVersions;
+  firstEntityDeclarationBindingMode = options.firstEntityDeclarationBinding;
   validator.reset();
   // Handle prolog
   Node xmlRoot = parseProlog(source, entityMapper);

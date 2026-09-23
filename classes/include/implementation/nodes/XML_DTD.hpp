@@ -126,6 +126,7 @@ struct DTD final : Variant
     }
   }
   [[nodiscard]] std::size_t getElementCount() const { return elements.size(); }
+  [[nodiscard]] const std::unordered_map<std::string, Element> &getElements() const { return elements; }
   [[nodiscard]] XMLExternalReference &getNotation(const std::string_view &notationName)
   {
     if (const auto notation = notations.find(std::string(notationName)); notation != notations.end()) {

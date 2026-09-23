@@ -372,6 +372,17 @@ void DTD_Impl::checkAgainstDTD(const Node &xNode)
       XML_LIB_THROW(ValidationError(lineNumber, "IDREF attribute '" + idref + "' does not reference any element with the ID."));
     }
   }
+  for (const auto &[elemName, elem] : xDTD.getElements()) {
+    for (const auto &attr : elem.attributes) {
+      if ((attr.type & DTD::AttributeType::notation) != 0) {
+        for (const auto &notName : splitString(attr.enumeration.substr(1, attr.enumeration.size() - 2), '|')) {
+          if (xDTD.getNotationCount(notName) == 0) {
+            XML_LIB_THROW(ValidationError(lineNumber, "NOTATION " + notName + " is not defined."));
+          }
+        }
+      }
+    }
+  }
 }
 
 /// <summary>

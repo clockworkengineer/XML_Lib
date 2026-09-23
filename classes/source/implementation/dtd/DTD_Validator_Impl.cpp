@@ -26,6 +26,7 @@ DTD_Impl::~DTD_Impl() = default;
 void DTD_Impl::setBaseDirectory(const std::filesystem::path &baseDirectory)
 {
   this->baseDirectory = baseDirectory;
+  xDTD.getEntityMapper().setBaseDirectory(baseDirectory);
 }
 
 /// <summary>

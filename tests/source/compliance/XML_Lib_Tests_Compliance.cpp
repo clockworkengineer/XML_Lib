@@ -66,6 +66,7 @@ struct W3CTestCase {
   std::string entities;
   std::string edition;
   std::string description;
+  bool namespaceEnabled = true;
 };
 
 static std::filesystem::path findW3CXmlConfDirectory()
@@ -179,6 +180,7 @@ static std::vector<W3CTestCase> loadW3CCatalog(const std::filesystem::path &xmlc
         tc.recommendation = attrs.count("RECOMMENDATION") ? attrs["RECOMMENDATION"] : "XML1.0";
         tc.entities = attrs.count("ENTITIES") ? attrs["ENTITIES"] : "none";
         tc.edition = attrs.count("EDITION") ? attrs["EDITION"] : "";
+        tc.namespaceEnabled = attrs.count("NAMESPACE") ? (attrs["NAMESPACE"] != "no") : true;
         tc.description = desc;
         tc.fullPath = xmlconfDir / xmlBase / tc.uri;
 
@@ -231,6 +233,9 @@ TEST_CASE("Official W3C XML Conformance Test Suite", "[Compliance][W3C][XMLConf]
       options.allowExternalEntities = true;
       options.maxEntityExpansionDepth = 4096;
       options.strictNamespaces = true;
+      options.enableNamespaces = tc.namespaceEnabled;
+      options.allowFuture1xVersions = true;
+      options.firstEntityDeclarationBinding = true;
       xml.parse(tc.fullPath, options);
 
       // If parsing succeeded without error:

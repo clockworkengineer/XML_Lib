@@ -27,7 +27,8 @@ static void validateFilePath(const std::filesystem::path &filePath)
   if (pathStr.find('\0') != std::string::npos) {
     XML_LIB_THROW(Error("Invalid file path: null byte in path."));
   }
-  for (const auto &component : filePath) {
+  const auto normalized = filePath.lexically_normal();
+  for (const auto &component : normalized) {
     if (component == "..") {
       XML_LIB_THROW(Error("Invalid file path: '..' path traversal component not allowed."));
     }

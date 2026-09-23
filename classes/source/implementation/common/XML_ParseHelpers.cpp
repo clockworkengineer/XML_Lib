@@ -173,7 +173,9 @@ void appendTextSegment(std::string &unparsed,
       const size_t ampPos = expandedText.find('&', searchPos);
       if (ampPos == std::string::npos) break;
       const size_t semiPos = expandedText.find(';', ampPos);
-      if (semiPos == std::string::npos) break;
+      if (semiPos == std::string::npos) {
+        XML_LIB_THROW(SyntaxError("Attribute value contains invalid character '&'."));
+      }
       const std::string ref = expandedText.substr(ampPos, semiPos - ampPos + 1);
       if (ref.starts_with("&#") || ref == "&amp;" || ref == "&lt;" || ref == "&gt;" || ref == "&quot;" || ref == "&apos;") {
         searchPos = semiPos + 1;

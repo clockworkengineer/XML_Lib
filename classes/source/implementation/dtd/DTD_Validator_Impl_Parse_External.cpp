@@ -76,18 +76,75 @@ void DTD_Impl::parseConditional(ISource &source, const bool includeOn)
   ignoreWS(source);
 }
 
+namespace {
+static std::string translateOutsideQuotes(IEntityMapper &mapper, const std::string &body)
+{
+  std::string result;
+  result.reserve(body.size());
+  size_t i = 0;
+  char inQuote = 0;
+  while (i < body.size()) {
+    if (inQuote != 0) {
+      if (body[i] == inQuote) {
+        inQuote = 0;
+      }
+      result.push_back(body[i]);
+      ++i;
+    } else if (body[i] == '"' || body[i] == '\'') {
+      inQuote = body[i];
+      result.push_back(body[i]);
+      ++i;
+    } else if (body[i] == '%') {
+      size_t j = i + 1;
+      if (j < body.size() && validNameStartChar(body[j])) {
+        ++j;
+        while (j < body.size() && validNameChar(body[j])) {
+          ++j;
+        }
+        if (j < body.size() && body[j] == ';') {
+          const std::string_view ref = std::string_view(body).substr(i, j - i + 1);
+          bool needLeadingSpace = false;
+          if (result.empty() || (!isWS(result.back()) && result.back() != '(' && result.back() != '|' && result.back() != ',')) {
+            needLeadingSpace = true;
+          }
+          bool needTrailingSpace = false;
+          if (j + 1 < body.size() && !isWS(body[j + 1]) && body[j + 1] != ')' && body[j + 1] != '|' && body[j + 1] != ',' && body[j + 1] != '>') {
+            needTrailingSpace = true;
+          }
+          if (needLeadingSpace) { result.push_back(' '); }
+          result.append(mapper.translate(ref));
+          if (needTrailingSpace) { result.push_back(' '); }
+          i = j + 1;
+          continue;
+        }
+      }
+      result.push_back(body[i]);
+      ++i;
+    } else {
+      result.push_back(body[i]);
+      ++i;
+    }
+  }
+  return result;
+}
+} // namespace
+
 /// <summary>
 /// Parse external DTD.
 /// </summary>
 /// <param name="source">DTD source stream.</param>
 void DTD_Impl::parseExternalContent(ISource &source)
 {
-  ignoreWS(source);
   // Optional TextDecl at start of external entity: <?xml ... ?>
   parseTextDecl(source);
+  ignoreWS(source);
 
-  const auto dispatch = [&](auto &&parseFn) {
-    BufferSource dtdTranslatedSource(xDTD.getEntityMapper().translate(parseTagBody(source)));
+  const auto dispatch = [&](auto &&parseFn, bool expandInQuotes = true) {
+    const std::string rawBody = parseTagBody(source);
+    const std::string translated = expandInQuotes
+      ? xDTD.getEntityMapper().translate(rawBody)
+      : translateOutsideQuotes(xDTD.getEntityMapper(), rawBody);
+    BufferSource dtdTranslatedSource(translated);
     parseFn(dtdTranslatedSource);
   };
   while (source.more()) {
@@ -95,10 +152,10 @@ void DTD_Impl::parseExternalContent(ISource &source)
     if (!source.more()) {
       break;
     }
-    if      (match(source, "<!ENTITY"))   { dispatch([&](ISource &s) { parseEntity(s);        }); }
-    else if (match(source, "<!ELEMENT"))  { dispatch([&](ISource &s) { parseElement(s);       }); }
-    else if (match(source, "<!ATTLIST"))  { dispatch([&](ISource &s) { parseAttributeList(s); }); }
-    else if (match(source, "<!NOTATION")) { dispatch([&](ISource &s) { parseNotation(s);      }); }
+    if      (match(source, "<!ENTITY"))   { dispatch([&](ISource &s) { parseEntity(s);        }, false); }
+    else if (match(source, "<!ELEMENT"))  { dispatch([&](ISource &s) { parseElement(s);       }, false); }
+    else if (match(source, "<!ATTLIST"))  { dispatch([&](ISource &s) { parseAttributeList(s); }, false); }
+    else if (match(source, "<!NOTATION")) { dispatch([&](ISource &s) { parseNotation(s);      }, false); }
     else if (match(source, "<!--")) {
       parseComment(source);
     } else if (match(source, "<?")) {

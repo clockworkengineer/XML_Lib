@@ -23,23 +23,26 @@ public:
   static void ensureTextNodeSizeWithinLimit(std::size_t nodeSize);
   [[nodiscard]] static bool isStandalone() { return isStandaloneDocument; }
   [[nodiscard]] static bool isStrictNamespaces() { return strictNamespacesMode; }
+  [[nodiscard]] static bool isNamespacesEnabled() { return enableNamespacesMode; }
+  [[nodiscard]] static bool isAllowFuture1xVersions() { return allowFuture1xVersionsMode; }
+  [[nodiscard]] static bool isFirstEntityDeclarationBinding() { return firstEntityDeclarationBindingMode; }
 
 private:
   // XML Parser
-  static void parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper, bool isExternal = false);
+  static void parseEntityReferenceXML(Node &xNode, const XMLValue &entityReference, IEntityMapper & entityMapper, bool isExternal = false, std::span<const XMLAttribute> inheritedNamespaces = {});
   [[nodiscard]] static std::string
     parseDeclarationAttribute(ISource &source, const std::string_view &name, std::span<const std::string_view> values);
   [[nodiscard]] static bool tryParseCommentOrPI(ISource &source, Node &xNode);
   [[nodiscard]] static bool parseCommentsPIAndWhiteSpace(ISource &source, Node &xProlog);
-  static void  parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper);
-  static void appendEntityOrContent(Node &xNode, const XMLValue &value, IEntityMapper &entityMapper);
+  static void  parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper, std::span<const XMLAttribute> inheritedNamespaces = {});
+  static void appendEntityOrContent(Node &xNode, const XMLValue &value, IEntityMapper &entityMapper, std::span<const XMLAttribute> inheritedNamespaces = {});
   [[nodiscard]] static std::string parseTagName(ISource &source);
   [[nodiscard]] static std::vector<XMLAttribute> parseAttributes(ISource &source, IEntityMapper &entityMapper);
   [[nodiscard]] static Node parseComment(ISource &source);
   [[nodiscard]] static Node parseCDATA(ISource &source);
   [[nodiscard]] static Node parsePI(ISource &source);
   static void parseWhiteSpaceToContent(ISource &source, Node &xNode);
-  static void parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper);
+  static void parseElementInternal(ISource &source, Node &xNode, IEntityMapper &entityMapper, std::span<const XMLAttribute> inheritedNamespaces = {});
   [[nodiscard]] static Node parseElement(ISource &source, std::span<const XMLAttribute> namespaces, IEntityMapper & entityMapper);
   [[nodiscard]] static Node parseDeclaration(ISource &source);
   [[nodiscard]] static Node parseDTD(ISource &source, IEntityMapper &entityMapper);
@@ -50,6 +53,9 @@ private:
   // Document declared standalone="yes"
   inline static bool isStandaloneDocument{ false };
   inline static bool strictNamespacesMode{ false };
+  inline static bool enableNamespacesMode{ true };
+  inline static bool allowFuture1xVersionsMode{ false };
+  inline static bool firstEntityDeclarationBindingMode{ false };
   // Parser validator
   inline static std::unique_ptr<IValidator> validator;
   // Current entity expansion depth (reset at the start of each parse)

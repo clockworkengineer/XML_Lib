@@ -190,13 +190,15 @@ void EntityRecursionChecker::recurseOverEntityReference(const std::string_view &
   BufferSource entitySource{ std::string(entityName) };
   while (entitySource.more()) {
     if (entitySource.current() == type) {
-      std::string mappedEntityName = toUtf8(entitySource.current());
-      entitySource.next();
-      while (entitySource.more() && entitySource.current() != ';') {
+      std::string mappedEntityName;
+      while (entitySource.more()) {
         mappedEntityName += toUtf8(entitySource.current());
+        if (entitySource.current() == ';') {
+          entitySource.next();
+          break;
+        }
         entitySource.next();
       }
-      mappedEntityName += toUtf8(entitySource.current());
       if (currentEntities.contains(mappedEntityName)) {
         XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
       }
@@ -207,6 +209,7 @@ void EntityRecursionChecker::recurseOverEntityReference(const std::string_view &
           currentEntities.erase(mappedEntityName);
         }
       }
+      continue;
     }
     entitySource.next();
   }
@@ -219,13 +222,15 @@ void EntityRecursionChecker::checkRecursiveEntity(const std::string_view &entity
   BufferSource expandedSource{ expanded };
   while (expandedSource.more()) {
     if (expandedSource.current() == entityName[0]) {
-      std::string mappedEntityName{ toUtf8(expandedSource.current()) };
-      expandedSource.next();
-      while (expandedSource.more() && expandedSource.current() != ';') {
+      std::string mappedEntityName;
+      while (expandedSource.more()) {
         mappedEntityName += toUtf8(expandedSource.current());
+        if (expandedSource.current() == ';') {
+          expandedSource.next();
+          break;
+        }
         expandedSource.next();
       }
-      mappedEntityName += toUtf8(expandedSource.current());
       if (currentEntities.contains(mappedEntityName)) {
         XML_LIB_THROW(SyntaxError("Entity '" + mappedEntityName + "' contains recursive definition which is not allowed."));
       }
@@ -236,6 +241,7 @@ void EntityRecursionChecker::checkRecursiveEntity(const std::string_view &entity
           currentEntities.erase(mappedEntityName);
         }
       }
+      continue;
     }
     expandedSource.next();
   }
