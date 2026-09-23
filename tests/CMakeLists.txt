@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-project(XML_Lib_Unit_Tests VERSION 1.2.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
+project(XML_Lib_Unit_Tests VERSION 1.3.0 DESCRIPTION "XML C++ Library Catch Unit Tests" LANGUAGES CXX)
 
 find_package(Catch2 3 QUIET)
 

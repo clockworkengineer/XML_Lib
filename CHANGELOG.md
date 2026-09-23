@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-09-23
+
+### Added
+- **Component Factories (DIP)**: Added `XML_Factories.hpp` / `XML_Factories.cpp` providing decoupled factory functions (`createDefaultParser`, `createDefaultStringify`, `createDefaultEntityMapper`, `createDefaultValidatorRegistry`, `createDefaultXPathEngine`).
+- **Pluggable Schema Validator Registry (OCP)**: Integrated `ValidatorRegistry` into `XML` facade (`registerValidator`, `validate(schemaType, schemaSource)`).
+- **Extensible XPath Engine (OCP)**: Introduced `IXPathEngine` query engine interface and `XML::setXPathEngine` hook allowing custom query engines.
+- **Dedicated Namespace Validator (SRP)**: Extracted `NamespaceValidator` component encapsulating W3C XML Namespaces 1.0 rules.
+- **LSP Contract Purification**: Purified `IParser` and `IStringify` base contracts by removing dummy stub implementations; introduced `IValidatingParser` and `IIndentedStringify` role interfaces.
+
+### Refactored
+- **DRY Consolidation**: Consolidated file I/O operations (`XML_FileIO`), QName handling (`XML_QName`), character reference and quoted string decoders (`XML_ParseHelpers`), and node variant checks (`XML_NodeKindHelpers`).
+
 ## [1.2.0] - 2026-09-20
 
 ### Added

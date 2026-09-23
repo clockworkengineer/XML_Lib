@@ -188,7 +188,7 @@ include(FetchContent)
 FetchContent_Declare(
     XML_Lib
     GIT_REPOSITORY https://github.com/clockworkengineer/XML_Lib.git
-    GIT_TAG        v1.2.0
+    GIT_TAG        v1.3.0
 )
 FetchContent_MakeAvailable(XML_Lib)
 

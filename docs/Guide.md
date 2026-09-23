@@ -464,7 +464,7 @@ twice the uncompressed document size.  When the arena is exhausted the
 `monotonic_buffer_resource` falls back to `new`/`delete` automatically —
 correctness is preserved, only the "zero-allocation" guarantee is lost.
 
-### Baseline benchmark results (v1.2.0, GCC 13, Debug+ASan, Linux)
+### Baseline benchmark results (v1.3.0, GCC 13, Debug+ASan, Linux)
 
 | Benchmark | Mean | Std Dev |
 |---|---|---|

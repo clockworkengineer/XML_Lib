@@ -5,7 +5,7 @@
 # Project
 #---------------------------------------------------------------------------
 PROJECT_NAME           = "XML_Lib"
-PROJECT_NUMBER         = 1.2.0
+PROJECT_NUMBER         = 1.3.0
 PROJECT_BRIEF          = "Lightweight C++20 XML parsing, manipulation, and generation library"
 OUTPUT_DIRECTORY       = docs
 

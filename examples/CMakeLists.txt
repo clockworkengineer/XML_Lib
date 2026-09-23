@@ -1,7 +1,7 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-project(XML_Lib_Examples VERSION 1.2.0 DESCRIPTION "XML_Lib example programs")
+project(XML_Lib_Examples VERSION 1.3.0 DESCRIPTION "XML_Lib example programs")
 
 option(XML_LIB_INSTALL_EXAMPLES "Install example binaries" OFF)
 
