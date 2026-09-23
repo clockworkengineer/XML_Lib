@@ -2,8 +2,9 @@
 #include "common/XML_QName.hpp"
 #include "common/XML_NodeKindHelpers.hpp"
 
-#include <charconv>
+#include <cerrno>
 #include <cmath>
+#include <cstdlib>
 #include <limits>
 #include <sstream>
 
@@ -87,10 +88,13 @@ double stringToNumber(std::string_view s)
   s.remove_prefix(trimStart);
   const auto trimEnd = s.find_last_not_of(" \t\n\r\f\v");
   s.remove_suffix(s.size() - trimEnd - 1);
+  if (s.empty()) return std::numeric_limits<double>::quiet_NaN();
 
-  double result = 0.0;
-  const auto [ptr, ec] = std::from_chars(s.data(), s.data() + s.size(), result);
-  if (ec == std::errc() && ptr == s.data() + s.size()) return result;
+  const std::string str(s);
+  char *end = nullptr;
+  errno = 0;
+  const double result = std::strtod(str.c_str(), &end);
+  if (end == str.c_str() + str.size()) return result;
   return std::numeric_limits<double>::quiet_NaN();
 }
 
@@ -105,9 +109,6 @@ std::string resultToString(const XPathResult &r)
   case XPathResultType::Number: {
     if (std::isnan(r.numberValue)) return "NaN";
     if (std::isinf(r.numberValue)) return (r.numberValue > 0) ? "Infinity" : "-Infinity";
-    char buffer[64];
-    const auto [ptr, ec] = std::to_chars(buffer, buffer + sizeof(buffer), r.numberValue);
-    if (ec == std::errc()) return std::string(buffer, ptr);
     std::ostringstream os;
     os << r.numberValue;
     return os.str();
