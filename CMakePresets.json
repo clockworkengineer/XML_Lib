@@ -56,19 +56,23 @@
   "buildPresets": [
     {
       "name": "release",
-      "configurePreset": "default"
+      "configurePreset": "default",
+      "jobs": 4
     },
     {
       "name": "debug",
-      "configurePreset": "debug"
+      "configurePreset": "debug",
+      "jobs": 4
     },
     {
       "name": "asan-ubsan",
-      "configurePreset": "asan-ubsan"
+      "configurePreset": "asan-ubsan",
+      "jobs": 4
     },
     {
       "name": "embedded",
-      "configurePreset": "embedded"
+      "configurePreset": "embedded",
+      "jobs": 4
     }
   ],
   "testPresets": [

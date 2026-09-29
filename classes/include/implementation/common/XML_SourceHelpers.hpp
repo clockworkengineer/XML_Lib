@@ -39,13 +39,43 @@ inline bool match(ICharStream &source, const String &target)
   return false;
 }
 
-/// @brief Overload for null-terminated C strings.
+/// @brief Overload for compile-time string literals with known length.
+template<std::size_t N>
+inline bool match(ICharStream &source, const char (&target)[N])
+{
+  constexpr std::size_t len = N - 1;
+  if constexpr (len == 1) {
+    if (source.more() && source.current() == static_cast<Char>(target[0])) {
+      source.next();
+      return true;
+    }
+    return false;
+  } else {
+    long index = 0;
+    while (source.more() && source.current() == static_cast<Char>(target[index])) {
+      source.next();
+      if (++index == static_cast<long>(len)) { return true; }
+    }
+    source.backup(index);
+    return false;
+  }
+}
+
+/// @brief Overload for runtime null-terminated C strings.
 inline bool match(ICharStream &source, const char *target)
 {
+  const auto len = static_cast<long>(std::strlen(target));
+  if (len == 1) {
+    if (source.more() && source.current() == static_cast<Char>(target[0])) {
+      source.next();
+      return true;
+    }
+    return false;
+  }
   long index = 0;
   while (source.more() && source.current() == static_cast<Char>(target[index])) {
     source.next();
-    if (++index == static_cast<long>(std::strlen(target))) { return true; }
+    if (++index == len) { return true; }
   }
   source.backup(index);
   return false;

@@ -89,13 +89,12 @@ String readName(ISource &source)
 
 std::string readUntil(ISource &source, Char terminator)
 {
-  String buffer;
-  buffer.reserve(64);
+  const long start = source.position();
   while (source.more() && source.current() != terminator) {
-    buffer += source.current();
     source.next();
   }
-  return toUtf8(buffer);
+  const long end = source.position();
+  return source.getRange(start, end);
 }
 
 /// @brief
@@ -103,7 +102,7 @@ std::string readUntil(ISource &source, Char terminator)
 
 std::string readEntityReferenceText(ISource &source)
 {
-  const std::string entityPrefix = toUtf8(source.current());
+  const char entityPrefix = static_cast<char>(source.current());
   source.next();
   const std::string name = parseName(source);
 
@@ -111,7 +110,11 @@ std::string readEntityReferenceText(ISource &source)
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalidly formed entity reference."));
   }
 
-  const std::string unparsed = entityPrefix + name + ';';
+  std::string unparsed;
+  unparsed.reserve(name.size() + 2);
+  unparsed += entityPrefix;
+  unparsed += name;
+  unparsed += ';';
   source.next();
   return unparsed;
 }

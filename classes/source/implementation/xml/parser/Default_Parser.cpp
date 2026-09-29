@@ -331,7 +331,30 @@ void Default_Parser::appendEntityOrContent(Node &xNode, const XMLValue &value, I
 /// <param name="entityMapper">Entity mapper interface object.</param>
 void Default_Parser::parseContent(ISource &source, Node &xNode, IEntityMapper &entityMapper, std::span<const XMLAttribute> inheritedNamespaces)
 {
-  appendEntityOrContent(xNode, parseCharacter(source), entityMapper, inheritedNamespaces);
+  if (match(source, "]]>")) {
+    XML_LIB_THROW(SyntaxError(source.getPosition(), "']]>' invalid in element content area."));
+  }
+  if (source.current() == '&') {
+    appendEntityOrContent(xNode, parseCharacter(source), entityMapper, inheritedNamespaces);
+    return;
+  }
+
+  const long start = source.position();
+  while (source.more() && source.current() != '<' && source.current() != '&' && source.current() != ']') {
+    const Char ch = source.current();
+    if (!validChar(ch)) {
+      XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid character value encountered."));
+    }
+    source.next();
+  }
+  const long end = source.position();
+  if (end > start) {
+    addContentToElementChildList(xNode, source.getRange(start, end));
+  } else if (source.more() && source.current() == ']') {
+    const Char ch = source.current();
+    source.next();
+    addContentToElementChildList(xNode, std::string(1, static_cast<char>(ch)));
+  }
 }
 
 
@@ -356,10 +379,6 @@ void Default_Parser::parseElementInternal(ISource &source, Node &xNode, IEntityM
     xNode.addChild(parseElement(source, outerNamespaces, entityMapper));
     NamespaceValidator::validate(NRef<Element>(xNode.getChildren().back()), source, isNamespacesEnabled(), isStrictNamespaces());
   } else {
-    if (match(source, "</")) { XML_LIB_THROW(SyntaxError(source.getPosition(), "Missing closing tag.")); }
-    if (match(source, "]]>")) {
-      XML_LIB_THROW(SyntaxError(source.getPosition(), "']]>' invalid in element content area."));
-    }
     parseContent(source, xNode, entityMapper, inheritedNamespaces);
   }
 }

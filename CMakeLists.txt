@@ -236,13 +236,13 @@ if(NOT MSVC)
 
   if(XML_LIB_ENABLE_LTO)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE
-      $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-flto>
+      $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-flto=auto>
     )
 
     # Propagate -flto to consumers so the linker (invoked by clang++) can
     # process LLVM IR bitcode stored in the static library archive.
     target_link_options(${XML_LIBRARY_NAME} INTERFACE
-      $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-flto>
+      $<$<OR:$<CONFIG:Release>,$<CONFIG:MinSizeRel>>:-flto=auto>
     )
   endif()
 
