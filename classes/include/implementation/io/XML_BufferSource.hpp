@@ -49,7 +49,7 @@ public:
     if (sourceBuffer.size() > maxSourceBytes) {
       XML_LIB_THROW(Error("Source buffer exceeds maximum allowed size."));
     }
-    buffer = toUtf16(std::string(sourceBuffer));
+    buffer = toUtf16(sourceBuffer);
     StreamNormalizer::stripBOM(buffer);
     StreamNormalizer::convertCRLFToLF(buffer);
   }
@@ -98,7 +98,7 @@ public:
     if (static_cast<std::size_t>(end) > size) {
       XML_LIB_THROW(Error("Requested range exceeds source buffer size."));
     }
-    return toUtf8(buffer.substr(start, static_cast<std::size_t>(end) - start));
+    return toUtf8(std::u16string_view(buffer.data() + start, static_cast<std::size_t>(end - start)));
   }
 
   void reset() override

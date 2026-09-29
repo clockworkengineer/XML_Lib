@@ -11,6 +11,9 @@
 #include "XML.hpp"
 #include "XML_Converter.hpp"
 
+#include <string>
+#include <string_view>
+
 namespace XML_Lib {
 
 // ============================================================
@@ -31,7 +34,7 @@ int BytesToWideChar(const char *bytes, const int length, wchar_t *sideString = n
 /// @brief
 /// Implementation of toUtf8.
 
-std::string toUtf8(const std::u16string &utf16)
+std::string toUtf8(std::u16string_view utf16)
 {
   const std::wstring wideString{ utf16.begin(), utf16.end() };
   std::string bytes(WideCharToBytes(&wideString[0], static_cast<int>(wideString.length())), 0);
@@ -41,10 +44,10 @@ std::string toUtf8(const std::u16string &utf16)
 /// @brief
 /// Convert to UTF-16 strings.
 
-std::u16string toUtf16(const std::string &utf8)
+std::u16string toUtf16(std::string_view utf8)
 {
-  std::wstring wideString(BytesToWideChar(utf8.c_str(), static_cast<int>(utf8.length())), 0);
-  BytesToWideChar(utf8.c_str(), static_cast<int>(utf8.length()), &wideString[0], static_cast<int>(wideString.length()));
+  std::wstring wideString(BytesToWideChar(utf8.data(), static_cast<int>(utf8.length())), 0);
+  BytesToWideChar(utf8.data(), static_cast<int>(utf8.length()), &wideString[0], static_cast<int>(wideString.length()));
   return std::u16string{ wideString.begin(), wideString.end() };
 }
 }// namespace XML_Lib

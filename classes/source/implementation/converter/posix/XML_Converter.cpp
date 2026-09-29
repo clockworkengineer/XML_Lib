@@ -12,22 +12,39 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 
 namespace XML_Lib {
 
 /// @brief
-/// Convert a UTF-16 string to UTF-8.
-/// Completely re-entrant, thread-safe, and validates surrogate code points.
+/// Convert a UTF-16 string or view to UTF-8.
+/// Completely re-entrant, thread-safe, fast-paths pure ASCII runs, and validates surrogate code points.
 
-std::string toUtf8(const std::u16string &utf16)
+std::string toUtf8(std::u16string_view utf16)
 {
+  const std::size_t len = utf16.size();
+  std::size_t i = 0;
+  while (i < len && utf16[i] <= 0x7F) {
+    ++i;
+  }
+  if (i == len) {
+    std::string utf8(len, '\0');
+    for (std::size_t j = 0; j < len; ++j) {
+      utf8[j] = static_cast<char>(utf16[j]);
+    }
+    return utf8;
+  }
+
   std::string utf8;
-  utf8.reserve(utf16.size() * 3 / 2);
-  for (std::size_t i = 0; i < utf16.size(); ++i) {
+  utf8.reserve(len * 3 / 2);
+  for (std::size_t j = 0; j < i; ++j) {
+    utf8.push_back(static_cast<char>(utf16[j]));
+  }
+  for (; i < len; ++i) {
     char32_t cp = utf16[i];
     // Check for surrogate pairs (0xD800 - 0xDFFF)
     if (cp >= 0xD800 && cp <= 0xDBFF) {
-      if (i + 1 < utf16.size()) {
+      if (i + 1 < len) {
         const char32_t low = utf16[i + 1];
         if (low >= 0xDC00 && low <= 0xDFFF) {
           cp = 0x10000 + (((cp - 0xD800) << 10) | (low - 0xDC00));
@@ -65,17 +82,32 @@ std::string toUtf8(const std::u16string &utf16)
 }
 
 /// @brief
-/// Convert a UTF-8 string to UTF-16.
-/// Enforces strict RFC 3629 / W3C XML Unicode validation rules (rejects overlong sequences,
+/// Convert a UTF-8 string or view to UTF-16.
+/// Fast-paths pure ASCII and enforces strict RFC 3629 / W3C XML Unicode validation rules (rejects overlong sequences,
 /// surrogate code points, out-of-range scalars > 0x10FFFF, and invalid continuation bytes).
 
-std::u16string toUtf16(const std::string &utf8)
+std::u16string toUtf16(std::string_view utf8)
 {
-  std::u16string utf16;
-  utf16.reserve(utf8.size());
   const std::size_t len = utf8.size();
+  std::size_t i = 0;
+  while (i < len && static_cast<uint8_t>(utf8[i]) <= 0x7F) {
+    ++i;
+  }
+  if (i == len) {
+    std::u16string utf16(len, u'\0');
+    for (std::size_t j = 0; j < len; ++j) {
+      utf16[j] = static_cast<char16_t>(static_cast<uint8_t>(utf8[j]));
+    }
+    return utf16;
+  }
 
-  for (std::size_t i = 0; i < len;) {
+  std::u16string utf16;
+  utf16.reserve(len);
+  for (std::size_t j = 0; j < i; ++j) {
+    utf16.push_back(static_cast<char16_t>(static_cast<uint8_t>(utf8[j])));
+  }
+
+  for (; i < len;) {
     const uint8_t b0 = static_cast<uint8_t>(utf8[i]);
 
     if (b0 <= 0x7F) {

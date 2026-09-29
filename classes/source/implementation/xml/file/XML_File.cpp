@@ -189,7 +189,7 @@ void XML_Impl::toFile(const std::filesystem::path &filePath, const std::string_v
     break;
   case XML::Format::utf16BE:
   case XML::Format::utf16LE:
-    writeXMLString(xmlFile, toUtf16(xmlString.data()), format);
+    writeXMLString(xmlFile, toUtf16(xmlString), format);
     break;
   default:
     XML_LIB_THROW(Error("Unsupported XML file format (Byte Order Mark) specified."));
