@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **Multi-Threaded Concurrency Test Suite**: Added `XML_Lib_Tests_Concurrency.cpp` testing concurrent multi-threaded document parsing, XPath query evaluation, and thread-isolated parse options across 16 parallel threads.
+
+### Changed
+- **Thread-Safe & Re-Entrant Parser**: Converted all process-global `static` parser execution state in `Default_Parser` to `inline thread_local static`, allowing safe concurrent parsing across threads without cross-thread contamination or locking.
+- **Thread-Isolated PMR Arenas**: Converted `XML_Arena::currentArena` to `static inline thread_local` and removed process-global `std::pmr::set_default_resource()` mutations; `Variant` and `Element` nodes now resolve memory resources directly from the calling thread's scoped arena pointer.
+- **Modernized Unicode Transcoder**: Replaced deprecated `<codecvt>` and `std::wstring_convert` with a self-contained, re-entrant, high-performance RFC 3629 UTF-8 / UTF-16 validator & transcoder that strictly validates Unicode scalar ranges, surrogate rejection, and overlong sequences with 100% W3C conformance.
+
 ## [1.3.0] - 2026-09-23
 
 ### Added

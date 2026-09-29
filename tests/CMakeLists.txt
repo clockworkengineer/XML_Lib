@@ -71,6 +71,7 @@ if(NOT XML_LIB_EMBEDDED)
         source/xml/XML_Lib_Tests_XML.cpp
         source/xml/XML_Lib_Tests_Helper.cpp
         source/xml/XML_Lib_Tests_Security.cpp
+        source/xml/XML_Lib_Tests_Concurrency.cpp
         source/entitymapper/XML_Lib_Tests_Entity_Mapper.cpp
         source/data/XML_Lib_Tests_External_Reference.cpp
         source/data/XML_Lib_Tests_Value.cpp

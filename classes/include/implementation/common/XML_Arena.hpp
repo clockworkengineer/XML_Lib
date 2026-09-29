@@ -72,7 +72,7 @@ public:
 private:
   std::vector<std::byte> buffer;
   std::pmr::monotonic_buffer_resource resource;
-  static inline XML_Arena *currentArena = nullptr;
+  static inline thread_local XML_Arena *currentArena = nullptr;
 };
 
 } // namespace XML_Lib

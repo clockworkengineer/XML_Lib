@@ -23,7 +23,7 @@ struct Variant
   enum class Type { base = 0, prolog, declaration, root, self, element, content, entity, comment, cdata, pi, dtd };
 
   // Constructors/Destructors
-  explicit Variant(Type nodeType = Type::base, std::pmr::memory_resource *resource = std::pmr::get_default_resource());
+  explicit Variant(Type nodeType = Type::base, std::pmr::memory_resource *resource = nullptr);
   Variant(const Variant &other) = delete;
   Variant &operator=(const Variant &other) = delete;
   Variant(Variant &&other) = default;

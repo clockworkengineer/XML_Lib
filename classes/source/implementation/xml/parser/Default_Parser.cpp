@@ -603,7 +603,6 @@ Node Default_Parser::parse(ISource &source, const ParseOptions &options)
     entityMapper.setBaseDirectory(std::filesystem::path(source.getSystemId()).parent_path());
   }
   XML_Arena::ScopedCurrentArena scopedCurrentArena(arena);
-  XML_Arena::ScopedDefaultResource scopedDefaultResource(arena);
   // Reset XML before next parse
   entityMapper.reset();
   hasRoot = false;

@@ -49,35 +49,35 @@ private:
   [[nodiscard]] static Node parseProlog(ISource &source, IEntityMapper &entityMapper);
   static void parseEpilog(ISource &source, Node &xProlog);
   // XML tree has root
-  inline static bool hasRoot{ false };
+  inline thread_local static bool hasRoot{ false };
   // Document declared standalone="yes"
-  inline static bool isStandaloneDocument{ false };
-  inline static bool strictNamespacesMode{ false };
-  inline static bool enableNamespacesMode{ true };
-  inline static bool allowFuture1xVersionsMode{ false };
-  inline static bool firstEntityDeclarationBindingMode{ false };
+  inline thread_local static bool isStandaloneDocument{ false };
+  inline thread_local static bool strictNamespacesMode{ false };
+  inline thread_local static bool enableNamespacesMode{ true };
+  inline thread_local static bool allowFuture1xVersionsMode{ false };
+  inline thread_local static bool firstEntityDeclarationBindingMode{ false };
   // Parser validator
-  inline static std::unique_ptr<IValidator> validator;
+  inline thread_local static std::unique_ptr<IValidator> validator;
   // Current entity expansion depth (reset at the start of each parse)
-  inline static std::size_t entityExpansionDepth{ 0 };
+  inline thread_local static std::size_t entityExpansionDepth{ 0 };
   // Maximum allowed expansion depth (copied from ParseOptions at parse start)
-  inline static std::size_t maxEntityExpansionDepth{ 512 };
+  inline thread_local static std::size_t maxEntityExpansionDepth{ 512 };
   // Current element nesting depth (reset at the start of each parse)
-  inline static std::size_t elementNestingDepth{ 0 };
+  inline thread_local static std::size_t elementNestingDepth{ 0 };
   // Maximum allowed nesting depth (copied from ParseOptions at parse start)
-  inline static std::size_t maxElementNestingDepth{ 1000 };
+  inline thread_local static std::size_t maxElementNestingDepth{ 1000 };
   // Maximum allowed element count in the document (copied from ParseOptions at parse start)
-  inline static std::size_t maxElementCount{ 1000000 };
+  inline thread_local static std::size_t maxElementCount{ 1000000 };
   // Current element count for the current parse
-  inline static std::size_t currentElementCount{ 0 };
+  inline thread_local static std::size_t currentElementCount{ 0 };
   // Maximum allowed attribute count per element (copied from ParseOptions at parse start)
-  inline static std::size_t maxAttributeCount{ 10000 };
+  inline thread_local static std::size_t maxAttributeCount{ 10000 };
   // Maximum allowed attribute count across the entire document (copied from ParseOptions at parse start)
-  inline static std::size_t maxTotalAttributeCount{ 1000000 };
+  inline thread_local static std::size_t maxTotalAttributeCount{ 1000000 };
   // Current total attribute count for the current parse
-  inline static std::size_t currentTotalAttributeCount{ 0 };
+  inline thread_local static std::size_t currentTotalAttributeCount{ 0 };
   // Maximum allowed text/content node size (copied from ParseOptions at parse start)
-  inline static std::size_t maxTextNodeSize{ 1024 * 1024 };
+  inline thread_local static std::size_t maxTextNodeSize{ 1024 * 1024 };
   // Entity mapper reference
   IEntityMapper &entityMapper;
   // Parse options (set at the start of each parse() call)

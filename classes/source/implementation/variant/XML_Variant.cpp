@@ -7,6 +7,7 @@
 //
 
 #include "XML_Impl.hpp"
+#include "common/XML_Arena.hpp"
 
 namespace XML_Lib {
 /// @brief
@@ -40,7 +41,8 @@ void Variant::reserveChildren(const size_t count)
   children.reserve(count);
 }
 Variant::Variant(const Type nodeType, std::pmr::memory_resource *resource)
-  : xmlNodeType(nodeType), children(resource)
+  : xmlNodeType(nodeType),
+    children(resource ? resource : (XML_Arena::getCurrent() ? XML_Arena::getCurrent()->memoryResource() : std::pmr::get_default_resource()))
 {}
 
 std::pmr::memory_resource *Variant::memoryResource() const noexcept
