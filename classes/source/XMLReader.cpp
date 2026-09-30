@@ -308,6 +308,7 @@ std::optional<std::string_view> XMLReader::findAttribute(std::string_view attrNa
 
 std::expected<bool, XML_Error> XMLReader::readExpected() noexcept
 {
+#ifndef XML_LIB_NO_EXCEPTIONS
   try {
     return read();
   } catch (const std::exception &e) {
@@ -317,6 +318,9 @@ std::expected<bool, XML_Error> XMLReader::readExpected() noexcept
     const auto [line, col] = getPosition();
     return std::unexpected(XML_Error{ "Unknown XMLReader error.", line, col });
   }
+#else
+  return read();
+#endif
 }
 
 bool XMLReader::hasAttribute(std::string_view attrName) const noexcept

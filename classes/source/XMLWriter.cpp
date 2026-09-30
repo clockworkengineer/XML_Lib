@@ -106,11 +106,15 @@ XMLWriter &XMLWriter::operator=(XMLWriter &&other) noexcept
 XMLWriter::~XMLWriter()
 {
   if (dest) {
+#ifndef XML_LIB_NO_EXCEPTIONS
     try {
       writeEndDocument();
     } catch (...) {
       // Destructors must not throw
     }
+#else
+    writeEndDocument();
+#endif
   }
 }
 
@@ -176,7 +180,7 @@ void XMLWriter::writeStartElement(std::string_view name)
 void XMLWriter::writeAttribute(std::string_view name, std::string_view value)
 {
   if (!dest || !inStartTag) {
-    throw std::runtime_error("XMLWriter Error: writeAttribute must be called directly after writeStartElement.");
+    XML_LIB_THROW(std::runtime_error("XMLWriter Error: writeAttribute must be called directly after writeStartElement."));
   }
   dest->add(" ");
   dest->add(name);

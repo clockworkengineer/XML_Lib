@@ -86,6 +86,7 @@ void XML::validate() const { implementation->validate(); }
 
 std::expected<void, std::string> XML::validateExpected() const noexcept
 {
+#ifndef XML_LIB_NO_EXCEPTIONS
   try {
     validate();
     return {};
@@ -94,6 +95,10 @@ std::expected<void, std::string> XML::validateExpected() const noexcept
   } catch (...) {
     return std::unexpected(std::string("Unknown DTD validation error."));
   }
+#else
+  validate();
+  return {};
+#endif
 }
 #endif
 
@@ -109,6 +114,7 @@ void XML::validate(const XSD_Schema &schema) const { implementation->validate(sc
 
 std::expected<void, std::string> XML::validateExpected(const std::string_view &xsdSource) const noexcept
 {
+#ifndef XML_LIB_NO_EXCEPTIONS
   try {
     validate(xsdSource);
     return {};
@@ -117,10 +123,15 @@ std::expected<void, std::string> XML::validateExpected(const std::string_view &x
   } catch (...) {
     return std::unexpected(std::string("Unknown XSD validation error."));
   }
+#else
+  validate(xsdSource);
+  return {};
+#endif
 }
 
 std::expected<void, std::string> XML::validateExpected(const XSD_Schema &schema) const noexcept
 {
+#ifndef XML_LIB_NO_EXCEPTIONS
   try {
     validate(schema);
     return {};
@@ -129,6 +140,10 @@ std::expected<void, std::string> XML::validateExpected(const XSD_Schema &schema)
   } catch (...) {
     return std::unexpected(std::string("Unknown XSD validation error."));
   }
+#else
+  validate(schema);
+  return {};
+#endif
 }
 #endif
 
@@ -214,6 +229,7 @@ void XML::parse(const std::filesystem::path &filePath, const ParseOptions &optio
 std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
     ISource &source, const ParseOptions &options) noexcept
 {
+#ifndef XML_LIB_NO_EXCEPTIONS
   try {
     auto doc = std::make_unique<XML>();
     doc->parse(source, options);
@@ -225,6 +241,11 @@ std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
     const auto [line, col] = source.getPosition();
     return std::unexpected(XML_Error{ "Unknown parsing error.", line, col });
   }
+#else
+  auto doc = std::make_unique<XML>();
+  doc->parse(source, options);
+  return doc;
+#endif
 }
 
 std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
@@ -252,6 +273,7 @@ std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
 std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
     const std::filesystem::path &filePath, const ParseOptions &options) noexcept
 {
+#ifndef XML_LIB_NO_EXCEPTIONS
   try {
     std::error_code ec;
     const auto fileSize = std::filesystem::file_size(filePath, ec);
@@ -272,6 +294,22 @@ std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
   } catch (...) {
     return std::unexpected(XML_Error{ "Unknown file parsing error.", 0, 0 });
   }
+#else
+  std::error_code ec;
+  const auto fileSize = std::filesystem::file_size(filePath, ec);
+  if (ec) {
+    return std::unexpected(XML_Error{ "Failed to access file: " + ec.message(), 0, 0 });
+  }
+  if (static_cast<std::size_t>(fileSize) > options.maxXmlSize) {
+    return std::unexpected(XML_Error{ "XML input exceeds maximum allowed size.", 1, 1 });
+  }
+  const std::string xmlString = XML_Impl::fromFile(filePath);
+  if (xmlString.size() > options.maxXmlSize) {
+    return std::unexpected(XML_Error{ "XML input exceeds maximum allowed size.", 1, 1 });
+  }
+  BufferSource source{ xmlString, options.maxXmlSize, filePath.string() };
+  return parseExpected(source, options);
+#endif
 }
 
 /// @brief

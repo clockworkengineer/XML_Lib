@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/XML_Error.hpp"
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -21,7 +22,7 @@ namespace XML_Lib {
     s.push_back(static_cast<char>(0x80 | (utf16 & 0x3F)));
     return s;
   } else if (utf16 >= 0xD800 && utf16 <= 0xDFFF) {
-    throw std::range_error("Unpaired UTF-16 surrogate encountered.");
+    XML_LIB_THROW(std::range_error("Unpaired UTF-16 surrogate encountered."));
   } else {
     std::string s;
     s.reserve(3);
