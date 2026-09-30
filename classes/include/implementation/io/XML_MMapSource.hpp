@@ -6,6 +6,7 @@
 #include "converter/XML_Converter.hpp"
 #include "interface/ISource.hpp"
 
+#include <algorithm>
 #include <cstddef>
 #include <filesystem>
 #include <stdexcept>
@@ -16,6 +17,9 @@
 #if defined(_WIN32)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
+#endif
+#ifndef NOMINMAX
+#define NOMINMAX
 #endif
 #include <windows.h>
 #else
@@ -233,7 +237,7 @@ public:
     const auto uStart = static_cast<std::size_t>(start);
     const auto uEnd = static_cast<std::size_t>(end);
     if (uStart >= buffer.size()) { return {}; }
-    const auto length = std::min(uEnd - uStart, buffer.size() - uStart);
+    const auto length = (std::min)(uEnd - uStart, buffer.size() - uStart);
     return toUtf8(std::u16string_view(buffer.data() + uStart, length));
   }
 

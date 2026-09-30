@@ -17,6 +17,10 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wno-unknown-warning-option -Wno-c++2b-extensions -Wno-pre-c++2b-compat)
 endif()
 
+if(MSVC)
+  add_compile_definitions(NOMINMAX)
+endif()
+
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
@@ -224,6 +228,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 if(MSVC)
+  target_compile_definitions(${XML_LIBRARY_NAME} PUBLIC NOMINMAX)
   target_compile_options(${XML_LIBRARY_NAME} PRIVATE /W4)
   if(XML_LIB_WARNINGS_AS_ERRORS)
     target_compile_options(${XML_LIBRARY_NAME} PRIVATE /WX)
