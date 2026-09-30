@@ -147,7 +147,7 @@ public:
   [[nodiscard]] std::vector<const Node *> xpath(const class XPathExpression &expression) const;
 #endif
 
-  /// @brief Return the library version string (e.g. `"1.3.0"`).
+  /// @brief Return the library version string (e.g. `"1.4.0"`).
   [[nodiscard]] static std::string version();
 
   /// @brief Parse XML from an lvalue source stream.
