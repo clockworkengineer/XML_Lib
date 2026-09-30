@@ -24,7 +24,7 @@ namespace XML_Lib {
 static void validateFilePath(const std::filesystem::path &filePath)
 {
   const std::string pathStr = filePath.string();
-  if (pathStr.find('\0') != std::string::npos) {
+  if (pathStr.contains('\0')) {
     XML_LIB_THROW(Error("Invalid file path: null byte in path."));
   }
   const auto normalized = filePath.lexically_normal();

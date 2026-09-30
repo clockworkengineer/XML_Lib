@@ -230,7 +230,7 @@ bool isValidPubid(const std::string_view &pubid)
   for (char c : pubid) {
     if (std::isalnum(static_cast<unsigned char>(c))) continue;
     if (c == ' ' || c == '\r' || c == '\n') continue;
-    if (std::string_view("-'()+,./:=?;!*#@$_%").find(c) != std::string_view::npos) continue;
+    if (std::string_view("-'()+,./:=?;!*#@$_%").contains(c)) continue;
     return false;
   }
   return true;

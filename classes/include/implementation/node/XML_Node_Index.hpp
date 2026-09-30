@@ -2,6 +2,7 @@
 #include "common/XML_Error.hpp"
 
 #include <algorithm>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -28,6 +29,44 @@ inline const Node &Node::operator[](const std::string_view &name) const
     }
   }
   XML_LIB_THROW(Error("Element '" + std::string(name) + "' does not exist."));
+}
+// ============================================
+// Node multidimensional index access (C++23)
+// ============================================
+inline const Node &Node::operator[](std::string_view parent, std::string_view child) const
+{
+  return (*this)[parent][child];
+}
+
+inline const Node &Node::operator[](std::string_view name, int index) const
+{
+  return (*this)[name][index];
+}
+// ============================================
+// Node findChild (monadic std::optional return)
+// ============================================
+inline std::optional<std::reference_wrapper<const Node>> Node::findChild(std::string_view name) const
+{
+  if (isIndexable()) {
+    for (const auto &child : getChildren()) {
+      if (child.isNameable() && NRef<Element>(child).name() == name) {
+        return std::cref(child);
+      }
+    }
+  }
+  return std::nullopt;
+}
+
+inline std::optional<std::reference_wrapper<Node>> Node::findChild(std::string_view name)
+{
+  if (isIndexable()) {
+    for (auto &child : getChildren()) {
+      if (child.isNameable() && NRef<Element>(child).name() == name) {
+        return std::ref(child);
+      }
+    }
+  }
+  return std::nullopt;
 }
 // =====================
 // XElement index access

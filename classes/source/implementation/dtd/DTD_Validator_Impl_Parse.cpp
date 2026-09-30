@@ -221,7 +221,7 @@ void DTD_Impl::parseNotation(ISource &source) const
   }
   ignoreWS(source);
   const std::string name = parseName(source);
-  if (Default_Parser::isNamespacesEnabled() && name.find(':') != std::string::npos) {
+  if (Default_Parser::isNamespacesEnabled() && name.contains(':')) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in notation names under XML Namespaces."));
   }
   if (!source.more() || !isWS(source)) {
@@ -254,7 +254,7 @@ void DTD_Impl::parseEntity(ISource &source, bool isInternalSubset) const
     ignoreWS(source);
   }
   const std::string rawName = toUtf8(readName(source));
-  if (Default_Parser::isNamespacesEnabled() && rawName.find(':') != std::string::npos) {
+  if (Default_Parser::isNamespacesEnabled() && rawName.contains(':')) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in entity names under XML Namespaces."));
   }
   const String u16Name = toUtf16(rawName);
@@ -273,7 +273,7 @@ void DTD_Impl::parseEntity(ISource &source, bool isInternalSubset) const
   entityName += rawName + ";";
   if (source.current() == '\'' || source.current() == '"') {
     const XMLValue entityValue = parseValue(source);
-    if (isInternalSubset && entityValue.getUnparsed().find('%') != std::string::npos) {
+    if (isInternalSubset && entityValue.getUnparsed().contains('%')) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Parameter entity references must not occur within markup declarations in the internal subset."));
     }
     const std::string &unp = entityValue.getUnparsed();
@@ -289,13 +289,13 @@ void DTD_Impl::parseEntity(ISource &source, bool isInternalSubset) const
     std::string expanded = entityValue.getParsed();
     if (!isInternalSubset) {
       size_t depth = 0;
-      while (expanded.find('%') != std::string::npos && depth++ < 32) {
+      while (expanded.contains('%') && depth++ < 32) {
         std::string next = xDTD.getEntityMapper().translate(expanded);
         if (next == expanded) break;
         expanded = std::move(next);
       }
     }
-    if (expanded.find('&') != std::string::npos) {
+    if (expanded.contains('&')) {
       std::set<std::string> currentEntities;
       xDTD.getEntityMapper().checkRecursiveEntity(entityName, expanded, currentEntities);
     }

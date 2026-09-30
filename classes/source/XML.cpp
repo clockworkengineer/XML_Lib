@@ -83,6 +83,18 @@ Node &XML::root() const { return implementation->root(); }
 /// exception is thrown, then there is a validation issue and the XML is not valid.
 
 void XML::validate() const { implementation->validate(); }
+
+std::expected<void, std::string> XML::validateExpected() const noexcept
+{
+  try {
+    validate();
+    return {};
+  } catch (const std::exception &e) {
+    return std::unexpected(std::string(e.what()));
+  } catch (...) {
+    return std::unexpected(std::string("Unknown DTD validation error."));
+  }
+}
 #endif
 
 #if defined(XML_LIB_ENABLE_XSD)
@@ -94,6 +106,30 @@ void XML::validate(const std::string_view &xsdSource) const { implementation->va
 
 /// @brief Validate XML against a pre-compiled XSD schema.
 void XML::validate(const XSD_Schema &schema) const { implementation->validate(schema); }
+
+std::expected<void, std::string> XML::validateExpected(const std::string_view &xsdSource) const noexcept
+{
+  try {
+    validate(xsdSource);
+    return {};
+  } catch (const std::exception &e) {
+    return std::unexpected(std::string(e.what()));
+  } catch (...) {
+    return std::unexpected(std::string("Unknown XSD validation error."));
+  }
+}
+
+std::expected<void, std::string> XML::validateExpected(const XSD_Schema &schema) const noexcept
+{
+  try {
+    validate(schema);
+    return {};
+  } catch (const std::exception &e) {
+    return std::unexpected(std::string(e.what()));
+  } catch (...) {
+    return std::unexpected(std::string("Unknown XSD validation error."));
+  }
+}
 #endif
 
 void XML::registerValidator(const std::string_view &schemaType, std::unique_ptr<IValidator> validator) const
@@ -173,6 +209,69 @@ void XML::parse(const std::filesystem::path &filePath, const ParseOptions &optio
   }
   BufferSource source{ xmlString, options.maxXmlSize, filePath.string() };
   implementation->parse(source, options);
+}
+
+std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
+    ISource &source, const ParseOptions &options) noexcept
+{
+  try {
+    auto doc = std::make_unique<XML>();
+    doc->parse(source, options);
+    return doc;
+  } catch (const std::exception &e) {
+    const auto [line, col] = source.getPosition();
+    return std::unexpected(XML_Error{ e.what(), line, col });
+  } catch (...) {
+    const auto [line, col] = source.getPosition();
+    return std::unexpected(XML_Error{ "Unknown parsing error.", line, col });
+  }
+}
+
+std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
+    ISource &&source, const ParseOptions &options) noexcept
+{
+  return parseExpected(source, options);
+}
+
+std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
+    std::string_view xmlString, const ParseOptions &options) noexcept
+{
+  if (xmlString.size() > options.maxXmlSize) {
+    return std::unexpected(XML_Error{ "XML input exceeds maximum allowed size.", 1, 1 });
+  }
+  BufferSource source{ xmlString, options.maxXmlSize };
+  return parseExpected(source, options);
+}
+
+std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
+    const std::string &xmlString, const ParseOptions &options) noexcept
+{
+  return parseExpected(std::string_view{ xmlString }, options);
+}
+
+std::expected<std::unique_ptr<XML>, XML_Error> XML::parseExpected(
+    const std::filesystem::path &filePath, const ParseOptions &options) noexcept
+{
+  try {
+    std::error_code ec;
+    const auto fileSize = std::filesystem::file_size(filePath, ec);
+    if (ec) {
+      return std::unexpected(XML_Error{ "Failed to access file: " + ec.message(), 0, 0 });
+    }
+    if (static_cast<std::size_t>(fileSize) > options.maxXmlSize) {
+      return std::unexpected(XML_Error{ "XML input exceeds maximum allowed size.", 1, 1 });
+    }
+    const std::string xmlString = XML_Impl::fromFile(filePath);
+    if (xmlString.size() > options.maxXmlSize) {
+      return std::unexpected(XML_Error{ "XML input exceeds maximum allowed size.", 1, 1 });
+    }
+    BufferSource source{ xmlString, options.maxXmlSize, filePath.string() };
+    return parseExpected(source, options);
+  } catch (const std::exception &e) {
+    return std::unexpected(XML_Error{ e.what(), 0, 0 });
+  } catch (...) {
+    return std::unexpected(XML_Error{ "Unknown file parsing error.", 0, 0 });
+  }
 }
 
 /// @brief

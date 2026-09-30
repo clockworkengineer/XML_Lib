@@ -91,6 +91,7 @@ if(NOT XML_LIB_EMBEDDED)
         source/traverse/XML_Lib_Tests_Traverse.cpp
         source/streaming/XML_Lib_Tests_Streaming.cpp
         source/ranges/XML_Lib_Tests_Ranges.cpp
+        source/xml/XML_Lib_Tests_CPP23.cpp
     )
 
     if(XML_LIB_ENABLE_STRINGIFY)

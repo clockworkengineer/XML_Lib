@@ -1,7 +1,9 @@
 #pragma once
 
 #include "XML_Core.hpp"
+#include "XML_Expected.hpp"
 #include "XML_Sources.hpp"
+#include <expected>
 #include <filesystem>
 #include <memory>
 #include <optional>
@@ -50,9 +52,31 @@ public:
   XMLReader &operator=(XMLReader &&) noexcept;
   ~XMLReader();
 
+  /// @brief Return the string representation of a NodeType using C++23 std::unreachable.
+  [[nodiscard]] static constexpr std::string_view nodeTypeToString(NodeType type) noexcept
+  {
+    switch (type) {
+    case NodeType::None: return "None";
+    case NodeType::Declaration: return "Declaration";
+    case NodeType::ElementStart: return "ElementStart";
+    case NodeType::ElementEnd: return "ElementEnd";
+    case NodeType::Text: return "Text";
+    case NodeType::CDATA: return "CDATA";
+    case NodeType::Comment: return "Comment";
+    case NodeType::ProcessingInstruction: return "ProcessingInstruction";
+    case NodeType::DTD: return "DTD";
+    case NodeType::Whitespace: return "Whitespace";
+    case NodeType::EndDocument: return "EndDocument";
+    }
+    std::unreachable();
+  }
+
   /// @brief Advance the cursor to the next XML token/node in the stream.
   /// @return `true` if a new node was read; `false` if end of document was reached.
   bool read();
+
+  /// @brief Advance the cursor returning std::expected (non-throwing C++23 API).
+  std::expected<bool, XML_Error> readExpected() noexcept;
 
   /// @brief Return the type of the current node.
   [[nodiscard]] NodeType nodeType() const noexcept { return type; }
@@ -74,6 +98,9 @@ public:
 
   /// @brief Return the value of an attribute by name, or empty string_view if not found.
   [[nodiscard]] std::string_view getAttribute(std::string_view attrName) const noexcept;
+
+  /// @brief Find an attribute value by name returning std::optional (monadic C++23 API).
+  [[nodiscard]] std::optional<std::string_view> findAttribute(std::string_view attrName) const noexcept;
 
   /// @brief Return `true` if an attribute with the given name exists on current element.
   [[nodiscard]] bool hasAttribute(std::string_view attrName) const noexcept;

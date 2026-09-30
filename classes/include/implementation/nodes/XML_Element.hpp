@@ -3,6 +3,7 @@
 #include "common/XML_QName.hpp"
 #include <limits>
 #include <memory_resource>
+#include <optional>
 #include <span>
 
 namespace XML_Lib {
@@ -46,6 +47,14 @@ struct Element : Variant
   [[nodiscard]] const XMLAttribute &getAttribute(const std::string_view &attributeName) const
   {
     return XMLAttribute::find(attributes, attributeName);
+  }
+  // Find attribute returning std::optional (monadic C++23)
+  [[nodiscard]] std::optional<std::reference_wrapper<const XMLAttribute>> findAttribute(const std::string_view &attributeName) const noexcept
+  {
+    for (const auto &attr : attributes) {
+      if (attr.getName() == attributeName) { return std::cref(attr); }
+    }
+    return std::nullopt;
   }
   // Add an attribute
   void addAttribute(const std::string_view &name, const XMLValue &value) const { attributes.emplace_back(name, value); }

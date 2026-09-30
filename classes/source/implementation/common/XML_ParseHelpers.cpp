@@ -297,7 +297,7 @@ std::pair<std::string, std::string> parsePIBody(ISource &source,
                                                 bool checkColons)
 {
   const std::string name = parseName(source);
-  if (checkColons && name.find(':') != std::string::npos) {
+  if (checkColons && name.contains(':')) {
     XML_LIB_THROW(SyntaxError(source.getPosition(), "Colons are not allowed in processing instruction targets under XML Namespaces."));
   }
   const std::string lowerName = toLowerString(name);

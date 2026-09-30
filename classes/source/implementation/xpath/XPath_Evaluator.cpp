@@ -663,7 +663,7 @@ static XPathResult evalBuiltinFunction(const std::string &name,
     const std::string_view left = resultToStringView(args[0], scratchLeft);
     const std::string_view right = resultToStringView(args[1], scratchRight);
     return makeBool(name == "starts-with" ? left.starts_with(right)
-                                          : left.find(right) != std::string::npos);
+                                          : left.contains(right));
   }
   if (name == "string-length") {
     auto args = evalArgs();

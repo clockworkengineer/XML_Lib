@@ -41,7 +41,7 @@ void NamespaceValidator::validate(
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Empty prefix in namespace declaration."));
     } else if (attrName.starts_with("xmlns:")) {
       const std::string prefix = attrName.substr(6);
-      if (prefix.empty() || prefix.find(':') != std::string::npos) {
+      if (prefix.empty() || prefix.contains(':')) {
         XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid prefix in namespace declaration."));
       }
       if (prefix == "xmlns") {

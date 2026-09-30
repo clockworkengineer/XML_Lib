@@ -1,13 +1,18 @@
 #pragma once
 
 #include <cstdint>
+#include <expected>
 #include <filesystem>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
 
+#include "XML_Expected.hpp"
 #include "interface/IEntityResolver.hpp"
+#include "interface/IParser.hpp"
+#include "interface/IStringify.hpp"
 
 #ifndef XML_LIB_MAX_XML_SIZE
 #define XML_LIB_MAX_XML_SIZE (1024ULL * 1024ULL * 100ULL)
@@ -100,6 +105,9 @@ public:
   /// @brief Validate the document against the embedded DTD.
   /// @throws DTD_Validator::Error if validation fails.
   void validate() const;
+
+  /// @brief Validate the document against the embedded DTD returning std::expected (non-throwing C++23 API).
+  [[nodiscard]] std::expected<void, std::string> validateExpected() const noexcept;
 #endif
 
 #if defined(XML_LIB_ENABLE_XSD)
@@ -112,6 +120,12 @@ public:
   /// @param schema Pre-compiled XSD_Schema object.
   /// @throws XSD_Validator::Error if validation fails.
   void validate(const class XSD_Schema &schema) const;
+
+  /// @brief Validate the document against an XSD schema returning std::expected (non-throwing C++23 API).
+  [[nodiscard]] std::expected<void, std::string> validateExpected(const std::string_view &xsdSource) const noexcept;
+
+  /// @brief Validate the document against a pre-compiled XSD schema returning std::expected (non-throwing C++23 API).
+  [[nodiscard]] std::expected<void, std::string> validateExpected(const class XSD_Schema &schema) const noexcept;
 #endif
 
   /// @brief Register a custom schema validator for open schema extensibility (OCP).
@@ -158,6 +172,26 @@ public:
   /// @param filePath Path to the XML file to read and parse.
   /// @param options Parser options such as nesting depth and entity handling.
   void parse(const std::filesystem::path &filePath, const ParseOptions &options = {}) const;
+
+  /// @brief Parse XML from an lvalue source stream returning std::expected (C++23 non-throwing API).
+  [[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> parseExpected(
+      ISource &source, const ParseOptions &options = {}) noexcept;
+
+  /// @brief Parse XML from an rvalue source stream returning std::expected (C++23 non-throwing API).
+  [[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> parseExpected(
+      ISource &&source, const ParseOptions &options = {}) noexcept;
+
+  /// @brief Parse XML from a string_view returning std::expected (C++23 non-throwing API).
+  [[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> parseExpected(
+      std::string_view xmlString, const ParseOptions &options = {}) noexcept;
+
+  /// @brief Parse XML from a std::string returning std::expected (C++23 non-throwing API).
+  [[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> parseExpected(
+      const std::string &xmlString, const ParseOptions &options = {}) noexcept;
+
+  /// @brief Parse XML from a file path returning std::expected (C++23 non-throwing API).
+  [[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> parseExpected(
+      const std::filesystem::path &filePath, const ParseOptions &options = {}) noexcept;
 
 #if defined(XML_LIB_ENABLE_STRINGIFY)
   /// @brief Serialise the document tree to an lvalue destination.

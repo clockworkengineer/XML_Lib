@@ -298,6 +298,27 @@ std::string_view XMLReader::getAttribute(std::string_view attrName) const noexce
   return {};
 }
 
+std::optional<std::string_view> XMLReader::findAttribute(std::string_view attrName) const noexcept
+{
+  for (const auto &[name, value] : currentAttributes) {
+    if (name == attrName) { return value; }
+  }
+  return std::nullopt;
+}
+
+std::expected<bool, XML_Error> XMLReader::readExpected() noexcept
+{
+  try {
+    return read();
+  } catch (const std::exception &e) {
+    const auto [line, col] = getPosition();
+    return std::unexpected(XML_Error{ e.what(), line, col });
+  } catch (...) {
+    const auto [line, col] = getPosition();
+    return std::unexpected(XML_Error{ "Unknown XMLReader error.", line, col });
+  }
+}
+
 bool XMLReader::hasAttribute(std::string_view attrName) const noexcept
 {
   for (const auto &[name, value] : currentAttributes) {

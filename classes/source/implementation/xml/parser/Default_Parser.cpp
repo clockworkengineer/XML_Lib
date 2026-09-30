@@ -228,7 +228,7 @@ std::vector<XMLAttribute> Default_Parser::parseAttributes(ISource &source, IEnti
     XMLValue attributeValue = parseValue(source, entityMapper);
     ensureTextNodeSizeWithinLimit(attributeValue.getParsed().size());
     if (!validAttributeValue(attributeValue.getUnparsed(), attributeValue.getQuote()) ||
-        attributeValue.getParsed().find('<') != std::string::npos) {
+        attributeValue.getParsed().contains('<')) {
       XML_LIB_THROW(
         SyntaxError(source.getPosition(), "Attribute value contains invalid character '<', '\"', ''' or '&'."));
     }

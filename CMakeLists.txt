@@ -3,9 +3,15 @@ cmake_minimum_required(VERSION 3.20)
 
 project(XML_Lib VERSION 1.3.0 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Clang 18 with GCC 13 libstdc++ compatibility for <expected>
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_definitions(__cpp_concepts=202002L)
+  add_compile_options(-Wno-builtin-macro-redefined)
+endif()
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)

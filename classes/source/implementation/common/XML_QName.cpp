@@ -5,11 +5,11 @@ namespace XML_Lib {
 
 bool isValidQName(std::string_view qname) noexcept
 {
-  const auto pos = qname.find(':');
-  if (pos == std::string_view::npos) {
+  if (!qname.contains(':')) {
     return !qname.empty();
   }
-  if (pos == 0 || pos + 1 >= qname.size() || qname.find(':', pos + 1) != std::string_view::npos) {
+  const auto pos = qname.find(':');
+  if (pos == 0 || pos + 1 >= qname.size() || qname.substr(pos + 1).contains(':')) {
     return false;
   }
   return true;
@@ -17,8 +17,9 @@ bool isValidQName(std::string_view qname) noexcept
 
 void validateQName(std::string_view qname, std::string_view contextName, const ISource &source)
 {
-  if (const auto pos = qname.find(':'); pos != std::string_view::npos) {
-    if (pos == 0 || pos + 1 >= qname.size() || qname.find(':', pos + 1) != std::string_view::npos) {
+  if (qname.contains(':')) {
+    const auto pos = qname.find(':');
+    if (pos == 0 || pos + 1 >= qname.size() || qname.substr(pos + 1).contains(':')) {
       XML_LIB_THROW(SyntaxError(source.getPosition(), "Invalid QName in " + std::string(contextName) + ": '" + std::string(qname) + "'."));
     }
   }

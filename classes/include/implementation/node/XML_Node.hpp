@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory_resource>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -52,6 +53,11 @@ struct Node
   // Node Index overloads
   [[nodiscard]] const Node &operator[](int index) const;
   [[nodiscard]] const Node &operator[](const std::string_view &name) const;
+  [[nodiscard]] const Node &operator[](std::string_view parent, std::string_view child) const;
+  [[nodiscard]] const Node &operator[](std::string_view name, int index) const;
+  // Monadic child finder (C++23)
+  [[nodiscard]] std::optional<std::reference_wrapper<const Node>> findChild(std::string_view name) const;
+  [[nodiscard]] std::optional<std::reference_wrapper<Node>> findChild(std::string_view name);
   // Add child
   void addChild(Node &child) const { xmlVariant->addChild(child); }
   void addChild(Node &&child) const { xmlVariant->addChild(child); }
