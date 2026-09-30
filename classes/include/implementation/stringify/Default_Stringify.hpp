@@ -39,6 +39,8 @@ public:
 class ElementSerializer final : public INodeSerializer
 {
 public:
+  explicit ElementSerializer(const StringifyOptions &options) : options(options) {}
+
   void serialize(
     const Node &xNode,
     IDestination &destination,
@@ -48,16 +50,36 @@ public:
     const auto &xElement = NRef<Element>(xNode);
     destination.add("<" + xElement.name());
     for (auto &attribute : xElement.getAttributes()) {
-      destination.add(" " + attribute.getName() + "=" + attribute.getQuote() + attribute.getUnparsed() + attribute.getQuote());
+      if (options.prettyPrint && options.attributeNewlineWrapping) {
+        destination.add("\n");
+        appendIndent(destination, indent + 1);
+      } else {
+        destination.add(" ");
+      }
+      destination.add(attribute.getName() + "=" + attribute.getQuote() + attribute.getUnparsed() + attribute.getQuote());
     }
     if (!isA<Self>(xNode)) {
       destination.add(">");
-      for (auto &child : xNode.getChildren()) { recurse(child, destination, indent); }
+      for (auto &child : xNode.getChildren()) { recurse(child, destination, indent + 1); }
       destination.add("</" + xElement.name() + ">");
     } else {
-      destination.add("/>");
+      if (options.selfClosingSpacing) {
+        destination.add(" />");
+      } else {
+        destination.add("/>");
+      }
     }
   }
+
+private:
+  void appendIndent(IDestination &dest, unsigned long level) const
+  {
+    const char indentChar = options.useTabs ? '\t' : ' ';
+    const int count = options.useTabs ? static_cast<int>(level) : static_cast<int>(level * options.indentSpaces);
+    for (int i = 0; i < count; ++i) { dest.add(indentChar); }
+  }
+
+  const StringifyOptions &options;
 };
 
 class CommentSerializer final : public INodeSerializer
@@ -144,22 +166,12 @@ public:
 };
 
 /// @brief Strategy-based XML stringifier enforcing Open/Closed Principle (OCP).
-class Default_Stringify final : public IStringify
+class Default_Stringify final : public IIndentedStringify
 {
 public:
   Default_Stringify()
   {
-    registerSerializer(Variant::Type::prolog, std::make_unique<PrologSerializer>());
-    registerSerializer(Variant::Type::declaration, std::make_unique<DeclarationSerializer>());
-    registerSerializer(Variant::Type::root, std::make_unique<ElementSerializer>());
-    registerSerializer(Variant::Type::element, std::make_unique<ElementSerializer>());
-    registerSerializer(Variant::Type::self, std::make_unique<ElementSerializer>());
-    registerSerializer(Variant::Type::comment, std::make_unique<CommentSerializer>());
-    registerSerializer(Variant::Type::content, std::make_unique<ContentSerializer>());
-    registerSerializer(Variant::Type::entity, std::make_unique<EntityReferenceSerializer>());
-    registerSerializer(Variant::Type::pi, std::make_unique<PISerializer>());
-    registerSerializer(Variant::Type::cdata, std::make_unique<CDATASerializer>());
-    registerSerializer(Variant::Type::dtd, std::make_unique<DTDSerializer>());
+    initSerializers();
   }
 
   void registerSerializer(Variant::Type nodeType, std::unique_ptr<INodeSerializer> serializer)
@@ -172,7 +184,42 @@ public:
     stringifyNodes(xNode, destination, indent);
   }
 
+  [[nodiscard]] long getIndent() const override { return options.indentSpaces; }
+  void setIndent(long indent) override
+  {
+    options.indentSpaces = static_cast<int>(indent);
+    options.prettyPrint = (indent > 0);
+    initSerializers();
+  }
+
+  void setOptions(const StringifyOptions &opts) override
+  {
+    options = opts;
+    initSerializers();
+  }
+
+  [[nodiscard]] const StringifyOptions &getOptions() const override
+  {
+    return options;
+  }
+
 private:
+  void initSerializers()
+  {
+    serializers.clear();
+    registerSerializer(Variant::Type::prolog, std::make_unique<PrologSerializer>());
+    registerSerializer(Variant::Type::declaration, std::make_unique<DeclarationSerializer>());
+    registerSerializer(Variant::Type::root, std::make_unique<ElementSerializer>(options));
+    registerSerializer(Variant::Type::element, std::make_unique<ElementSerializer>(options));
+    registerSerializer(Variant::Type::self, std::make_unique<ElementSerializer>(options));
+    registerSerializer(Variant::Type::comment, std::make_unique<CommentSerializer>());
+    registerSerializer(Variant::Type::content, std::make_unique<ContentSerializer>());
+    registerSerializer(Variant::Type::entity, std::make_unique<EntityReferenceSerializer>());
+    registerSerializer(Variant::Type::pi, std::make_unique<PISerializer>());
+    registerSerializer(Variant::Type::cdata, std::make_unique<CDATASerializer>());
+    registerSerializer(Variant::Type::dtd, std::make_unique<DTDSerializer>());
+  }
+
   void stringifyNodes(const Node &xNode, IDestination &destination, const unsigned long indent) const
   {
     const auto it = serializers.find(xNode.getVariant().getNodeType());
@@ -185,6 +232,7 @@ private:
     }
   }
 
+  StringifyOptions options{};
   std::unordered_map<Variant::Type, std::unique_ptr<INodeSerializer>> serializers;
 };
 

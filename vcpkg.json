@@ -1,0 +1,29 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "xml-lib",
+  "version": "1.4.0",
+  "description": "High-performance, standards-compliant, modular C++20 XML library with zero-copy parsing, XPath 1.0, W3C XML Schema (XSD), DTD, and streaming pull/push APIs.",
+  "homepage": "https://github.com/clockworkengineer/XML_Lib",
+  "license": "MIT",
+  "supports": "!(windows & arm)",
+  "features": {
+    "xpath": {
+      "description": "Enable XPath 1.0 query engine"
+    },
+    "xsd": {
+      "description": "Enable W3C XML Schema (XSD) validation engine"
+    },
+    "dtd": {
+      "description": "Enable DTD validation subsystem"
+    },
+    "stringify": {
+      "description": "Enable XML DOM stringification serializer"
+    }
+  },
+  "default-features": [
+    "xpath",
+    "xsd",
+    "dtd",
+    "stringify"
+  ]
+}

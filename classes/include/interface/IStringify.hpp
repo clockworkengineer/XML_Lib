@@ -13,6 +13,16 @@ namespace XML_Lib {
 class IDestination;
 struct Node;
 
+/// @brief Options for formatting and pretty-printing serialized XML output.
+struct StringifyOptions
+{
+  bool prettyPrint{ false };             ///< Enable line breaks and indentation
+  int indentSpaces{ 2 };                 ///< Number of spaces per indentation level
+  bool useTabs{ false };                 ///< Use tabs instead of spaces for indentation
+  bool selfClosingSpacing{ false };      ///< Space before self-closing tag: <tag /> vs <tag/>
+  bool attributeNewlineWrapping{ false }; ///< Wrap each attribute onto a new line
+};
+
 /// @brief Abstract interface for XML serialisation (stringification).
 ///
 /// The default implementation produces compact or indented XML text.
@@ -34,6 +44,16 @@ public:
   /// @param destination Output stream to write to.
   /// @param indent      Current indentation depth (in spaces).
   virtual void stringify(const Node &xNode, IDestination &destination, unsigned long indent) const = 0;
+
+  /// @brief Set formatting and pretty-printing options.
+  virtual void setOptions(const StringifyOptions &options) { (void)options; }
+
+  /// @brief Return active formatting options.
+  [[nodiscard]] virtual const StringifyOptions &getOptions() const
+  {
+    static const StringifyOptions defaultOpts{};
+    return defaultOpts;
+  }
 };
 
 /// @brief Segregated role interface for stringifiers supporting indentation configuration.

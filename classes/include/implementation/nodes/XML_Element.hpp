@@ -42,6 +42,11 @@ struct Element : Variant
   {
     return XMLAttribute::contains(attributes, attributeName);
   }
+  // Return reference to a specific attribute
+  [[nodiscard]] const XMLAttribute &getAttribute(const std::string_view &attributeName) const
+  {
+    return XMLAttribute::find(attributes, attributeName);
+  }
   // Add an attribute
   void addAttribute(const std::string_view &name, const XMLValue &value) const { attributes.emplace_back(name, value); }
   // Return reference to an attribute list

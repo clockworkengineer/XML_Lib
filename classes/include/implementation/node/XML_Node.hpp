@@ -60,6 +60,9 @@ struct Node
   // Get Node children reference
   [[nodiscard]] std::pmr::vector<Node> &getChildren() { return xmlVariant->getChildren(); }
   [[nodiscard]] const std::pmr::vector<Node> &getChildren() const { return xmlVariant->getChildren(); }
+  // C++20 Range views for child elements
+  [[nodiscard]] auto elements() const;
+  [[nodiscard]] auto elements(std::string_view name) const;
   // Get reference to Node  variant
   [[nodiscard]] Variant &getVariant() { return *xmlVariant; }
   [[nodiscard]] const Variant &getVariant() const { return *xmlVariant; }

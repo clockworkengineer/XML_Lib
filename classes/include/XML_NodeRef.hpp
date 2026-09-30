@@ -40,3 +40,5 @@
 #include "node/XML_Node_Contents.hpp"
 #include "node/XML_Node_Index.hpp"
 #include "node/XML_Node_Creation.hpp"
+#include "XML_Concepts.hpp"
+#include "XML_Ranges.hpp"
