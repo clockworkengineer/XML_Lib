@@ -74,6 +74,8 @@ set(XML_LIBRARY_NAME ${PROJECT_NAME})
 
 set(XML_LIBRARY_SOURCES
   classes/source/XML.cpp
+  classes/source/XMLReader.cpp
+  classes/source/XMLWriter.cpp
   classes/source/implementation/xml/XML_Impl.cpp
   classes/source/implementation/xml/XML_Factories.cpp
   classes/source/implementation/xml/file/XML_File.cpp

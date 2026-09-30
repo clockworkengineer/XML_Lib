@@ -1,5 +1,7 @@
 #include "XML_Lib_Tests.hpp"
 #include "XSD_Schema.hpp"
+#include "XMLReader.hpp"
+#include "XMLWriter.hpp"
 #include "io/XML_BufferSource.hpp"
 #include <string>
 
@@ -25,11 +27,33 @@ TEST_CASE("Performance regression: parse large XML document", "[performance]")
   constexpr size_t kLargeItemCount = 5000;
   const std::string xmlString = makeLargeXML(kLargeItemCount);
 
-  BENCHMARK("parse large XML document") {
+  BENCHMARK("DOM parse large XML document") {
     BufferSource source(xmlString);
     XML xml;
     xml.parse(source);
     return xml.root().getChildren().size();
+  };
+
+  BENCHMARK("XMLReader pull-parse large document") {
+    XMLReader reader(xmlString);
+    size_t count = 0;
+    while (reader.read()) {
+      if (reader.nodeType() == XMLReader::NodeType::ElementStart && reader.name() == "item") {
+        ++count;
+      }
+    }
+    return count;
+  };
+
+  BENCHMARK("XMLWriter serialize large document") {
+    XMLWriter writer;
+    writer.setOmitXmlDeclaration(true);
+    writer.writeStartElement("root");
+    for (size_t i = 0; i < kLargeItemCount; ++i) {
+      writer.writeElement("item", "value");
+    }
+    writer.writeEndElement();
+    return writer.result().size();
   };
 
   BufferSource source(xmlString);
