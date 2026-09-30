@@ -1,7 +1,7 @@
 # Modernized CMakeLists.txt for XML_Lib
 cmake_minimum_required(VERSION 3.20)
 
-project(XML_Lib VERSION 1.3.0 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
+project(XML_Lib VERSION 1.4.0 DESCRIPTION "XML C++ Library" LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -203,6 +203,13 @@ target_compile_definitions(${XML_LIBRARY_NAME}
   $<$<BOOL:${XML_LIB_ENABLE_STRINGIFY}>:XML_LIB_ENABLE_STRINGIFY>
   $<$<BOOL:${XML_LIB_ENABLE_PERFORMANCE_COUNTERS}>:XML_LIB_ENABLE_PERFORMANCE_COUNTERS>
 )
+
+target_compile_features(${XML_LIBRARY_NAME} PUBLIC cxx_std_23)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_definitions(${XML_LIBRARY_NAME} PUBLIC __cpp_concepts=202002L)
+  target_compile_options(${XML_LIBRARY_NAME} PUBLIC -Wno-builtin-macro-redefined)
+endif()
 
 if(MSVC)
   target_compile_options(${XML_LIBRARY_NAME} PRIVATE /W4)
