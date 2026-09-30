@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **C++20 Concepts & Standard Range Views**: Added `XML_Concepts.hpp` (`XMLNodeLike`, `XMLSourceLike`, `XMLDestinationLike`, `XMLValidatorLike`) and `XML_Ranges.hpp` (`childElements`, `elementAttributes`, and `Node::elements([name])`), fully composable with `std::views::filter`, `std::views::transform`, and standard range algorithms.
 - **Enhanced Serializer Formatting Options (`StringifyOptions`)**: Added configurable indentation controls to `IStringify` and `Default_Stringify` (spaces vs. tabs, customizable indent level, attribute newline wrapping, self-closing tag spacing `<tag />` vs `<tag/>`).
 - **Package Manager Manifests**: Added standard `vcpkg.json` and `conanfile.py` package recipes to project root for seamless ecosystem installation.
+- **Memory-Mapped File Input (`MMapSource`)**: Added cross-platform zero-copy memory-mapped file source (`MMapSource`) leveraging POSIX `mmap` / Windows `CreateFileMapping` to stream file contents directly from the OS page cache without userspace copying or memory duplication.
+- **OASIS XML Catalogs 1.1 Resolver (`OASIS_Catalog`)**: Added standard OASIS XML Catalog resolver implementing `IEntityResolver` to resolve SYSTEM, PUBLIC, rewriteSystem, and rewriteURI identifiers to local cached files or in-memory contents without network access.
 
 ### Changed
 - **Thread-Safe & Re-Entrant Parser**: Converted all process-global `static` parser execution state in `Default_Parser` to `inline thread_local static`, allowing safe concurrent parsing across threads without cross-thread contamination or locking.

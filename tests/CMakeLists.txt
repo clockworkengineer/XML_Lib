@@ -57,6 +57,7 @@ if(NOT XML_LIB_EMBEDDED)
         source/io/XML_Lib_Tests_ISource.cpp
         source/io/XML_Lib_Tests_IDestination.cpp
         source/io/XML_Lib_Tests_File.cpp
+        source/io/XML_Lib_Tests_MMap_Catalog.cpp
         source/xml/XML_Lib_Tests_Parse_Misc.cpp
         source/xml/XML_Lib_Tests_Parse_Declaration.cpp
         source/xml/XML_Lib_Tests_Parse_Tags.cpp
