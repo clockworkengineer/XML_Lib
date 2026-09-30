@@ -1,9 +1,8 @@
 # XML_Lib User Guide
 
-XML_Lib is a modern C++20 library for parsing, creating, manipulating, and serialising XML.
-All public symbols live in the `XML_Lib` namespace.
+**XML_Lib** is an enterprise-grade, high-performance C++23 library for parsing, streaming, creating, manipulating, querying, and serialising XML. All public symbols reside in the `XML_Lib` namespace.
 
-**For a complete method listing see [API.md](API.md).**
+**For complete API method signatures and type references, see [API.md](API.md).**
 
 ---
 
@@ -13,105 +12,113 @@ All public symbols live in the `XML_Lib` namespace.
 2. [Parsing XML](#2-parsing-xml)
 3. [Accessing the document tree](#3-accessing-the-document-tree)
 4. [Reading element contents and attributes](#4-reading-element-contents-and-attributes)
-5. [Iterating children](#5-iterating-children)
-6. [Serialising (stringify)](#6-serialising-stringify)
-7. [Error handling](#7-error-handling)
-8. [DTD validation](#8-dtd-validation-xml_lib_enable_dtd)
-9. [XSD validation](#9-xsd-validation-xml_lib_enable_xsd)
-10. [XPath queries](#10-xpath-queries-xml_lib_enable_xpath)
-11. [XML Namespaces](#11-xml-namespaces)
-12. [Advanced I/O (ISource / IDestination)](#12-advanced-io-isource--idestination)
-13. [Role Visitors & SOLID Extensions](#13-role-visitors--solid-extensions)
+5. [Iterating children (C++20 Ranges & Monadic Lookups)](#5-iterating-children-c20-ranges--monadic-lookups)
+6. [Serialising (stringify) & Formatting Options](#6-serialising-stringify--formatting-options)
+7. [Exception-Based Error Handling](#7-exception-based-error-handling)
+8. [Non-Throwing Error Handling (`std::expected`)](#8-non-throwing-error-handling-stdexpected)
+9. [DTD Validation](#9-dtd-validation-xml_lib_enable_dtd)
+10. [XSD Validation & Pre-Compiled Schemas](#10-xsd-validation--pre-compiled-schemas)
+11. [XPath Queries & Pre-Compiled ASTs](#11-xpath-queries--pre-compiled-asts)
+12. [XML Namespaces](#12-xml-namespaces)
+13. [Advanced I/O & Memory-Mapped Files (`MMapSource`)](#13-advanced-io--memory-mapped-files-mmapsource)
+14. [Streaming Processing with `XMLReader` & `XMLWriter`](#14-streaming-processing-with-xmlreader--xmlwriter)
+15. [Offline Catalog & Entity Resolution (`OASIS_Catalog`)](#15-offline-catalog--entity-resolution-oasis_catalog)
+16. [Performance, Memory Model & PMR Arenas](#16-performance-memory-model--pmr-arenas)
+17. [Role Visitors & SOLID Extensions](#17-role-visitors--solid-extensions)
 
 ---
 
 ## 1. Including and linking
 
 ```cpp
-#include "XML.hpp"           // always required — top-level XML class
-#include "XML_Node.hpp"       // isA<T> / NRef<T> helpers and all variant types
-#include "XML_Sources.hpp"    // BufferSource, FileSource (advanced I/O)
-#include "XML_Destinations.hpp" // BufferDestination, FileDestination (advanced I/O)
+#include <XML_Lib/XML.hpp>             // Top-level XML class & ParseOptions
+#include <XML_Lib/XML_Node.hpp>        // isA<T> / NRef<T> helpers and variant types
+#include <XML_Lib/XML_Ranges.hpp>      // C++20 range views (elements(), childElements())
+#include <XML_Lib/XMLReader.hpp>       // Streaming pull parser (O(1) memory)
+#include <XML_Lib/XMLWriter.hpp>       // Streaming push serializer
+#include <XML_Lib/XML_Sources.hpp>     // BufferSource, FileSource, MMapSource
+#include <XML_Lib/XML_Destinations.hpp>// BufferDestination, FileDestination
+#include <XML_Lib/OASIS_Catalog.hpp>   // OASIS XML Catalogs 1.1 resolver
+#include <XML_Lib/XSD_Schema.hpp>      // Pre-compiled XSD schema
+#include <XML_Lib/XPath.hpp>           // XPath engine & XPathExpression
+
 using namespace XML_Lib;
 ```
 
-CMake consumers that use `target_link_libraries(myTarget PRIVATE XML_Lib)` automatically
-receive the necessary include paths — no manual `-I` flags are required.
+CMake consumers linking with `target_link_libraries(myTarget PRIVATE XML_Lib::XML_Lib)` automatically receive all required include directories, standard flags (`-std=c++23`), and library dependencies.
 
 ---
 
 ## 2. Parsing XML
 
-### From a string (convenience overload)
-
+### From an in-memory string
 ```cpp
-#include "XML.hpp"
-using namespace XML_Lib;
-
 XML xml;
 xml.parse("<?xml version=\"1.0\"?><root><item id=\"1\">Hello</item></root>");
 ```
 
-### From a file path (convenience overload)
-
+### From a file path
 ```cpp
-xml.parse(std::filesystem::path{"data/config.xml"});
-// or, accepting implicit conversion from a string literal:
 xml.parse(std::filesystem::path{"data/config.xml"});
 ```
 
-### Constructor shorthand
-
+### Constructor and assignment shorthands
 ```cpp
-XML xml{"<?xml version=\"1.0\"?><root/>"};  // parses immediately
+XML xml{"<?xml version=\"1.0\"?><root/>"}; // Parses immediately upon construction
+
+XML target;
+target = "<?xml version=\"1.0\"?><root/>";  // Replaces and parses immediately
 ```
 
-### Assignment shorthand
-
+### Controlling parser limits (`ParseOptions`)
 ```cpp
-XML xml;
-xml = "<?xml version=\"1.0\"?><root/>";
+ParseOptions options;
+options.maxXmlSize = 50 * 1024 * 1024;    // 50 MiB limit
+options.maxEntityExpansionDepth = 100;     // Mitigate Billion Laughs attacks
+options.allowExternalEntities = false;     // Reject XXE attacks
+options.strictNamespaces = true;           // Forbid prefix unbinding
+
+xml.parse(std::filesystem::path{"untrusted.xml"}, options);
 ```
 
 ---
 
 ## 3. Accessing the document tree
 
-After parsing, the document exposes three top-level nodes:
+After parsing, the document provides three root accessors:
 
 ```cpp
-Node &decl  = xml.declaration(); // <?xml version="1.0"?>
-Node &prolog = xml.prolog();     // everything before the root element
-Node &root  = xml.root();        // root element Node
+Node &decl   = xml.declaration(); // <?xml version="1.0"?>
+Node &prolog = xml.prolog();      // PIs, comments, and DTD before root element
+Node &root   = xml.root();        // Document root element Node
 ```
 
-### Casting a Node to a concrete variant type
-
-`Node` is a type-erased wrapper. Use `isA<T>` to test and `NRef<T>` to cast:
+### Downcasting with `isA<T>` and `NRef<T>`
+`Node` is a type-erased wrapper around a concrete `Variant`. Use `isA<T>` to verify the variant and `NRef<T>` to retrieve a typed reference:
 
 ```cpp
-#include "XML_Node.hpp"
-using namespace XML_Lib;
-
 if (isA<Root>(xml.root())) {
     auto &rootElem = NRef<Root>(xml.root());
-    std::cout << rootElem.name() << "\n";  // e.g. "root"
+    std::cout << "Root element name: " << rootElem.name() << "\n";
 }
 ```
 
-Available variant types: `Root`, `Element`, `Self`, `Content`, `Comment`, `CDATA`,
-`PI`, `EntityReference`, `DTD`, `Declaration`, `Prolog`.
+Available variant types: `Root`, `Element`, `Self`, `Content`, `Comment`, `CDATA`, `PI`, `EntityReference`, `DTD`, `Declaration`, `Prolog`.
 
-`NRef<T>` throws `Node::Error` if the node is not of type `T`.
-
-### Subscript access
+### Subscript Access (C++23)
 
 ```cpp
-// By child index (0-based)
+// 1. Single index by child position (0-based)
 const Node &firstChild = xml.root()[0];
 
-// By element name (first match)
+// 2. By child element name (first match)
 const Node &item = xml.root()["item"];
+
+// 3. Multidimensional subscripting: parent and child tag name
+const Node &author = xml.root()["book", "author"];
+
+// 4. Multidimensional subscripting: child tag name and index
+const Node &secondBook = xml.root()["book", 1];
 ```
 
 ---
@@ -119,448 +126,377 @@ const Node &item = xml.root()["item"];
 ## 4. Reading element contents and attributes
 
 ```cpp
-XML xml{"<?xml version=\"1.0\"?><root><item id=\"42\" lang=\"en\">Hello</item></root>"};
+XML xml{R"(
+    <catalog>
+        <book id="bk101" in_print="true">
+            <title>C++23 in Action</title>
+        </book>
+    </catalog>
+)"};
 
-auto &rootElem = NRef<Root>(xml.root());
-auto &item     = NRef<Element>(rootElem[0]);
+auto &root = NRef<Root>(xml.root());
+auto &book = NRef<Element>(root["book"]);
 
-// Element name
-std::cout << item.name() << "\n";        // "item"
+// Element tag name
+std::cout << book.name() << "\n"; // "book"
 
 // Text content
-std::cout << item.getContents() << "\n"; // "Hello"
+std::cout << book["title"].getContents() << "\n"; // "C++23 in Action"
 
-// Read a specific attribute
-if (item.hasAttribute("id")) {
-    std::cout << item["id"].getParsed() << "\n";  // "42"
+// Traditional attribute lookup
+if (book.hasAttribute("id")) {
+    std::cout << "ID: " << book["id"].getParsed() << "\n";
 }
 
-// Iterate all attributes
-for (const auto &attr : item.getAttributes()) {
-    std::cout << attr.getName() << "=" << attr.getParsed() << "\n";
-}
+// C++23 Monadic optional lookup
+auto inPrint = book.findAttribute("in_print")
+                   .transform([](const auto &attr) { return attr.get().getParsed(); })
+                   .value_or("false");
 ```
 
 ---
 
-## 5. Iterating children
+## 5. Iterating children (C++20 Ranges & Monadic Lookups)
+
+### Modern C++20 Range Views
+Include `<XML_Lib/XML_Ranges.hpp>` to iterate over children without boilerplate type checks:
 
 ```cpp
-XML xml;
-xml.parse("<?xml version=\"1.0\"?>"
-          "<library><book>C++23</book><book>XML</book></library>");
+// Iterate over all child elements (Element, Root, or Self)
+for (const Node &child : xml.root().elements()) {
+    std::cout << "Child element: " << NRef<Element>(child).name() << "\n";
+}
 
-auto &lib = NRef<Root>(xml.root());
+// Filter child elements by tag name
+for (const Node &book : xml.root().elements("book")) {
+    std::cout << "Book: " << book["title"].getContents() << "\n";
+}
 
-for (const auto &child : lib.getChildren()) {
-    if (isA<Element>(child)) {
-        std::cout << NRef<Element>(child).getContents() << "\n";
-    }
+// Iterate over attributes using std::span
+for (const XMLAttribute &attr : elementAttributes(xml.root()["book"])) {
+    std::cout << attr.getName() << " = " << attr.getParsed() << "\n";
 }
 ```
 
-Self-closing elements (`<tag/>`) are `Self` nodes, not `Element` nodes:
-
+### C++23 Monadic Child Lookup
 ```cpp
-if (isA<Self>(child)) {
-    auto &sc = NRef<Self>(child);
-    std::cout << sc.name() << "\n";
-}
+// Returns std::optional<std::reference_wrapper<const Node>>
+xml.root().findChild("book")
+          .and_then([](const Node &node) { return node.findChild("title"); })
+          .if_present([](const Node &title) {
+              std::cout << "Found title: " << title.getContents() << "\n";
+          });
 ```
 
 ---
 
-## 6. Serialising (stringify)
+## 6. Serialising (stringify) & Formatting Options
 
-> Requires `XML_LIB_ENABLE_STRINGIFY` (on by default).
-
-### To a string
-
+### Serialising to String or File
 ```cpp
-std::string text = xml.stringify();
-```
+// To string
+std::string xmlString = xml.stringify();
 
-### To a file
-
-```cpp
-xml.stringify(std::filesystem::path{"output.xml"});                       // UTF-8
+// Directly to file with encoding format
+xml.stringify(std::filesystem::path{"output.xml"}, XML::Format::utf8);
 xml.stringify(std::filesystem::path{"output_bom.xml"}, XML::Format::utf8BOM);
 xml.stringify(std::filesystem::path{"output_u16.xml"}, XML::Format::utf16LE);
 ```
 
-Available formats: `utf8`, `utf8BOM`, `utf16BE`, `utf16LE`, `utf32BE`, `utf32LE`.
+### Pretty-Printing with `StringifyOptions`
+```cpp
+#include <XML_Lib/XML_Factories.hpp>
+#include <XML_Lib/interface/IStringify.hpp>
+
+StringifyOptions options;
+options.prettyPrint = true;
+options.indentSpaces = 4;
+options.selfClosingSpacing = true; // <tag /> instead of <tag/>
+
+auto stringifier = XML_Factories::createDefaultStringify();
+stringifier->setOptions(options);
+
+XML xmlWithFormatting(std::move(stringifier));
+xmlWithFormatting.parse("<root><item>Data</item></root>");
+std::cout << xmlWithFormatting.stringify() << "\n";
+```
 
 ---
 
-## 7. Error handling
+## 7. Exception-Based Error Handling
 
-All XML_Lib exceptions derive from `std::runtime_error`:
-
-| Exception | Thrown when |
-|---|---|
-| `SyntaxError` | Malformed XML or namespace violations |
-| `Node::Error` | Invalid node cast or out-of-range access |
-| `XMLAttribute::Error` | Attribute not found |
-| `IValidator::Error` | DTD or XSD validation failure |
-| `XPath::Error` | Invalid XPath expression or evaluation error |
-| `BufferSource::Error` | Empty buffer supplied |
-| `FileSource::Error` | File not found or unreadable |
+All throwing methods report errors using exceptions derived from `std::runtime_error`:
 
 ```cpp
 try {
-    xml.parse("<?xml version=\"1.0\"?><unclosed>");
-} catch (const SyntaxError &e) {
-    std::cerr << e.what() << "\n";
-    // e.g. "XML Syntax Error [Line: 1 Column: 35] ..."
+    XML xml{"<unclosed>tag"};
+} catch (const SyntaxError &ex) {
+    std::cerr << "Malformed XML: " << ex.what() << "\n";
+} catch (const Node::Error &ex) {
+    std::cerr << "DOM tree error: " << ex.what() << "\n";
+} catch (const IValidator::Error &ex) {
+    std::cerr << "Validation failed: " << ex.what() << "\n";
+} catch (const std::exception &ex) {
+    std::cerr << "General error: " << ex.what() << "\n";
 }
 ```
 
 ---
 
-## 8. DTD validation (`XML_LIB_ENABLE_DTD`)
+## 8. Non-Throwing Error Handling (`std::expected`)
 
-When the document contains an internal or external DTD, call `validate()` after parsing:
+For performance-critical code paths or systems running with `-fno-exceptions`, `XML_Lib` provides first-class `std::expected` APIs:
 
 ```cpp
-#include "XML.hpp"
-#if defined(XML_LIB_ENABLE_DTD)
-#include "DTD_Validator.hpp"
-#endif
-using namespace XML_Lib;
+#include <XML_Lib/XML.hpp>
+#include <XML_Lib/XML_Expected.hpp>
+
+// Parse without throwing
+auto result = XML::parseExpected(std::filesystem::path{"document.xml"});
+
+if (result.has_value()) {
+    std::unique_ptr<XML> xml = std::move(result.value());
+    std::cout << "Root: " << xml->root().getContents() << "\n";
+} else {
+    const XML_Error &err = result.error();
+    std::cerr << "Parse failed at line " << err.line 
+              << ", column " << err.column << ": " << err.message << "\n";
+}
+```
+
+---
+
+## 9. DTD Validation (`XML_LIB_ENABLE_DTD`)
+
+```cpp
+XML xml{R"(
+    <!DOCTYPE root [
+        <!ELEMENT root (item+)>
+        <!ELEMENT item (#PCDATA)>
+    ]>
+    <root>
+        <item>Valid content</item>
+    </root>
+)"};
+
+// Throwing validation
+xml.validate();
+
+// Non-throwing validation (C++23)
+auto valid = xml.validateExpected();
+if (!valid) {
+    std::cerr << "DTD invalid: " << valid.error() << "\n";
+}
+```
+
+---
+
+## 10. XSD Validation & Pre-Compiled Schemas
+
+### Ad-hoc Validation
+```cpp
+XML xml{"<note><to>Alice</to><from>Bob</from></note>"};
+xml.validate(R"(
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+        <xs:element name="note">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="to" type="xs:string"/>
+                    <xs:element name="from" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
+    </xs:schema>
+)");
+```
+
+### High-Speed Pre-Compilation with `XSD_Schema`
+Parsing schemas repeatedly in hot loops is inefficient. Use `XSD_Schema` to parse and build the schema model once, then validate millions of documents concurrently:
+
+```cpp
+#include <XML_Lib/XSD_Schema.hpp>
+
+// Compile schema once
+XSD_Schema schema = XSD_Schema::fromFile("order.xsd");
+
+// Reuse across threads and documents
+XML doc1 = XML::fromFile("order_001.xml");
+doc1.validate(schema);
+
+XML doc2 = XML::fromFile("order_002.xml");
+auto result = doc2.validateExpected(schema);
+```
+
+---
+
+## 11. XPath Queries & Pre-Compiled ASTs
+
+### Ad-hoc XPath Queries
+```cpp
+XML xml{"<inventory><item category='it'>Laptop</item></inventory>"};
+
+// Direct helper on XML
+auto results = xml.xpath("//item[@category='it']");
+for (const Node *node : results) {
+    std::cout << "Match: " << node->getContents() << "\n";
+}
+```
+
+### Pre-Compiling Expressions with `XPathExpression`
+```cpp
+#include <XML_Lib/XPath.hpp>
+
+// Compile AST once
+XPathExpression query{"//item[@price > 100]"};
+
+// Evaluate repeatedly on any document or node
+for (const auto &file : xmlFiles) {
+    XML doc{file};
+    auto matches = doc.xpath(query);
+    std::cout << file << " has " << matches.size() << " matching items.\n";
+}
+```
+
+---
+
+## 12. XML Namespaces
+
+`XML_Lib` provides full W3C XML Namespaces 1.0 conformance:
+
+```cpp
+XML xml{R"(
+    <root xmlns="urn:default" xmlns:svg="http://www.w3.org/2000/svg">
+        <svg:circle svg:r="10"/>
+    </root>
+)"};
+
+auto &circle = NRef<Element>(xml.root()[0]);
+std::cout << circle.name();             // "svg:circle"
+std::cout << circle.getPrefix();        // "svg"
+std::cout << circle.getLocalName();     // "circle"
+std::cout << circle.getNamespaceURI();  // "http://www.w3.org/2000/svg"
+```
+
+---
+
+## 13. Advanced I/O & Memory-Mapped Files (`MMapSource`)
+
+For multi-hundred-megabyte files, standard filesystem reads incur unnecessary kernel-to-userspace memory copying. `MMapSource` maps the file directly into process address space via OS page caching (`mmap` on Linux/macOS, `CreateFileMappingA` on Windows):
+
+```cpp
+#include <XML_Lib/XML_Sources.hpp>
+
+// Zero-copy ingestion
+MMapSource mmapSource{"huge_database.xml"};
+XML xml;
+xml.parse(mmapSource);
+```
+
+---
+
+## 14. Streaming Processing with `XMLReader` & `XMLWriter`
+
+For multi-gigabyte files that exceed available RAM, use `XMLReader` and `XMLWriter`.
+
+### Pull Parsing with `XMLReader` ($O(1)$ Memory)
+```cpp
+#include <XML_Lib/XMLReader.hpp>
+
+auto reader = XMLReader::fromFile("50gb_data.xml");
+
+while (reader.read()) {
+    if (reader.nodeType() == XMLReader::NodeType::ElementStart && reader.name() == "transaction") {
+        auto amount = reader.findAttribute("amount").value_or("0");
+        std::cout << "Transaction: " << amount << "\n";
+        
+        // Skip unneeded child subtrees to save CPU time
+        reader.skip();
+    }
+}
+```
+
+### Push Generation with `XMLWriter`
+```cpp
+#include <XML_Lib/XMLWriter.hpp>
+
+auto writer = XMLWriter::toFile("export.xml");
+writer.setIndent(true, 2);
+
+writer.writeStartDocument("1.0", "UTF-8");
+writer.writeStartElement("records");
+
+for (int i = 0; i < 1000000; ++i) {
+    writer.writeStartElement("record");
+    writer.writeAttribute("id", std::to_string(i));
+    writer.writeElement("status", "processed");
+    writer.writeEndElement(); // </record>
+}
+
+writer.writeEndElement(); // </records>
+writer.writeEndDocument();
+```
+
+---
+
+## 15. Offline Catalog & Entity Resolution (`OASIS_Catalog`)
+
+To protect against external entity attacks (XXE) and enable validation in air-gapped production networks without internet access, use `OASIS_Catalog`:
+
+```cpp
+#include <XML_Lib/OASIS_Catalog.hpp>
+
+OASIS_Catalog catalog;
+catalog.loadCatalogFile("catalog.xml");
+
+// Map a remote schema URL to a local disk file
+catalog.addSystemMapping("http://example.com/schema.xsd", "/etc/schemas/schema.xsd");
+
+ParseOptions options;
+options.entityResolver = &catalog;
 
 XML xml;
-xml.parse(std::filesystem::path{"note.xml"});
-
-try {
-    xml.validate();  // validates against the DTD embedded in the document
-} catch (const IValidator::Error &e) {
-    std::cerr << e.what() << "\n";
-    // e.g. "XML Validation Error [Line: 4] Element <to> not valid in context."
-}
+xml.parse(FileSource{"untrusted.xml"}, options);
 ```
-
-The DTD node is accessible as `xml.dtd()` (throws `Node::Error` if the document has none).
 
 ---
 
-## 9. XSD validation (`XML_LIB_ENABLE_XSD`)
+## 16. Performance, Memory Model & PMR Arenas
 
-Supply an XSD schema as a string (or load it from a file) and call `validate(xsdSource)`:
+`XML_Lib` uses `std::pmr` (Polymorphic Memory Resources) monotonic buffer arenas to allocate all DOM child nodes and attributes in contiguous chunks. This provides:
+- **Zero heap fragmentation** during parsing.
+- **Cache locality** for lightning-fast traversal.
+- **Instant bulk deallocation** on document destruction.
 
-```cpp
-#include "XML.hpp"
-using namespace XML_Lib;
-
-const std::string schema = R"(
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="note">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="to"   type="xs:string"/>
-        <xs:element name="from" type="xs:string"/>
-        <xs:element name="body" type="xs:string"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-</xs:schema>
-)";
-
-XML xml;
-xml.parse("<?xml version=\"1.0\"?>"
-          "<note><to>Alice</to><from>Bob</from><body>Hello!</body></note>");
-
-try {
-    xml.validate(schema);  // silent on success
-} catch (const IValidator::Error &e) {
-    std::cerr << e.what() << "\n";
-}
-```
-
-For file-based schemas, read the XSD into a string first:
-
-```cpp
-const std::string xsdText = XML::fromFile("schema.xsd");
-xml.validate(xsdText);
-```
-
-**Supported XSD features:** `xs:sequence`, `xs:choice`, `xs:all`; `minOccurs`/`maxOccurs`; `xs:any`; `xs:anyAttribute`;
-all built-in simple types; named `xs:simpleType` restrictions (`minInclusive`, `maxInclusive`,
-`minExclusive`, `maxExclusive`, `pattern`, `enumeration`, `length`, `minLength`, `maxLength`); attribute `use` / `fixed` / `default`;
-`xs:key`, `xs:keyref`, `xs:unique`; `xs:include` / `xs:import`; anonymous inline complex and simple types.
-
----
-
-## 10. Compliance testing
-XML_Lib includes a W3C-derived compliance test harness for XML, DTD, XPath, and XSD.
-Run the compliance subset from the built test executable:
-
+Arena buffer size can be configured at build time:
 ```bash
-./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
+cmake -B build -S . -DXML_LIB_ARENA_SIZE_KB=1024
 ```
-
-The compliance fixtures are stored under `tests/files/w3c/`.
-This harness exercises the supported implementation profile for:
-- XML 1.0 syntax and namespace parsing
-- internal and external DTD parsing and validation
-- XPath 1.0 axis, predicate, and function evaluation
-- XSD 1.0 validation for built-in types, wildcards, identity constraints, and schema composition
 
 ---
 
-## 11. XPath queries (`XML_LIB_ENABLE_XPATH`)
+## 17. Role Visitors & SOLID Extensions
+
+To inspect the tree without writing monolithic visitor classes, use narrow role visitors:
 
 ```cpp
-#include "XML.hpp"
-#include "XPath.hpp"
-using namespace XML_Lib;
+#include <XML_Lib/interface/IVisitorRoles.hpp>
 
-XML xml;
-xml.parse(std::filesystem::path{"bookstore.xml"});
-
-// Shorthand on the XML object
-auto books = xml.xpath("//book");
-std::cout << books.size() << " books\n";
-
-// Filter by attribute
-auto webBooks = xml.xpath("//book[@category='web']");
-
-// The XPath class offers typed evaluation
-XPath xp(xml.root());
-std::string title  = xp.evaluateString("string(//title[1])");
-double      count  = xp.evaluateNumber("count(//book)");
-bool        hasWeb = xp.evaluateBool("count(//book[@category='web']) > 0");
-```
-
-Returned `const Node *` pointers are valid only while the `XML` object is alive.
-
-```cpp
-for (const Node *n : xml.xpath("//book/title")) {
-    std::cout << NRef<Element>(*n).getContents() << "\n";
-}
-```
-
-**Supported:** all 13 XPath 1.0 axes, abbreviated syntax (`//`, `.`, `..`, `@`),
-predicates, union (`|`), all comparison operators, 28+ built-in functions.
-See [API.md](API.md) for the full function list.
-
----
-
-## 11. XML Namespaces
-
-```cpp
-XML xml;
-xml.parse("<?xml version=\"1.0\"?>"
-          "<root xmlns:h=\"http://www.w3.org/TR/html4/\">"
-          "<h:table h:border=\"1\"><h:tr><h:td>Data</h:td></h:tr></h:table>"
-          "</root>");
-
-auto &root  = NRef<Root>(xml.root());
-auto &table = NRef<Element>(root[0]);
-
-std::cout << table.name();            // "h:table"
-std::cout << table.getPrefix();       // "h"
-std::cout << table.getLocalName();    // "table"
-std::cout << table.getNamespaceURI(); // "http://www.w3.org/TR/html4/"
-```
-
-- `xmlns="uri"` — default namespace, accessible via `getNameSpace(":")`.
-- `xmlns:prefix="uri"` — prefixed namespace, accessible via `getNameSpace("prefix")`.
-- `getNameSpaces()` returns all in-scope declarations accumulated from root to that element.
-- Undeclared prefixes and duplicate declarations on the same element throw `SyntaxError`.
-
----
-
-## 12. Advanced I/O (ISource / IDestination)
-
-The convenience overloads on `XML` cover the common cases. For custom sources or
-destinations use `ISource` / `IDestination` directly:
-
-```cpp
-#include "XML_Sources.hpp"
-#include "XML_Destinations.hpp"
-using namespace XML_Lib;
-
-// Parse from a std::string
-std::string xmlText = "<?xml version=\"1.0\"?><root/>";
-BufferSource src{xmlText};
-xml.parse(src);
-
-// Parse from a file
-FileSource fileSrc{"data/config.xml"};
-xml.parse(fileSrc);
-
-// Stringify to a string
-BufferDestination buf;
-xml.stringify(buf);
-std::string result = buf.toString();
-
-// Stringify to a file (UTF-16 LE)
-FileDestination fileDst{"output.xml", XML::Format::utf16LE};
-xml.stringify(fileDst);
-```
-
----
-
-## 13. Phase 4 Compliance and Consumer Guidance
-
-XML_Lib includes Phase 4 documentation and release readiness guidance for advanced XML, XPath, and XSD support.
-
-- `docs/XML_Phase4_Plan.md` contains the Phase 4 roadmap, goals, and feature status.
-- `docs/XML_Lib_Standards_Report.md` includes an explicit Phase 4 feature matrix and unsupported advanced feature notes.
-- `docs/XML_Compliance_Roadmap.md` documents CI automation and release validation stages.
-
-### Running Phase 4 validation
-Use the repository helper scripts to validate release readiness:
-
-```sh
-./scripts/Linux-Build.sh
-./scripts/Linux-Run-Tests.sh
-./scripts/Linux-Run-Compliance.sh
-./scripts/Linux-Run-Performance.sh
-```
-
-For compliance validation only:
-
-```sh
-./build/tests/XML_Lib_Unit_Tests -c "[Compliance]"
-```
-
-For performance regression validation:
-
-```sh
-./build/tests/XML_Lib_Performance_Tests
-```
-
-### Advanced examples
-See the following example programs for advanced XPath and XSD usage:
-
-- `examples/source/XML_XPath_Functions.cpp`
-- `examples/source/XML_XPath_Predicates.cpp`
-- `examples/source/XML_XSD_Basic_Validation.cpp`
-- `examples/source/XML_XSD_Type_Restrictions.cpp`
-
----
-
-## 14. Performance
-
-### Memory allocation model
-
-XML_Lib uses a PMR (Polymorphic Memory Resource) monotonic arena to hold all
-parsed node children.  Attribute and namespace lists on `Element`, `Root`, and
-`Self` nodes also live in the same arena.  This means a typical parse-and-read
-workload performs **zero heap allocations** for node children and attribute
-storage after the initial arena buffer is committed.
-
-The arena size is controlled at configure time:
-
-```sh
-cmake -S . -B build -DXML_LIB_ARENA_SIZE_KB=1024   # 1 MB arena (default: 256 KB)
-```
-
-The default of **256 KB** is sufficient for most documents up to a few hundred
-kilobytes.  For large documents (≥ 1 MB of XML text) set the arena to at least
-twice the uncompressed document size.  When the arena is exhausted the
-`monotonic_buffer_resource` falls back to `new`/`delete` automatically —
-correctness is preserved, only the "zero-allocation" guarantee is lost.
-
-### Baseline benchmark results (v1.3.0, GCC 13, Debug+ASan, Linux)
-
-| Benchmark | Mean | Std Dev |
-|---|---|---|
-| Parse large XML document | 76.1 ms | 7.9 ms |
-| XPath evaluate item name | 143.2 ms | 28.4 ms |
-| XSD validate large document | 3.4 ms | 0.96 ms |
-
-*Results captured with `XML_LIB_ARENA_SIZE_KB=256` (default).*  
-*Benchmarks are run with Catch2's built-in microbenchmark framework (100 samples, 1 iteration each).*
-
-Run the benchmarks yourself:
-
-```sh
-cmake --build build --target XML_Lib_Performance_Tests
-./build/tests/XML_Lib_Performance_Tests
-```
-
-### Content cache
-
-`Element::getContents()` (which concatenates all descendant text nodes into a
-single string) is memoised: the result is cached on first access and reused on
-subsequent calls as long as the child count has not changed.  For parse-once /
-read-many workloads this reduces repeated content access from O(n) per call to
-O(1).
-
----
-
-## 13. Role Visitors & SOLID Extensions
-
-### 13.1 Narrow Role Visitors with `NodeVisitorAdapter`
-
-Rather than implementing all 24 methods of `IAction`, `XML_Lib` allows creating focused role visitors that inherit only narrow role interfaces (such as `IElementVisitor`, `ICommentVisitor`, or `IContentVisitor`):
-
-```cpp
-#include "XML.hpp"
-#include "interface/IVisitorRoles.hpp"
-#include "implementation/NodeVisitorAdapter.hpp"
-#include <iostream>
-
-using namespace XML_Lib;
-
-// Focus only on element nodes
-struct ElementPrinter : public IElementVisitor
-{
-  void onElement(const Node &node) override
-  {
-    const auto &element = NRef<Element>(node);
-    std::cout << "Element: " << element.name() << "\n";
-  }
+struct ElementCounter : public IElementVisitor {
+    size_t count{ 0 };
+    void onElement(const Node &node) override { ++count; }
 };
 
-// Traversal via NodeVisitorAdapter
-XML xml{"<root><item id=\"1\"/><item id=\"2\"/></root>"};
-ElementPrinter visitor;
-xml.traverse(visitor);
-```
-
-### 13.2 Custom Node Serializers with `INodeSerializer`
-
-`Default_Stringify` uses a strategy map mapping node variant types to [`INodeSerializer`](file:///home/robt/projects/XML_Lib/classes/include/implementation/stringify/INodeSerializer.hpp) strategies (OCP compliant):
-
-```cpp
-#include "implementation/stringify/Default_Stringify.hpp"
-using namespace XML_Lib;
-
-struct CustomElementSerializer final : public INodeSerializer
-{
-  void serialize(
-    const Node &xNode,
-    IDestination &destination,
-    unsigned long indent,
-    const std::function<void(const Node &, IDestination &, unsigned long)> &recurse) const override
-  {
-    const auto &xElement = NRef<Element>(xNode);
-    destination.add("[" + xElement.name() + "]");
-  }
-};
-
-Default_Stringify stringifier;
-stringifier.registerSerializer<Element>(std::make_unique<CustomElementSerializer>());
-```
-
-### 13.3 Dynamic Schema Validator Registration
-
-Register custom schema validators at runtime using [`ValidatorRegistry`](file:///home/robt/projects/XML_Lib/classes/include/implementation/ValidatorRegistry.hpp):
-
-```cpp
-#include "implementation/ValidatorRegistry.hpp"
-using namespace XML_Lib;
-
-ValidatorRegistry registry;
-// Register custom validator for "RELAX_NG" or custom schemas
-registry.registerValidator("DTD", std::make_unique<DTD_Validator>(xml.dtd()));
+XML xml{"<root><a><b/><c/></a></root>"};
+ElementCounter counter;
+xml.traverse(counter);
+std::cout << "Elements count: " << counter.count << "\n"; // 4
 ```
 
 ---
 
-*For full method signatures and all variant types see the [API Reference](API.md).*  
-*For runnable examples see the [examples/](../examples/) directory.*
+*For further details, refer to the specialized guides in `docs/`:*
+- [Streaming Processing Guide](Streaming_Guide.md)
+- [Modern C++ Guide](Modern_Cpp_Guide.md)
+- [Security & Catalog Resolution Guide](Entity_Catalog_Resolution.md)
+- [Performance Tuning Guide](Performance_Tuning_Guide.md)
+- [SOLID Architecture Guide](SOLID_Architecture_Guide.md)

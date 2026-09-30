@@ -1,25 +1,41 @@
 # XML_Lib
 
 [![CI](https://github.com/clockworkengineer/XML_Lib/actions/workflows/ci.yml/badge.svg)](https://github.com/clockworkengineer/XML_Lib/actions/workflows/ci.yml)
-[![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)](https://en.cppreference.com/w/cpp/20)
+[![C++23](https://img.shields.io/badge/C%2B%2B-23-blue.svg)](https://en.cppreference.com/w/cpp/23)
+[![Version: 1.4.0](https://img.shields.io/badge/Version-1.4.0-orange.svg)](CHANGELOG.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.txt)
 [![Buy Me a Coffee](https://img.shields.io/badge/Donate-Buy%20Me%20A%20Coffee-orange.svg)](https://www.buymeacoffee.com/clockworkengineer)
 
-**XML_Lib** is an enterprise-grade, high-performance C++20 library for parsing, querying, validating, manipulating, and serialising XML documents. Engineered with a strict **SOLID** architecture, modern C++ idioms, and zero external runtime dependencies, it provides an intuitive, robust API designed for both modern desktop/server applications and resource-constrained embedded environments.
+**XML_Lib** is an enterprise-grade, high-performance C++23 library for parsing, streaming, querying, validating, manipulating, and serialising XML documents. Engineered with a strict **SOLID** architecture, modern C++ idioms, and zero external runtime dependencies, it provides an intuitive, robust API designed for modern desktop/server applications, large-scale data ingestion pipelines, and resource-constrained embedded environments.
 
 ---
 
 ## Key Highlights
 
 - **Complete XML 1.0 & Namespaces**: Full conformance to W3C XML 1.0 (Fifth Edition) and XML Namespaces 1.0 specifications, including comments, CDATA, processing instructions, and qualified names (QNames).
-- **Dual Validation Engines (DTD & XSD)**:
+- **$O(1)$-Memory Streaming Pull & Push Parsers**:
+  - **`XMLReader`**: High-speed forward-only streaming pull-parser cursor enabling continuous processing of multi-gigabyte XML streams with constant, negligible RAM usage (< 10 MB).
+  - **`XMLWriter`**: Streaming push serializer emitting directly to destinations or files with automatic well-formed tag stack verification, formatting, and character escaping.
+- **Dual Validation Engines with Pre-Compilation**:
   - **DTD Validation**: Supports internal and external DTD subsets, element content models (`EMPTY`, `ANY`, mixed, sequence/choice), and attribute declarations (`ID`, `IDREF`, `NMTOKEN`, `ENTITY`, `NOTATION`).
-  - **W3C XML Schema (XSD) Validation**: Validates documents against XSD schemas (`xs:sequence`, `xs:choice`, `xs:all`, `xs:any`, `xs:anyAttribute`, identity constraints `xs:key`/`xs:keyref`/`xs:unique`, schema composition via `xs:include`/`xs:import`, built-in types, and facets).
-- **XPath 1.0 Query Engine**: Evaluates complex XPath expressions across the document tree with support for all 13 axes, 28+ built-in functions, predicates, and abbreviated syntax (`//`, `@`, `.`, `..`).
-- **High-Performance Memory Model**: Uses `std::pmr` (Polymorphic Memory Resources) monotonic buffer arenas to minimize heap fragmentation and ensure high-throughput parsing.
+  - **W3C XML Schema (XSD) Validation**: Full XSD validation support (`xs:sequence`, `xs:choice`, `xs:all`, `xs:any`, `xs:anyAttribute`, identity constraints `xs:key`/`xs:keyref`/`xs:unique`, schema composition via `xs:include`/`xs:import`, built-in types, and facets).
+  - **`XSD_Schema`**: Thread-safe schema pre-compilation allowing immutable schemas to be parsed once and reused across concurrent worker threads.
+- **XPath 1.0 Engine & Query Caching**:
+  - Evaluates complex XPath expressions across the document tree with support for all 13 axes, 28+ built-in functions, predicates, and abbreviated syntax (`//`, `@`, `.`, `..`).
+  - **`XPathExpression`**: Pre-compiles and caches XPath ASTs to eliminate re-lexing and re-parsing overhead in hot query loops.
+- **Zero-Copy Memory-Mapped File I/O (`MMapSource`)**:
+  - Leverages OS kernel page caching (`mmap` on POSIX, `CreateFileMappingA` on Windows) for near-instantaneous ingestion of massive XML files without userspace buffer copies.
+- **OASIS XML Catalogs 1.1 Resolution (`OASIS_Catalog`)**:
+  - Implements OASIS XML Catalogs 1.1 standard (`system`, `public`, `rewriteSystem`, `rewriteURI`, and memory overrides) for secure, air-gapped schema and external entity resolution.
+- **Modern C++23 & C++20 Idiomatic API**:
+  - **Non-throwing APIs**: C++23 `std::expected<std::unique_ptr<XML>, XML_Error>` via `XML::parseExpected()`, `XMLReader::readExpected()`, and `XML::validateExpected()`.
+  - **Monadic Lookups**: C++23 `std::optional` accessors (`node.findChild()`, `element.findAttribute()`, `reader.findAttribute()`) supporting `.and_then()`, `.transform()`, and `.value_or()`.
+  - **Multidimensional Subscripting**: C++23 multidimensional `operator[]` on `Node` (`root["database", "credentials"]`, `root["book", 0]`).
+  - **Ranges & Views**: Standard C++20 range views (`root.elements()`, `root.elements("book")`, `elementAttributes()`).
+  - **Type Constraints**: Concept-based templates via `XML_Concepts.hpp` (`XMLNodeLike`, `XMLSourceLike`, etc.).
+- **High-Performance Memory Model**: Uses `std::pmr` (Polymorphic Memory Resources) monotonic buffer arenas to eliminate heap allocation bottlenecks.
 - **Security by Design**: Hardened against Billion Laughs / quadratic blowup (XML bomb) recursion and external entity injection (XXE) attacks with strictly configurable resource limits (`ParseOptions`).
 - **Embedded & Minimal Footprints**: Optional embedded configuration supporting `-fno-exceptions`, `-fno-rtti`, and dead-code stripping (`--gc-sections`).
-- **Intuitive Modern C++ API**: Move semantics (Rule of Five), `std::string_view` zero-copy inputs, filesystem paths, and type-safe node downcasting (`isA<T>`, `NRef<T>`).
 
 ---
 
@@ -29,13 +45,14 @@ XML_Lib is decoupled across dedicated role interfaces and services following the
 
 | Subsystem | SOLID Principles | Key Abstractions & Interfaces | Architectural Benefits |
 | :--- | :--- | :--- | :--- |
-| **Input Stream I/O** | **ISP, DIP, SRP** | `ISource`, `BufferSource`, `FileSource` | Isolated stream normalization, BOM detection, UTF conversion |
+| **Input Stream I/O** | **ISP, DIP, SRP** | `ISource`, `BufferSource`, `FileSource`, `MMapSource` | Isolated stream normalization, zero-copy kernel mmap, BOM detection |
 | **Output Destination I/O**| **ISP, SRP** | `IDestination`, `BufferDestination`, `FileDestination` | Role-segregated serialization targets with zero name lookup clashes |
-| **Entity & Security** | **ISP, SRP, DIP** | `IEntityRegistry`, `IEntityExpander`, `ISecurityPolicyManager` | Modular entity expansion, recursion cycle protection, and XXE defense |
+| **Streaming Pipeline** | **SRP, ISP, OCP** | `XMLReader`, `XMLWriter` | $O(1)$-memory forward-only pull parsing and streaming generation |
+| **Entity & Security** | **ISP, SRP, DIP** | `IEntityRegistry`, `IEntityExpander`, `ISecurityPolicyManager`, `IEntityResolver`, `OASIS_Catalog` | Modular entity expansion, XXE defense, OASIS Catalog 1.1 offline resolution |
 | **Parser & Serializer** | **LSP, OCP, DIP** | `IParser`, `IStringify`, `INodeSerializer`, `IXMLParseStage` | Pluggable parsing stages and strategy-based formatting maps |
-| **Validator Pipeline** | **OCP, DIP, SRP** | `ISchemaParser`, `ISchemaValidator`, `IValidatorRegistry` | Pluggable validation pipeline for DTD and XSD schemas |
+| **Validator Pipeline** | **OCP, DIP, SRP** | `ISchemaParser`, `ISchemaValidator`, `IValidatorRegistry`, `XSD_Schema` | Pluggable validation pipeline with thread-safe pre-compiled schemas |
 | **Visitor & Traversal** | **ISP, OCP** | `IVisitorRoles`, `NodeVisitorAdapter`, `IAction` | Granular role visitor callbacks (`IElementVisitor`, `ICommentVisitor`) |
-| **XPath & File Service**| **SRP, DIP, OCP** | `IXPathNodeAdapter`, `XPath`, `XML_FileIO` | Decoupled XPath node navigation and isolated static file I/O |
+| **XPath & Query Cache**| **SRP, DIP, OCP** | `IXPathNodeAdapter`, `XPath`, `XPathExpression`, `XML_FileIO` | Decoupled XPath navigation and AST query caching |
 
 For comprehensive architectural documentation, see the [SOLID Architecture Guide](docs/SOLID_Architecture_Guide.md).
 
@@ -43,18 +60,18 @@ For comprehensive architectural documentation, see the [SOLID Architecture Guide
 
 ## Quick Start
 
-### 1. Parsing and Accessing Elements
+### 1. Modern DOM Parsing, Ranges, and Monadic Lookups
 
 ```cpp
 #include <XML_Lib/XML.hpp>
 #include <XML_Lib/XML_Node.hpp>
+#include <XML_Lib/XML_Ranges.hpp>
 #include <iostream>
 
 using namespace XML_Lib;
 
 int main() {
-    XML xml;
-    xml.parse(R"(
+    XML xml{R"(
         <?xml version="1.0" encoding="UTF-8"?>
         <catalog>
             <book id="bk101">
@@ -62,23 +79,109 @@ int main() {
                 <title>XML Developer's Guide</title>
                 <price>44.95</price>
             </book>
+            <book id="bk102">
+                <author>Ralls, Kim</author>
+                <title>Midnight Rain</title>
+                <price>5.95</price>
+            </book>
         </catalog>
-    )");
+    )"};
 
     auto &root = NRef<Root>(xml.root());
-    std::cout << "Root element: " << root.name() << "\n";
 
-    for (const auto &child : root.getChildren()) {
-        if (isA<Element>(child)) {
-            const auto &book = NRef<Element>(child);
-            std::cout << "Book ID: " << book["id"].getParsed() << "\n";
+    // C++20 Range view: iterate over only <book> child elements
+    for (const auto &book : root.elements("book")) {
+        const auto &bookElem = NRef<Element>(book);
+        
+        // C++23 Monadic optional lookup
+        auto id = bookElem.findAttribute("id")
+                          .transform([](const auto &attr) { return attr.get().getParsed(); })
+                          .value_or("unknown");
+
+        std::cout << "Book ID: " << id << "\n";
+    }
+
+    // C++23 Multidimensional indexing
+    std::cout << "First book title: " << root["book", 0]["title"].getContents() << "\n";
+
+    return 0;
+}
+```
+
+### 2. $O(1)$-Memory Streaming Pull Parsing (`XMLReader`)
+
+```cpp
+#include <XML_Lib/XMLReader.hpp>
+#include <iostream>
+
+using namespace XML_Lib;
+
+int main() {
+    // Process large files without loading the entire DOM into memory
+    auto reader = XMLReader::fromFile("large_dataset.xml");
+
+    while (reader.read()) {
+        if (reader.nodeType() == XMLReader::NodeType::ElementStart && reader.name() == "item") {
+            auto category = reader.findAttribute("category").value_or("none");
+            std::cout << "Found item in category: " << category << "\n";
         }
     }
     return 0;
 }
 ```
 
-### 2. Evaluating XPath Queries
+### 3. Streaming XML Push Generation (`XMLWriter`)
+
+```cpp
+#include <XML_Lib/XMLWriter.hpp>
+#include <iostream>
+
+using namespace XML_Lib;
+
+int main() {
+    XMLWriter writer;
+    writer.setIndent(true, 2);
+
+    writer.writeStartDocument("1.0", "UTF-8");
+    writer.writeStartElement("response");
+    writer.writeAttribute("status", "success");
+
+    writer.writeElement("message", "Processing completed successfully.");
+    writer.writeComment("Generated automatically");
+
+    writer.writeEndElement(); // </response>
+    writer.writeEndDocument();
+
+    std::cout << writer.result() << "\n";
+    return 0;
+}
+```
+
+### 4. Non-Throwing Parsing with `std::expected` (C++23)
+
+```cpp
+#include <XML_Lib/XML.hpp>
+#include <iostream>
+
+using namespace XML_Lib;
+
+int main() {
+    // Parse without exceptions
+    auto result = XML::parseExpected("<root><data>42</data></root>");
+    
+    if (result) {
+        std::unique_ptr<XML> xml = std::move(*result);
+        std::cout << "Parsed root: " << xml->root().getContents() << "\n";
+    } else {
+        const XML_Error &err = result.error();
+        std::cerr << "Parse error at line " << err.line 
+                  << ", col " << err.column << ": " << err.message << "\n";
+    }
+    return 0;
+}
+```
+
+### 5. Evaluating XPath Queries with Pre-Compiled ASTs
 
 ```cpp
 #include <XML_Lib/XML.hpp>
@@ -96,67 +199,50 @@ int main() {
         </inventory>
     )"};
 
-    // Evaluate XPath expression
-    auto matches = xml.xpath("//item[@category='electronics' and @in_stock='true']");
+    // Pre-compile XPath expression once; evaluate repeatedly across documents
+    XPathExpression query{"//item[@category='electronics' and @in_stock='true']"};
+    
+    auto matches = xml.xpath(query);
     for (const auto *node : matches) {
-        std::cout << "Match: " << node->getContents() << "\n";
+        std::cout << "Matching item: " << node->getContents() << "\n";
     }
-
-    // Direct XPath evaluator
-    XPath evaluator(xml.root());
-    std::cout << "Electronics count: "
-              << evaluator.evaluateNumber("count(//item[@category='electronics'])") << "\n";
     return 0;
 }
 ```
 
-### 3. Validating Against an XSD Schema
+### 6. Pre-Compiled XSD Schema Validation
 
 ```cpp
 #include <XML_Lib/XML.hpp>
+#include <XML_Lib/XSD_Schema.hpp>
 #include <iostream>
 
 using namespace XML_Lib;
 
 int main() {
-    XML xml{"<note><to>Tove</to><from>Jani</from><body>Don't forget!</body></note>"};
-
-    const std::string_view schema = R"(
+    // Pre-compile schema once; reuse across worker threads
+    XSD_Schema schema{R"(
         <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
             <xs:element name="note">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="to" type="xs:string"/>
                         <xs:element name="from" type="xs:string"/>
-                        <xs:element name="body" type="xs:string"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
         </xs:schema>
-    )";
+    )"};
 
-    try {
-        xml.validate(schema);
-        std::cout << "Document is valid against schema!\n";
-    } catch (const std::exception &ex) {
-        std::cerr << "Validation failed: " << ex.what() << "\n";
+    XML doc{"<note><to>Alice</to><from>Bob</from></note>"};
+    
+    auto validationResult = doc.validateExpected(schema);
+    if (validationResult) {
+        std::cout << "Document is valid!\n";
+    } else {
+        std::cerr << "Validation failed: " << validationResult.error() << "\n";
     }
     return 0;
-}
-```
-
-### 4. Move Semantics
-
-```cpp
-XML createDocument() {
-    XML doc{"<response status=\"ok\"/>"};
-    return doc; // Efficiently moved (no copying)
-}
-
-int main() {
-    XML doc = createDocument(); // Move-constructed
-    XML target;
-    target = std::move(doc);    // Move-assigned
 }
 ```
 
@@ -172,7 +258,7 @@ Once installed, consuming XML_Lib in your `CMakeLists.txt` is seamless:
 cmake_minimum_required(VERSION 3.20)
 project(MyApplication CXX)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(XML_Lib REQUIRED)
@@ -188,11 +274,41 @@ include(FetchContent)
 FetchContent_Declare(
     XML_Lib
     GIT_REPOSITORY https://github.com/clockworkengineer/XML_Lib.git
-    GIT_TAG        v1.3.0
+    GIT_TAG        v1.4.0
 )
 FetchContent_MakeAvailable(XML_Lib)
 
 target_link_libraries(my_app PRIVATE XML_Lib::XML_Lib)
+```
+
+### Using vcpkg
+
+Add `xml-lib` to your project's `vcpkg.json`:
+
+```json
+{
+  "dependencies": [
+    "xml-lib"
+  ]
+}
+```
+
+Or install directly via CLI:
+```bash
+vcpkg install xml-lib
+```
+
+### Using Conan 2.x
+
+Add `xml-lib/1.4.0` to your `conanfile.py` or `conanfile.txt`:
+
+```ini
+[requires]
+xml-lib/1.4.0
+
+[generators]
+CMakeDeps
+CMakeToolchain
 ```
 
 ---
@@ -200,11 +316,11 @@ target_link_libraries(my_app PRIVATE XML_Lib::XML_Lib)
 ## Building and Testing
 
 ### Requirements
-- C++20 compliant compiler:
-  - GCC ≥ 11
-  - Clang ≥ 14
-  - AppleClang ≥ 14
-  - MSVC ≥ 19.29 (Visual Studio 2019 16.10+)
+- C++23 compliant compiler:
+  - GCC ≥ 13
+  - Clang ≥ 17
+  - AppleClang ≥ 15
+  - MSVC ≥ 19.38 (Visual Studio 2022 17.8+)
 - CMake ≥ 3.20
 
 ### Using CMake Presets
@@ -274,11 +390,15 @@ cmake --install build --prefix /opt/xml_lib
 ## Documentation
 
 - [User Guide](docs/Guide.md) — Comprehensive guide covering parsing, tree navigation, validation, and serialization.
-- [API Reference](docs/API.md) — Complete class and method API documentation.
-- [SOLID Architecture Guide](docs/SOLID_Architecture_Guide.md) — Architectural overview and design principles.
+- [API Reference](docs/API.md) — Exhaustive class and method reference for all components.
+- [Streaming Processing Guide](docs/Streaming_Guide.md) — Dedicated guide for constant-memory ($O(1)$) pull parsing and push generation.
+- [Modern C++ Guide](docs/Modern_Cpp_Guide.md) — In-depth guide to C++23 `std::expected`, monadic operations, ranges, and concepts.
+- [Security & Catalog Resolution](docs/Entity_Catalog_Resolution.md) — Hardening against XXE and using OASIS XML Catalogs 1.1 for offline resolution.
+- [Performance Tuning Guide](docs/Performance_Tuning_Guide.md) — PMR arenas, memory-mapped I/O (`MMapSource`), and pre-compilation optimization.
+- [SOLID Architecture Guide](docs/SOLID_Architecture_Guide.md) — Architectural overview, design principles, and extension cookbooks.
 - [W3C Conformance Documentation](docs/Conformance.md) — Official W3C XML Conformance Test Suite verification, pass rates, and standards breakdown.
-- [Standards Compliance Report](docs/XML_Lib_Standards_Report.md) — Detailed breakdown of XML 1.0, DTD, XSD, and XPath 1.0 compliance.
-- [Changelog](CHANGELOG.md) — Detailed release and version history.
+- [Standards Compliance Report](docs/XML_Lib_Standards_Report.md) — Detailed breakdown of XML 1.0, DTD, XSD, XPath 1.0, and OASIS Catalogs 1.1.
+- [Changelog](CHANGELOG.md) — Release and version history.
 - [Contributing Guidelines](CONTRIBUTING.md) — Guidelines for submitting issues and pull requests.
 
 ---

@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package Manager Manifests**: Added standard `vcpkg.json` and `conanfile.py` package recipes to project root for seamless ecosystem installation.
 - **Memory-Mapped File Input (`MMapSource`)**: Added cross-platform zero-copy memory-mapped file source (`MMapSource`) leveraging POSIX `mmap` / Windows `CreateFileMapping` to stream file contents directly from the OS page cache without userspace copying or memory duplication.
 - **OASIS XML Catalogs 1.1 Resolver (`OASIS_Catalog`)**: Added standard OASIS XML Catalog resolver implementing `IEntityResolver` to resolve SYSTEM, PUBLIC, rewriteSystem, and rewriteURI identifiers to local cached files or in-memory contents without network access.
+- **Comprehensive Documentation Overhaul**: Fully modernized all repository documentation to C++23 / v1.4.0 standards (`README.md`, `docs/API.md`, `docs/Guide.md`, `docs/SOLID_Architecture_Guide.md`, `docs/Conformance.md`, `docs/XML_Lib_Standards_Report.md`, `docs/Doxyfile`). Authored 4 new specialized guides: `docs/Streaming_Guide.md`, `docs/Modern_Cpp_Guide.md`, `docs/Entity_Catalog_Resolution.md`, and `docs/Performance_Tuning_Guide.md`.
 
 ### Changed
 - **Thread-Safe & Re-Entrant Parser**: Converted all process-global `static` parser execution state in `Default_Parser` to `inline thread_local static`, allowing safe concurrent parsing across threads without cross-thread contamination or locking.

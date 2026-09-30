@@ -1,289 +1,587 @@
 # XML_Lib API Reference
 
-This document provides a reference for the public API of the XML_Lib library.
+This document provides a comprehensive technical reference for the public API of the XML_Lib library.
 
-## Overview
-XML_Lib is a C++20 library for parsing, creating, and manipulating XML files. All classes live in the `XML_Lib` namespace.
-
-## Main Classes
-
-### `XML`
-The top-level class. Provides parse, stringify, traverse, and validate entry points.
-
-```cpp
-XML xml;
-xml.parse(ISource &source);                         // Parse XML from a source (BufferSource, FileSource)
-xml.stringify(IDestination &dest);                  // Serialise back to XML
-xml.validate();                                     // Validate against DTD (if present)
-xml.validate(const std::string_view &xsdSource);    // Validate against an XSD schema string
-xml.traverse(IAction &action);                      // Walk the Node tree
-std::vector<const Node *> xml.xpath(std::string_view expr); // Evaluate XPath 1.0 expression
-Node &xml.prolog();                                 // Root prolog Node
-Node &xml.root();                                   // Root element Node
-Node &xml.declaration();                            // XML declaration Node
-Node &xml.dtd();                                    // DTD Node (throws if none)
-static std::string XML::version();
-```
-
-### Validation and compliance
-`XML::validate()` supports document validation against:
-- embedded or external DTDs when `XML_LIB_ENABLE_DTD` is enabled
-- W3C XML Schema Definitions (XSD) when `XML_LIB_ENABLE_XSD` is enabled
-
-The compliance suite exercises W3C-derived XML, DTD, XPath, and XSD scenarios.
-
-Exceptions thrown by validation:
-- `IValidator::Error` for DTD or XSD validation failures
-- `XPath::Error` for invalid XPath expressions or evaluation failures
-
-## ParseOptions
-The `ParseOptions` struct controls parser limits and XML processing policy.
-
-- `maxXmlSize` — maximum XML input size in bytes. Defaults to the compile-time macro `XML_LIB_MAX_XML_SIZE`.
-- `maxEntityExpansionDepth` — maximum entity expansion recursion depth (XML bomb defence).
-- `maxNestingDepth` — maximum element nesting depth.
-- `maxElementCount` — maximum number of XML elements in a document.
-- `maxAttributeCount` — maximum number of attributes allowed on a single element.
-- `maxTotalAttributeCount` — maximum total number of attributes across the document. Defaults to the compile-time macro `XML_LIB_MAX_TOTAL_ATTRIBUTES`.
-- `maxTextNodeSize` — maximum size of a single text or content node in bytes.
-- `allowExternalEntities` — when `false` and no `entityResolver` is provided, external entities are rejected by default (XXE defence).
-- `entityResolver` — optional custom resolver. When non-null, it overrides `allowExternalEntities`.
-
-### Example
-```cpp
-ParseOptions options;
-options.maxXmlSize = 20 * 1024 * 1024;         // 20 MiB source limit
-options.maxAttributeCount = 200;
-options.allowExternalEntities = false;
-xml.parse(source, options);
-```
-
-### Notes
-- `allowExternalEntities` defaults to `false` to prevent XXE attacks unless a custom `IEntityResolver` is explicitly supplied.
-- `XML_LIB_MAX_XML_SIZE` and `XML_LIB_MAX_TOTAL_ATTRIBUTES` can be overridden at build time through CMake defines.
-
-### `Node`
-Owning wrapper around a `Variant`. The Node tree represents the entire document.
-
-```cpp
-bool node.isEmpty() const;
-bool node.isNameable() const;
-bool node.isIndexable() const;
-std::string node.getContents() const;
-const Node &node[int index] const;
-const Node &node[std::string_view name] const;
-std::vector<Node> &node.getChildren();
-```
-
-Use `isA<T>(node)` / `NRef<T>(node)` to test and cast a `Node` to any `Variant` subtype.
-
-### `Element` / `Root` / `Self`
-Represent element nodes. `Root` is the document root element, `Self` a self-closing element.
-
-```cpp
-const std::string &element.name() const;          // Full qualified name (e.g. "h:table")
-std::string element.getPrefix() const;             // Namespace prefix (e.g. "h"), "" if none
-std::string element.getLocalName() const;          // Local part (e.g. "table")
-std::string element.getNamespaceURI() const;       // Resolved URI from in-scope namespaces
-
-// Attributes
-bool element.hasAttribute(std::string_view name) const;
-void element.addAttribute(std::string_view name, const XMLValue &value) const;
-const std::vector<XMLAttribute> &element.getAttributes() const;
-const XMLAttribute &element[std::string_view attrName] const;
-
-// Namespaces (accumulated in-scope from root to this element)
-bool element.hasNameSpace(std::string_view prefix) const;
-void element.addNameSpace(std::string_view prefix, const XMLValue &value) const;
-const XMLAttribute &element.getNameSpace(std::string_view prefix) const;
-const std::vector<XMLAttribute> &element.getNameSpaces() const;
-```
-
-### `XMLAttribute`
-Represents a name/value attribute.
-
-```cpp
-const std::string &attr.getName() const;
-const std::string &attr.getUnparsed() const;
-const std::string &attr.getParsed() const;
-char attr.getQuote() const;
-
-static bool XMLAttribute::contains(const std::vector<XMLAttribute> &, std::string_view name);
-static XMLAttribute &XMLAttribute::find(std::vector<XMLAttribute> &, std::string_view name);
-```
-
-### `XMLValue`
-Holds the raw (unparsed) and resolved (parsed) text of an attribute or entity value.
-
-```cpp
-XMLValue(std::string_view unparsed, std::string_view parsed = "", char quote = '"');
-const std::string &value.getUnparsed() const;
-const std::string &value.getParsed() const;
-bool value.isReference() const;
-bool value.isEntityReference() const;
-bool value.isCharacterReference() const;
-```
-
-### `ISource` / `IDestination`
-Source and destination abstractions for I/O.
-
-```cpp
-BufferSource source{std::string xmlText};   // Parse from string
-FileSource   source{std::string filePath};  // Parse from file
-BufferDestination dest;                     // Stringify to string (dest.toString())
-FileDestination   dest{path, format};       // Stringify to file
-```
-
-## Namespace Support
-XML_Lib implements the [W3C XML Namespaces](https://www.w3.org/TR/xml-names/) recommendation:
-
-- `xmlns="uri"` declares a **default namespace**; accessible via `getNameSpace(":")`.
-- `xmlns:prefix="uri"` declares a **prefixed namespace**; accessible via `getNameSpace("prefix")`.
-- Namespace declarations scope to child elements — `getNameSpaces()` on any element returns all in-scope declarations (from root down to the element).
-- Elements and attributes with undeclared prefixes cause a `SyntaxError` to be thrown.
-- Duplicate namespace declarations on the same element throw a `SyntaxError`.
-- `getPrefix()`, `getLocalName()`, `getNamespaceURI()` provide QName decomposition.
-
-### Namespace Example
-```cpp
-XML xml;
-BufferSource source{
-  "<root xmlns:h=\"http://www.w3.org/TR/html4/\">"
-  "<h:table h:border=\"1\"><h:tr><h:td>Data</h:td></h:tr></h:table>"
-  "</root>"
-};
-xml.parse(source);
-auto &root = NRef<Element>(xml.root());
-auto &table = root[0];
-std::cout << table.name();             // "h:table"
-std::cout << table.getPrefix();        // "h"
-std::cout << table.getLocalName();     // "table"
-std::cout << table.getNamespaceURI();  // "http://www.w3.org/TR/html4/"
-std::cout << table.getNameSpace("h").getParsed();  // "http://www.w3.org/TR/html4/"
-```
-
-### `XSD_Validator`
-Parses a W3C XML Schema (XSD) and validates a document against it. Constructed and used internally by `XML::validate(xsdSource)`.
-
-```cpp
-// Typical usage via the XML class:
-XML xml;
-xml.parse(BufferSource{xmlString});
-xml.validate(xsdSchemaString);   // throws IValidator::Error on failure
-```
-
-You can also use `XSD_Validator` directly:
-```cpp
-XML xml;
-xml.parse(BufferSource{xmlString});
-
-XSD_Validator validator{xml.root()};
-BufferSource schemaSource{xsdString};
-validator.parse(schemaSource);    // builds internal schema model
-validator.validate(xml.root());   // throws IValidator::Error on failure
-```
-
-**Error format**: `"IValidator Error: XSD Validation Error [Element: <name>] <description>."`
-
-**Supported Phase 2 features:**
-- `xs:sequence`, `xs:choice`, `xs:all` content models; `minOccurs`/`maxOccurs`; `xs:any`
-- All builtin simple types (`xs:string`, `xs:boolean`, `xs:integer` family, `xs:decimal`, etc.)
-- Named `xs:simpleType` with restriction facets: `minInclusive`, `maxInclusive`, `minExclusive`, `maxExclusive`, `pattern`, `enumeration`, `minLength`, `maxLength`, `length`
-- Attribute declarations: `use="required"`, `use="optional"`, `use="prohibited"`, `fixed`, `default`, `xs:anyAttribute`
-- `default` attribute values are validated without mutating the XML tree
-- `xs:key`, `xs:keyref`, `xs:unique`
-- `xs:include` / `xs:import` schema composition
-- Complex type derivation using `xs:extension` / `xs:restriction`
-- Inline anonymous complex and simple types
-
-### `XPath`
-Evaluates XPath 1.0 expressions against a parsed document tree.
-
-```cpp
-#include "XPath.hpp"
-using namespace XML_Lib;
-
-XPath xp(xml.root());
-
-// Returns pointers into the Node tree — do not store beyond the XML object's lifetime.
-std::vector<const Node *> nodes = xp.evaluate("//book[@category='web']");
-
-// Convenience wrappers
-std::string s = xp.evaluateString("string(//title[1])");
-bool        b = xp.evaluateBool  ("count(//book) > 2");
-double      n = xp.evaluateNumber("count(//book)");
-```
-
-The `xml.xpath(expr)` shorthand on the `XML` class is also available:
-```cpp
-auto nodes = xml.xpath("//book");  // equivalent to XPath(xml.root()).evaluate(expr)
-```
-
-**Supported features:**
-- All 13 XPath 1.0 axes: `child`, `parent`, `self`, `ancestor`, `ancestor-or-self`, `descendant`, `descendant-or-self`, `attribute`, `following-sibling`, `preceding-sibling`, `following`, `preceding`, `namespace`
-- Abbreviated syntax: `/`, `//`, `.`, `..`, `@`
-- Predicates: positional (`[1]`, `[last()]`), boolean, and comparison (`[@attr='value']`)
-- 28+ built-in functions: `count`, `string`, `number`, `boolean`, `not`, `true`, `false`, `concat`, `contains`, `starts-with`, `substring`, `substring-before`, `substring-after`, `string-length`, `normalize-space`, `translate`, `name`, `local-name`, `namespace-uri`, `position`, `last`, `sum`, `floor`, `ceiling`, `round`, `id`, `lang`
-- Union expressions: `expr1 | expr2`
-- All comparison operators: `=`, `!=`, `<`, `<=`, `>`, `>=`
-
-**Error type**: `XPath::Error` (derives from `std::runtime_error`), message prefix `"XPath Error: "`.
-
-## SOLID Role Interfaces & Services
-
-`XML_Lib` provides a complete set of role-segregated interfaces adhering to the **Interface Segregation Principle (ISP)** and **Dependency Inversion Principle (DIP)**:
-
-### Input Stream Role Interfaces (`ISource.hpp`)
-- `ICharStream`: Character stream navigation (`current()`, `next()`, `more()`, `backup()`).
-- `ILocationTracker`: Stream offset and line/column location reporting (`position()`, `getPosition()`, `getSystemId()`).
-- `IRangeReader`: Substring extraction (`getRange(start, end)`).
-- `IResettableStream`: Stream reset control (`reset()`).
-- `ISource`: Composite interface inheriting all four input role interfaces.
-
-### Output Destination Role Interfaces (`IDestination.hpp`)
-- `ICharWriter`: Single-character output (`add(Char)`).
-- `IStringWriter`: String/block output (`add(const std::string&)`, `add(const char*)`, `add(const std::string_view&)`).
-- `IResettableDestination`: Output clearing control (`clear()`).
-- `IDestination`: Composite interface inheriting output role interfaces with C++ `using` overload declarations.
-
-### Entity & Security Role Interfaces (`IEntityRegistry.hpp`, `IEntityExpander.hpp`, `ISecurityPolicyManager.hpp`)
-- `IEntityRegistry`: Entity registration and lookup (`setInternal`, `getExternal`, `isPresent`).
-- `IEntityExpander`: Entity substitution and translation (`translate`, `map`, `checkForRecursion`).
-- `ISecurityPolicyManager`: External entity resolution policy and XXE security configuration (`setExternalEntityPolicy`).
-- `IEntityMapper`: Composite interface inheriting `IEntityRegistry`, `IEntityExpander`, and `ISecurityPolicyManager`.
-
-### Parser & Serializer Role Interfaces (`IParser.hpp`, `IStringify.hpp`)
-- `IParser`: Abstract document parsing producing `Node` (`parse`).
-- `IValidatingParser`: Role interface for parsers supporting validation (`canValidate`, `validate`).
-- `IStringify`: Abstract XML serialization interface (`stringify`).
-- `IIndentedStringify`: Role interface for formatters supporting indentation settings (`getIndent`, `setIndent`).
-- [`INodeSerializer`](file:///home/robt/projects/XML_Lib/classes/include/implementation/stringify/INodeSerializer.hpp): Strategy interface for node-specific formatting (`serialize`).
-- [`IXMLParseStage`](file:///home/robt/projects/XML_Lib/classes/include/implementation/parser/IXMLParseStage.hpp): Strategy interface for modular parse stages.
-- [`NamespaceValidator`](file:///home/robt/projects/XML_Lib/classes/include/implementation/parser/NamespaceValidator.hpp): Dedicated validator for W3C XML Namespaces (SRP).
-
-### Validator Role Interfaces (`ISchemaParser.hpp`, `ISchemaValidator.hpp`, `IValidatorRegistry.hpp`)
-- `ISchemaParser<SchemaT>`: Template role interface for schema parsing.
-- `ISchemaValidator`: Role interface for document validation execution (`validateDocument`).
-- [`ValidatorRegistry`](file:///home/robt/projects/XML_Lib/classes/include/implementation/ValidatorRegistry.hpp): Pluggable validator registry allowing custom schema validators to be registered dynamically (`registerValidator`, `getValidator`).
-
-### XPath, Factories & File Services (`IXPathEngine.hpp`, `XML_Factories.hpp`, `XML_FileIO.hpp`)
-- `IXPathEngine`: Abstract query and navigation engine interface (`evaluate`).
-- [`XML_Factories`](file:///home/robt/projects/XML_Lib/classes/include/XML_Factories.hpp): Component factory functions for DIP decoupling (`createDefaultParser`, `createDefaultStringify`, `createDefaultEntityMapper`, `createDefaultValidatorRegistry`, `createDefaultXPathEngine`).
-- [`IXPathNodeAdapter`](file:///home/robt/projects/XML_Lib/classes/include/implementation/xpath/IXPathNodeAdapter.hpp): Strategy interface for XPath node navigation abstraction.
-- [`XML_FileIO`](file:///home/robt/projects/XML_Lib/classes/include/implementation/io/XML_FileIO.hpp): Dedicated service class for static file I/O operations (`fromFile`, `toFile`, `getFileFormat`).
-
-## Error Handling
-All errors throw exceptions derived from `std::runtime_error`:
-- `SyntaxError` — malformed XML or namespace violations.
-- `Node::Error` — invalid node access.
-- `XMLAttribute::Error` — attribute not found.
-- `IValidator::Error` — DTD or XSD validation failure.
-- `XPath::Error` — invalid XPath expression or evaluation error.
-- `FileSource::Error` / `BufferSource::Error` — I/O errors.
-
-## Example Usage
-See the [Guide](Guide.md) and the `examples/` directory for practical usage scenarios.
+All classes, types, and functions reside in the `XML_Lib` namespace.
 
 ---
-*For detailed implementation notes, refer to the source in `classes/include/` and `classes/source/`.*
 
+## Standard & Architecture
+
+- **Language Standard**: ISO/IEC 14882:2023 (C++23)
+- **Design Philosophy**: 100% SOLID architecture, zero external runtime dependencies, $O(1)$-memory streaming options, and RAII resource management.
+
+---
+
+## Table of Contents
+
+1. [Main DOM Class (`XML`)](#1-main-dom-class-xml)
+2. [Parse Options (`ParseOptions`)](#2-parse-options-parseoptions)
+3. [Non-Throwing Error Detail (`XML_Error`)](#3-non-throwing-error-detail-xml_error)
+4. [Streaming Pull Parser (`XMLReader`)](#4-streaming-pull-parser-xmlreader)
+5. [Streaming Push Serializer (`XMLWriter`)](#5-streaming-push-serializer-xmlwriter)
+6. [Zero-Copy Memory-Mapped Stream (`MMapSource`)](#6-zero-copy-memory-mapped-stream-mmapsource)
+7. [OASIS XML Catalogs 1.1 (`OASIS_Catalog`)](#7-oasis-xml-catalogs-11-oasis_catalog)
+8. [Pre-Compiled XSD Schema (`XSD_Schema`)](#8-pre-compiled-xsd-schema-xsd_schema)
+9. [Pre-Compiled XPath AST (`XPathExpression`) & Evaluator (`XPath`)](#9-pre-compiled-xpath-ast-xpathexpression--evaluator-xpath)
+10. [DOM Tree Classes (`Node`, `Element`, `XMLAttribute`, `XMLValue`)](#10-dom-tree-classes-node-element-xmlattribute-xmlvalue)
+11. [C++20 Ranges & Views (`XML_Ranges.hpp`)](#11-c20-ranges--views-xml_rangeshpp)
+12. [C++20 Concepts (`XML_Concepts.hpp`)](#12-c20-concepts-xml_conceptshpp)
+13. [Serialization & Formatting (`IStringify`, `StringifyOptions`)](#13-serialization--formatting-istringify-stringifyoptions)
+14. [SOLID Role Interfaces](#14-solid-role-interfaces)
+15. [Exceptions and Error Types](#15-exceptions-and-error-types)
+
+---
+
+## 1. Main DOM Class (`XML`)
+
+Defined in `<XML_Lib/XML.hpp>`. The top-level facade representing an in-memory XML document tree. Uses the PImpl idiom to provide value-like semantics and complete encapsulation.
+
+### Types & Enums
+```cpp
+enum class Format : uint8_t { 
+    utf8 = 0, 
+    utf8BOM, 
+    utf16BE, 
+    utf16LE, 
+    utf32BE, 
+    utf32LE 
+};
+```
+
+### Constructors & Assignment
+```cpp
+explicit XML(IStringify *stringify = nullptr, IParser *parser = nullptr);
+explicit XML(std::unique_ptr<IStringify> stringify, std::unique_ptr<IParser> parser = nullptr);
+explicit XML(const std::string_view &xmlString);
+
+XML(XML &&other) noexcept;
+XML &operator=(XML &&other) noexcept;
+
+XML(const XML &) = delete;
+XML &operator=(const XML &) = delete;
+
+XML &operator=(const std::string_view &xmlString);
+~XML() noexcept;
+```
+
+### Parsing Methods (Throwing)
+```cpp
+void parse(ISource &source, const ParseOptions &options = {}) const;
+void parse(ISource &&source, const ParseOptions &options = {}) const;
+void parse(const char *xmlString, const ParseOptions &options = {}) const;
+void parse(const std::string_view &xmlString, const ParseOptions &options = {}) const;
+void parse(const std::filesystem::path &filePath, const ParseOptions &options = {}) const;
+```
+
+### Parsing Methods (Non-Throwing C++23 `std::expected`)
+```cpp
+[[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> 
+parseExpected(ISource &source, const ParseOptions &options = {}) noexcept;
+
+[[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> 
+parseExpected(ISource &&source, const ParseOptions &options = {}) noexcept;
+
+[[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> 
+parseExpected(std::string_view xmlString, const ParseOptions &options = {}) noexcept;
+
+[[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> 
+parseExpected(const std::string &xmlString, const ParseOptions &options = {}) noexcept;
+
+[[nodiscard]] static std::expected<std::unique_ptr<XML>, XML_Error> 
+parseExpected(const std::filesystem::path &filePath, const ParseOptions &options = {}) noexcept;
+```
+
+### Document Tree Accessors
+```cpp
+[[nodiscard]] Node &prolog() const;       // Everything before root (declaration, comments, PIs)
+[[nodiscard]] Node &declaration() const;  // XML declaration (<?xml ...?>)
+[[nodiscard]] Node &root() const;         // Document root element Node
+[[nodiscard]] Node &dtd() const;          // DTD Node (throws if none present)
+```
+
+### Validation Methods
+```cpp
+// DTD Validation (requires XML_LIB_ENABLE_DTD)
+void validate() const;
+[[nodiscard]] std::expected<void, std::string> validateExpected() const noexcept;
+
+// XSD Validation (requires XML_LIB_ENABLE_XSD)
+void validate(const std::string_view &xsdSource) const;
+void validate(const XSD_Schema &schema) const;
+[[nodiscard]] std::expected<void, std::string> validateExpected(const std::string_view &xsdSource) const noexcept;
+[[nodiscard]] std::expected<void, std::string> validateExpected(const XSD_Schema &schema) const noexcept;
+
+// Custom Validator (OCP)
+void registerValidator(const std::string_view &schemaType, std::unique_ptr<IValidator> validator) const;
+void validate(const std::string_view &schemaType, const std::string_view &schemaSource) const;
+```
+
+### XPath Query Methods
+```cpp
+// Evaluate string expression
+[[nodiscard]] std::vector<const Node *> xpath(std::string_view expression) const;
+
+// Evaluate pre-compiled expression
+[[nodiscard]] std::vector<const Node *> xpath(const XPathExpression &expression) const;
+
+// Custom query engine injection (OCP)
+void setXPathEngine(std::unique_ptr<IXPathEngine> engine) const;
+```
+
+### Serialization & Traversal
+```cpp
+void stringify(IDestination &destination) const;
+void stringify(IDestination &&destination) const;
+[[nodiscard]] std::string stringify() const;
+void stringify(const std::filesystem::path &filePath, Format format = Format::utf8) const;
+
+void traverse(IAction &action);
+void traverse(IAction &action) const;
+```
+
+### Static Utility Services
+```cpp
+[[nodiscard]] static std::string version();
+[[nodiscard]] static std::string fromFile(const std::filesystem::path &filePath);
+static void toFile(const std::filesystem::path &filePath, const std::string_view &xmlString, Format format = Format::utf8);
+[[nodiscard]] static Format getFileFormat(const std::string_view &fileName);
+```
+
+---
+
+## 2. Parse Options (`ParseOptions`)
+
+Defined in `<XML_Lib/XML.hpp>`. Configures security constraints, resource limits, and XML specification conformance dialects:
+
+```cpp
+struct ParseOptions {
+    std::size_t maxXmlSize              = XML_LIB_MAX_XML_SIZE;   // Max input size in bytes (default: 100 MiB)
+    std::size_t maxEntityExpansionDepth = 512;                      // Recursion limit (Billion Laughs defense)
+    std::size_t maxNestingDepth         = 1000;                     // Max element nesting depth
+    std::size_t maxElementCount         = 1000000;                  // Max elements across document
+    std::size_t maxAttributeCount       = 10000;                    // Max attributes per element
+    std::size_t maxTotalAttributeCount  = XML_LIB_MAX_TOTAL_ATTRIBUTES; // Max total attributes (default: 1,000,000)
+    std::size_t maxTextNodeSize         = 1024 * 1024;              // Max text node size (1 MiB)
+    bool        allowExternalEntities   = false;                    // When false, rejects external DTDs/entities (XXE defense)
+    IEntityResolver *entityResolver     = nullptr;                  // Custom entity resolver (overrides allowExternalEntities)
+    bool        strictNamespaces        = false;                    // Enforce XML Namespaces 1.0 (forbids xmlns:prefix="")
+    bool        enableNamespaces        = true;                     // Enable/disable namespace validation
+    bool        allowFuture1xVersions   = false;                    // Accept XML 1.x version headers (XML 1.0 5th Ed)
+    bool        firstEntityDeclarationBinding = false;              // First entity declaration wins (XML 1.0 §4.2)
+};
+```
+
+---
+
+## 3. Non-Throwing Error Detail (`XML_Error`)
+
+Defined in `<XML_Lib/XML_Expected.hpp>`:
+
+```cpp
+struct XML_Error {
+    std::string message;
+    long line{ 0 };
+    long column{ 0 };
+};
+```
+
+Returned as the unexpected type in `std::expected<T, XML_Error>`.
+
+---
+
+## 4. Streaming Pull Parser (`XMLReader`)
+
+Defined in `<XML_Lib/XMLReader.hpp>`. A high-performance, forward-only streaming cursor parser operating with $O(1)$ memory complexity (< 10 MB RAM) across arbitrarily large files.
+
+### Token Types
+```cpp
+enum class NodeType {
+    None,                   // Initial state
+    Declaration,            // <?xml ... ?>
+    ElementStart,           // <tag attr="val">
+    ElementEnd,             // </tag> or closing of <tag/>
+    Text,                   // Character data
+    CDATA,                  // <![CDATA[...]]>
+    Comment,                // <!-- ... -->
+    ProcessingInstruction,  // <?target data?>
+    DTD,                    // <!DOCTYPE ...>
+    Whitespace,             // Ignorable inter-element whitespace
+    EndDocument             // End of document stream
+};
+```
+
+### Constructors & Factories
+```cpp
+explicit XMLReader(ISource &source);
+explicit XMLReader(std::string_view xmlString);
+static XMLReader fromFile(const std::filesystem::path &filePath);
+
+XMLReader(XMLReader &&) noexcept;
+XMLReader &operator=(XMLReader &&) noexcept;
+~XMLReader();
+```
+
+### Cursor Navigation
+```cpp
+bool read();                                          // Advance cursor; returns false at EOF
+std::expected<bool, XML_Error> readExpected() noexcept; // Advance without exceptions
+bool readToNextElement();                              // Advance to next ElementStart
+std::string readElementText();                        // Read all text inside element to ElementEnd
+void skip();                                          // Skip current element's entire subtree
+```
+
+### Node Inspection
+```cpp
+[[nodiscard]] NodeType nodeType() const noexcept;
+[[nodiscard]] static constexpr std::string_view nodeTypeToString(NodeType type) noexcept;
+[[nodiscard]] std::string_view name() const noexcept;
+[[nodiscard]] std::string_view value() const noexcept;
+[[nodiscard]] bool isEmptyElement() const noexcept;
+[[nodiscard]] int depth() const noexcept;
+[[nodiscard]] std::pair<long, long> getPosition() const;
+void setSkipWhitespace(bool skip) noexcept;
+```
+
+### Attribute Inspection
+```cpp
+[[nodiscard]] std::size_t attributeCount() const noexcept;
+[[nodiscard]] bool hasAttribute(std::string_view attrName) const noexcept;
+[[nodiscard]] std::string_view getAttribute(std::string_view attrName) const noexcept;
+[[nodiscard]] std::string_view getAttribute(std::size_t index) const;
+[[nodiscard]] std::string_view getAttributeName(std::size_t index) const;
+[[nodiscard]] std::optional<std::string_view> findAttribute(std::string_view attrName) const noexcept;
+[[nodiscard]] const std::vector<std::pair<std::string, std::string>> &attributes() const noexcept;
+```
+
+---
+
+## 5. Streaming Push Serializer (`XMLWriter`)
+
+Defined in `<XML_Lib/XMLWriter.hpp>`. High-performance streaming serializer emitting directly to an `IDestination` or file with well-formedness tag verification and automatic escaping.
+
+### Constructors & Factories
+```cpp
+explicit XMLWriter(IDestination &destination);
+XMLWriter();                                          // In-memory buffer constructor
+static XMLWriter toFile(const std::filesystem::path &filePath);
+
+XMLWriter(XMLWriter &&) noexcept;
+XMLWriter &operator=(XMLWriter &&) noexcept;
+~XMLWriter();
+```
+
+### Configuration
+```cpp
+void setIndent(bool enable, int spaces = 2) noexcept;
+void setOmitXmlDeclaration(bool omit) noexcept;
+```
+
+### Document & Tag Lifecycle
+```cpp
+void writeStartDocument(std::string_view version = "1.0", 
+                        std::string_view encoding = "UTF-8", 
+                        bool standalone = false);
+void writeEndDocument();
+
+void writeStartElement(std::string_view name);
+void writeEndElement();
+void writeEmptyElement(std::string_view name);
+void writeElement(std::string_view name, std::string_view textContent);
+```
+
+### Attributes & Content
+```cpp
+void writeAttribute(std::string_view name, std::string_view value);
+void writeCharacters(std::string_view text);          // Auto-escapes &, <, >, ", '
+void writeComment(std::string_view comment);          // <!-- comment -->
+void writeCDATA(std::string_view cdata);              // <![CDATA[ cdata ]]>
+void writeProcessingInstruction(std::string_view target, std::string_view data = "");
+void writeRaw(std::string_view rawMarkup);            // Raw unescaped output
+```
+
+### Flushing & Buffer Retrieval
+```cpp
+void flush();
+[[nodiscard]] std::string result() const;              // Valid when constructed with default buffer
+```
+
+---
+
+## 6. Zero-Copy Memory-Mapped Stream (`MMapSource`)
+
+Defined in `<XML_Lib/XML_MMapSource.hpp>` and included via `<XML_Lib/XML_Sources.hpp>`. Maps files directly into userspace address space via the OS page cache without intermediate heap allocation.
+
+```cpp
+class MMapSource final : public ISource {
+public:
+    static constexpr std::size_t kMaxSourceBytes = XML_LIB_MAX_XML_SIZE;
+
+    explicit MMapSource(const std::string_view &filePath, 
+                        std::size_t maxSourceBytes = kMaxSourceBytes);
+
+    // Implements all ISource role interfaces:
+    // ICharStream, ILocationTracker, IRangeReader, IResettableStream
+};
+```
+
+---
+
+## 7. OASIS XML Catalogs 1.1 (`OASIS_Catalog`)
+
+Defined in `<XML_Lib/OASIS_Catalog.hpp>`. Implements `IEntityResolver` according to the OASIS XML Catalogs V1.1 standard for offline entity and schema resolution.
+
+### Constructors & Factories
+```cpp
+OASIS_Catalog() = default;
+explicit OASIS_Catalog(std::string_view catalogXml, const std::filesystem::path &basePath = {});
+static OASIS_Catalog fromFile(const std::filesystem::path &catalogFilePath);
+```
+
+### Catalog Loading & Mapping Configuration
+```cpp
+void loadCatalog(std::string_view catalogXml, const std::filesystem::path &basePath = {});
+void loadCatalogFile(const std::filesystem::path &catalogFilePath);
+
+void addSystemMapping(std::string_view systemId, std::string_view uriOrPath);
+void addPublicMapping(std::string_view publicId, std::string_view uriOrPath);
+void addRewriteSystem(std::string_view systemIdStartString, std::string_view rewritePrefix);
+void addRewriteURI(std::string_view uriStartString, std::string_view rewritePrefix);
+void addMemoryContent(std::string_view identifier, std::string_view content);
+```
+
+### Resolution (Contract Implementation)
+```cpp
+[[nodiscard]] std::optional<std::string> 
+resolve(const std::string_view &systemId, const std::string_view &publicId) override;
+
+[[nodiscard]] std::optional<std::string> resolveSystem(const std::string_view &systemId) const;
+[[nodiscard]] std::optional<std::string> resolvePublic(const std::string_view &publicId, const std::string_view &systemId = {}) const;
+[[nodiscard]] std::optional<std::string> resolveURI(const std::string_view &uri) const;
+```
+
+---
+
+## 8. Pre-Compiled XSD Schema (`XSD_Schema`)
+
+Defined in `<XML_Lib/XSD_Schema.hpp>` (under `XML_LIB_ENABLE_XSD`). Pre-parses and compiles an XSD schema definition into an immutable, thread-safe structure.
+
+```cpp
+class XSD_Schema {
+public:
+    explicit XSD_Schema(ISource &source);
+    explicit XSD_Schema(std::string_view schemaSource);
+    static XSD_Schema fromFile(const std::filesystem::path &filePath);
+
+    XSD_Schema(const XSD_Schema &) = default;
+    XSD_Schema &operator=(const XSD_Schema &) = default;
+    XSD_Schema(XSD_Schema &&) noexcept = default;
+    XSD_Schema &operator=(XSD_Schema &&) noexcept = default;
+
+    void validate(const Node &xNode) const; // Throws XSD_Validator::Error
+    [[nodiscard]] const std::shared_ptr<const XSD_SchemaDefinition> &definition() const noexcept;
+};
+```
+
+---
+
+## 9. Pre-Compiled XPath AST (`XPathExpression`) & Evaluator (`XPath`)
+
+Defined in `<XML_Lib/XPath.hpp>` (under `XML_LIB_ENABLE_XPATH`).
+
+### Pre-Compiled Expression (`XPathExpression`)
+```cpp
+class XPathExpression {
+public:
+    explicit XPathExpression(std::string_view expression);
+    
+    XPathExpression(const XPathExpression &);
+    XPathExpression &operator=(const XPathExpression &);
+    XPathExpression(XPathExpression &&) noexcept;
+    XPathExpression &operator=(XPathExpression &&) noexcept;
+
+    [[nodiscard]] std::string_view expression() const noexcept;
+    [[nodiscard]] std::vector<const Node *> evaluate(const Node &contextNode) const;
+    [[nodiscard]] std::string evaluateString(const Node &contextNode) const;
+    [[nodiscard]] bool evaluateBool(const Node &contextNode) const;
+    [[nodiscard]] double evaluateNumber(const Node &contextNode) const;
+};
+```
+
+### Context Evaluator (`XPath`)
+```cpp
+class XPath {
+public:
+    explicit XPath(const Node &root);
+
+    // Direct string evaluation
+    [[nodiscard]] std::vector<const Node *> evaluate(std::string_view expression) const;
+    [[nodiscard]] std::string evaluateString(std::string_view expression) const;
+    [[nodiscard]] bool evaluateBool(std::string_view expression) const;
+    [[nodiscard]] double evaluateNumber(std::string_view expression) const;
+
+    // Pre-compiled evaluation
+    [[nodiscard]] std::vector<const Node *> evaluate(const XPathExpression &compiled) const;
+    [[nodiscard]] std::string evaluateString(const XPathExpression &compiled) const;
+    [[nodiscard]] bool evaluateBool(const XPathExpression &compiled) const;
+    [[nodiscard]] double evaluateNumber(const XPathExpression &compiled) const;
+};
+```
+
+---
+
+## 10. DOM Tree Classes (`Node`, `Element`, `XMLAttribute`, `XMLValue`)
+
+### `Node`
+```cpp
+bool isEmpty() const;
+bool isNameable() const;
+bool isIndexable() const;
+std::string getContents() const;
+
+// Subscript Operators
+const Node &operator[](int index) const;
+const Node &operator[](const std::string_view &name) const;
+const Node &operator[](std::string_view parent, std::string_view child) const; // C++23
+const Node &operator[](std::string_view name, int index) const;                 // C++23
+
+// Monadic Child Lookups (C++23)
+std::optional<std::reference_wrapper<const Node>> findChild(std::string_view name) const;
+std::optional<std::reference_wrapper<Node>> findChild(std::string_view name);
+
+// Range Views (C++20)
+auto elements() const;
+auto elements(std::string_view name) const;
+
+std::pmr::vector<Node> &getChildren();
+const std::pmr::vector<Node> &getChildren() const;
+```
+
+### `Element` (Inherits `Variant`)
+```cpp
+const std::string &name() const;
+std::string getPrefix() const;
+std::string getLocalName() const;
+std::string getNamespaceURI() const;
+
+// Attribute Access
+bool hasAttribute(const std::string_view &name) const;
+const XMLAttribute &getAttribute(const std::string_view &name) const;
+const std::vector<XMLAttribute> &getAttributes() const;
+const XMLAttribute &operator[](const std::string_view &attrName) const;
+
+// Monadic Attribute Lookup (C++23)
+std::optional<std::reference_wrapper<const XMLAttribute>> 
+findAttribute(const std::string_view &attributeName) const noexcept;
+
+// Namespaces
+bool hasNameSpace(const std::string_view &prefix) const;
+const XMLAttribute &getNameSpace(const std::string_view &prefix) const;
+const std::vector<XMLAttribute> &getNameSpaces() const;
+```
+
+---
+
+## 11. C++20 Ranges & Views (`XML_Ranges.hpp`)
+
+Defined in `<XML_Lib/XML_Ranges.hpp>`. Provides lazy, non-allocating ranges over DOM nodes:
+
+```cpp
+// Returns a view over only Element, Root, or Self children
+auto childElements(const Node &parentNode);
+
+// Returns a view over children matching a specific tag name
+auto childElements(const Node &parentNode, std::string_view tagName);
+
+// Returns a std::span over an element's attributes
+auto elementAttributes(const Node &elementNode);
+```
+
+---
+
+## 12. C++20 Concepts (`XML_Concepts.hpp`)
+
+Defined in `<XML_Lib/XML_Concepts.hpp>`. Constrains template types for custom extensions:
+
+```cpp
+template<typename T>
+concept XMLNodeLike = requires(T t) {
+    { t.getChildren() };
+    { t.getVariant() };
+    { t.isEmpty() } -> std::convertible_to<bool>;
+};
+
+template<typename T>
+concept XMLSourceLike = requires(T t) {
+    { t.current() };
+    { t.next() };
+    { t.more() } -> std::convertible_to<bool>;
+};
+
+template<typename T>
+concept XMLDestinationLike = requires(T t, std::string_view sv, char ch) {
+    { t.add(sv) };
+    { t.add(ch) };
+};
+
+template<typename T>
+concept XMLValidatorLike = requires(T t, const Node &node) {
+    { t.validate(node) };
+};
+```
+
+---
+
+## 13. Serialization & Formatting (`IStringify`, `StringifyOptions`)
+
+Defined in `<XML_Lib/interface/IStringify.hpp>`.
+
+### Formatting Options
+```cpp
+struct StringifyOptions {
+    bool prettyPrint{ false };              // Enable indentation & line breaks
+    int  indentSpaces{ 2 };                  // Spaces per indent level
+    bool useTabs{ false };                  // Use tabs instead of spaces
+    bool selfClosingSpacing{ false };       // <tag /> vs <tag/>
+    bool attributeNewlineWrapping{ false };  // Wrap attributes on new lines
+};
+```
+
+### Serializer Interface
+```cpp
+class IStringify {
+public:
+    virtual ~IStringify() = default;
+    virtual void stringify(const Node &xNode, IDestination &dest, unsigned long indent) const = 0;
+    virtual void setOptions(const StringifyOptions &options);
+    [[nodiscard]] virtual const StringifyOptions &getOptions() const;
+};
+```
+
+---
+
+## 14. SOLID Role Interfaces
+
+XML_Lib enforces strict role segregation across all I/O, entity, and traversal subsystems:
+
+- **`ISource`**: Composite of `ICharStream`, `ILocationTracker`, `IRangeReader`, `IResettableStream`.
+- **`IDestination`**: Composite of `ICharWriter`, `IStringWriter`, `IResettableDestination`.
+- **`IEntityResolver`**: Single-method contract (`resolve(systemId, publicId)`) for pluggable entity/catalog lookups.
+- **`IEntityRegistry`**, **`IEntityExpander`**, **`ISecurityPolicyManager`**: Role segregation for entity translation and recursion control.
+- **`IVisitorRoles`**: Granular visitor interfaces (`IElementVisitor`, `ICommentVisitor`, `ICDATAVisitor`, `IContentVisitor`, etc.).
+
+---
+
+## 15. Exceptions and Error Types
+
+All exceptions derive from `std::runtime_error`:
+
+| Exception Class | Thrown By | Cause |
+| :--- | :--- | :--- |
+| `SyntaxError` | `Default_Parser`, `XMLReader` | Malformed XML, unclosed tags, undeclared prefix, illegal characters |
+| `XML_Error` | `parseExpected`, `readExpected` | Non-throwing error struct containing `line`, `column`, `message` |
+| `Node::Error` | `Node` | Invalid type cast, out-of-bounds child access, invalid variant access |
+| `XMLAttribute::Error` | `XMLAttribute`, `Element` | Attribute not found in throwing lookups |
+| `IValidator::Error` | `DTD_Validator`, `XSD_Validator` | Validation failure against DTD or W3C XML Schema |
+| `XPath::Error` | `XPath`, `XPathExpression` | Malformed XPath syntax or evaluation failure |
+| `BufferSource::Error`, `FileSource::Error`, `MMapSource::Error` | I/O Classes | File missing, permissions denied, buffer overflow |
