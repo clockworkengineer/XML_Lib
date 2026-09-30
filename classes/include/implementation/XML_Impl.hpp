@@ -37,10 +37,12 @@ public:
   void validate(const std::string_view &schemaType, const std::string_view &schemaSource);
 #if defined(XML_LIB_ENABLE_XSD)
   void validate(const std::string_view &xsdSource);
+  void validate(const class XSD_Schema &schema);
 #endif
 #if defined(XML_LIB_ENABLE_XPATH)
   void setXPathEngine(std::unique_ptr<IXPathEngine> engine);
   [[nodiscard]] std::vector<const Node *> xpath(std::string_view expression);
+  [[nodiscard]] std::vector<const Node *> xpath(const class XPathExpression &expression);
 #endif
   [[nodiscard]] static std::string version();
 

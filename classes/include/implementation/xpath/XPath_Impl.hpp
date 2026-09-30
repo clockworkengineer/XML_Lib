@@ -47,8 +47,18 @@ public:
   [[nodiscard]] bool evaluateBool(std::string_view expression) const;
   [[nodiscard]] double evaluateNumber(std::string_view expression) const;
 
+  [[nodiscard]] std::vector<const Node *> evaluate(const XPathExpr &expr) const;
+  [[nodiscard]] std::string evaluateString(const XPathExpr &expr) const;
+  [[nodiscard]] bool evaluateBool(const XPathExpr &expr) const;
+  [[nodiscard]] double evaluateNumber(const XPathExpr &expr) const;
+
+  [[nodiscard]] std::shared_ptr<const XPathExpr> getOrCompile(std::string_view expression) const;
+
 private:
   const Node &xmlRoot;
+  mutable std::unordered_map<std::string, std::shared_ptr<const XPathExpr>> expressionCache;
 };
+
+[[nodiscard]] std::shared_ptr<const XPathExpr> compileXPath(std::string_view expression);
 
 }// namespace XML_Lib

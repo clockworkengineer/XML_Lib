@@ -91,6 +91,9 @@ void XML::validate() const { implementation->validate(); }
 
 /// @param xsdSource XSD schema XML string.
 void XML::validate(const std::string_view &xsdSource) const { implementation->validate(xsdSource); }
+
+/// @brief Validate XML against a pre-compiled XSD schema.
+void XML::validate(const XSD_Schema &schema) const { implementation->validate(schema); }
 #endif
 
 void XML::registerValidator(const std::string_view &schemaType, std::unique_ptr<IValidator> validator) const
@@ -115,6 +118,11 @@ void XML::setXPathEngine(std::unique_ptr<IXPathEngine> engine) const
 /// @param expression XPath expression string.
 /// @return Node pointers matching the expression (into the internal node tree).
 std::vector<const Node *> XML::xpath(const std::string_view expression) const
+{
+  return implementation->xpath(expression);
+}
+
+std::vector<const Node *> XML::xpath(const XPathExpression &expression) const
 {
   return implementation->xpath(expression);
 }

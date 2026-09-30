@@ -1,4 +1,5 @@
 #include "XML_Lib_Tests.hpp"
+#include "XSD_Schema.hpp"
 #include "io/XML_BufferSource.hpp"
 #include <string>
 
@@ -52,6 +53,13 @@ TEST_CASE("Performance regression: XPath query on large node set", "[performance
     return nodes.size();
   };
 
+  const XPathExpression compiledExpr("//item[starts-with(., 'value')]");
+
+  BENCHMARK("XPath evaluate with pre-compiled XPathExpression") {
+    const auto nodes = compiledExpr.evaluate(xml.root());
+    return nodes.size();
+  };
+
   REQUIRE(xml.root().getChildren().size() == kLargeItemCount);
 }
 
@@ -80,6 +88,26 @@ TEST_CASE("Performance regression: XSD validation throughput", "[performance]")
 
   BENCHMARK("validate large document against XSD") {
     validator.validate(xml.root());
+    return xml.root().getChildren().size();
+  };
+
+  const XSD_Schema compiledSchema(schema);
+
+  BENCHMARK("validate large document using pre-compiled XSD_Schema") {
+    compiledSchema.validate(xml.root());
+    return xml.root().getChildren().size();
+  };
+
+  BENCHMARK("full cycle: parse schema + validate") {
+    XSD_Validator v(xml.root());
+    BufferSource ss(schema);
+    v.parse(ss);
+    v.validate(xml.root());
+    return xml.root().getChildren().size();
+  };
+
+  BENCHMARK("full cycle: reuse pre-compiled XSD_Schema") {
+    compiledSchema.validate(xml.root());
     return xml.root().getChildren().size();
   };
 

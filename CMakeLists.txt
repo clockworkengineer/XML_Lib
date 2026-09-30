@@ -105,6 +105,7 @@ endif()
 
 if(XML_LIB_ENABLE_XSD)
   list(APPEND XML_LIBRARY_SOURCES
+    classes/source/implementation/xsd/XSD_Schema.cpp
     classes/source/implementation/xsd/XSD_Validator.cpp
     classes/source/implementation/xsd/XSD_Validator_Impl.cpp
     classes/source/implementation/xsd/XSD_NodeHelpers.cpp
@@ -284,6 +285,7 @@ endif()
 
 if(XML_LIB_ENABLE_XSD)
   list(APPEND XML_PUBLIC_HEADERS ${PROJECT_SOURCE_DIR}/classes/include/XSD_Validator.hpp)
+  list(APPEND XML_PUBLIC_HEADERS ${PROJECT_SOURCE_DIR}/classes/include/XSD_Schema.hpp)
 endif()
 
 if(XML_LIB_BUILD_TESTS)

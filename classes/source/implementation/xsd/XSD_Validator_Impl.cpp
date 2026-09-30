@@ -13,10 +13,31 @@
 
 namespace XML_Lib {
 
-/// @brief
-/// XSD_Impl constructor.
+XSD_Impl::XSD_Impl(Node &xNode)
+  : schemaDef(std::make_shared<XSD_SchemaDefinition>()),
+    simpleTypes(schemaDef->simpleTypes),
+    complexTypes(schemaDef->complexTypes),
+    rootElements(schemaDef->rootElements),
+    targetNamespace(schemaDef->targetNamespace),
+    elementFormDefault(schemaDef->elementFormDefault),
+    xsPrefix(schemaDef->xsPrefix),
+    schemaDirectory(schemaDef->schemaDirectory),
+    importedSchemas(schemaDef->importedSchemas),
+    xmlRoot(xNode)
+{}
 
-XSD_Impl::XSD_Impl(Node &xNode) : xmlRoot(xNode) {}
+XSD_Impl::XSD_Impl(Node &xNode, std::shared_ptr<const XSD_SchemaDefinition> compiledSchema)
+  : schemaDef(std::const_pointer_cast<XSD_SchemaDefinition>(std::move(compiledSchema))),
+    simpleTypes(schemaDef->simpleTypes),
+    complexTypes(schemaDef->complexTypes),
+    rootElements(schemaDef->rootElements),
+    targetNamespace(schemaDef->targetNamespace),
+    elementFormDefault(schemaDef->elementFormDefault),
+    xsPrefix(schemaDef->xsPrefix),
+    schemaDirectory(schemaDef->schemaDirectory),
+    importedSchemas(schemaDef->importedSchemas),
+    xmlRoot(xNode)
+{}
 
 /// @brief
 /// XSD_Impl destructor.

@@ -12,6 +12,10 @@
 #include <utility>
 #if defined(XML_LIB_ENABLE_XSD)
 #include "XSD_Validator.hpp"
+#include "XSD_Schema.hpp"
+#endif
+#if defined(XML_LIB_ENABLE_XPATH)
+#include "XPath.hpp"
 #endif
 
 namespace XML_Lib {
@@ -161,6 +165,11 @@ void XML_Impl::validate(const std::string_view &xsdSource)
 {
   validate("XSD", xsdSource);
 }
+
+void XML_Impl::validate(const XSD_Schema &schema)
+{
+  schema.validate(root());
+}
 #endif
 
 #if defined(XML_LIB_ENABLE_XPATH)
@@ -178,6 +187,12 @@ std::vector<const Node *> XML_Impl::xpath(const std::string_view expression)
     xpathEngine = createDefaultXPathEngine();
   }
   return xpathEngine->evaluate(root(), expression);
+}
+
+std::vector<const Node *> XML_Impl::xpath(const XPathExpression &expression)
+{
+  XPath xp(root());
+  return xp.evaluate(expression);
 }
 #endif
 

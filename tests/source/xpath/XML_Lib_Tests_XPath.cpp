@@ -483,3 +483,54 @@ TEST_CASE("XPath error handling", "[XML][XPath][Errors]")
     REQUIRE_THROWS_AS(xp.evaluate(""), XPath::Error);
   }
 }
+
+TEST_CASE("XPath pre-compiled XPathExpression", "[XML][XPath][PreCompiled]")
+{
+  SECTION("Compile once, evaluate against multiple documents")
+  {
+    const XPathExpression compiled("//book/title");
+    REQUIRE(compiled.expression() == "//book/title");
+
+    XML xml1{ kBookstore };
+    XML xml2{
+      "<bookstore>"
+      "  <book category='fiction'><title lang='en'>Dune</title><price>25.00</price></book>"
+      "</bookstore>"
+    };
+
+    // Evaluate via XPathExpression directly
+    const auto nodes1 = compiled.evaluate(xml1.root());
+    REQUIRE(nodes1.size() == 4);
+
+    const auto nodes2 = compiled.evaluate(xml2.root());
+    REQUIRE(nodes2.size() == 1);
+
+    // Evaluate via XML facade
+    const auto facadeNodes = xml1.xpath(compiled);
+    REQUIRE(facadeNodes.size() == 4);
+
+    // Evaluate via XPath evaluator overload
+    XPath xp(xml1.root());
+    const auto xpNodes = xp.evaluate(compiled);
+    REQUIRE(xpNodes.size() == 4);
+  }
+
+  SECTION("Pre-compiled scalar evaluations")
+  {
+    const XPathExpression countExpr("count(//book)");
+    const XPathExpression titleExpr("//book[1]/title");
+    const XPathExpression existsExpr("boolean(//book)");
+
+    XML xml{ kBookstore };
+    REQUIRE(countExpr.evaluateNumber(xml.root()) == 4.0);
+    REQUIRE(titleExpr.evaluateString(xml.root()) == "Everyday Italian");
+    REQUIRE(existsExpr.evaluateBool(xml.root()) == true);
+  }
+
+  SECTION("Invalid expression throws XPath::Error during XPathExpression compilation")
+  {
+    REQUIRE_THROWS_AS(XPathExpression("//book["), XPath::Error);
+    REQUIRE_THROWS_AS(XPathExpression(""), XPath::Error);
+  }
+}
+

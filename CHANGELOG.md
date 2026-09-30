@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Multi-Threaded Concurrency Test Suite**: Added `XML_Lib_Tests_Concurrency.cpp` testing concurrent multi-threaded document parsing, XPath query evaluation, and thread-isolated parse options across 16 parallel threads.
+- **Pre-Compiled `XPathExpression` & AST Caching**: Introduced immutable `XPathExpression` class and internal LRU AST cache in `XPath_Impl`. Pre-parsed XPath expression ASTs can be compiled once and evaluated across multiple documents and threads without re-lexing or re-parsing. Added convenience overloads `XPath::evaluate(const XPathExpression &)` and `XML::xpath(const XPathExpression &)`.
+- **Pre-Compiled `XSD_Schema`**: Introduced thread-safe, immutable `XSD_Schema` definition allowing complex W3C XML schemas to be compiled once into memory and reused across millions of XML documents concurrently without re-parsing schema XML or re-building validation tables. Added `XSD_Validator(Node &, const XSD_Schema &)` and `XML::validate(const XSD_Schema &)`.
 
 ### Changed
 - **Thread-Safe & Re-Entrant Parser**: Converted all process-global `static` parser execution state in `Default_Parser` to `inline thread_local static`, allowing safe concurrent parsing across threads without cross-thread contamination or locking.

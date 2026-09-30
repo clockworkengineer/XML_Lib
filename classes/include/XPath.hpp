@@ -14,7 +14,45 @@ namespace XML_Lib {
 // Forward declarations
 // ====================
 class XPath_Impl;
+struct XPathExpr;
 struct Node;
+
+/// @brief Pre-compiled, immutable, thread-safe XPath 1.0 expression.
+///
+/// Compiles and caches the parsed XPath AST once. Can be evaluated repeatedly across
+/// multiple `Node` trees or `XML` documents without re-lexing or re-parsing overhead.
+class XPathExpression
+{
+public:
+  explicit XPathExpression(std::string_view expression);
+  XPathExpression(const XPathExpression &);
+  XPathExpression &operator=(const XPathExpression &);
+  XPathExpression(XPathExpression &&) noexcept;
+  XPathExpression &operator=(XPathExpression &&) noexcept;
+  ~XPathExpression();
+
+  /// @brief Original expression string.
+  [[nodiscard]] std::string_view expression() const noexcept;
+
+  /// @brief Evaluate compiled expression against @p contextNode and return matching nodes.
+  [[nodiscard]] std::vector<const Node *> evaluate(const Node &contextNode) const;
+
+  /// @brief Evaluate compiled expression and convert the result to a string.
+  [[nodiscard]] std::string evaluateString(const Node &contextNode) const;
+
+  /// @brief Evaluate compiled expression and convert the result to a boolean.
+  [[nodiscard]] bool evaluateBool(const Node &contextNode) const;
+
+  /// @brief Evaluate compiled expression and convert the result to a number.
+  [[nodiscard]] double evaluateNumber(const Node &contextNode) const;
+
+  /// @brief Internal compiled AST accessor.
+  [[nodiscard]] const std::shared_ptr<const XPathExpr> &ast() const noexcept;
+
+private:
+  std::string exprString;
+  std::shared_ptr<const XPathExpr> compiledAst;
+};
 
 /// @brief XPath 1.0 evaluator.
 ///
@@ -55,6 +93,18 @@ public:
 
   /// @brief Evaluate @p expression and convert the result to a number (XPath `number()` semantics).
   [[nodiscard]] double evaluateNumber(std::string_view expression) const;
+
+  /// @brief Evaluate a pre-compiled @p expression and return all matching nodes.
+  [[nodiscard]] std::vector<const Node *> evaluate(const XPathExpression &compiled) const;
+
+  /// @brief Evaluate a pre-compiled @p expression and convert the result to a string.
+  [[nodiscard]] std::string evaluateString(const XPathExpression &compiled) const;
+
+  /// @brief Evaluate a pre-compiled @p expression and convert the result to a boolean.
+  [[nodiscard]] bool evaluateBool(const XPathExpression &compiled) const;
+
+  /// @brief Evaluate a pre-compiled @p expression and convert the result to a number.
+  [[nodiscard]] double evaluateNumber(const XPathExpression &compiled) const;
 
 private:
   const std::unique_ptr<XPath_Impl> implementation;

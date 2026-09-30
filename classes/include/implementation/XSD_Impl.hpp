@@ -132,6 +132,18 @@ struct XSD_ElementDecl
   std::vector<XSD_IdentityConstraint> identityConstraints;
 };
 
+struct XSD_SchemaDefinition
+{
+  std::unordered_map<std::string, XSD_SimpleType> simpleTypes;
+  std::unordered_map<std::string, XSD_ComplexType> complexTypes;
+  std::vector<XSD_ElementDecl> rootElements;
+  std::string targetNamespace;
+  std::string elementFormDefault{ "unqualified" };
+  std::string xsPrefix{ "xs" };// detected from schema namespace declarations
+  std::filesystem::path schemaDirectory;
+  std::unordered_set<std::string> importedSchemas;
+};
+
 // ============================================================
 // XSD_Impl — internal implementation
 // ============================================================
@@ -140,6 +152,7 @@ class XSD_Impl
 public:
   // Constructors/Destructors
   explicit XSD_Impl(Node &xNode);
+  XSD_Impl(Node &xNode, std::shared_ptr<const XSD_SchemaDefinition> compiledSchema);
   XSD_Impl() = delete;
   XSD_Impl(const XSD_Impl &other) = delete;
   XSD_Impl &operator=(const XSD_Impl &other) = delete;
@@ -153,6 +166,8 @@ public:
   void stringify(IDestination &destination) const;
   // Validate XML tree against schema
   void validate(const Node &xNode);
+
+  [[nodiscard]] std::shared_ptr<const XSD_SchemaDefinition> getSchemaDefinition() const noexcept { return schemaDef; }
 
 private:
   // ----------------------------------------------------------------
@@ -206,14 +221,17 @@ private:
   // ----------------------------------------------------------------
   // Schema data
   // ----------------------------------------------------------------
-  std::unordered_map<std::string, XSD_SimpleType> simpleTypes;
-  std::unordered_map<std::string, XSD_ComplexType> complexTypes;
-  std::vector<XSD_ElementDecl> rootElements;
-  std::string targetNamespace;
-  std::string elementFormDefault{ "unqualified" };
-  std::string xsPrefix{ "xs" };// detected from schema namespace declarations
-  std::filesystem::path schemaDirectory;
-  std::unordered_set<std::string> importedSchemas;
+  std::shared_ptr<XSD_SchemaDefinition> schemaDef;
+
+  // Convenience references to schemaDef fields
+  std::unordered_map<std::string, XSD_SimpleType> &simpleTypes;
+  std::unordered_map<std::string, XSD_ComplexType> &complexTypes;
+  std::vector<XSD_ElementDecl> &rootElements;
+  std::string &targetNamespace;
+  std::string &elementFormDefault;
+  std::string &xsPrefix;
+  std::filesystem::path &schemaDirectory;
+  std::unordered_set<std::string> &importedSchemas;
 
   // Reference to the XML root node (unused for XSD but required by IValidator constructor pattern)
   Node &xmlRoot;

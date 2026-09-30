@@ -938,18 +938,27 @@ static XPathResult evalExpr(const XPathExpr &expr,
 static constexpr std::size_t kMaxXPathExpressionLength = 8192;
 
 /// @brief
-/// Implementation of evalExpression.
-
-static XPathResult evalExpression(const std::string_view expression, const Node &docRoot)
+/// Compile an XPath 1.0 expression string into an AST.
+std::shared_ptr<const XPathExpr> compileXPath(const std::string_view expression)
 {
-  if (expression.empty()) { XML_LIB_THROW(XPath::Error("Empty expression.")); }
-  if (expression.size() > kMaxXPathExpressionLength) {
-    XML_LIB_THROW(XPath::Error("XPath expression exceeds maximum allowed length."));
+  try {
+    if (expression.empty()) { XML_LIB_THROW(XPath::Error("Empty expression.")); }
+    if (expression.size() > kMaxXPathExpressionLength) {
+      XML_LIB_THROW(XPath::Error("XPath expression exceeds maximum allowed length."));
+    }
+    const auto tokens = xpathTokenize(expression);
+    return xpathParse(tokens);
+  } catch (const XPath::Error &) {
+    throw;
+  } catch (const std::exception &e) {
+    XML_LIB_THROW(XPath::Error(e.what()));
   }
-  const auto tokens = xpathTokenize(expression);
-  const auto ast = xpathParse(tokens);
+}
+
+static XPathResult evalCompiled(const XPathExpr &expr, const Node &docRoot)
+{
   const std::vector<const Node *> emptyAncestors;
-  return evalExpr(*ast, docRoot, 1, 1, docRoot, emptyAncestors);
+  return evalExpr(expr, docRoot, 1, 1, docRoot, emptyAncestors);
 }
 
 // ========================================================================
@@ -957,13 +966,27 @@ static XPathResult evalExpression(const std::string_view expression, const Node 
 // ========================================================================
 XPath_Impl::XPath_Impl(const Node &root) : xmlRoot(root) {}
 
-/// @brief
-/// Implementation of XPath_Impl::evaluate.
+std::shared_ptr<const XPathExpr> XPath_Impl::getOrCompile(const std::string_view expression) const
+{
+  const std::string key(expression);
+  auto it = expressionCache.find(key);
+  if (it != expressionCache.end()) {
+    return it->second;
+  }
+  auto ast = compileXPath(expression);
+  expressionCache.emplace(key, ast);
+  return ast;
+}
 
 std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression) const
 {
+  return evaluate(*getOrCompile(expression));
+}
+
+std::vector<const Node *> XPath_Impl::evaluate(const XPathExpr &expr) const
+{
   try {
-    XPathResult result = evalExpression(expression, xmlRoot);
+    XPathResult result = evalCompiled(expr, xmlRoot);
     if (result.type == XPathResultType::NodeSet) return result.nodeSet;
     return {};
   } catch (const XPath::Error &) {
@@ -973,27 +996,31 @@ std::vector<const Node *> XPath_Impl::evaluate(const std::string_view expression
   }
 }
 
-/// @brief
-/// Implementation of XPath_Impl::evaluateString.
-
 std::string XPath_Impl::evaluateString(const std::string_view expression) const
 {
+  return evaluateString(*getOrCompile(expression));
+}
+
+std::string XPath_Impl::evaluateString(const XPathExpr &expr) const
+{
   try {
-    return resultToString(evalExpression(expression, xmlRoot));
+    return resultToString(evalCompiled(expr, xmlRoot));
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
     XML_LIB_THROW(XPath::Error(e.what()));
   }
 }
-
-/// @brief
-/// Implementation of XPath_Impl::evaluateBool.
 
 bool XPath_Impl::evaluateBool(const std::string_view expression) const
 {
+  return evaluateBool(*getOrCompile(expression));
+}
+
+bool XPath_Impl::evaluateBool(const XPathExpr &expr) const
+{
   try {
-    return resultToBool(evalExpression(expression, xmlRoot));
+    return resultToBool(evalCompiled(expr, xmlRoot));
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {
@@ -1001,13 +1028,15 @@ bool XPath_Impl::evaluateBool(const std::string_view expression) const
   }
 }
 
-/// @brief
-/// Implementation of XPath_Impl::evaluateNumber.
-
 double XPath_Impl::evaluateNumber(const std::string_view expression) const
 {
+  return evaluateNumber(*getOrCompile(expression));
+}
+
+double XPath_Impl::evaluateNumber(const XPathExpr &expr) const
+{
   try {
-    return resultToNumber(evalExpression(expression, xmlRoot));
+    return resultToNumber(evalCompiled(expr, xmlRoot));
   } catch (const XPath::Error &) {
     throw;
   } catch (const std::exception &e) {

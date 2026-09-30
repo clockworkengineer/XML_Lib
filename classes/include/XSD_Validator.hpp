@@ -26,6 +26,9 @@ class XSD_Validator final : public ValidatorPimpl<XSD_Impl>
 public:
   /// @brief Construct an XSD validator bound to @p xNode (the document root node).
   explicit XSD_Validator(Node &xNode);
+
+  /// @brief Construct an XSD validator with a pre-compiled XSD_Schema bound to @p xNode.
+  XSD_Validator(Node &xNode, const class XSD_Schema &schema);
   XSD_Validator() = delete;
   XSD_Validator(const XSD_Validator &other) = delete;
   XSD_Validator &operator=(const XSD_Validator &other) = delete;

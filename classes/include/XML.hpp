@@ -107,6 +107,11 @@ public:
   /// @param xsdSource Inline XSD text or a file path to an `.xsd` file.
   /// @throws XSD_Validator::Error if validation fails.
   void validate(const std::string_view &xsdSource) const;
+
+  /// @brief Validate the document against a pre-compiled XSD schema.
+  /// @param schema Pre-compiled XSD_Schema object.
+  /// @throws XSD_Validator::Error if validation fails.
+  void validate(const class XSD_Schema &schema) const;
 #endif
 
   /// @brief Register a custom schema validator for open schema extensibility (OCP).
@@ -123,6 +128,11 @@ public:
   /// @param expression XPath expression string.
   /// @return Pointers into the document tree — do not store beyond the XML object's lifetime.
   [[nodiscard]] std::vector<const Node *> xpath(std::string_view expression) const;
+
+  /// @brief Evaluate a pre-compiled XPath 1.0 expression and return matching nodes.
+  /// @param expression Pre-compiled XPathExpression object.
+  /// @return Pointers into the document tree — do not store beyond the XML object's lifetime.
+  [[nodiscard]] std::vector<const Node *> xpath(const class XPathExpression &expression) const;
 #endif
 
   /// @brief Return the library version string (e.g. `"1.3.0"`).

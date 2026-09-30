@@ -1,4 +1,5 @@
 #include "XML_Lib_Tests.hpp"
+#include "XSD_Schema.hpp"
 #include "implementation/io/XML_FileSource.hpp"
 
 /// <summary>
@@ -670,3 +671,51 @@ TEST_CASE("XSD inline anonymous type validation.", "[XML][XSD][Validate][Inline]
     REQUIRE(result.find("city") != std::string::npos);
   }
 }
+
+TEST_CASE("XSD pre-compiled XSD_Schema validation", "[XML][XSD][PreCompiled]")
+{
+  const std::string xsd{
+    "<?xml version=\"1.0\"?>\n"
+    "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\">\n"
+    "  <xs:element name=\"book\">\n"
+    "    <xs:complexType>\n"
+    "      <xs:sequence>\n"
+    "        <xs:element name=\"title\" type=\"xs:string\"/>\n"
+    "        <xs:element name=\"pages\" type=\"xs:integer\"/>\n"
+    "      </xs:sequence>\n"
+    "      <xs:attribute name=\"isbn\" type=\"xs:string\" use=\"required\"/>\n"
+    "    </xs:complexType>\n"
+    "  </xs:element>\n"
+    "</xs:schema>\n"
+  };
+
+  const XSD_Schema compiledSchema(xsd);
+
+  SECTION("Validate multiple documents against pre-compiled schema")
+  {
+    XML validXml1("<book isbn=\"1234\"><title>C++ Concurrency</title><pages>500</pages></book>");
+    XML validXml2("<book isbn=\"5678\"><title>Design Patterns</title><pages>395</pages></book>");
+
+    // Validate directly via XML facade with pre-compiled schema
+    REQUIRE_NOTHROW(validXml1.validate(compiledSchema));
+    REQUIRE_NOTHROW(validXml2.validate(compiledSchema));
+
+    // Validate directly via XSD_Schema method
+    REQUIRE_NOTHROW(compiledSchema.validate(validXml1.root()));
+    REQUIRE_NOTHROW(compiledSchema.validate(validXml2.root()));
+
+    // Validate via XSD_Validator overload taking pre-compiled schema
+    XSD_Validator validator(validXml1.root(), compiledSchema);
+    REQUIRE_NOTHROW(validator.validate(validXml1.root()));
+  }
+
+  SECTION("Pre-compiled schema detects validation errors correctly")
+  {
+    XML invalidXmlMissingAttr("<book><title>Missing ISBN</title><pages>100</pages></book>");
+    XML invalidXmlBadType("<book isbn=\"1234\"><title>Invalid Pages</title><pages>not-a-number</pages></book>");
+
+    REQUIRE_THROWS_AS(invalidXmlMissingAttr.validate(compiledSchema), XSD_Validator::Error);
+    REQUIRE_THROWS_AS(invalidXmlBadType.validate(compiledSchema), XSD_Validator::Error);
+  }
+}
+
