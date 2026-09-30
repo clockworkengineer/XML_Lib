@@ -231,7 +231,7 @@ TEST_CASE("Official W3C XML Conformance Test Suite", "[Compliance][W3C][XMLConf]
       XML xml;
       ParseOptions options;
       options.allowExternalEntities = true;
-      options.maxEntityExpansionDepth = 4096;
+      options.maxEntityExpansionDepth = 128;
       options.strictNamespaces = true;
       options.enableNamespaces = tc.namespaceEnabled;
       options.allowFuture1xVersions = true;

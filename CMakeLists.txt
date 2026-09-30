@@ -7,10 +7,14 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Clang 18 with GCC 13 libstdc++ compatibility for <expected>
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+# Clang on Linux with GCC libstdc++ compatibility for <expected>
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT APPLE)
   add_compile_definitions(__cpp_concepts=202002L)
-  add_compile_options(-Wno-builtin-macro-redefined)
+  add_compile_options(-Wno-builtin-macro-redefined -Wno-macro-redefined)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wno-unknown-warning-option -Wno-c++2b-extensions -Wno-pre-c++2b-compat)
 endif()
 
 include(GNUInstallDirs)
@@ -206,9 +210,17 @@ target_compile_definitions(${XML_LIBRARY_NAME}
 
 target_compile_features(${XML_LIBRARY_NAME} PUBLIC cxx_std_23)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT APPLE)
   target_compile_definitions(${XML_LIBRARY_NAME} PUBLIC __cpp_concepts=202002L)
-  target_compile_options(${XML_LIBRARY_NAME} PUBLIC -Wno-builtin-macro-redefined)
+  target_compile_options(${XML_LIBRARY_NAME} PUBLIC -Wno-builtin-macro-redefined -Wno-macro-redefined)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(${XML_LIBRARY_NAME} PUBLIC
+    -Wno-unknown-warning-option
+    -Wno-c++2b-extensions
+    -Wno-pre-c++2b-compat
+  )
 endif()
 
 if(MSVC)
